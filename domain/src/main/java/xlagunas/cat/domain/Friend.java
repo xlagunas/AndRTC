@@ -6,7 +6,7 @@ package xlagunas.cat.domain;
 public class Friend extends AbstractUser{
 
     public final static int ACCEPTED    = 1;
-    public final static int REQUESTED    = 2;
+    public final static int REQUESTED   = 2;
     public final static int BLOCKED     = 3;
     public final static int PENDING     = 4;
 

@@ -8,6 +8,7 @@ import java.util.List;
 public class User extends AbstractUser {
 
     private List<Friend> friends;
+    private String hashedPassword;
 
     public List<Friend> getFriends() {
         return friends;
@@ -15,5 +16,13 @@ public class User extends AbstractUser {
 
     public void setFriends(List<Friend> friends) {
         this.friends = friends;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 }

@@ -3,6 +3,7 @@ package xlagunas.cat.data.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import xlagunas.cat.data.FriendEntity;
 import xlagunas.cat.data.UserEntity;
 import xlagunas.cat.domain.AbstractUser;
 import xlagunas.cat.domain.Friend;
@@ -22,26 +23,26 @@ public class UserEntityMapper {
     public List<Friend> transformFriends(UserEntity entity){
         List<Friend> friends = new ArrayList<>();
 
-        for (UserEntity userEntity : entity.getAccepted()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getAccepted()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.ACCEPTED);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getBlocked()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getBlocked()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.BLOCKED);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getPending()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getPending()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.PENDING);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getRequested()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getRequested()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.REQUESTED);
             friends.add(friend);
         }
@@ -55,6 +56,15 @@ public class UserEntityMapper {
         friend.setName(entity.getName());
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getFirstSurname());
+
+        return friend;
+    }
+    private Friend mapFriendEntity(FriendEntity entity) {
+        Friend friend = new Friend();
+        friend.setUsername(entity.getUsername());
+        friend.setName(entity.getName());
+        friend.setLastSurname(entity.getLastSurname());
+        friend.setSurname(entity.getSurname());
 
         return friend;
     }
