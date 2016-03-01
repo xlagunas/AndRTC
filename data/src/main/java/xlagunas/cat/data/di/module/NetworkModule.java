@@ -1,6 +1,5 @@
 package xlagunas.cat.data.di.module;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
@@ -17,8 +16,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import xlagunas.cat.data.mapper.UserEntityMapper;
 import xlagunas.cat.data.net.RestApi;
+import xlagunas.cat.data.repository.UserRepositoryImpl;
 import xlagunas.cat.data.util.DateTimeTypeConverter;
+import xlagunas.cat.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 29/02/16.
@@ -77,5 +79,14 @@ public class NetworkModule {
         return loggingInterceptor;
     }
 
+    @Provides
+    public UserEntityMapper getEntityMapper(){
+        return new UserEntityMapper();
+    }
+
+    @Provides
+    UserRepository getUserRepository(RestApi restApi, UserEntityMapper userEntityMapper){
+        return new UserRepositoryImpl(restApi, userEntityMapper);
+    }
 
 }

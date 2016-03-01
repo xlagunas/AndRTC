@@ -1,19 +1,25 @@
 package xlagunas.cat.data;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.data.di.component.DaggerTestNetworkComponent;
 import xlagunas.cat.data.di.component.TestNetworkComponent;
 import xlagunas.cat.data.di.module.NetworkModule;
+import xlagunas.cat.data.mapper.UserEntityMapper;
 import xlagunas.cat.data.net.RestApi;
 import xlagunas.cat.data.net.params.LoginParams;
+import xlagunas.cat.domain.User;
+import xlagunas.cat.domain.repository.UserRepository;
 
 import static org.junit.Assert.*;
 
@@ -22,34 +28,35 @@ import static org.junit.Assert.*;
  */
 public class RestUnitTest {
 
+
     @Inject
-    private RestApi restApi;
+    UserRepository userRepository;
+
 
     @Before public void setUp() {
         TestNetworkComponent module = DaggerTestNetworkComponent.builder().networkModule(new NetworkModule()).build();
-        restApi = module.getRestApi();
+        userRepository = module.getUserRepository();
 
     }
     @Test
     public void test_login() throws Exception {
-        restApi.loginUser(new LoginParams("xlagunas", "123456"))
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.immediate())
-                .subscribe(new Subscriber<UserEntity>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("On completed");
-            }
+        userRepository.login("xlagunas", "123456")
+               .subscribe(new Subscriber<User>() {
+                   @Override
+                   public void onCompleted() {
+                       System.out.println("On completed");
+                   }
 
-            @Override
-            public void onError(Throwable e) {
-                System.err.println(e);
-            }
+                   @Override
+                   public void onError(Throwable e) {
+                       e.printStackTrace();
+                   }
 
-            @Override
-            public void onNext(UserEntity userEntity) {
-                System.out.println(new Gson().toJson(userEntity, UserEntity.class).toString());
-            }
-        });
+                   @Override
+                   public void onNext(User user) {
+                       System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(user, User.class).toString());
+                   }
+               });
+
     }
 }

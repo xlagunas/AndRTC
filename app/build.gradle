@@ -60,6 +60,7 @@ dependencies {
     compile presentationDependencies.rxAndroid
 
     provided presentationDependencies.javaxAnnotation
+
     androidTestCompile presentationTestDependencies.mockito
     androidTestCompile presentationTestDependencies.dexmaker
     androidTestCompile presentationTestDependencies.dexmakerMockito

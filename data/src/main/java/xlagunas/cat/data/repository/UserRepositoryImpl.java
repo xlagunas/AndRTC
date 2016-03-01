@@ -45,13 +45,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<AbstractUser> login(String username, String password) {
-       return restApi.loginUser(new LoginParams(username, password)).map(new Func1<UserEntity, User>() {
-            @Override
-            public User call(UserEntity userEntity) {
-                return mapper.transformUser(userEntity);
-            }
-        });
+    public Observable<User> login(String username, String password) {
+       return restApi.loginUser(new LoginParams(username, password))
+               .map(userEntity -> mapper.transformUser(userEntity));
     }
 
     @Override

@@ -3,9 +3,9 @@ package xlagunas.cat.data.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Credentials;
 import xlagunas.cat.data.FriendEntity;
 import xlagunas.cat.data.UserEntity;
-import xlagunas.cat.domain.AbstractUser;
 import xlagunas.cat.domain.Friend;
 import xlagunas.cat.domain.User;
 
@@ -50,14 +50,15 @@ public class UserEntityMapper {
         return friends;
     }
 
-    private AbstractUser mapAbstractUser(UserEntity entity){
-        Friend friend = new Friend();
-        friend.setUsername(entity.getUsername());
-        friend.setName(entity.getName());
-        friend.setLastSurname(entity.getLastSurname());
-        friend.setSurname(entity.getFirstSurname());
+    private User mapAbstractUser(UserEntity entity){
+        User user = new User();
+        user.setUsername(entity.getUsername());
+        user.setName(entity.getName());
+        user.setLastSurname(entity.getLastSurname());
+        user.setSurname(entity.getFirstSurname());
+        user.setHashedPassword(Credentials.basic(entity.getUsername(), entity.getPassword()));
 
-        return friend;
+        return user;
     }
     private Friend mapFriendEntity(FriendEntity entity) {
         Friend friend = new Friend();
