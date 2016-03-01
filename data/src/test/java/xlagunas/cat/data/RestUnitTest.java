@@ -1,6 +1,5 @@
 package xlagunas.cat.data;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
@@ -8,20 +7,12 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import xlagunas.cat.data.di.component.DaggerTestNetworkComponent;
 import xlagunas.cat.data.di.component.TestNetworkComponent;
 import xlagunas.cat.data.di.module.NetworkModule;
-import xlagunas.cat.data.mapper.UserEntityMapper;
-import xlagunas.cat.data.net.RestApi;
-import xlagunas.cat.data.net.params.LoginParams;
 import xlagunas.cat.domain.User;
 import xlagunas.cat.domain.repository.UserRepository;
-
-import static org.junit.Assert.*;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
@@ -49,6 +40,7 @@ public class RestUnitTest {
 
                    @Override
                    public void onError(Throwable e) {
+                       System.out.println("Entra al onError");
                        e.printStackTrace();
                    }
 

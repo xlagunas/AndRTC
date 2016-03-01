@@ -7,6 +7,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import xlagunas.cat.data.repository.UserRepositoryImpl;
+import xlagunas.cat.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 29/02/16.
@@ -26,4 +28,11 @@ public class ApplicationModule {
     public Context getAppContext(){
         return application;
     }
+
+    @Provides @Singleton
+    UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl){
+        return userRepositoryImpl;
+    }
+
+
 }
