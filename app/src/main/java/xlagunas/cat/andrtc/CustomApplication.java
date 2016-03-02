@@ -29,4 +29,8 @@ public class CustomApplication extends Application{
     public static CustomApplication getApp(Context context) {
         return (CustomApplication) context.getApplicationContext();
     }
+
+    public ApplicationComponent getApplicationComponent(){
+        return applicationComponent;
+    }
 }

@@ -3,6 +3,9 @@ package xlagunas.cat.data.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import okhttp3.Credentials;
 import xlagunas.cat.data.FriendEntity;
 import xlagunas.cat.data.UserEntity;
@@ -12,7 +15,13 @@ import xlagunas.cat.domain.User;
 /**
  * Created by xlagunas on 26/02/16.
  */
+@Singleton
 public class UserEntityMapper {
+
+    @Inject
+    public UserEntityMapper(){
+
+    }
 
     public User transformUser(UserEntity entity){
         User user = (User) mapAbstractUser(entity);

@@ -13,7 +13,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        tools:context=".view.activity.LoginActivity"
+        tools:context=".view.fragment.LoginFragment"
         android:gravity="center_vertical">
 
         <EditText

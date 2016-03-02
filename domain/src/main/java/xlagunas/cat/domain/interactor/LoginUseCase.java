@@ -9,6 +9,7 @@ import xlagunas.cat.domain.repository.UserRepository;
 /**
  * Created by xlagunas on 26/02/16.
  */
+
 public class LoginUseCase extends UseCase {
 
     private UserRepository repository;

@@ -36,7 +36,7 @@ public class NetworkModule {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:3000")
+                .baseUrl("http://172.20.17.44:3000")
 //                .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(builder.create()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -77,16 +77,6 @@ public class NetworkModule {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(level);
         return loggingInterceptor;
-    }
-
-    @Provides
-    public UserEntityMapper getEntityMapper(){
-        return new UserEntityMapper();
-    }
-
-    @Provides
-    UserRepository getUserRepository(RestApi restApi, UserEntityMapper userEntityMapper){
-        return new UserRepositoryImpl(restApi, userEntityMapper);
     }
 
 }
