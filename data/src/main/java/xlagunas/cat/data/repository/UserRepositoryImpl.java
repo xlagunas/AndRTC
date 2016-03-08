@@ -6,8 +6,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import xlagunas.cat.data.UserEntity;
+import xlagunas.cat.data.cache.UserCache;
 import xlagunas.cat.data.mapper.UserEntityMapper;
 import xlagunas.cat.data.net.RestApi;
 import xlagunas.cat.data.net.params.LoginParams;
@@ -24,13 +26,15 @@ import xlagunas.cat.domain.repository.UserRepository;
 public class UserRepositoryImpl implements UserRepository {
 
     private RestApi restApi;
+    private UserCache userCache;
     private UserEntityMapper mapper;
 
 
     @Inject
-    public UserRepositoryImpl(RestApi restApi, UserEntityMapper mapper){
+    public UserRepositoryImpl(RestApi restApi, UserEntityMapper mapper, UserCache userCache){
         this.restApi = restApi;
         this.mapper = mapper;
+        this.userCache = userCache;
     }
 
 
@@ -47,6 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Observable<User> login(String username, String password) {
        return restApi.loginUser(new LoginParams(username, password))
+               .doOnNext(saveToCacheAction)
                .map(userEntity -> mapper.transformUser(userEntity));
     }
 
@@ -59,4 +64,10 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable<List<Friend>> updateFriendship(String id, String previousState, String newState) {
         return null;
     }
+
+    private final Action1<UserEntity> saveToCacheAction = userEntity -> {
+        if (userEntity != null) {
+            userCache.putUser(userEntity);
+        }
+    };
 }

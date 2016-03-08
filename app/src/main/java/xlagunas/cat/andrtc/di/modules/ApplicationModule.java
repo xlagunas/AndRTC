@@ -10,6 +10,8 @@ import dagger.Module;
 import dagger.Provides;
 import xlagunas.cat.andrtc.UIThread;
 import xlagunas.cat.andrtc.di.PerActivity;
+import xlagunas.cat.data.cache.UserCache;
+import xlagunas.cat.data.cache.UserCacheImpl;
 import xlagunas.cat.data.repository.UserRepositoryImpl;
 import xlagunas.cat.domain.executor.PostExecutionThread;
 import xlagunas.cat.domain.interactor.LoginUseCase;
@@ -43,6 +45,11 @@ public class ApplicationModule {
     @Provides @Singleton
     PostExecutionThread providePostExecutionThread(UIThread thread){
         return thread;
+    }
+
+    @Provides @Singleton
+    UserCache provideUserCache(UserCacheImpl userCache) {
+        return userCache;
     }
 
 }

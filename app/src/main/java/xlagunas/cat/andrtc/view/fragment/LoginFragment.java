@@ -48,6 +48,26 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
         this.getComponent(UserComponent.class).inject(this);
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        this.loginPresenter.resume();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        this.loginPresenter.pause();
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        this.loginPresenter.destroy();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
