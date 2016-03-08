@@ -31,7 +31,7 @@ public interface UserRepository {
      * @param password
      * @return
      */
-    Observable<AbstractUser> login(String username, String password);
+    Observable<User> login(String username, String password);
     Observable<List<Friend>> requestNewFriendship(String id);
     Observable<List<Friend>> updateFriendship(String id, String previousState, String newState);
 

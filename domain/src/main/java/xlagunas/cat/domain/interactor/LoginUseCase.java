@@ -9,14 +9,15 @@ import xlagunas.cat.domain.repository.UserRepository;
 /**
  * Created by xlagunas on 26/02/16.
  */
-public class LoginInteractor extends UseCase {
+
+public class LoginUseCase extends UseCase {
 
     private UserRepository repository;
     private String username;
     private String password;
 
     @Inject
-    public LoginInteractor(PostExecutionThread postExecutionThread, UserRepository repository) {
+    public LoginUseCase(PostExecutionThread postExecutionThread, UserRepository repository) {
         super(postExecutionThread);
         this.repository = repository;
     }

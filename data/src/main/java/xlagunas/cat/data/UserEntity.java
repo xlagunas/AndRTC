@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import xlagunas.cat.domain.Friend;
+
 /**
  * Created by xlagunas on 26/02/16.
  */
@@ -26,16 +28,16 @@ public class UserEntity {
     private String password;
     @SerializedName("thumbnail")
     private String thumbnail;
-    @SerializedName("thumbnail")
+    @SerializedName("joinDate")
     private DateTime joinDate;
     @SerializedName("requested")
-    private List<UserEntity> requested;
+    private List<FriendEntity> requested;
     @SerializedName("pending")
-    private List<UserEntity> pending;
+    private List<FriendEntity> pending;
     @SerializedName("blocked")
-    private List<UserEntity> blocked;
+    private List<FriendEntity> blocked;
     @SerializedName("accepted")
-    private List<UserEntity> accepted;
+    private List<FriendEntity> accepted;
     @SerializedName("status")
     private String status;
 
@@ -99,35 +101,35 @@ public class UserEntity {
         this.joinDate = joinDate;
     }
 
-    public List<UserEntity> getRequested() {
+    public List<FriendEntity> getRequested() {
         return requested;
     }
 
-    public void setRequested(List<UserEntity> requested) {
+    public void setRequested(List<FriendEntity> requested) {
         this.requested = requested;
     }
 
-    public List<UserEntity> getPending() {
+    public List<FriendEntity> getPending() {
         return pending;
     }
 
-    public void setPending(List<UserEntity> pending) {
+    public void setPending(List<FriendEntity> pending) {
         this.pending = pending;
     }
 
-    public List<UserEntity> getBlocked() {
+    public List<FriendEntity> getBlocked() {
         return blocked;
     }
 
-    public void setBlocked(List<UserEntity> blocked) {
+    public void setBlocked(List<FriendEntity> blocked) {
         this.blocked = blocked;
     }
 
-    public List<UserEntity> getAccepted() {
+    public List<FriendEntity> getAccepted() {
         return accepted;
     }
 
-    public void setAccepted(List<UserEntity> accepted) {
+    public void setAccepted(List<FriendEntity> accepted) {
         this.accepted = accepted;
     }
 

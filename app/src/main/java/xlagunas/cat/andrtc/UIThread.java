@@ -1,5 +1,6 @@
 package xlagunas.cat.andrtc;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Scheduler;
@@ -18,6 +19,7 @@ import xlagunas.cat.domain.executor.PostExecutionThread;
 @Singleton
 public class UIThread implements PostExecutionThread{
 
+    @Inject
     public UIThread(){}
 
 

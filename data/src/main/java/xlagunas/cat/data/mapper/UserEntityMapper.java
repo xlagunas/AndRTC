@@ -3,15 +3,25 @@ package xlagunas.cat.data.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import okhttp3.Credentials;
+import xlagunas.cat.data.FriendEntity;
 import xlagunas.cat.data.UserEntity;
-import xlagunas.cat.domain.AbstractUser;
 import xlagunas.cat.domain.Friend;
 import xlagunas.cat.domain.User;
 
 /**
  * Created by xlagunas on 26/02/16.
  */
+@Singleton
 public class UserEntityMapper {
+
+    @Inject
+    public UserEntityMapper(){
+
+    }
 
     public User transformUser(UserEntity entity){
         User user = (User) mapAbstractUser(entity);
@@ -22,26 +32,26 @@ public class UserEntityMapper {
     public List<Friend> transformFriends(UserEntity entity){
         List<Friend> friends = new ArrayList<>();
 
-        for (UserEntity userEntity : entity.getAccepted()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getAccepted()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.ACCEPTED);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getBlocked()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getBlocked()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.BLOCKED);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getPending()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getPending()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.PENDING);
             friends.add(friend);
         }
 
-        for (UserEntity userEntity : entity.getRequested()){
-            Friend friend = (Friend) mapAbstractUser(userEntity);
+        for (FriendEntity userEntity : entity.getRequested()){
+            Friend friend = mapFriendEntity(userEntity);
             friend.setFriendState(Friend.REQUESTED);
             friends.add(friend);
         }
@@ -49,12 +59,22 @@ public class UserEntityMapper {
         return friends;
     }
 
-    private AbstractUser mapAbstractUser(UserEntity entity){
+    private User mapAbstractUser(UserEntity entity){
+        User user = new User();
+        user.setUsername(entity.getUsername());
+        user.setName(entity.getName());
+        user.setLastSurname(entity.getLastSurname());
+        user.setSurname(entity.getFirstSurname());
+        user.setHashedPassword(Credentials.basic(entity.getUsername(), entity.getPassword()));
+
+        return user;
+    }
+    private Friend mapFriendEntity(FriendEntity entity) {
         Friend friend = new Friend();
         friend.setUsername(entity.getUsername());
         friend.setName(entity.getName());
         friend.setLastSurname(entity.getLastSurname());
-        friend.setSurname(entity.getFirstSurname());
+        friend.setSurname(entity.getSurname());
 
         return friend;
     }

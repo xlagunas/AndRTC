@@ -1,13 +1,20 @@
-package xlagunas.cat.domain;
+package xlagunas.cat.data;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by xlagunas on 26/02/16.
+ * Created by xlagunas on 29/02/16.
  */
-public abstract class AbstractUser {
+public class FriendEntity {
+    @SerializedName("username")
     private String username;
+    @SerializedName("name")
     private String name;
+    @SerializedName("firstSurname")
     private String surname;
+    @SerializedName("lastSurname")
     private String lastSurname;
+    @SerializedName("thumbnail")
     private String thumbnail;
 
 
@@ -50,4 +57,6 @@ public abstract class AbstractUser {
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+
 }
