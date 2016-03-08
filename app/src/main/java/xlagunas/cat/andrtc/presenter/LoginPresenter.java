@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
+import rx.Observer;
 import xlagunas.cat.andrtc.di.PerActivity;
 import xlagunas.cat.andrtc.view.LoadDataView;
 import xlagunas.cat.domain.DefaultSubscriber;
@@ -42,7 +43,26 @@ public class LoginPresenter implements Presenter {
 
     public void doLogin(String username, String password){
         loginUseCase.setCredentials(username, password);
-        loginUseCase.execute(new LoginSubscriber());
+        loginUseCase.execute(new Observer<User>() {
+            @Override
+            public void onCompleted() {
+                Toast.makeText(view.context(), "COMPLETED", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideLoading();
+                view.showError("Error loading");
+            }
+
+            @Override
+            public void onNext(User user) {
+                view.hideLoading();
+            }
+        });
+
+//        loginUseCase.execute(new LoginSubscriber());
         view.showLoading();
     }
 

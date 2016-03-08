@@ -1,6 +1,7 @@
 package xlagunas.cat.domain.interactor;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -23,7 +24,7 @@ public abstract class UseCase {
     protected abstract Observable buildUseCaseObservable();
 
     @SuppressWarnings("unchecked")
-    public void execute(Subscriber useCaseSubscriber) {
+    public void execute(Observer useCaseSubscriber) {
         this.subscription = this.buildUseCaseObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(postExecutionThread.getScheduler())
