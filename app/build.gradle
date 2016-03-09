@@ -58,6 +58,7 @@ dependencies {
     compile presentationDependencies.recyclerView
     compile presentationDependencies.rxJava
     compile presentationDependencies.rxAndroid
+    compile presentationDependencies.materialSupport
 
     provided presentationDependencies.javaxAnnotation
 

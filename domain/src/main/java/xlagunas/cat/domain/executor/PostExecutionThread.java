@@ -7,5 +7,5 @@ import rx.Scheduler;
  */
 public interface PostExecutionThread {
 
-    public Scheduler getScheduler();
+    Scheduler getScheduler();
 }

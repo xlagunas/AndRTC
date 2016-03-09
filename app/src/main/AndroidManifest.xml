@@ -9,13 +9,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".CustomApplication">
-        <activity android:name=".view.activity.LoginActivity">
+
+        <activity android:name=".view.activity.LoginActivity"/>
+
+        <activity android:name=".view.activity.MainActivity"/>
+
+        <activity android:name=".view.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

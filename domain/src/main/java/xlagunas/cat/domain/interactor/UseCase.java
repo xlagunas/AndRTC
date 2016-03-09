@@ -2,10 +2,10 @@ package xlagunas.cat.domain.interactor;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
+import xlagunas.cat.domain.User;
 import xlagunas.cat.domain.executor.PostExecutionThread;
 
 /**
@@ -15,13 +15,13 @@ public abstract class UseCase {
 
     private final PostExecutionThread postExecutionThread;
 
-    public UseCase(PostExecutionThread postExecutionThread){
+    UseCase(PostExecutionThread postExecutionThread){
         this.postExecutionThread = postExecutionThread;
     }
 
     private Subscription subscription = Subscriptions.empty();
 
-    protected abstract Observable buildUseCaseObservable();
+    protected abstract Observable<User> buildUseCaseObservable();
 
     @SuppressWarnings("unchecked")
     public void execute(Observer useCaseSubscriber) {

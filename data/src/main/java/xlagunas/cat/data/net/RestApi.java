@@ -18,7 +18,7 @@ public interface RestApi {
     Observable<UserEntity> loginUser(@Body LoginParams params);
 
     @PUT("/user")
-    Observable<Response> createUser(@Header("Authorization") String authorization, UserEntity entity);
+    Observable<UserEntity> createUser(@Body UserEntity entity);
 
 
 }

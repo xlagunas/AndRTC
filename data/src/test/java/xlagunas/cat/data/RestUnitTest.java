@@ -1,10 +1,14 @@
 package xlagunas.cat.data;
 
+import android.util.Base64;
+
 import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import okhttp3.Credentials;
+import okio.ByteString;
 import rx.Subscriber;
 import xlagunas.cat.data.di.component.DaggerTestNetworkComponent;
 import xlagunas.cat.data.di.component.TestNetworkComponent;
@@ -42,6 +46,15 @@ public class RestUnitTest {
                        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(user, UserEntity.class).toString());
                    }
                });
+    }
 
+    @Test
+    public void test_credentials() throws Exception {
+        String username = "aUser";
+        String password = "aPass";
+        String creds = Credentials.basic(username, password);
+
+        String str = ByteString.decodeBase64(creds.substring(6)).utf8();
+        assert(password.equals(str.substring(username.length()+1)));
     }
 }

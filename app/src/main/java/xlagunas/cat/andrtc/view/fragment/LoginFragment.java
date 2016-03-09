@@ -1,5 +1,6 @@
 package xlagunas.cat.andrtc.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -39,13 +41,33 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
     @Bind(R.id.root_layout)
     LinearLayout linearLayout;
 
+    @Bind(R.id.sign_in)
+    TextView signIn;
+
     @Inject
     LoginPresenter loginPresenter;
+
+    FragmentInterface fragmentInterface;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getComponent(UserComponent.class).inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        try {
+            fragmentInterface = (FragmentInterface) context;
+        } catch (ClassCastException e){
+            throw new RuntimeException("Activity must implement FragmentInterface");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        onAttach((Context)activity);
     }
 
     @Override public void onResume() {
@@ -90,6 +112,11 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
         loginPresenter.doLogin(username.getText().toString(), password.getText().toString());
     }
 
+    @OnClick(R.id.sign_in)
+    public void signIn(){
+        fragmentInterface.onSignInRequested();
+    }
+
     @Override
     public void showLoading() {
         linearLayout.setVisibility(View.INVISIBLE);
@@ -116,5 +143,10 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
     @Override
     public Context context() {
         return this.getActivity().getApplicationContext();
+    }
+
+    public interface FragmentInterface {
+        void onSignInRequested();
+
     }
 }

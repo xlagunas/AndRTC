@@ -12,7 +12,7 @@ import xlagunas.cat.domain.repository.UserRepository;
 
 public class LoginUseCase extends UseCase {
 
-    private UserRepository repository;
+    private final UserRepository repository;
     private String username;
     private String password;
 

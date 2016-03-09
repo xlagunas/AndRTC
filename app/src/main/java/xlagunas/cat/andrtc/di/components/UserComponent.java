@@ -5,6 +5,7 @@ import xlagunas.cat.andrtc.di.PerActivity;
 import xlagunas.cat.andrtc.di.modules.ActivityModule;
 import xlagunas.cat.andrtc.di.modules.UserModule;
 import xlagunas.cat.andrtc.view.fragment.LoginFragment;
+import xlagunas.cat.andrtc.view.fragment.RegisterFragment;
 import xlagunas.cat.data.di.module.NetworkModule;
 
 /**
@@ -14,4 +15,5 @@ import xlagunas.cat.data.di.module.NetworkModule;
 @Component(dependencies = ApplicationComponent.class, modules = { ActivityModule.class, UserModule.class})
 public interface UserComponent extends ActivityComponent {
     void inject(LoginFragment fragment);
+    void inject(RegisterFragment fragment);
 }

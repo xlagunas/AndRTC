@@ -16,6 +16,8 @@ public class FriendEntity {
     private String lastSurname;
     @SerializedName("thumbnail")
     private String thumbnail;
+    @SerializedName("email")
+    private String email;
 
 
     public String getUsername() {
@@ -58,5 +60,11 @@ public class FriendEntity {
         this.thumbnail = thumbnail;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

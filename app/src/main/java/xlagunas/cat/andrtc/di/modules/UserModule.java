@@ -45,4 +45,10 @@ public class UserModule {
         return new LoginUseCase(postExecutionThread, userRepository);
     }
 
+    @Provides
+    @PerActivity
+    public User getUser(){
+        return user;
+    }
+
 }
