@@ -45,6 +45,11 @@ android {
         disable 'InvalidPackage'  // Some libraries have issues with this
         disable 'OldTargetApi'    // Due to Robolectric that modifies the manifest when running tests
     }
+
+//    TURN THIS ON TO NOT MOCK ANDROID LIBRARY OBJECTS
+//    testOptions {
+//        unitTests.returnDefaultValues = true
+//    }
 }
 
 dependencies {

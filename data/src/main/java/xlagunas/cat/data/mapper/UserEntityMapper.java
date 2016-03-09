@@ -1,5 +1,9 @@
 package xlagunas.cat.data.mapper;
 
+import android.util.Base64;
+import android.util.Xml;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import okhttp3.Credentials;
+import okio.ByteString;
 import xlagunas.cat.data.FriendEntity;
 import xlagunas.cat.data.UserEntity;
 import xlagunas.cat.domain.Friend;
@@ -27,6 +32,26 @@ public class UserEntityMapper {
         User user = (User) mapAbstractUser(entity);
         user.setFriends(transformFriends(entity));
         return user;
+    }
+
+    public UserEntity tranformUserEntity(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setUsername(user.getUsername());
+        entity.setEmail(user.getEmail());
+        entity.setLastSurname(user.getLastSurname());
+        entity.setFirstSurname(user.getSurname());
+        entity.setName(user.getName());
+        entity.setPassword(decodeBasicAuthPassword(user.getHashedPassword(), user.getUsername()));
+
+        return entity;
+    }
+
+    private String decodeBasicAuthPassword(String hashedPassword, String username) {
+        //rip the "Basic " string in front of the password
+        String secret = hashedPassword.substring(6);
+        String str = ByteString.decodeBase64(secret).utf8();
+
+        return str.substring(username.length()+1);
     }
 
     public List<Friend> transformFriends(UserEntity entity){
@@ -65,6 +90,7 @@ public class UserEntityMapper {
         user.setName(entity.getName());
         user.setLastSurname(entity.getLastSurname());
         user.setSurname(entity.getFirstSurname());
+        user.setEmail(entity.getEmail());
         user.setHashedPassword(Credentials.basic(entity.getUsername(), entity.getPassword()));
 
         return user;
@@ -75,6 +101,7 @@ public class UserEntityMapper {
         friend.setName(entity.getName());
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
+        friend.setEmail(entity.getEmail());
 
         return friend;
     }

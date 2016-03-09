@@ -55,14 +55,14 @@ public class UserCacheImpl implements UserCache {
             @Override
             public void call(Subscriber<? super UserEntity> subscriber) {
                 String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
-                if (serializedUser != null){
+                if (serializedUser != null) {
                     UserEntity entity = serializer.deserialize(serializedUser);
-                    if (entity != null){
+                    if (entity != null) {
                         subscriber.onNext(entity);
                         subscriber.onCompleted();
-                    } else {
-                        subscriber.onError(new UserNotFoundException());
                     }
+                } else {
+                    subscriber.onError(new UserNotFoundException());
                 }
             }
         });

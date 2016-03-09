@@ -1,19 +1,27 @@
 package xlagunas.cat.data.cache.serializer;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import xlagunas.cat.data.UserEntity;
+import xlagunas.cat.data.util.DateTimeTypeConverter;
 
 @Singleton
 public class JsonSerializer {
 
-    private final Gson gson = new Gson();
+    private final Gson gson;
 
     @Inject
-    public JsonSerializer() {}
+    public JsonSerializer() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter());
+        gson = builder.create();
+    }
 
     /**
      * Serialize an object to Json.

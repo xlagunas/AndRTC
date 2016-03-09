@@ -62,31 +62,11 @@ public class LoginPresenter implements Presenter {
             }
         });
 
-//        loginUseCase.execute(new LoginSubscriber());
         view.showLoading();
     }
 
     public void initialize() {
         view.hideLoading();
-    }
-
-    private final class LoginSubscriber extends DefaultSubscriber<User> {
-        @Override
-        public void onError(Throwable e) {
-            view.hideLoading();
-            view.showError("Error loading");
-        }
-
-        @Override
-        public void onCompleted() {
-            Toast.makeText(view.context(), "COMPLETED", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onNext(User user) {
-            super.onNext(user);
-            view.hideLoading();
-        }
     }
 
 }

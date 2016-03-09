@@ -9,6 +9,7 @@ public abstract class AbstractUser {
     private String surname;
     private String lastSurname;
     private String thumbnail;
+    private String email;
 
 
     public String getUsername() {
@@ -49,5 +50,13 @@ public abstract class AbstractUser {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -65,6 +65,14 @@ public class UserRepositoryImpl implements UserRepository {
         return null;
     }
 
+    @Override
+    public Observable<User> registerUser(User user) {
+        UserEntity entity = mapper.tranformUserEntity(user);
+        return restApi.createUser(entity)
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> mapper.transformUser(userEntity));
+    }
+
     private final Action1<UserEntity> saveToCacheAction = userEntity -> {
         if (userEntity != null) {
             userCache.putUser(userEntity);

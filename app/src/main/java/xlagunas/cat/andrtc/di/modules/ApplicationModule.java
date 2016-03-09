@@ -10,6 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 import xlagunas.cat.andrtc.UIThread;
 import xlagunas.cat.andrtc.di.PerActivity;
+import xlagunas.cat.andrtc.view.util.FieldValidator;
 import xlagunas.cat.data.cache.UserCache;
 import xlagunas.cat.data.cache.UserCacheImpl;
 import xlagunas.cat.data.repository.UserRepositoryImpl;
@@ -51,5 +52,4 @@ public class ApplicationModule {
     UserCache provideUserCache(UserCacheImpl userCache) {
         return userCache;
     }
-
 }

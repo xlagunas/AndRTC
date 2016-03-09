@@ -3,7 +3,6 @@ package xlagunas.cat.domain.repository;
 import java.util.List;
 
 import rx.Observable;
-import xlagunas.cat.domain.AbstractUser;
 import xlagunas.cat.domain.Friend;
 import xlagunas.cat.domain.User;
 
@@ -21,18 +20,20 @@ public interface UserRepository {
 
     /**
      * Return the list of all the contacts
-     * @return
+     * @return a list of users
      */
     Observable<List<Friend>> listContacts();
 
     /**
      * Return the user if logged
-     * @param username
-     * @param password
-     * @return
+     * @param username string containing username
+     * @param password string containing password
+     * @return the logged user
      */
     Observable<User> login(String username, String password);
     Observable<List<Friend>> requestNewFriendship(String id);
     Observable<List<Friend>> updateFriendship(String id, String previousState, String newState);
+
+    Observable<User> registerUser(User user);
 
 }
