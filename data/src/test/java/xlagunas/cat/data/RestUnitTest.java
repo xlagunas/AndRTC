@@ -1,20 +1,19 @@
 package xlagunas.cat.data;
 
-import android.util.Base64;
-
 import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import cat.xlagunas.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
 import rx.Subscriber;
 import xlagunas.cat.data.di.component.DaggerTestNetworkComponent;
-import xlagunas.cat.data.di.component.TestNetworkComponent;
-import xlagunas.cat.data.di.module.NetworkModule;
-import xlagunas.cat.data.net.RestApi;
-import xlagunas.cat.data.net.params.LoginParams;
+import cat.xlagunas.data.di.component.TestNetworkComponent;
+import cat.xlagunas.data.di.module.NetworkModule;
+import cat.xlagunas.data.net.RestApi;
+import cat.xlagunas.data.net.params.LoginParams;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
