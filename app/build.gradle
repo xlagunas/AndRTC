@@ -9,7 +9,7 @@ android {
     buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
     defaultConfig {
-        applicationId "xlagunas.cat.andrtc"
+        applicationId "cat.xlagunas.andrtc"
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 1
@@ -50,7 +50,7 @@ dependencies {
     compile project(':domain')
     compile project(':data')
 
-    compile 'com.android.support:appcompat-v7:23.2.0'
+
 
     apt presentationDependencies.daggerCompiler
     compile presentationDependencies.dagger
@@ -70,6 +70,9 @@ dependencies {
 
     //Development
     compile developmentDependencies.leakCanary
-
-
+    compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
 }
+
+
+
+
