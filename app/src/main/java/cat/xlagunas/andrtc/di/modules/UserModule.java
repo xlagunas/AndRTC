@@ -6,11 +6,11 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import cat.xlagunas.andrtc.di.PerActivity;
-import xlagunas.cat.domain.User;
-import xlagunas.cat.domain.executor.PostExecutionThread;
-import xlagunas.cat.domain.interactor.LoginUseCase;
-import xlagunas.cat.domain.interactor.UseCase;
-import xlagunas.cat.domain.repository.UserRepository;
+import xlagunas.cat.andrtc.domain.User;
+import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
+import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
+import xlagunas.cat.andrtc.domain.interactor.UseCase;
+import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 
 /**

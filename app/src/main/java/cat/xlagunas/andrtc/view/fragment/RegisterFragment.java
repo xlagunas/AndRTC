@@ -22,7 +22,7 @@ import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.util.TextValidator;
 import okhttp3.Credentials;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
-import xlagunas.cat.domain.User;
+import xlagunas.cat.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 9/03/16.

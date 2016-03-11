@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cat.xlagunas.data">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cat.xlagunas.andrtc.data">
 
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">

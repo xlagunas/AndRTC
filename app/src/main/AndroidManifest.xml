@@ -32,21 +32,21 @@
             </intent-filter>
         </receiver>
         <service
-            android:name="cat.xlagunas.andrtc.gcm.MyGcmListenerService"
+            android:name=".gcm.MyGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="cat.xlagunas.andrtc.gcm.MyInstanceIDListenerService"
+            android:name=".data.gcm.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
-            android:name="cat.xlagunas.andrtc.gcm.RegistrationIntentService"
+            android:name=".data.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
         <!--END OF PUSH NOTIFICATION SECTION -->

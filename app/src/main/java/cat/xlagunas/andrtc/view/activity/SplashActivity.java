@@ -10,7 +10,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.data.UserEntity;
+import cat.xlagunas.andrtc.data.UserEntity;
 
 /**
  * Created by xlagunas on 8/03/16.

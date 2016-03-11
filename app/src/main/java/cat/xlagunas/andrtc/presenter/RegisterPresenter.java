@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import rx.Observer;
 import cat.xlagunas.andrtc.view.RegisterDataView;
-import xlagunas.cat.domain.User;
-import xlagunas.cat.domain.interactor.RegisterUseCase;
+import xlagunas.cat.andrtc.domain.User;
+import xlagunas.cat.andrtc.domain.interactor.RegisterUseCase;
 
 /**
  * Created by xlagunas on 9/03/16.

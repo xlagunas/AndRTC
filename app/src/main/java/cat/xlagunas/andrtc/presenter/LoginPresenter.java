@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.di.PerActivity;
 import cat.xlagunas.andrtc.view.LoadDataView;
 import rx.Observer;
-import xlagunas.cat.domain.User;
-import xlagunas.cat.domain.interactor.LoginUseCase;
+import xlagunas.cat.andrtc.domain.User;
+import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
 
 /**
  * Created by xlagunas on 1/03/16.

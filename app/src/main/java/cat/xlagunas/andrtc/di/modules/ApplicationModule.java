@@ -8,11 +8,11 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import cat.xlagunas.andrtc.UIThread;
-import cat.xlagunas.data.cache.UserCache;
-import cat.xlagunas.data.cache.UserCacheImpl;
-import cat.xlagunas.data.repository.UserRepositoryImpl;
-import xlagunas.cat.domain.executor.PostExecutionThread;
-import xlagunas.cat.domain.repository.UserRepository;
+import cat.xlagunas.andrtc.data.cache.UserCache;
+import cat.xlagunas.andrtc.data.cache.UserCacheImpl;
+import cat.xlagunas.andrtc.data.repository.UserRepositoryImpl;
+import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
+import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 29/02/16.

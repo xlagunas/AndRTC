@@ -5,15 +5,15 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import cat.xlagunas.data.UserEntity;
+import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
 import rx.Subscriber;
-import xlagunas.cat.data.di.component.DaggerTestNetworkComponent;
-import cat.xlagunas.data.di.component.TestNetworkComponent;
-import cat.xlagunas.data.di.module.NetworkModule;
-import cat.xlagunas.data.net.RestApi;
-import cat.xlagunas.data.net.params.LoginParams;
+import cat.xlagunas.andrtc.data.di.component.DaggerTestNetworkComponent;
+import cat.xlagunas.andrtc.data.di.component.TestNetworkComponent;
+import cat.xlagunas.andrtc.data.di.module.NetworkModule;
+import cat.xlagunas.andrtc.data.net.RestApi;
+import cat.xlagunas.andrtc.data.net.params.LoginParams;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.
