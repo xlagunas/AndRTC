@@ -2,6 +2,8 @@ package cat.xlagunas.andrtc.di.components;
 
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.di.modules.ActivityModule;
+import cat.xlagunas.andrtc.di.modules.UserModule;
 import cat.xlagunas.andrtc.view.activity.BaseActivity;
 import dagger.Component;
 import cat.xlagunas.andrtc.di.modules.ApplicationModule;
@@ -18,10 +20,7 @@ import xlagunas.cat.andrtc.domain.repository.UserRepository;
 @Singleton
 @Component(modules = { ApplicationModule.class, NetworkModule.class})
 public interface ApplicationComponent {
-    public void inject(BaseActivity activity);
 
-    RestApi restApi();
-    PostExecutionThread postExecutionThread();
-    UserRepository userRepository();
-    UserCache userCache();
+    UserComponent plus(UserModule userModule);
+    ActivityComponent plus(ActivityModule activityModule);
 }

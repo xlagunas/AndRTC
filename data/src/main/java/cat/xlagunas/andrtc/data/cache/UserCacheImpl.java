@@ -8,8 +8,11 @@ import javax.inject.Singleton;
 import cat.xlagunas.andrtc.data.cache.serializer.JsonSerializer;
 import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
 import cat.xlagunas.andrtc.data.UserEntity;
+import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import rx.Observable;
 import rx.Subscriber;
+import xlagunas.cat.andrtc.domain.Friend;
+import xlagunas.cat.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.
@@ -25,12 +28,14 @@ public class UserCacheImpl implements UserCache {
     private final Context context;
     private final JsonSerializer serializer;
     private final FileManager fileManager;
+    private final UserEntityMapper userEntityMapper;
 
     @Inject
-    public UserCacheImpl(Context context, FileManager fileManager, JsonSerializer serializer){
+    public UserCacheImpl(Context context, FileManager fileManager, JsonSerializer serializer, UserEntityMapper userEntityMapper){
         this.context  = context;
         this.fileManager = fileManager;
         this.serializer = serializer;
+        this.userEntityMapper = userEntityMapper;
     }
 
     @Override
@@ -48,15 +53,16 @@ public class UserCacheImpl implements UserCache {
     }
 
     @Override
-    public Observable<UserEntity> getUser() {
-        return Observable.create(new Observable.OnSubscribe<UserEntity>() {
+    public Observable<User> getUser() {
+        return Observable.create(new Observable.OnSubscribe<User>() {
             @Override
-            public void call(Subscriber<? super UserEntity> subscriber) {
+            public void call(Subscriber<? super User> subscriber) {
                 String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
                 if (serializedUser != null) {
                     UserEntity entity = serializer.deserialize(serializedUser);
-                    if (entity != null) {
-                        subscriber.onNext(entity);
+                    User user = userEntityMapper.transformUser(entity);
+                    if (entity != null && user != null) {
+                        subscriber.onNext(user);
                         subscriber.onCompleted();
                     }
                 } else {

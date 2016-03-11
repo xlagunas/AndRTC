@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.di.components.UserComponent;
+import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.presenter.RegisterPresenter;
 import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.util.TextValidator;
@@ -53,7 +53,7 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getComponent(UserComponent.class).inject(this);
+        this.getComponent(ActivityComponent.class).inject(this);
     }
 
     @Nullable

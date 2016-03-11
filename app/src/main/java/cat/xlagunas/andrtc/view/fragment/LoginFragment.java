@@ -20,6 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.LoginPresenter;
 import cat.xlagunas.andrtc.view.LoadDataView;
@@ -52,7 +53,7 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getComponent(UserComponent.class).inject(this);
+        this.getComponent(ActivityComponent.class).inject(this);
     }
 
     @Override
