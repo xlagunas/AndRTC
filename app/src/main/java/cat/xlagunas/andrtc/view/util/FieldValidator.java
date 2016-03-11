@@ -4,13 +4,13 @@ import android.text.TextUtils;
 
 import javax.inject.Inject;
 
-import cat.xlagunas.andrtc.di.PerActivity;
+import cat.xlagunas.andrtc.di.ActivityScope;
 
 /**
  * Created by xlagunas on 9/03/16.
  */
 
-@PerActivity
+@ActivityScope
 public class FieldValidator {
 
     @Inject

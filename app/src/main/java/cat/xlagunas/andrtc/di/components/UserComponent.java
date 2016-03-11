@@ -1,18 +1,19 @@
 package cat.xlagunas.andrtc.di.components;
 
-import cat.xlagunas.andrtc.di.PerActivity;
-import cat.xlagunas.andrtc.di.modules.ActivityModule;
+import cat.xlagunas.andrtc.di.UserScope;
 import cat.xlagunas.andrtc.di.modules.UserModule;
-import cat.xlagunas.andrtc.view.fragment.LoginFragment;
-import dagger.Component;
-import cat.xlagunas.andrtc.view.fragment.RegisterFragment;
+import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
+import cat.xlagunas.andrtc.view.activity.MainActivity;
+import dagger.Subcomponent;
 
 /**
  * Created by xlagunas on 2/03/16.
  */
-@PerActivity
-@Component(dependencies = ApplicationComponent.class, modules = { ActivityModule.class, UserModule.class})
-public interface UserComponent extends ActivityComponent {
-    void inject(LoginFragment fragment);
-    void inject(RegisterFragment fragment);
+
+@UserScope
+@Subcomponent(modules = {UserModule.class})
+public interface UserComponent {
+
+    void inject(MainActivity activity);
+    void inject(RegistrationIntentService service);
 }

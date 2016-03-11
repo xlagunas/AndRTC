@@ -4,27 +4,27 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
-import cat.xlagunas.andrtc.di.PerActivity;
-import cat.xlagunas.andrtc.view.LoadDataView;
+import cat.xlagunas.andrtc.view.LoginDataView;
 import rx.Observer;
 import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.di.ActivityScope;
 import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
 
 /**
  * Created by xlagunas on 1/03/16.
  */
-@PerActivity
+@ActivityScope
 public class LoginPresenter implements Presenter {
 
     private final LoginUseCase loginUseCase;
-    private LoadDataView view;
+    private LoginDataView view;
 
     @Inject
     LoginPresenter(LoginUseCase loginUseCase){
         this.loginUseCase = loginUseCase;
     }
 
-    public void setView(LoadDataView view){
+    public void setView(LoginDataView view){
         this.view = view;
     }
 
@@ -44,10 +44,7 @@ public class LoginPresenter implements Presenter {
         loginUseCase.setCredentials(username, password);
         loginUseCase.execute(new Observer<User>() {
             @Override
-            public void onCompleted() {
-                Toast.makeText(view.context(), "COMPLETED", Toast.LENGTH_SHORT).show();
-
-            }
+            public void onCompleted() {}
 
             @Override
             public void onError(Throwable e) {
@@ -58,6 +55,7 @@ public class LoginPresenter implements Presenter {
             @Override
             public void onNext(User user) {
                 view.hideLoading();
+                view.onUserRecovered(user);
             }
         });
 

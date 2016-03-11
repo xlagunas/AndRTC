@@ -3,9 +3,10 @@ package cat.xlagunas.andrtc.di.modules;
 
 import javax.inject.Named;
 
+import cat.xlagunas.andrtc.di.UserScope;
 import dagger.Module;
 import dagger.Provides;
-import cat.xlagunas.andrtc.di.PerActivity;
+import cat.xlagunas.andrtc.di.ActivityScope;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
 import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
@@ -29,22 +30,22 @@ public class UserModule {
     }
 
 //    @Provides
-//    @PerActivity @Named("userList")
+//    @ActivityScope @Named("userList")
 //    UseCase provideGetUserListUseCase(
 //            GetUserList getUserList) {
 //        return getUserList;
 //    }
 
-    @Provides
-    @PerActivity
-    @Named("login")
-    UseCase provideGetUserDetailsUseCase(
-            UserRepository userRepository, PostExecutionThread postExecutionThread) {
-        return new LoginUseCase(postExecutionThread, userRepository);
-    }
+//    @Provides
+//    @ActivityScope
+//    @Named("login")
+//    UseCase provideGetUserDetailsUseCase(
+//            UserRepository userRepository, PostExecutionThread postExecutionThread) {
+//        return new LoginUseCase(postExecutionThread, userRepository);
+//    }
 
     @Provides
-    @PerActivity
+    @UserScope
     public User getUser(){
         return user;
     }

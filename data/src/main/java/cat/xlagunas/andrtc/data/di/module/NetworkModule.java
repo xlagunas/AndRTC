@@ -34,7 +34,6 @@ public class NetworkModule {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://xlagunas.cat")
-//                .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(builder.create()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)
@@ -50,24 +49,6 @@ public class NetworkModule {
                 .build();
 
         return client;
-    }
-
-    private Interceptor getAuthInterceptor(final String username, final String password){
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-
-                Request.Builder requestBuilder = original.newBuilder()
-//                        .header("Authorization", Credentials.basic(username, password))
-                        .header("Accept", "applicaton/json")
-//                        .header("X-Requested-With", "com.free.basquetcat")
-                        .method(original.method(), original.body());
-
-                Request request = requestBuilder.build();
-                return chain.proceed(request);
-            }
-        };
     }
 
     private Interceptor getLogginInterceptor(HttpLoggingInterceptor.Level level) {

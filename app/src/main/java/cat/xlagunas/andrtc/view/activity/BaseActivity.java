@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.di.modules.ActivityModule;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.di.components.ApplicationComponent;
@@ -17,7 +18,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getApplicationComponent().inject(this);
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return CustomApplication.getApp(this).getApplicationComponent();
     }
 
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+    protected ActivityComponent getActivityComponent() {
+        return getApplicationComponent().plus(new ActivityModule(this));
     }
 }

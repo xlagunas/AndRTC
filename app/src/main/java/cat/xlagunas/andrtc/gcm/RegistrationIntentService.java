@@ -1,4 +1,4 @@
-package cat.xlagunas.andrtc.data.gcm; /**
+package cat.xlagunas.andrtc.gcm; /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,53 +23,48 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
-import cat.xlagunas.andrtc.data.R;
+import javax.inject.Inject;
+
+import cat.xlagunas.andrtc.CustomApplication;
+import cat.xlagunas.andrtc.R;
+import rx.Subscriber;
+import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
 
 public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
-    private static final String SENT_TOKEN_TO_SERVER = "token_sent";
+
+    @Inject
+    RegisterGCMTokenUseCase useCase;
 
     public RegistrationIntentService() {
         super(TAG);
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        CustomApplication.getApp(this).getUserComponent().inject(this);
+    }
+
+    @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         try {
-            // [START register_for_gcm]
-            // Initially this call goes out to the network to retrieve the token, subsequent calls
-            // are local.
-            // R.string.gcm_defaultSenderId (the Sender ID) is typically derived from google-services.json.
-            // See https://developers.google.com/cloud-messaging/android/start for details on this file.
-            // [START get_token]
+
             InstanceID instanceID = InstanceID.getInstance(this);
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            // [END get_token]
+
             Log.i(TAG, "GCM Registration Token: " + token);
 
             sendRegistrationToServer(token);
 
-
-            // You should store a boolean that indicates whether the generated token has been
-            // sent to your server. If the boolean is false, send the token to your server,
-            // otherwise your server should have already received the token.
-            Log.d(TAG, "NOW THE SERVER SHOULD HAVE THE TOKEN AND WE SHOULD NOT ISSUE IT AGAIN UNTIL TOKEN ROTATION");
-            sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, true).apply();
-            // [END register_for_gcm]
         } catch (Exception e) {
             Log.d(TAG, "Failed to complete token refresh", e);
-            // If an exception happens while fetching the new token or updating our registration data
-            // on a third-party server, this ensures that we'll attempt the update at a later time.
-            sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, false).apply();
         }
-//        // Notify UI that registration has completed, so the progress indicator can be hidden.
-//        Intent registrationComplete = new Intent(QuickstartPreferences.REGISTRATION_COMPLETE);
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+
     }
 
     /**
@@ -83,6 +78,23 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
         Log.d(TAG, "Token: "+token);
+        useCase.setToken(token);
+        useCase.execute(new Subscriber() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "Successfully registered");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "Error registering token", e);
+            }
+
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 
 

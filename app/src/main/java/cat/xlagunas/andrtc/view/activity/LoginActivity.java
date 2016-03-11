@@ -4,18 +4,18 @@ import android.os.Bundle;
 
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
-import cat.xlagunas.andrtc.di.components.UserComponent;
+import cat.xlagunas.andrtc.di.components.ActivityComponent;
+import cat.xlagunas.andrtc.di.modules.ActivityModule;
 import cat.xlagunas.andrtc.view.fragment.LoginFragment;
 import cat.xlagunas.andrtc.view.fragment.RegisterFragment;
-import cat.xlagunas.andrtc.di.components.DaggerUserComponent;
 
 /**
  * Created by xlagunas on 2/03/16.
  */
-public class LoginActivity extends BaseActivity implements HasComponent<UserComponent>, LoginFragment.FragmentInterface {
+public class LoginActivity extends BaseActivity implements HasComponent<ActivityComponent>, LoginFragment.FragmentInterface {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private UserComponent userComponent;
+    private ActivityComponent activityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +28,13 @@ public class LoginActivity extends BaseActivity implements HasComponent<UserComp
     }
 
     private void initializeInjector() {
-        this.userComponent = DaggerUserComponent.builder()
-                .applicationComponent(getApplicationComponent())
-                .activityModule(getActivityModule())
-                .build();
+        this.activityComponent =
+                getApplicationComponent().plus(new ActivityModule(this));
     }
 
     @Override
-    public UserComponent getComponent() {
-        return userComponent;
+    public ActivityComponent getComponent() {
+        return activityComponent;
     }
 
     @Override

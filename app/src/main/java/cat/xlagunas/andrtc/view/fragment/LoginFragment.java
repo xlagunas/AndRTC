@@ -19,12 +19,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.di.components.UserComponent;
+import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.presenter.LoginPresenter;
-import cat.xlagunas.andrtc.view.LoadDataView;
+import cat.xlagunas.andrtc.view.LoginDataView;
+import xlagunas.cat.andrtc.domain.User;
 
-public class LoginFragment extends BaseFragment implements LoadDataView {
+public class LoginFragment extends BaseFragment implements LoginDataView {
 
     @Bind(R.id.username)
     EditText username;
@@ -52,7 +54,7 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getComponent(UserComponent.class).inject(this);
+        this.getComponent(ActivityComponent.class).inject(this);
     }
 
     @Override
@@ -143,6 +145,11 @@ public class LoginFragment extends BaseFragment implements LoadDataView {
     @Override
     public Context context() {
         return this.getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void onUserRecovered(User user) {
+        CustomApplication.getApp(getActivity()).createUserComponent(user);
     }
 
     public interface FragmentInterface {

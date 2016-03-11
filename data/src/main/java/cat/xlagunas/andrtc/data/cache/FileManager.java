@@ -163,6 +163,21 @@ public class FileManager {
             Context.MODE_PRIVATE);
     return sharedPreferences.getBoolean(key, false);
   }
+
+  /**
+   * Get a value from a user preferences file.
+   *
+   * @param context {@link Context} to retrieve android user preferences.
+   * @param preferenceFileName A file name representing where data will be get from.
+   * @param key A key that will be used to retrieve the value from the preference file.
+   * @return A boolean representing the value retrieved from the preferences file.
+   */
+  public boolean readFromPreferences(Context context, String preferenceFileName, String key) {
+    SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName,
+            Context.MODE_PRIVATE);
+    return sharedPreferences.getBoolean(key, false);
+  }
+
   /**
    * Get a value from a user preferences file.
    *
@@ -176,6 +191,7 @@ public class FileManager {
             Context.MODE_PRIVATE);
     return sharedPreferences.getString(key, null);
   }
+
 
   public void clearPreferences(Context context, String preferenceFileName){
     SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, Context.MODE_PRIVATE);

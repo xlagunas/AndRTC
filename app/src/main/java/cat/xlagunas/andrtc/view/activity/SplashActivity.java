@@ -6,11 +6,16 @@ import android.os.Bundle;
 import java.util.concurrent.TimeUnit;
 
 
+import javax.inject.Inject;
+
+import cat.xlagunas.andrtc.CustomApplication;
+import cat.xlagunas.andrtc.data.cache.UserCache;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.data.UserEntity;
+import xlagunas.cat.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.
@@ -19,15 +24,20 @@ public class SplashActivity extends BaseActivity {
 
     private final static long WAITING_TIME = 5000;
 
+    @Inject
+    UserCache userCache;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        getApplicationComponent().userCache().getUser()
+        getActivityComponent().inject(this);
+
+        userCache.getUser()
                 .delaySubscription(WAITING_TIME, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<UserEntity>() {
+                .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
@@ -41,8 +51,8 @@ public class SplashActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onNext(UserEntity userEntity) {
-
+                    public void onNext(User user) {
+                        CustomApplication.getApp(SplashActivity.this).createUserComponent(user);
                     }
                 });
     }
