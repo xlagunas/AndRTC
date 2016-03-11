@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
  * Created by xlagunas on 29/02/16.
  */
 public class FriendEntity {
+    @SerializedName("_id")
+    private String id;
     @SerializedName("username")
     private String username;
     @SerializedName("name")
@@ -19,6 +21,13 @@ public class FriendEntity {
     @SerializedName("email")
     private String email;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

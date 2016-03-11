@@ -23,4 +23,12 @@ public class Friend extends AbstractUser{
     public void setFriendState(int friendState) {
         this.friendState = friendState;
     }
+
+
+    @Override
+    public String toString() {
+        return super.toString() + "Friend{" +
+                "friendState=" + friendState +
+                '}';
+    }
 }

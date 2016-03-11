@@ -11,7 +11,8 @@ import java.util.List;
  */
 
 public class UserEntity {
-
+    @SerializedName("_id")
+    private String id;
     @SerializedName("username")
     private String username;
     @SerializedName("email")
@@ -41,6 +42,14 @@ public class UserEntity {
 
     public UserEntity() {
         super();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {

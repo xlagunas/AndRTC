@@ -1,9 +1,12 @@
 package cat.xlagunas.andrtc.data.net;
 
+import java.util.List;
+
+import cat.xlagunas.andrtc.data.FriendEntity;
 import cat.xlagunas.andrtc.data.net.params.TokenParams;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
-import retrofit2.http.Field;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 import retrofit2.http.PUT;
 import retrofit2.http.POST;
@@ -26,5 +29,7 @@ public interface RestApi {
     @PUT("/user/token")
     Observable<Response<Void>> addToken(@Header("Authorization") String authorization, @Body TokenParams tokenParams);
 
+    @GET("/user/{username}")
+    Observable<List<FriendEntity>> findUsers(@Header("Authorization") String authorization, @Path("username") String username);
 
 }

@@ -32,6 +32,7 @@ public class UserEntityMapper {
 
     public UserEntity tranformUserEntity(User user) {
         UserEntity entity = new UserEntity();
+        entity.setId(user.getId());
         entity.setUsername(user.getUsername());
         entity.setEmail(user.getEmail());
         entity.setLastSurname(user.getLastSurname());
@@ -52,29 +53,36 @@ public class UserEntityMapper {
 
     public List<Friend> transformFriends(UserEntity entity){
         List<Friend> friends = new ArrayList<>();
-
-        for (FriendEntity userEntity : entity.getAccepted()){
-            Friend friend = mapFriendEntity(userEntity);
-            friend.setFriendState(Friend.ACCEPTED);
-            friends.add(friend);
+        if (entity.getAccepted() != null) {
+            for (FriendEntity userEntity : entity.getAccepted()) {
+                Friend friend = mapFriendEntity(userEntity);
+                friend.setFriendState(Friend.ACCEPTED);
+                friends.add(friend);
+            }
         }
 
-        for (FriendEntity userEntity : entity.getBlocked()){
-            Friend friend = mapFriendEntity(userEntity);
-            friend.setFriendState(Friend.BLOCKED);
-            friends.add(friend);
+        if (entity.getBlocked() != null) {
+            for (FriendEntity userEntity : entity.getBlocked()) {
+                Friend friend = mapFriendEntity(userEntity);
+                friend.setFriendState(Friend.BLOCKED);
+                friends.add(friend);
+            }
         }
 
-        for (FriendEntity userEntity : entity.getPending()){
-            Friend friend = mapFriendEntity(userEntity);
-            friend.setFriendState(Friend.PENDING);
-            friends.add(friend);
+        if (entity.getPending() != null) {
+            for (FriendEntity userEntity : entity.getPending()) {
+                Friend friend = mapFriendEntity(userEntity);
+                friend.setFriendState(Friend.PENDING);
+                friends.add(friend);
+            }
         }
 
-        for (FriendEntity userEntity : entity.getRequested()){
-            Friend friend = mapFriendEntity(userEntity);
-            friend.setFriendState(Friend.REQUESTED);
-            friends.add(friend);
+        if (entity.getRequested() != null) {
+            for (FriendEntity userEntity : entity.getRequested()) {
+                Friend friend = mapFriendEntity(userEntity);
+                friend.setFriendState(Friend.REQUESTED);
+                friends.add(friend);
+            }
         }
 
         return friends;
@@ -82,6 +90,7 @@ public class UserEntityMapper {
 
     private User mapAbstractUser(UserEntity entity){
         User user = new User();
+        user.setId(entity.getId());
         user.setUsername(entity.getUsername());
         user.setName(entity.getName());
         user.setLastSurname(entity.getLastSurname());
@@ -91,8 +100,10 @@ public class UserEntityMapper {
 
         return user;
     }
-    private Friend mapFriendEntity(FriendEntity entity) {
+
+    public  Friend mapFriendEntity(FriendEntity entity) {
         Friend friend = new Friend();
+        friend.setId(entity.getId());
         friend.setUsername(entity.getUsername());
         friend.setName(entity.getName());
         friend.setLastSurname(entity.getLastSurname());
