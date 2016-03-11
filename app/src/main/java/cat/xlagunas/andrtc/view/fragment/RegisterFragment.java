@@ -1,26 +1,26 @@
 package cat.xlagunas.andrtc.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 
-import javax.inject.Inject;
-
+import okhttp3.Credentials;
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
+import javax.inject.Inject;
+import butterknife.ButterKnife;
+import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.presenter.RegisterPresenter;
 import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.util.TextValidator;
-import okhttp3.Credentials;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
 import xlagunas.cat.andrtc.domain.User;
 
@@ -140,6 +140,11 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     @Override
     public void disableSubmitButton() {
         registerButton.setEnabled(false);
+    }
+
+    @Override
+    public void onUserRegistered(User user) {
+        CustomApplication.getApp(getActivity()).createUserComponent(user);
     }
 
     @Override

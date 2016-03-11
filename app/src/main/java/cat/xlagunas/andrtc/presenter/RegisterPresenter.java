@@ -40,18 +40,16 @@ public class RegisterPresenter implements Presenter {
         registerUseCase.setUser(user);
         registerUseCase.execute(new Observer<User>() {
             @Override
-            public void onCompleted() {
-                Log.d(TAG, "Called oncomplete");
-            }
+            public void onCompleted() {}
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "there was an error in the observable"+e);
+                Log.e(TAG, "Error registering user:",e);
             }
 
             @Override
             public void onNext(User user) {
-                Log.d(TAG, "user sucessfully received");
+                view.onUserRegistered(user);
             }
         });
     }
