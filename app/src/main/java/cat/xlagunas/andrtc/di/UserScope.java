@@ -6,8 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Scope;
 
 /**
- * Created by xlagunas on 2/03/16.
+ * Created by xlagunas on 11/03/16.
  */
 @Scope
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PerActivity {}
+public @interface UserScope {
+}

@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import dagger.Module;
 import dagger.Provides;
-import cat.xlagunas.andrtc.di.PerActivity;
+import cat.xlagunas.andrtc.di.ActivityScope;
 
 /**
  * Created by xlagunas on 2/03/16.
@@ -21,7 +21,7 @@ public class ActivityModule {
      * Expose the activity to dependents in the graph.
      */
     @Provides
-    @PerActivity
+    @ActivityScope
     Activity activity() {
         return this.activity;
     }
