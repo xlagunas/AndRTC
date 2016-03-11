@@ -10,6 +10,9 @@ import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.data.net.RestApi;
+import cat.xlagunas.andrtc.data.net.params.TokenParams;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -71,9 +74,25 @@ public class UserRepositoryImpl implements UserRepository {
                 .map(userEntity -> mapper.transformUser(userEntity));
     }
 
+    @Override
+    public Observable<Response<Void>> registerGCMToken(User user, String token) {
+        return restApi.addToken(user.getHashedPassword(), new TokenParams(token))
+                .doOnNext(updateTokenAction);
+    }
+
     private final Action1<UserEntity> saveToCacheAction = userEntity -> {
         if (userEntity != null) {
             userCache.putUser(userEntity);
         }
     };
+
+    private final Action1<Response<Void>> updateTokenAction = response -> {
+        if (response.code() == 200) {
+            userCache.setGCMRegistrationStatus(true);
+        } else {
+            userCache.setGCMRegistrationStatus(false);
+        }
+    };
+
+
 }

@@ -22,10 +22,7 @@ import butterknife.OnClick;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
-import cat.xlagunas.andrtc.di.components.UserComponent;
-import cat.xlagunas.andrtc.di.modules.UserModule;
 import cat.xlagunas.andrtc.presenter.LoginPresenter;
-import cat.xlagunas.andrtc.view.LoadDataView;
 import cat.xlagunas.andrtc.view.LoginDataView;
 import xlagunas.cat.andrtc.domain.User;
 

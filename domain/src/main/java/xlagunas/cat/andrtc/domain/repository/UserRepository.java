@@ -36,4 +36,6 @@ public interface UserRepository {
 
     Observable<User> registerUser(User user);
 
+    Observable registerGCMToken(User user, String token);
+
 }

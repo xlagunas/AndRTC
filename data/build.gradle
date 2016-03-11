@@ -78,7 +78,4 @@ dependencies {
     testCompile testDependencies.assertj
     testCompile testDependencies.mockito
     testCompile testDependencies.robolectric
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
-
-apply plugin: 'com.google.gms.google-services'

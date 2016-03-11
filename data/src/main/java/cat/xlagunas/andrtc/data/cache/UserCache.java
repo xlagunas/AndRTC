@@ -17,4 +17,8 @@ public interface UserCache {
     public Observable<User> getUser();
 
     public void removeCache();
+
+    public boolean isGCMRegistered();
+
+    public void setGCMRegistrationStatus(boolean status);
 }

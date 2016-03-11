@@ -38,8 +38,11 @@ public class CustomApplication extends Application{
         return applicationComponent;
     }
 
-    public UserComponent createUserComponent(User user) {
+    public void createUserComponent(User user) {
         userComponent = applicationComponent.plus(new UserModule(user));
+    }
+
+    public UserComponent getUserComponent() {
         return userComponent;
     }
 

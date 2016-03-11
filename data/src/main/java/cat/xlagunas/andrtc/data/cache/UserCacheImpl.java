@@ -23,6 +23,7 @@ public class UserCacheImpl implements UserCache {
 
     private static final String SETTINGS_FILE_NAME = "cat.xlagunas.andrtc.SETTINGS";
     private final static String CACHE_VALIDATION = "cache_validation";
+    private final static String CACHE_TOKEN_GCM = "cache_gcm";
     private final static String CACHE_USER = "cache_user";
 
     private final Context context;
@@ -75,5 +76,15 @@ public class UserCacheImpl implements UserCache {
     @Override
     public void removeCache() {
         fileManager.clearPreferences(context, SETTINGS_FILE_NAME);
+    }
+
+    @Override
+    public boolean isGCMRegistered() {
+        return fileManager.readFromPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_GCM);
+    }
+
+    @Override
+    public void setGCMRegistrationStatus(boolean status) {
+        fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_GCM, status);
     }
 }
