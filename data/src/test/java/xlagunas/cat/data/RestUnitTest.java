@@ -5,8 +5,6 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-
 import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import okhttp3.Credentials;
@@ -19,7 +17,6 @@ import cat.xlagunas.andrtc.data.di.module.NetworkModule;
 import cat.xlagunas.andrtc.data.net.RestApi;
 import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.ServiceFacade;
 import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
@@ -96,6 +97,4 @@ public class RegistrationIntentService extends IntentService {
             }
         });
     }
-
-
 }
