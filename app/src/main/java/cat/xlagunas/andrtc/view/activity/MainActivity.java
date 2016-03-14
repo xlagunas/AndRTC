@@ -1,6 +1,5 @@
 package cat.xlagunas.andrtc.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import javax.inject.Inject;

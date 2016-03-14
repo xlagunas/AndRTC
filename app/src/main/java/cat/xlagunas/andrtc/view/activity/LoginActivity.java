@@ -19,9 +19,11 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // this goes in that order because super.onCreate calls the fragment's onCreate
+        // before finishing this code
+        this.initializeInjector();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
-        this.initializeInjector();
         if (savedInstanceState == null) {
             addFragment(R.id.fragment_container, new LoginFragment());
         }

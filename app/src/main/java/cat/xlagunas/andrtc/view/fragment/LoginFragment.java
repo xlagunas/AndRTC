@@ -67,6 +67,14 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        if (fragmentInterface != null) {
+            fragmentInterface = null;
+        }
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         onAttach((Context)activity);
