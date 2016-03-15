@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public Observable<Friend> listUsers(User user, String filterName) {
+    public Observable<Friend> searchUsers(User user, String filterName) {
         return restApi.findUsers(user.getHashedPassword(), filterName)
                 .flatMapIterable(userEntities -> userEntities)
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));

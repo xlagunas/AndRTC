@@ -15,6 +15,9 @@
         <activity android:name="cat.xlagunas.andrtc.view.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity android:name="cat.xlagunas.andrtc.view.activity.AddContactsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name="cat.xlagunas.andrtc.view.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

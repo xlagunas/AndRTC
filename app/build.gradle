@@ -59,6 +59,11 @@ dependencies {
     compile presentationDependencies.rxJava
     compile presentationDependencies.rxAndroid
     compile presentationDependencies.materialSupport
+    compile presentationDependencies.materialSupport
+    compile presentationDependencies.cardViewSupport
+    compile presentationDependencies.appCompatSupport
+    compile presentationDependencies.recyclerSupport
+    compile presentationDependencies.supportV4
 
     provided presentationDependencies.javaxAnnotation
 
@@ -70,11 +75,13 @@ dependencies {
 
     //Development
     compile developmentDependencies.leakCanary
-    compile 'com.android.support:cardview-v7:23.2.0'
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
+    compile 'com.android.support:cardview-v7:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile "com.android.support:support-v4:23.2.1"
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.github.pedrovgs:renderers:3.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

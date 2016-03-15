@@ -17,7 +17,7 @@ public interface UserRepository {
      * @param filterName String to filter
      * @return All users whose username matches the filter
      */
-     public Observable<Friend> listUsers(User user, String filterName);
+     public Observable<Friend> searchUsers(User user, String filterName);
 
     /**
      * Return the list of all the contacts

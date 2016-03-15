@@ -13,7 +13,7 @@ ext {
 
     //Libraries
 
-    designLibraryVersion = '23.2.0'
+    designLibraryVersion = '23.2.1'
 
     daggerVersion = '2.0.2'
     butterKnifeVersion = '7.0.1'
@@ -52,7 +52,11 @@ ext {
             rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
             javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
-            materialSupport:    "com.android.support:design:${designLibraryVersion}"
+            materialSupport:    "com.android.support:design:${designLibraryVersion}",
+            cardViewSupport:    "com.android.support:cardview-v7:${designLibraryVersion}",
+            appCompatSupport:   "com.android.support:appcompat-v7:${designLibraryVersion}",
+            recyclerSupport:    "com.android.support:recyclerview-v7:${designLibraryVersion}",
+            supportV4:          "com.android.support:support-v4:${designLibraryVersion}"
 
     ]
 
