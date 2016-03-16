@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
+
+<RelativeLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="@style/main_card_style"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/contact_fullname"
+        tools:text="Xavier Lagunas Calpe"
+        android:layout_marginLeft="72dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contact_thumbnail"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@android:color/darker_gray"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin">
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_alignTop="@id/contact_fullname"
+        />
 
-        <ImageView
-            android:id="@+id/contact_thumbnail"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            />
+    <TextView
+        android:id="@+id/contact_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="xlagunas"
+        android:layout_below="@id/contact_fullname"
+        android:layout_marginLeft="72dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="14sp"
 
-        <TextView
-            android:id="@+id/contact_fullname"
-            tools:text="Xavier Lagunas Calpe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/contact_thumbnail"
-            android:layout_toRightOf="@id/contact_thumbnail"
-            android:layout_alignTop="@id/contact_thumbnail"
-            />
+        />
+</RelativeLayout>
 
-        <TextView
-            android:id="@+id/contact_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="xlagunas"
-            android:layout_below="@id/contact_fullname"
-            android:layout_toEndOf="@id/contact_thumbnail"
-            android:layout_toRightOf="@id/contact_thumbnail"
-            android:layout_alignBaseline="@id/contact_thumbnail"
-            />
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>

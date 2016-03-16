@@ -41,7 +41,7 @@ public class SplashActivity extends BaseActivity {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
-                        startActivity(new Intent(SplashActivity.this, AddContactsActivity.class));
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
                         finish();
                     }
 
