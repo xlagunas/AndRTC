@@ -23,7 +23,7 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public class SplashActivity extends BaseActivity {
 
-    private final static long WAITING_TIME = 5000;
+    private final static long WAITING_TIME = 500;
 
     @Inject
     UserCache userCache;

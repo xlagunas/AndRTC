@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.SearchListView;
 import rx.Observer;
+import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
 
@@ -45,10 +46,16 @@ public class AddContactsPresenter implements Presenter {
 
     public void search(String keyword){
         searchUserUseCase.setFilter(keyword);
-        searchUserUseCase.execute(new Observer<Friend>() {
+        searchUserUseCase.execute(new Subscriber<Friend>() {
+
             @Override
             public void onCompleted() {
                 view.showList();
+            }
+
+            @Override
+            public void onStart() {
+                view.clearAdapter();
             }
 
             @Override
@@ -60,6 +67,8 @@ public class AddContactsPresenter implements Presenter {
             public void onNext(Friend friend) {
                 view.addFriendToList(friend);
             }
+
+
         });
     }
 

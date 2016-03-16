@@ -7,8 +7,9 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public interface SearchListView {
 
-    public void doSearch(String filter);
-    public void showEmpty();
-    public void showList();
-    public void addFriendToList(Friend friend);
+    void doSearch(String filter);
+    void showEmpty();
+    void showList();
+    void addFriendToList(Friend friend);
+    void clearAdapter();
 }
