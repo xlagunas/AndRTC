@@ -41,6 +41,8 @@ public class AddContactsPresenter implements Presenter {
 
     @Override
     public void destroy() {
+        view = null;
+        searchUserUseCase.unsubscribe();
 
     }
 
@@ -60,7 +62,7 @@ public class AddContactsPresenter implements Presenter {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override

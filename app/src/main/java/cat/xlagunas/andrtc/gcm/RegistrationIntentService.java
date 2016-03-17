@@ -97,4 +97,10 @@ public class RegistrationIntentService extends IntentService {
             }
         });
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        useCase.unsubscribe();
+    }
 }

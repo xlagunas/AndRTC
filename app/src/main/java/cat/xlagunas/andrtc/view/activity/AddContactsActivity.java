@@ -11,11 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
+import android.widget.Toast;
 
-import com.pedrogomez.renderers.ListAdapteeCollection;
-import com.pedrogomez.renderers.RVRendererAdapter;
-import com.pedrogomez.renderers.Renderer;
-import com.pedrogomez.renderers.RendererBuilder;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -25,7 +23,8 @@ import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.presenter.AddContactsPresenter;
 import cat.xlagunas.andrtc.view.SearchListView;
-import cat.xlagunas.andrtc.view.model.CurrentFriend;
+import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
+import cat.xlagunas.andrtc.view.util.OnClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -39,7 +38,7 @@ public class AddContactsActivity extends BaseActivity implements SearchListView 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    RVRendererAdapter<Friend> adapter;
+    FriendAdapter adapter;
 
     @Inject
     AddContactsPresenter presenter;
@@ -104,11 +103,15 @@ public class AddContactsActivity extends BaseActivity implements SearchListView 
     }
 
     private void initializeAdapter(){
-        Renderer<Friend> currentFriendRenderer = new CurrentFriend();
-        RendererBuilder<Friend> builder = new RendererBuilder<Friend>(currentFriendRenderer);
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayout);
-        adapter = new RVRendererAdapter<>(builder, new ListAdapteeCollection<Friend>());
+        adapter = new FriendAdapter(new ArrayList<Friend>());
+        adapter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onItemClicked(int position, Friend item) {
+                Toast.makeText(AddContactsActivity.this, "Clicked: "+item.getUsername(), Toast.LENGTH_LONG).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
