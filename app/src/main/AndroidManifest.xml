@@ -12,7 +12,11 @@
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.LoginActivity"/>
 
-        <activity android:name="cat.xlagunas.andrtc.view.activity.MainActivity"/>
+        <activity android:name="cat.xlagunas.andrtc.view.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name="cat.xlagunas.andrtc.view.activity.AddContactsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.SplashActivity">
             <intent-filter>
@@ -49,9 +53,15 @@
             android:name=".gcm.RegistrationIntentService"
             android:exported="false">
         </service>
-        <!--END OF PUSH NOTIFICATION SECTION -->
 
     </application>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
+    <!--END OF PUSH NOTIFICATION SECTION -->
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 

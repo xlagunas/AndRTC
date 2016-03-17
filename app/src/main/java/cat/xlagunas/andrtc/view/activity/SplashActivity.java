@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.data.cache.UserCache;
+import cat.xlagunas.andrtc.presenter.AddContactsPresenter;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -22,7 +23,7 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public class SplashActivity extends BaseActivity {
 
-    private final static long WAITING_TIME = 5000;
+    private final static long WAITING_TIME = 500;
 
     @Inject
     UserCache userCache;

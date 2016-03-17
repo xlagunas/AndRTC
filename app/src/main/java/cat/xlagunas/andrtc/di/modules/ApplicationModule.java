@@ -3,8 +3,11 @@ package cat.xlagunas.andrtc.di.modules;
 import android.app.Application;
 import android.content.Context;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.ServiceFacade;
+import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
 import dagger.Module;
 import dagger.Provides;
 import cat.xlagunas.andrtc.UIThread;
@@ -46,5 +49,10 @@ public class ApplicationModule {
     @Provides @Singleton
     UserCache provideUserCache(UserCacheImpl userCache) {
         return userCache;
+    }
+
+    @Provides @Singleton
+    ServiceFacade provideServerFacade(RegistrationServiceFacade service){
+        return service;
     }
 }

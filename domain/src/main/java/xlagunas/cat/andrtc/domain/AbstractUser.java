@@ -4,6 +4,7 @@ package xlagunas.cat.andrtc.domain;
  * Created by xlagunas on 26/02/16.
  */
 public abstract class AbstractUser {
+    private String id;
     private String username;
     private String name;
     private String surname;
@@ -11,6 +12,13 @@ public abstract class AbstractUser {
     private String thumbnail;
     private String email;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -58,5 +66,18 @@ public abstract class AbstractUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractUser{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", lastSurname='" + lastSurname + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

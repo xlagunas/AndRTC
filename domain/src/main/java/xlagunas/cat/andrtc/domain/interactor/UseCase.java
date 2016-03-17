@@ -5,6 +5,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
+import xlagunas.cat.andrtc.domain.AbstractUser;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
 
@@ -21,7 +22,7 @@ public abstract class UseCase {
 
     private Subscription subscription = Subscriptions.empty();
 
-    protected abstract Observable<User> buildUseCaseObservable();
+    protected abstract Observable buildUseCaseObservable();
 
     @SuppressWarnings("unchecked")
     public void execute(Observer useCaseSubscriber) {

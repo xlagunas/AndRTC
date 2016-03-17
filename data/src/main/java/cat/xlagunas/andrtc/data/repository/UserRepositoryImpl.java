@@ -1,10 +1,12 @@
 package cat.xlagunas.andrtc.data.repository;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.data.exception.InvalidTokenException;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.UserEntity;
@@ -14,6 +16,7 @@ import cat.xlagunas.andrtc.data.net.params.TokenParams;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
@@ -40,8 +43,11 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public Observable<List<User>> listUsers(String filterName) {
-        return null;
+    public Observable<Friend> searchUsers(User user, String filterName) {
+        return restApi.findUsers(user.getHashedPassword(), filterName)
+                .flatMapIterable(userEntities -> userEntities)
+                .map(userEntity -> mapper.mapFriendEntity(userEntity));
+
     }
 
     @Override
@@ -57,8 +63,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<List<Friend>> requestNewFriendship(String id) {
-        return null;
+    public Observable requestNewFriendship(User user, String id) {
+        return restApi.requestFriendship(user.getHashedPassword(), id)
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> Observable.empty());
     }
 
     @Override
@@ -75,9 +83,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<Response<Void>> registerGCMToken(User user, String token) {
+    public Observable<UserEntity> registerGCMToken(User user, String token) {
         return restApi.addToken(user.getHashedPassword(), new TokenParams(token))
-                .doOnNext(updateTokenAction);
+                .doOnNext(updateTokenAction)
+                .flatMap(userEntity -> Observable.empty());
     }
 
     private final Action1<UserEntity> saveToCacheAction = userEntity -> {
@@ -86,12 +95,8 @@ public class UserRepositoryImpl implements UserRepository {
         }
     };
 
-    private final Action1<Response<Void>> updateTokenAction = response -> {
-        if (response.code() == 200) {
+    private final Action1 updateTokenAction = userEntity -> {
             userCache.setGCMRegistrationStatus(true);
-        } else {
-            userCache.setGCMRegistrationStatus(false);
-        }
     };
 
 

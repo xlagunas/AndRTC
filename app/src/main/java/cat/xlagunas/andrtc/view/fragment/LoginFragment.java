@@ -59,6 +59,7 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
         try {
             fragmentInterface = (FragmentInterface) context;
         } catch (ClassCastException e){
@@ -67,9 +68,11 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        onAttach((Context)activity);
+    public void onDetach() {
+        super.onDetach();
+        if (fragmentInterface != null) {
+            fragmentInterface = null;
+        }
     }
 
     @Override public void onResume() {

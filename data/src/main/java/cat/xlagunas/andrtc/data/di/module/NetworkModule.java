@@ -33,7 +33,8 @@ public class NetworkModule {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://xlagunas.cat")
+//                .baseUrl("https://xlagunas.cat")
+                .baseUrl("http://192.168.1.131:3000")
                 .addConverterFactory(GsonConverterFactory.create(builder.create()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)

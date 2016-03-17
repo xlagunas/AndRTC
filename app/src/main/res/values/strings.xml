@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndRTC</string>
+    <string name="search_title">Search by full name or username</string>
 </resources>
