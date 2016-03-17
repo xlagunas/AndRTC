@@ -83,10 +83,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable registerGCMToken(User user, String token) {
-
+    public Observable<UserEntity> registerGCMToken(User user, String token) {
         return restApi.addToken(user.getHashedPassword(), new TokenParams(token))
-                .doOnCompleted(updateTokenAction);
+                .doOnNext(updateTokenAction)
+                .flatMap(userEntity -> Observable.empty());
     }
 
     private final Action1<UserEntity> saveToCacheAction = userEntity -> {
@@ -95,7 +95,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     };
 
-    private final Action0 updateTokenAction = () -> {
+    private final Action1 updateTokenAction = userEntity -> {
             userCache.setGCMRegistrationStatus(true);
     };
 

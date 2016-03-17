@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.User;
@@ -36,5 +37,13 @@ public class RegisterGCMTokenUseCase extends UseCase {
     @Override
     protected Observable buildUseCaseObservable() {
         return userRepository.registerGCMToken(user, gcmToken);
+    }
+
+    @Override
+    public void execute(Observer useCaseSubscriber) {
+        this.buildUseCaseObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.immediate())
+                .subscribe(useCaseSubscriber);
     }
 }

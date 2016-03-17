@@ -29,7 +29,7 @@ public interface RestApi {
     Observable<UserEntity> createUser(@Body UserEntity entity);
 
     @PUT("/user/token")
-    Observable<Response<Void>> addToken(@Header("Authorization") String authorization, @Body TokenParams tokenParams);
+    Observable<UserEntity> addToken(@Header("Authorization") String authorization, @Body TokenParams tokenParams);
 
     @GET("/user/{username}")
     Observable<List<FriendEntity>> findUsers(@Header("Authorization") String authorization, @Path("username") String username);

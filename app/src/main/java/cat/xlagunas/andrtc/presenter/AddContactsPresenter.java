@@ -46,6 +46,7 @@ public class AddContactsPresenter implements Presenter {
     public void destroy() {
         view = null;
         searchUserUseCase.unsubscribe();
+        newFriendshipUseCase.unsubscribe();
 
     }
 
