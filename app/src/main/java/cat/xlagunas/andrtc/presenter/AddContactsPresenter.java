@@ -6,6 +6,7 @@ import cat.xlagunas.andrtc.view.SearchListView;
 import rx.Observer;
 import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.Friend;
+import xlagunas.cat.andrtc.domain.interactor.RequestNewFriendshipUseCase;
 import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
 
 /**
@@ -14,11 +15,13 @@ import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
 public class AddContactsPresenter implements Presenter {
 
     private final SearchUserUseCase searchUserUseCase;
+    private final RequestNewFriendshipUseCase newFriendshipUseCase;
     private SearchListView view;
 
     @Inject
-    public AddContactsPresenter(SearchUserUseCase userUseCase) {
+    public AddContactsPresenter(SearchUserUseCase userUseCase, RequestNewFriendshipUseCase newFriendshipUseCase) {
         this.searchUserUseCase = userUseCase;
+        this.newFriendshipUseCase = newFriendshipUseCase;
     }
 
     public SearchListView getView() {
@@ -75,4 +78,23 @@ public class AddContactsPresenter implements Presenter {
     }
 
 
+    public void requestFriendship(Friend friend) {
+        newFriendshipUseCase.setNewContactId(friend.getId());
+        newFriendshipUseCase.execute(new Observer() {
+            @Override
+            public void onCompleted() {
+                view.showConfirmation();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.showConfirmationError(e);
+            }
+
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
+    }
 }

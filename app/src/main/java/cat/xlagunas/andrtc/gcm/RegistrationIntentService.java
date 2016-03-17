@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.ServiceFacade;
+import retrofit2.Response;
+import rx.Observer;
 import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
@@ -80,7 +82,7 @@ public class RegistrationIntentService extends IntentService {
         // Add custom implementation, as needed.
         Log.d(TAG, "Token: "+token);
         useCase.setToken(token);
-        useCase.execute(new Subscriber() {
+        useCase.execute(new Observer() {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "Successfully registered");
@@ -95,6 +97,7 @@ public class RegistrationIntentService extends IntentService {
             public void onNext(Object o) {
 
             }
+
         });
     }
 

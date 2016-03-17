@@ -8,7 +8,7 @@ import java.util.List;
 
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.util.OnClickListener;
-import cat.xlagunas.andrtc.view.viewholders.NewContactViewHolder;
+import cat.xlagunas.andrtc.view.viewholder.NewContactViewHolder;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**

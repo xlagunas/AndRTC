@@ -1,4 +1,4 @@
-package cat.xlagunas.andrtc.view.viewholders;
+package cat.xlagunas.andrtc.view.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

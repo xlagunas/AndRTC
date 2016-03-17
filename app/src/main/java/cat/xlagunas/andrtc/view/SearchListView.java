@@ -12,4 +12,8 @@ public interface SearchListView {
     void showList();
     void addFriendToList(Friend friend);
     void clearAdapter();
+
+    void showConfirmationError(Throwable e);
+
+    void showConfirmation();
 }

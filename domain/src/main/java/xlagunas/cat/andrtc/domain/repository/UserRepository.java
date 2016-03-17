@@ -17,7 +17,7 @@ public interface UserRepository {
      * @param filterName String to filter
      * @return All users whose username matches the filter
      */
-     public Observable<Friend> searchUsers(User user, String filterName);
+     Observable<Friend> searchUsers(User user, String filterName);
 
     /**
      * Return the list of all the contacts
@@ -32,7 +32,7 @@ public interface UserRepository {
      * @return the logged user
      */
     Observable<User> login(String username, String password);
-    Observable<List<Friend>> requestNewFriendship(String id);
+    Observable requestNewFriendship(User user, String id);
     Observable<List<Friend>> updateFriendship(String id, String previousState, String newState);
 
     Observable<User> registerUser(User user);

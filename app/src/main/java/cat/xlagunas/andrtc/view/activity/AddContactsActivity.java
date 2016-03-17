@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,8 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public class AddContactsActivity extends BaseActivity implements SearchListView {
 
+    private static final String TAG = AddContactsActivity.class.getSimpleName()
+            ;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -108,8 +111,8 @@ public class AddContactsActivity extends BaseActivity implements SearchListView 
         adapter = new FriendAdapter(new ArrayList<Friend>());
         adapter.setOnClickListener(new OnClickListener() {
             @Override
-            public void onItemClicked(int position, Friend item) {
-                Toast.makeText(AddContactsActivity.this, "Clicked: "+item.getUsername(), Toast.LENGTH_LONG).show();
+            public void onItemClicked(int position, Friend friend) {
+                presenter.requestFriendship(friend);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -146,6 +149,16 @@ public class AddContactsActivity extends BaseActivity implements SearchListView 
     public void clearAdapter() {
         adapter.clear();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showConfirmationError(Throwable e) {
+        Log.e(TAG, "Error adding new friendship",e);
+    }
+
+    @Override
+    public void showConfirmation() {
+        Toast.makeText(this, "New friendship requested", Toast.LENGTH_LONG).show();
     }
 
     @Override

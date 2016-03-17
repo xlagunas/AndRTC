@@ -24,12 +24,12 @@ ext {
     gsonVersion = '2.3'
     androidAnnotationsVersion = '21.0.3'
     jodaTime = '2.9.2'
-    retrofit = '2.0.0-beta4'
-    retrofitGson = '2.0.0-beta4'
+    retrofit = '2.0.0'
+    retrofitGson = '2.0.0'
     retrofitInterceptor = '3.0.1'
     okHttpVersion = '3.0.1'
     okiIo = '1.6.0'
-    retrofitRxAdapter = '2.0.0-beta4'
+    retrofitRxAdapter = '2.0.0'
 
 
     //Testing

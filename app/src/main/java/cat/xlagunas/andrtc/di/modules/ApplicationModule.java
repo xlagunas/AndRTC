@@ -3,6 +3,7 @@ package cat.xlagunas.andrtc.di.modules;
 import android.app.Application;
 import android.content.Context;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import cat.xlagunas.andrtc.ServiceFacade;

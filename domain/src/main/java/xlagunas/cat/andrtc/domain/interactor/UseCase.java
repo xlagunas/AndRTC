@@ -22,7 +22,7 @@ public abstract class UseCase {
 
     private Subscription subscription = Subscriptions.empty();
 
-    protected abstract Observable<? extends AbstractUser> buildUseCaseObservable();
+    protected abstract Observable buildUseCaseObservable();
 
     @SuppressWarnings("unchecked")
     public void execute(Observer useCaseSubscriber) {
