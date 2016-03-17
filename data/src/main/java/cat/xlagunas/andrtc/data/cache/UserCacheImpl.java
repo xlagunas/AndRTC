@@ -44,6 +44,10 @@ public class UserCacheImpl implements UserCache {
         return fileManager.getFromPreferences(context, SETTINGS_FILE_NAME, CACHE_VALIDATION);
     }
 
+    public void invalidateCache() {
+        fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_VALIDATION, false);
+    }
+
     @Override
     public void putUser(UserEntity userEntity) {
         if (userEntity != null) {
