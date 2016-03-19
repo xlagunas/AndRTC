@@ -6,6 +6,7 @@ import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import cat.xlagunas.andrtc.view.fragment.AddContactFragment;
+import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 import dagger.Subcomponent;
 
 /**
@@ -20,4 +21,5 @@ public interface UserComponent {
     void inject(RegistrationIntentService service);
     void inject(AddContactsActivity activity);
     void inject(AddContactFragment fragment);
+    void inject(CurrentContactFragment fragment);
 }

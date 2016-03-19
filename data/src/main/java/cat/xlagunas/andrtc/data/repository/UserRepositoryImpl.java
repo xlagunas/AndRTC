@@ -47,8 +47,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<List<Friend>> listContacts() {
-        return null;
+    public Observable<Friend> listContacts() {
+        return userCache.getUser()
+                .flatMapIterable(user -> user.getFriends()).filter(friend -> friend.getFriendState() == Friend.REQUESTED);
     }
 
     @Override
