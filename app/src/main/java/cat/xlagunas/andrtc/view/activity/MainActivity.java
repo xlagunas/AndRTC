@@ -3,6 +3,7 @@ package cat.xlagunas.andrtc.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        fab.setVisibility(View.VISIBLE);
 
         getActivityComponent().inject(this);
 
@@ -39,6 +41,7 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void handleAddFriends(){
-        startActivity(new Intent(this, AddContactsActivity.class));
+        Intent intent = AddContactsActivity.buildAddContactsIntent(MainActivity.this);
+        startActivity(intent);
     }
 }

@@ -10,12 +10,10 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.data.cache.UserCache;
-import cat.xlagunas.andrtc.presenter.AddContactsPresenter;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.data.UserEntity;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -41,7 +39,8 @@ public class SplashActivity extends BaseActivity {
                 .subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        startActivity(intent);
                         finish();
                     }
 
