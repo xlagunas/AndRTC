@@ -67,6 +67,12 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.add_contact_menu, menu);

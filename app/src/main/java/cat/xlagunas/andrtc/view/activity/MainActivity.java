@@ -3,7 +3,11 @@ package cat.xlagunas.andrtc.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -31,6 +35,9 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     @Bind(R.id.fab)
     FloatingActionButton fab;
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +46,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         fab.setVisibility(View.VISIBLE);
 
         getActivityComponent().inject(this);
-
+        setSupportActionBar(toolbar);
         presenter.initPresenter();
 
         addFragment(R.id.fragment_container, new CurrentContactFragment());
@@ -54,5 +61,21 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     @Override
     public UserComponent getComponent() {
         return CustomApplication.getApp(this).getUserComponent();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_logout:
+                Toast.makeText(MainActivity.this, "Logout clicked", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

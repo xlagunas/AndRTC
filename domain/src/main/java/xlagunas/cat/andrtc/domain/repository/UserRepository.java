@@ -26,6 +26,12 @@ public interface UserRepository {
     Observable<Friend> listContacts();
 
     /**
+     * Return the list of all the requested contacts
+     * @return a list of users
+     */
+    Observable<Friend> listRequestedContacts();
+
+    /**
      * Return the user if logged
      * @param username string containing username
      * @param password string containing password

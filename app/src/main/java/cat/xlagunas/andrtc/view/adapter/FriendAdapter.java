@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.view.model.RequestedFriend;
 import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
+import cat.xlagunas.andrtc.view.viewholder.AcceptedFriendViewHolder;
 import cat.xlagunas.andrtc.view.viewholder.FriendViewHolder;
 import cat.xlagunas.andrtc.view.viewholder.AddFriendViewHolder;
 import cat.xlagunas.andrtc.view.viewholder.RequestedFriendViewHolder;
@@ -42,7 +44,9 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                 return new AddFriendViewHolder(inflater.inflate(R.layout.item_friend_add, parent, false));
             case Friend.REQUESTED:
                 return new RequestedFriendViewHolder(inflater.inflate(R.layout.item_friend_requested, parent, false));
-            }
+            case Friend.ACCEPTED:
+                return new AcceptedFriendViewHolder(inflater.inflate(R.layout.item_friend_accepted, parent, false));
+        }
         return null;
     }
 
@@ -55,6 +59,9 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
                 break;
             case Friend.REQUESTED:
                 RequestedFriendViewHolder.bind((RequestedFriendViewHolder) holder, friend, listener);
+                break;
+            case Friend.ACCEPTED:
+                AcceptedFriendViewHolder.bind((AcceptedFriendViewHolder) holder, friend, listener);
         }
     }
 

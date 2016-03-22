@@ -35,7 +35,7 @@ public class AddContactsPresenter implements Presenter {
 
     @Override
     public void resume() {
-
+        search("");
     }
 
     @Override

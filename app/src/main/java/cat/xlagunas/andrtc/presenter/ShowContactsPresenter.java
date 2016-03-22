@@ -36,16 +36,12 @@ public class ShowContactsPresenter implements Presenter {
 
     @Override
     public void destroy() {
-
+        this.view = null;
+        useCase.unsubscribe();
     }
 
     public void init() {
         useCase.execute(new DefaultSubscriber<Friend>(){
-            @Override
-            public void onCompleted() {
-                super.onCompleted();
-            }
-
             @Override
             public void onError(Throwable e) {
                 super.onError(e);

@@ -25,18 +25,20 @@ public class RequestedFriendViewHolder extends FriendViewHolder {
     public static void bind(final RequestedFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
         FriendViewHolder.bind(holder, friend);
 
-        holder.acceptContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onFriendAccepted(friend);
-            }
-        });
+        if (listener != null) {
+            holder.acceptContact.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onFriendAccepted(friend);
+                }
+            });
 
-        holder.rejectContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onFriendRejected(friend);
-            }
-        });
+            holder.rejectContact.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onFriendRejected(friend);
+                }
+            });
+        }
     }
 }
