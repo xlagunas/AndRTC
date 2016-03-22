@@ -23,7 +23,13 @@ public interface UserRepository {
      * Return the list of all the contacts
      * @return a list of users
      */
-    Observable<List<Friend>> listContacts();
+    Observable<Friend> listContacts();
+
+    /**
+     * Return the list of all the requested contacts
+     * @return a list of users
+     */
+    Observable<Friend> listRequestedContacts();
 
     /**
      * Return the user if logged

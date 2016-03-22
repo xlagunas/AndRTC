@@ -7,48 +7,61 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.view.util.OnClickListener;
-import cat.xlagunas.andrtc.view.viewholder.NewContactViewHolder;
+import cat.xlagunas.andrtc.view.model.RequestedFriend;
+import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
+import cat.xlagunas.andrtc.view.viewholder.AcceptedFriendViewHolder;
+import cat.xlagunas.andrtc.view.viewholder.FriendViewHolder;
+import cat.xlagunas.andrtc.view.viewholder.AddFriendViewHolder;
+import cat.xlagunas.andrtc.view.viewholder.RequestedFriendViewHolder;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 17/03/16.
  */
-public class FriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
     private List<Friend> elements;
-    private OnClickListener listener;
+    private OnFriendClickListener listener;
     private LayoutInflater inflater;
 
     public FriendAdapter(List<Friend> elements) {
         this.elements = elements;
     }
 
-    public void setOnClickListener(OnClickListener listener){
+    public void setOnClickListener(OnFriendClickListener listener){
         this.listener = listener;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
 
         switch (viewType) {
-                case 0:
-                    return new NewContactViewHolder(inflater.inflate(R.layout.item_friend, parent, false));
-            }
+            case 0:
+                return new AddFriendViewHolder(inflater.inflate(R.layout.item_friend_add, parent, false));
+            case Friend.REQUESTED:
+                return new RequestedFriendViewHolder(inflater.inflate(R.layout.item_friend_requested, parent, false));
+            case Friend.ACCEPTED:
+                return new AcceptedFriendViewHolder(inflater.inflate(R.layout.item_friend_accepted, parent, false));
+        }
         return null;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(FriendViewHolder holder, int position) {
         Friend friend = elements.get(position);
         switch (getItemViewType(position)){
             case 0:
-                NewContactViewHolder.bind((NewContactViewHolder) holder, friend, listener);
+                AddFriendViewHolder.bind((AddFriendViewHolder) holder, friend, listener);
                 break;
+            case Friend.REQUESTED:
+                RequestedFriendViewHolder.bind((RequestedFriendViewHolder) holder, friend, listener);
+                break;
+            case Friend.ACCEPTED:
+                AcceptedFriendViewHolder.bind((AcceptedFriendViewHolder) holder, friend, listener);
         }
     }
 

@@ -34,6 +34,11 @@ public class SearchUserUseCase extends UseCase {
 
     @Override
     protected Observable<Friend> buildUseCaseObservable() {
-        return repository.searchUsers(user, filter);
+        Observable<Friend> observable = filter.equals("")
+                ? Observable.<Friend>empty()
+                : repository.searchUsers(user, filter);
+
+        return  observable
+                .mergeWith(repository.listRequestedContacts());
     }
 }

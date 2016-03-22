@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/item_friend"></include>
+
+    <ImageView
+        android:id="@+id/contact_accept_friendship"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/contact_reject_friendship"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_delete"
+        android:tint="@color/colorAccent"
+        android:layout_toLeftOf="@id/contact_accept_friendship"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        />
+
+</RelativeLayout>

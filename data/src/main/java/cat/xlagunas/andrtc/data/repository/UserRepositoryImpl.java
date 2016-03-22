@@ -1,25 +1,21 @@
 package cat.xlagunas.andrtc.data.repository;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import cat.xlagunas.andrtc.data.exception.InvalidTokenException;
-import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
-import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.UserEntity;
-import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.data.net.RestApi;
+import cat.xlagunas.andrtc.data.cache.UserCache;
+import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.net.params.TokenParams;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
+
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
+import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
@@ -51,8 +47,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<List<Friend>> listContacts() {
-        return null;
+    public Observable<Friend> listContacts() {
+        return userCache.getUser()
+                .flatMapIterable(user -> user.getFriends())
+                .filter(friend -> friend.getFriendState() == Friend.ACCEPTED);
+    }
+
+    @Override
+    public Observable<Friend> listRequestedContacts() {
+        return userCache.getUser()
+                .flatMapIterable(user -> user.getFriends())
+                .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
     }
 
     @Override

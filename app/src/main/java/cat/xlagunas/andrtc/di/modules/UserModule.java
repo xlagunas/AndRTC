@@ -26,21 +26,6 @@ public class UserModule {
         this.user = user;
     }
 
-//    @Provides
-//    @ActivityScope @Named("userList")
-//    UseCase provideGetUserListUseCase(
-//            GetUserList getUserList) {
-//        return getUserList;
-//    }
-
-//    @Provides
-//    @ActivityScope
-//    @Named("login")
-//    UseCase provideGetUserDetailsUseCase(
-//            UserRepository userRepository, PostExecutionThread postExecutionThread) {
-//        return new LoginUseCase(postExecutionThread, userRepository);
-//    }
-
     @Provides
     @UserScope
     public User getUser(){

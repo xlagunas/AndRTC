@@ -19,7 +19,8 @@ public class AddContactsPresenter implements Presenter {
     private SearchListView view;
 
     @Inject
-    public AddContactsPresenter(SearchUserUseCase userUseCase, RequestNewFriendshipUseCase newFriendshipUseCase) {
+    public AddContactsPresenter(SearchUserUseCase userUseCase,
+                                RequestNewFriendshipUseCase newFriendshipUseCase) {
         this.searchUserUseCase = userUseCase;
         this.newFriendshipUseCase = newFriendshipUseCase;
     }
@@ -34,7 +35,7 @@ public class AddContactsPresenter implements Presenter {
 
     @Override
     public void resume() {
-
+        search("");
     }
 
     @Override
@@ -98,4 +99,7 @@ public class AddContactsPresenter implements Presenter {
             }
         });
     }
+
+
+
 }
