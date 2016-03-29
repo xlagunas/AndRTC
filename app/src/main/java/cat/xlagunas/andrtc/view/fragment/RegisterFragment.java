@@ -1,5 +1,6 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +45,8 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     @Bind(R.id.submit_register)
     Button registerButton;
 
+    FragmentInterface listener;
+
     @Inject
     FieldValidator validator;
 
@@ -54,6 +57,24 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getComponent(ActivityComponent.class).inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (FragmentInterface) context;
+        } catch(ClassCastException e){
+            throw new RuntimeException("Activity must implement FragmentInterface");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (listener != null) {
+            listener = null;
+        }
     }
 
     @Nullable
@@ -145,6 +166,8 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     @Override
     public void onUserRegistered(User user) {
         CustomApplication.getApp(getActivity()).createUserComponent(user);
+        listener.onSuccessfullyRegistered();
+
     }
 
     @Override
@@ -189,6 +212,10 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     private void setError(TextInputLayout textInputLayout, String message ){
         textInputLayout.setError(message);
         textInputLayout.setErrorEnabled(true);
+    }
+
+    public interface FragmentInterface {
+        void onSuccessfullyRegistered();
     }
 
 }

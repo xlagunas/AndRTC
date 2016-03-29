@@ -1,12 +1,16 @@
 package cat.xlagunas.andrtc.data.net.params;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by xlagunas on 29/03/16.
  */
 public class UpdateParams {
-
+    @SerializedName("id")
     private String userId;
+    @SerializedName("previousState")
     private String oldStatus;
+    @SerializedName("nextState")
     private String newStatus;
 
     public UpdateParams(String userId, String oldStatus, String newStatus) {

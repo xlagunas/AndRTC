@@ -11,18 +11,18 @@ import xlagunas.cat.andrtc.domain.Friend;
 /**
  * Created by xlagunas on 19/03/16.
  */
-public class RequestedFriendViewHolder extends FriendViewHolder {
+public class PendingFriendViewHolder extends FriendViewHolder {
     @Bind(R.id.contact_accept_friendship)
     ImageView acceptContact;
 
     @Bind(R.id.contact_reject_friendship)
     ImageView rejectContact;
 
-    public RequestedFriendViewHolder(View itemView) {
+    public PendingFriendViewHolder(View itemView) {
         super(itemView);
     }
 
-    public static void bind(final RequestedFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
+    public static void bind(final PendingFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
         FriendViewHolder.bind(holder, friend);
 
         if (listener != null) {

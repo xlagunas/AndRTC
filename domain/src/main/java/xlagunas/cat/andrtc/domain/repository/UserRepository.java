@@ -23,7 +23,7 @@ public interface UserRepository {
      * Return the list of all the contacts
      * @return a list of users
      */
-    Observable<Friend> listContacts();
+    Observable<Friend> listContacts(User user);
 
     /**
      * Return the list of all the requested contacts
@@ -47,4 +47,7 @@ public interface UserRepository {
 
     Observable registerGCMToken(User user, String token);
 
-}
+    Observable updateProfile(User user);
+
+
+    }

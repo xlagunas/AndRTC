@@ -45,10 +45,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     }
 
+    public Observable updateProfile(User user){
+        return restApi.pullProfile(user.getHashedPassword())
+                .doOnNext(saveToCacheAction)
+                .flatMap(userEntity -> Observable.empty());
+    }
+
     @Override
-    public Observable<Friend> listContacts() {
+    public Observable<Friend> listContacts(User user) {
+
         return userCache.getUser()
-                .flatMapIterable(user -> user.getFriends())
+                .flatMapIterable(persistedUser -> persistedUser.getFriends())
                 .filter(friend -> friend.getFriendState() == Friend.ACCEPTED);
     }
 
@@ -56,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable<Friend> listRequestedContacts() {
         return userCache.getUser()
                 .flatMapIterable(user -> user.getFriends())
-                .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
+                .filter(friend -> friend.getFriendState() == Friend.PENDING);
     }
 
     @Override

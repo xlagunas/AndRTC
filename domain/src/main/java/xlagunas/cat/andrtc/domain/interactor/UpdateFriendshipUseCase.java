@@ -1,5 +1,7 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
@@ -17,6 +19,7 @@ public class UpdateFriendshipUseCase extends UseCase {
     private String previousState;
     private String nextState;
 
+    @Inject
     UpdateFriendshipUseCase(PostExecutionThread postExecutionThread, User user, UserRepository repository) {
         super(postExecutionThread);
         this.repository = repository;

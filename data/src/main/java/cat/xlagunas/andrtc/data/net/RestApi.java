@@ -26,6 +26,9 @@ public interface RestApi {
     @POST("/user/login")
     Observable<UserEntity> loginUser(@Body LoginParams params);
 
+    @GET("/profile")
+    Observable<UserEntity> pullProfile(@Header("Authorization") String authorization);
+
     @PUT("/user")
     Observable<UserEntity> createUser(@Body UserEntity entity);
 
@@ -38,7 +41,7 @@ public interface RestApi {
     @PUT("/friendship/{id}")
     Observable<UserEntity> requestFriendship(@Header("Authorization") String authorization, @Path("id") String id);
 
-    @POST("/friendship")
+    @POST("/friendship/update")
     Observable<UserEntity> updateFriendship(@Header("Authorization") String authorization, @Body UpdateParams updateParams);
 
 }

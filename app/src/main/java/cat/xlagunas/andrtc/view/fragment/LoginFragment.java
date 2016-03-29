@@ -66,7 +66,7 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
             throw new RuntimeException("Activity must implement FragmentInterface");
         }
     }
-
+    
     @Override
     public void onDetach() {
         super.onDetach();
@@ -150,13 +150,15 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         return this.getActivity().getApplicationContext();
     }
 
+
     @Override
     public void onUserRecovered(User user) {
         CustomApplication.getApp(getActivity()).createUserComponent(user);
+        fragmentInterface.onSuccessfullyLogged();
     }
 
     public interface FragmentInterface {
         void onSignInRequested();
-
+        void onSuccessfullyLogged();
     }
 }

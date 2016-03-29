@@ -16,17 +16,26 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
+import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import xlagunas.cat.andrtc.domain.User;
+import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 
 public class MyGcmListenerService extends GcmListenerService {
 
-    private static final int FRIENDSHIP_TYPE = 1;
+    private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
+    private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
     private static final int CALL_TYPE = 2;
 
     private static final String TAG = "MyGcmListenerService";
 
     @Inject
     UserCache cache;
+    @Inject
+    UserRepository repository;
 
     @Override
     public void onCreate() {
@@ -49,13 +58,16 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "From: " + from);
 
         switch (messageType){
-            case FRIENDSHIP_TYPE:
-                cache.invalidateCache();
+            case FRIENDSHIP_REQUESTED_TYPE:
+                pullData();
                 sendFriendshipRequestNotification(data);
                 break;
             case CALL_TYPE:
                 sendNotification("A title", "A new message");
                 break;
+            case FRIENDSHIP_ACCEPTED_TYPE:
+                pullData();
+                sendFriendshipAcceptedNotification(data);
         }
 
         // [START_EXCLUDE]
@@ -71,6 +83,32 @@ public class MyGcmListenerService extends GcmListenerService {
          * that a message was received.
          */
         // [END_EXCLUDE]
+    }
+
+    private void pullData() {
+        cache.invalidateCache();
+        cache.getUser().flatMap(new Func1<User, Observable<?>>() {
+            @Override
+            public Observable call(User user) {
+                return repository.updateProfile(user);
+            }
+        })
+        .observeOn(Schedulers.immediate())
+        .subscribeOn(Schedulers.immediate())
+        .subscribe(new DefaultSubscriber<Object>(){
+            @Override
+            public void onCompleted() {
+                super.onCompleted();
+                Log.e(TAG, "Updated contacts");
+            }
+        });
+    }
+
+    private void sendFriendshipAcceptedNotification(Bundle data) {
+        String title = "You have a new Contact";
+        String message = String.format("%s (%s) has accepted your friendship request",
+                data.getString("username"), data.getString("name"));
+        sendNotification(title, message);
     }
 
     private void sendFriendshipRequestNotification(Bundle data) {
