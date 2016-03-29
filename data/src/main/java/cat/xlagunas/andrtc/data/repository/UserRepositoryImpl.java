@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.data.repository;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -12,6 +10,7 @@ import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.net.params.TokenParams;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 
+import cat.xlagunas.andrtc.data.net.params.UpdateParams;
 import rx.Observable;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
@@ -75,8 +74,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<List<Friend>> updateFriendship(String id, String previousState, String newState) {
-        return null;
+    public Observable<User> updateFriendship(User user, String id, String previousState, String newState) {
+        return restApi.updateFriendship(user.getHashedPassword(), new UpdateParams(id, previousState, newState))
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> mapper.transformUser(userEntity));
     }
 
     @Override

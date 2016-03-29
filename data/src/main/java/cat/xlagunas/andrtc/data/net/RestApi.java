@@ -4,6 +4,7 @@ import java.util.List;
 
 import cat.xlagunas.andrtc.data.FriendEntity;
 import cat.xlagunas.andrtc.data.net.params.TokenParams;
+import cat.xlagunas.andrtc.data.net.params.UpdateParams;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -36,5 +37,8 @@ public interface RestApi {
 
     @PUT("/friendship/{id}")
     Observable<UserEntity> requestFriendship(@Header("Authorization") String authorization, @Path("id") String id);
+
+    @POST("/friendship")
+    Observable<UserEntity> updateFriendship(@Header("Authorization") String authorization, @Body UpdateParams updateParams);
 
 }

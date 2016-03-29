@@ -38,8 +38,10 @@ public interface UserRepository {
      * @return the logged user
      */
     Observable<User> login(String username, String password);
+
     Observable requestNewFriendship(User user, String id);
-    Observable<List<Friend>> updateFriendship(String id, String previousState, String newState);
+
+    Observable<User> updateFriendship(User user, String id, String previousState, String newState);
 
     Observable<User> registerUser(User user);
 
