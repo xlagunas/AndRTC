@@ -42,12 +42,12 @@ public class UserRepositoryImpl implements UserRepository {
         return restApi.findUsers(user.getHashedPassword(), filterName)
                 .flatMapIterable(userEntities -> userEntities)
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));
-
     }
 
     public Observable updateProfile(User user){
         return restApi.pullProfile(user.getHashedPassword())
                 .doOnNext(saveToCacheAction)
+                .doOnNext(invalidateCache)
                 .flatMap(userEntity -> Observable.empty());
     }
 
@@ -77,6 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable requestNewFriendship(User user, String id) {
         return restApi.requestFriendship(user.getHashedPassword(), id)
                 .doOnNext(saveToCacheAction)
+                .doOnNext(invalidateCache)
                 .map(userEntity -> Observable.empty());
     }
 
@@ -110,6 +111,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final Action1 updateTokenAction = userEntity -> {
             userCache.setGCMRegistrationStatus(true);
+    };
+
+    private final Action1 invalidateCache = object -> {
+        userCache.invalidateCache();
     };
 
 

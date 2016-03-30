@@ -26,7 +26,7 @@ public interface RestApi {
     @POST("/user/login")
     Observable<UserEntity> loginUser(@Body LoginParams params);
 
-    @GET("/profile")
+    @GET("user/profile")
     Observable<UserEntity> pullProfile(@Header("Authorization") String authorization);
 
     @PUT("/user")
