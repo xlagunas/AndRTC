@@ -4,12 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,9 +23,7 @@ public abstract class GenericRegisterFragment extends BaseFragment {
 
     private OnFragmentChangeRequest listener;
 
-    @Bind(R.id.button_next)
-    protected Button nextButton;
-
+    @Bind(R.id.register_fragment_container)
     ViewGroup contentLayout;
 
     public abstract @LayoutRes int getLayout();
@@ -54,18 +50,8 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_generic_register, container, false);
-        contentLayout = (ViewGroup) view.findViewById(R.id.register_fragment_container);
-        inflater.inflate(getLayout(), contentLayout, true);
         ButterKnife.bind(this, view);
-        getNextButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNextClicked();
-            }
-        });
-
-        //there's an option to supply own next button, if so, remove the current one
-        nextButton.setVisibility(getNextButton().getId() != nextButton.getId() ? View.GONE : View.VISIBLE);
+        inflater.inflate(getLayout(), contentLayout, true);
         return view;
     }
 
@@ -82,17 +68,9 @@ public abstract class GenericRegisterFragment extends BaseFragment {
         }
     }
 
-    protected void setError(TextInputLayout textInputLayout, String message ){
-        textInputLayout.setErrorEnabled(true);
-        textInputLayout.setError(message);
-    }
-
-    public View getNextButton(){
-        return nextButton;
-    }
-
     public interface OnFragmentChangeRequest{
         void onNext();
         void onBack();
     }
+
 }
