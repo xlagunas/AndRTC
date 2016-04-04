@@ -1,5 +1,6 @@
 package cat.xlagunas.andrtc.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.MainPresenter;
+import cat.xlagunas.andrtc.view.LoadDataView;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 
 
@@ -73,9 +75,15 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_logout:
-                Toast.makeText(MainActivity.this, "Logout clicked", Toast.LENGTH_SHORT).show();
+                onLogout();
                 break;
         }
         return true;
+    }
+
+    public void onLogout() {
+        presenter.logout();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 }

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,6 +52,16 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
             @Override
             public void onFriendRequested(Friend friend) {
                 presenter.requestFriendship(friend);
+            }
+
+            @Override
+            public void onFriendAccepted(Friend friend) {
+                presenter.acceptFriendship(friend);
+            }
+
+            @Override
+            public void onFriendRejected(Friend friend) {
+                presenter.rejectFriendship(friend);
             }
         });
 
@@ -123,6 +131,18 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     }
 
     @Override
+    public void notifyContactUpdate(Friend friend, String message) {
+        Toast.makeText(getActivity(), friend.getUsername() + "friendship updated to: "+message, Toast.LENGTH_SHORT).show();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifiyUpdateError(Friend friend, Throwable e) {
+        Log.e(TAG, "Error updating notification error: "+e);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             // Respond to the action bar's Up/Home button
@@ -165,4 +185,6 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
             return false;
         }
     };
+
+
 }

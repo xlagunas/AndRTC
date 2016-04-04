@@ -2,6 +2,7 @@ package cat.xlagunas.andrtc.di.components;
 
 import cat.xlagunas.andrtc.di.UserScope;
 import cat.xlagunas.andrtc.di.modules.UserModule;
+import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
@@ -22,4 +23,7 @@ public interface UserComponent {
     void inject(AddContactsActivity activity);
     void inject(AddContactFragment fragment);
     void inject(CurrentContactFragment fragment);
+
+    void inject(MyGcmListenerService service);
+
 }

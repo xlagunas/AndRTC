@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.data.repository;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -12,6 +10,7 @@ import cat.xlagunas.andrtc.data.net.params.LoginParams;
 import cat.xlagunas.andrtc.data.net.params.TokenParams;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 
+import cat.xlagunas.andrtc.data.net.params.UpdateParams;
 import rx.Observable;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
@@ -43,13 +42,20 @@ public class UserRepositoryImpl implements UserRepository {
         return restApi.findUsers(user.getHashedPassword(), filterName)
                 .flatMapIterable(userEntities -> userEntities)
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));
+    }
 
+    public Observable updateProfile(User user){
+        return restApi.pullProfile(user.getHashedPassword())
+                .doOnNext(saveToCacheAction)
+                .doOnNext(invalidateCache)
+                .flatMap(userEntity -> Observable.empty());
     }
 
     @Override
-    public Observable<Friend> listContacts() {
+    public Observable<Friend> listContacts(User user) {
+
         return userCache.getUser()
-                .flatMapIterable(user -> user.getFriends())
+                .flatMapIterable(persistedUser -> persistedUser.getFriends())
                 .filter(friend -> friend.getFriendState() == Friend.ACCEPTED);
     }
 
@@ -57,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable<Friend> listRequestedContacts() {
         return userCache.getUser()
                 .flatMapIterable(user -> user.getFriends())
-                .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
+                .filter(friend -> friend.getFriendState() == Friend.PENDING);
     }
 
     @Override
@@ -71,12 +77,15 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable requestNewFriendship(User user, String id) {
         return restApi.requestFriendship(user.getHashedPassword(), id)
                 .doOnNext(saveToCacheAction)
+                .doOnNext(invalidateCache)
                 .map(userEntity -> Observable.empty());
     }
 
     @Override
-    public Observable<List<Friend>> updateFriendship(String id, String previousState, String newState) {
-        return null;
+    public Observable<User> updateFriendship(User user, String id, String previousState, String newState) {
+        return restApi.updateFriendship(user.getHashedPassword(), new UpdateParams(id, previousState, newState))
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> mapper.transformUser(userEntity));
     }
 
     @Override
@@ -102,6 +111,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final Action1 updateTokenAction = userEntity -> {
             userCache.setGCMRegistrationStatus(true);
+    };
+
+    private final Action1 invalidateCache = object -> {
+        userCache.invalidateCache();
     };
 
 

@@ -46,4 +46,8 @@ public class MainPresenter implements Presenter {
     public void destroy() {
         view = null;
     }
+
+    public void logout() {
+        userCache.removeCache();
+    }
 }

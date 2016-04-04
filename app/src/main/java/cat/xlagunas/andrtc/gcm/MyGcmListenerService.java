@@ -14,24 +14,27 @@ import com.google.android.gms.gcm.GcmListenerService;
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
-import cat.xlagunas.andrtc.data.cache.UserCache;
+import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
+import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 
 
 public class MyGcmListenerService extends GcmListenerService {
 
-    private static final int FRIENDSHIP_TYPE = 1;
+    private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
+    private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
     private static final int CALL_TYPE = 2;
 
     private static final String TAG = "MyGcmListenerService";
 
     @Inject
-    UserCache cache;
+    UpdateProfileUseCase useCase;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        CustomApplication.getApp(this).getApplicationComponent().inject(this);
+        CustomApplication.getApp(this).getUserComponent().inject(this);
     }
 
     /**
@@ -45,16 +48,31 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         int messageType = Integer.parseInt(data.getString("type"));
-        String message;
+
         Log.d(TAG, "From: " + from);
 
-        switch (messageType){
-            case FRIENDSHIP_TYPE:
-                cache.invalidateCache();
-                sendFriendshipRequestNotification(data);
+        final Bundle information = data;
+
+        switch (messageType) {
+            case FRIENDSHIP_REQUESTED_TYPE:
+                useCase.execute(new DefaultSubscriber() {
+                    @Override
+                    public void onCompleted() {
+                        sendFriendshipRequestNotification(information);
+                    }
+                });
                 break;
             case CALL_TYPE:
-                sendNotification("A title", "A new message");
+                Log.d(TAG, "Call message notification sent");
+                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
+                break;
+            case FRIENDSHIP_ACCEPTED_TYPE:
+                useCase.execute(new DefaultSubscriber() {
+                    @Override
+                    public void onCompleted() {
+                        sendFriendshipAcceptedNotification(information);
+                    }
+                });
                 break;
         }
 
@@ -73,11 +91,18 @@ public class MyGcmListenerService extends GcmListenerService {
         // [END_EXCLUDE]
     }
 
+    private void sendFriendshipAcceptedNotification(Bundle data) {
+        String title = "You have a new Contact";
+        String message = String.format("%s (%s) has accepted your friendship request",
+                data.getString("username"), data.getString("name"));
+        sendNotification(title, message);
+    }
+
     private void sendFriendshipRequestNotification(Bundle data) {
         String title = "New friendship request";
         String message = String.format("%s (%s) wants to be friends with you",
                 data.getString("username"), data.getString("name"));
-        sendNotification(title, message);
+        sendNotification(title, message, AddContactsActivity.class);
     }
     // [END receive_message]
 
@@ -87,7 +112,11 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String title, String message) {
-        Intent intent = new Intent(this, MainActivity.class);
+        sendNotification(title, message, MainActivity.class);
+    }
+
+    private void sendNotification(String title, String message, Class pendingActivity) {
+        Intent intent = new Intent(this, pendingActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -106,4 +135,5 @@ public class MyGcmListenerService extends GcmListenerService {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
 }

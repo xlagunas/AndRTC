@@ -23,7 +23,7 @@ public interface UserRepository {
      * Return the list of all the contacts
      * @return a list of users
      */
-    Observable<Friend> listContacts();
+    Observable<Friend> listContacts(User user);
 
     /**
      * Return the list of all the requested contacts
@@ -38,11 +38,16 @@ public interface UserRepository {
      * @return the logged user
      */
     Observable<User> login(String username, String password);
+
     Observable requestNewFriendship(User user, String id);
-    Observable<List<Friend>> updateFriendship(String id, String previousState, String newState);
+
+    Observable<User> updateFriendship(User user, String id, String previousState, String newState);
 
     Observable<User> registerUser(User user);
 
     Observable registerGCMToken(User user, String token);
 
-}
+    Observable updateProfile(User user);
+
+
+    }

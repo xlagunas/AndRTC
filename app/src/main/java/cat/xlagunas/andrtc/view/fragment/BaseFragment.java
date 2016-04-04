@@ -1,6 +1,6 @@
 package cat.xlagunas.andrtc.view.fragment;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import cat.xlagunas.andrtc.di.HasComponent;
 

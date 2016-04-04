@@ -19,6 +19,4 @@ public interface ApplicationComponent {
 
     UserComponent plus(UserModule userModule);
     ActivityComponent plus(ActivityModule activityModule);
-
-    public void inject(MyGcmListenerService service);
 }

@@ -16,4 +16,7 @@ public interface SearchListView {
     void showConfirmationError(Throwable e);
 
     void showConfirmation();
+
+    void notifyContactUpdate(Friend friend, String message);
+    void notifiyUpdateError(Friend friend, Throwable e);
 }
