@@ -75,13 +75,13 @@ dependencies {
 
     //Development
     compile developmentDependencies.leakCanary
+    //CircularImageView
     compile 'com.android.support:cardview-v7:23.2.1'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.0'
-    compile "com.android.support:support-v4:23.2.1"
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    //CircularImageView
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }
 

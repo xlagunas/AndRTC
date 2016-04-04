@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.view.activity;
 
+import android.support.annotation.AnimRes;
+import android.support.annotation.AnimatorRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -33,7 +35,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void replaceFragment(int containerViewId, Fragment fragment) {
+        replaceFragment(containerViewId, fragment, 0, 0, 0, 0);
+    }
+
+    protected void replaceFragment(int containerViewId, Fragment fragment,
+                                   @AnimRes int enterAnimation, @AnimRes int exitAnimation,
+                                   @AnimRes int enterPopAnimation, @AnimRes int exitPopAnimation){
+
         FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
+
+        if (enterAnimation != 0 && exitAnimation != 0){
+            fragmentTransaction.setCustomAnimations(enterAnimation, exitAnimation, enterPopAnimation, exitPopAnimation);
+        }
+
         fragmentTransaction.replace(containerViewId, fragment);
         fragmentTransaction.addToBackStack(this.getClass().getSimpleName());
         fragmentTransaction.commit();
