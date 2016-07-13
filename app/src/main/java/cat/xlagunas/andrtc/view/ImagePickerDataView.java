@@ -1,15 +1,14 @@
 package cat.xlagunas.andrtc.view;
 
-import android.net.Uri;
+import java.io.File;
 
 /**
  * Created by xlagunas on 13/7/16.
  */
 public interface ImagePickerDataView {
 
-    void onImageFileGenerated(Uri file);
+    void onImageFileGenerated(File file);
+    void updateImage(File file);
     void onError(String message);
-    void addPictureToGallery(Uri file);
-
-    void updateImage(Uri imageFile);
+    void addPictureToGallery(File file);
 }

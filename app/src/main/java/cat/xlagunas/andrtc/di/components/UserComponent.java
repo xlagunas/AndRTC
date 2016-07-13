@@ -6,12 +6,9 @@ import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
-import cat.xlagunas.andrtc.view.activity.RegisterActivity;
 import cat.xlagunas.andrtc.view.fragment.AddContactFragment;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
-import cat.xlagunas.andrtc.view.fragment.EmailPasswordRegisterFragment;
-import cat.xlagunas.andrtc.view.fragment.UserDetailsRegisterFragment;
-import cat.xlagunas.andrtc.view.fragment.UsernamePasswordFragment;
+import cat.xlagunas.andrtc.view.fragment.ImagePickerFragment;
 import dagger.Subcomponent;
 
 /**
@@ -23,16 +20,13 @@ import dagger.Subcomponent;
 public interface UserComponent {
 
     void inject(MainActivity activity);
-    void inject(RegisterActivity activity);
     void inject(RegistrationIntentService service);
     void inject(AddContactsActivity activity);
 
     void inject(AddContactFragment fragment);
     void inject(CurrentContactFragment fragment);
 
-    void inject(UsernamePasswordFragment fragment);
-    void inject(UserDetailsRegisterFragment fragment);
-    void inject(EmailPasswordRegisterFragment fragment);
+    void inject(ImagePickerFragment fragment);
 
     void inject(MyGcmListenerService service);
 

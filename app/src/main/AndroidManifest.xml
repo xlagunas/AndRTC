@@ -69,7 +69,8 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
     <!--END OF PUSH NOTIFICATION SECTION -->
-
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
 </manifest>
