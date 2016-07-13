@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.presenter;
 
-import android.widget.Toast;
-
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.LoginDataView;

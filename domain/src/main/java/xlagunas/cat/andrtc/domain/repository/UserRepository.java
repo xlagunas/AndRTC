@@ -1,7 +1,5 @@
 package xlagunas.cat.andrtc.domain.repository;
 
-import java.util.List;
-
 import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;

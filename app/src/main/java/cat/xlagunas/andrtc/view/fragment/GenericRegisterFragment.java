@@ -23,7 +23,6 @@ public abstract class GenericRegisterFragment extends BaseFragment {
 
     private OnFragmentChangeRequest listener;
 
-    @Bind(R.id.register_fragment_container)
     ViewGroup contentLayout;
 
     public abstract @LayoutRes int getLayout();
@@ -50,8 +49,9 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_generic_register, container, false);
-        ButterKnife.bind(this, view);
+        contentLayout = (ViewGroup) view.findViewById(R.id.register_fragment_container);
         inflater.inflate(getLayout(), contentLayout, true);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -72,5 +72,4 @@ public abstract class GenericRegisterFragment extends BaseFragment {
         void onNext();
         void onBack();
     }
-
 }

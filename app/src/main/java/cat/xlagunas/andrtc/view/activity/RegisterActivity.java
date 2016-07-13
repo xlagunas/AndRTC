@@ -5,8 +5,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
+import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.di.modules.ActivityModule;
+import cat.xlagunas.andrtc.di.modules.UserModule;
 import cat.xlagunas.andrtc.view.fragment.GenericRegisterFragment;
 import cat.xlagunas.andrtc.view.fragment.ImagePickerFragment;
 import cat.xlagunas.andrtc.view.fragment.UserDetailsFragment;
@@ -16,11 +19,11 @@ import xlagunas.cat.andrtc.domain.User;
 /**
  * Created by xlagunas on 4/04/16.
  */
-public class RegisterActivity extends BaseActivity implements GenericRegisterFragment.OnFragmentChangeRequest{
+public class RegisterActivity extends BaseActivity implements HasComponent<UserComponent>, GenericRegisterFragment.OnFragmentChangeRequest{
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private User user;
-    private ActivityComponent activityComponent;
+    private UserComponent userComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,9 @@ public class RegisterActivity extends BaseActivity implements GenericRegisterFra
     }
 
     private void initializeInjector() {
-        this.activityComponent =
-                getApplicationComponent().plus(new ActivityModule(this));
+        user = new User();
+        this.userComponent =
+                getApplicationComponent().plus(new UserModule(user));
     }
 
     @Override
@@ -68,5 +72,10 @@ public class RegisterActivity extends BaseActivity implements GenericRegisterFra
     @Override
     public void onBack() {
         onBackPressed();
+    }
+
+    @Override
+    public UserComponent getComponent() {
+        return userComponent;
     }
 }

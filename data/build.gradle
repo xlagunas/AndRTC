@@ -77,4 +77,7 @@ dependencies {
     testCompile testDependencies.assertj
     testCompile testDependencies.mockito
     testCompile testDependencies.robolectric
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
 }

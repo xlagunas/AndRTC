@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.data.cache;
 
+import java.io.File;
+
 import cat.xlagunas.andrtc.data.UserEntity;
 import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -10,17 +12,19 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface UserCache {
 
-    public boolean isCacheValid();
+    boolean isCacheValid();
 
-    public void putUser(UserEntity user);
+    void putUser(UserEntity user);
 
-    public Observable<User> getUser();
+    Observable<User> getUser();
 
-    public void removeCache();
+    void removeCache();
 
-    public boolean isGCMRegistered();
+    boolean isGCMRegistered();
 
-    public void setGCMRegistrationStatus(boolean status);
+    void setGCMRegistrationStatus(boolean status);
 
     void invalidateCache();
+
+    Observable<File> generateProfilePictureFile();
 }
