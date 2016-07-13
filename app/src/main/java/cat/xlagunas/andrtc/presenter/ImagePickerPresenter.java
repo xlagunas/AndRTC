@@ -75,4 +75,9 @@ public class ImagePickerPresenter implements Presenter {
         view.updateImage(urlImage);
         user.setThumbnail(imageUri.toString());
     }
+
+    public void onDestroy(){
+        useCase.unsubscribe();
+        view = null;
+    }
 }

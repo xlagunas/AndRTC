@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,6 +23,9 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     private final static String TAG = GenericRegisterFragment.class.getSimpleName();
 
     private OnFragmentChangeRequest listener;
+
+    @Bind(R.id.button_next)
+    protected Button nextButton;
 
     ViewGroup contentLayout;
 
