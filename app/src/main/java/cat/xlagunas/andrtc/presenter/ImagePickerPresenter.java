@@ -1,25 +1,30 @@
 package cat.xlagunas.andrtc.presenter;
 
+import android.net.Uri;
+
 import java.io.File;
 
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.ImagePickerDataView;
 import rx.Observer;
+import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.ImagePickerUseCase;
 
 /**
  * Created by xlagunas on 13/7/16.
  */
 public class ImagePickerPresenter implements Presenter {
-    private File imageFile;
+    private Uri imageUri;
 
     private final ImagePickerUseCase useCase;
+    private final User user;
     private ImagePickerDataView view;
 
     @Inject
-    public ImagePickerPresenter(ImagePickerUseCase useCase){
+    public ImagePickerPresenter(User user, ImagePickerUseCase useCase){
         this.useCase = useCase;
+        this.user = user;
     }
 
     public void setView(ImagePickerDataView view){
@@ -49,18 +54,21 @@ public class ImagePickerPresenter implements Presenter {
 
             @Override
             public void onNext(File file) {
-                imageFile = file;
-                view.onImageFileGenerated(imageFile);
+                imageUri = Uri.fromFile(file);
+                view.onImageFileGenerated(imageUri);
             }
         });
     }
 
     public void onPictureTaken() {
-        view.addPictureToGallery(imageFile);
-        view.updateImage(imageFile);
+        view.addPictureToGallery(imageUri);
+        view.updateImage(imageUri);
+        user.setThumbnail(imageUri.toString());
     }
 
-    public void onPictureSelectedFromGallery(File urlImage) {
+    public void onPictureSelectedFromGallery(Uri urlImage) {
+        this.imageUri = urlImage;
         view.updateImage(urlImage);
+        user.setThumbnail(imageUri.toString());
     }
 }
