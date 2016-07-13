@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
@@ -108,6 +109,16 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
             Log.d(TAG, "Image successfully obtained");
             presenter.onPictureSelectedFromGallery(data.getData());
         }
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        this.presenter.destroy();
     }
 
 }

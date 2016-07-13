@@ -5,12 +5,13 @@ import android.text.TextUtils;
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.ActivityScope;
+import cat.xlagunas.andrtc.di.UserScope;
 
 /**
  * Created by xlagunas on 9/03/16.
  */
 
-@ActivityScope
+@UserScope
 public class FieldValidator {
 
     @Inject
@@ -27,7 +28,7 @@ public class FieldValidator {
     }
 
     public boolean isValidUsername(String textValue){
-        return !TextUtils.isEmpty(textValue);
+        return !TextUtils.isEmpty(textValue) && textValue.length() >= 6;
     }
 
 

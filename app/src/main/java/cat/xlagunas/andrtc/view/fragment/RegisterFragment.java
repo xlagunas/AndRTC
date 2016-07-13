@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 
+import cat.xlagunas.andrtc.di.components.UserComponent;
 import okhttp3.Credentials;
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -56,7 +57,7 @@ public class RegisterFragment extends BaseFragment implements RegisterDataView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getComponent(ActivityComponent.class).inject(this);
+        this.getComponent(UserComponent.class).inject(this);
     }
 
     @Override

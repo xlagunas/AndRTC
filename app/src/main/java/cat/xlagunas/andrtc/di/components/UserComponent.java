@@ -9,6 +9,8 @@ import cat.xlagunas.andrtc.view.activity.MainActivity;
 import cat.xlagunas.andrtc.view.fragment.AddContactFragment;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 import cat.xlagunas.andrtc.view.fragment.ImagePickerFragment;
+import cat.xlagunas.andrtc.view.fragment.RegisterFragment;
+import cat.xlagunas.andrtc.view.fragment.UsernamePasswordFragment;
 import dagger.Subcomponent;
 
 /**
@@ -26,6 +28,8 @@ public interface UserComponent {
     void inject(AddContactFragment fragment);
     void inject(CurrentContactFragment fragment);
 
+    void inject(RegisterFragment fragment);
+    void inject(UsernamePasswordFragment fragment);
     void inject(ImagePickerFragment fragment);
 
     void inject(MyGcmListenerService service);
