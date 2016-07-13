@@ -2,8 +2,6 @@ package cat.xlagunas.andrtc.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,9 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import javax.inject.Inject;
 
@@ -33,8 +28,7 @@ import cat.xlagunas.andrtc.view.ImagePickerDataView;
 public class ImagePickerFragment extends GenericRegisterFragment implements ImagePickerDataView {
 
     private final static int REQUEST_IMAGE_CAPTURE = 10001;
-    private final static int REQUEST_LOAD_GALLERY_IMAGE = 10010
-            ;
+    private final static int REQUEST_LOAD_GALLERY_IMAGE = 10010;
     private static final String TAG = ImagePickerFragment.class.getSimpleName();
 
     @Bind(R.id.camera_button)
@@ -60,14 +54,20 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
         presenter.setView(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
     @OnClick(R.id.camera_button)
-    public void onCameraButtonClicked(){
+    public void onCameraButtonClicked() {
         presenter.requestCameraPicture();
     }
 
     @OnClick(R.id.media_button)
-    public void onMediaButtonClicked(){
-        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    public void onMediaButtonClicked() {
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, REQUEST_LOAD_GALLERY_IMAGE);
     }
 
@@ -101,10 +101,10 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Image successfully obtained");
             presenter.onPictureTaken();
-        } else if (requestCode == REQUEST_LOAD_GALLERY_IMAGE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == REQUEST_LOAD_GALLERY_IMAGE && resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Image successfully obtained");
             presenter.onPictureSelectedFromGallery(data.getData());
         }

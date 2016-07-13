@@ -32,7 +32,11 @@ public class ImagePickerPresenter implements Presenter {
     }
 
     @Override
-    public void resume() {}
+    public void resume() {
+        if (user.getThumbnail() != null && !"".equals(user.getThumbnail())){
+            view.updateImage(Uri.parse(user.getThumbnail()));
+        }
+    }
 
     @Override
     public void pause() {}
