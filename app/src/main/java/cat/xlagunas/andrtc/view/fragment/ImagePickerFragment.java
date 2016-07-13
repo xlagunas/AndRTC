@@ -2,7 +2,8 @@ package cat.xlagunas.andrtc.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,7 +15,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import javax.inject.Inject;
 
@@ -70,10 +72,10 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
     }
 
     @Override
-    public void onImageFileGenerated(File file) {
+    public void onImageFileGenerated(Uri file) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, file);
 
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
@@ -81,8 +83,8 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
     }
 
     @Override
-    public void updateImage(File file) {
-        Glide.with(this).load(file).into(userImage);
+    public void updateImage(Uri file) {
+        Glide.with(this).loadFromMediaStore(file).into(userImage);
     }
 
     @Override
@@ -91,10 +93,9 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
     }
 
     @Override
-    public void addPictureToGallery(File imageUri) {
+    public void addPictureToGallery(Uri imageUri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(imageUri);
-        mediaScanIntent.setData(contentUri);
+        mediaScanIntent.setData(imageUri);
         getActivity().sendBroadcast(mediaScanIntent);
     }
 
@@ -105,24 +106,8 @@ public class ImagePickerFragment extends GenericRegisterFragment implements Imag
             presenter.onPictureTaken();
         } else if (requestCode == REQUEST_LOAD_GALLERY_IMAGE && resultCode == Activity.RESULT_OK){
             Log.d(TAG, "Image successfully obtained");
-            File imageFile = parseGalleryImageUrl(data);
-            presenter.onPictureSelectedFromGallery(imageFile);
+            presenter.onPictureSelectedFromGallery(data.getData());
         }
-    }
-
-    private File parseGalleryImageUrl(Intent data){
-        Uri selectedImage = data.getData();
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-        Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-                filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        File file = new File(picturePath);
-        return file;
     }
 
 }
