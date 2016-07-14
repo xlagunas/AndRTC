@@ -1,5 +1,6 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+<<<<<<< fd658a01a7ebc4ad1b261c7a6db8fbeb5858f65d
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -17,10 +18,14 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.EmailPasswordPresenter;
 import cat.xlagunas.andrtc.view.EmailPasswordDataView;
 import cat.xlagunas.andrtc.view.util.TextValidator;
+=======
+import cat.xlagunas.andrtc.R;
+>>>>>>> initial structure done
 
 /**
  * Created by xlagunas on 14/7/16.
  */
+<<<<<<< fd658a01a7ebc4ad1b261c7a6db8fbeb5858f65d
 public class EmailPasswordRegisterFragment extends GenericRegisterFragment implements EmailPasswordDataView{
 
     @Bind(R.id.password)
@@ -81,11 +86,15 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         super.onResume();
         presenter.onResume();
     }
+=======
+public class EmailPasswordRegisterFragment extends GenericRegisterFragment {
+>>>>>>> initial structure done
 
     @Override
     public int getLayout() {
         return R.layout.fragment_email_password_register;
     }
+<<<<<<< fd658a01a7ebc4ad1b261c7a6db8fbeb5858f65d
 
     @Override
     public void enableConfirmationPassword() {
@@ -160,4 +169,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         presenter.onNextRequested();
         super.onNextClicked();
     }
+=======
+>>>>>>> initial structure done
 }
