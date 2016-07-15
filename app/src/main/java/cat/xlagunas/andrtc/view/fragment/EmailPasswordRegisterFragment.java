@@ -145,11 +145,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         }
     }
 
-    private void setError(TextInputLayout textInputLayout, String message ){
-        textInputLayout.setErrorEnabled(true);
-        textInputLayout.setError(message);
-    }
-
     @Override public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);

@@ -1,31 +1,33 @@
 package cat.xlagunas.andrtc.view.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import javax.inject.Inject;
+
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
-import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
-import cat.xlagunas.andrtc.di.modules.ActivityModule;
 import cat.xlagunas.andrtc.di.modules.UserModule;
+import cat.xlagunas.andrtc.presenter.RegisterPresenter;
+import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.fragment.EmailPasswordRegisterFragment;
 import cat.xlagunas.andrtc.view.fragment.GenericRegisterFragment;
-import cat.xlagunas.andrtc.view.fragment.ImagePickerFragment;
-import cat.xlagunas.andrtc.view.fragment.UserDetailsFragment;
 import cat.xlagunas.andrtc.view.fragment.UserDetailsRegisterFragment;
-import cat.xlagunas.andrtc.view.fragment.UsernamePasswordFragment;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 4/04/16.
  */
-public class RegisterActivity extends BaseActivity implements HasComponent<UserComponent>, GenericRegisterFragment.OnFragmentChangeRequest{
+public class RegisterActivity extends BaseActivity implements HasComponent<UserComponent>, GenericRegisterFragment.OnFragmentChangeRequest, RegisterDataView{
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private User user;
     private UserComponent userComponent;
+
+    @Inject
+    RegisterPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +41,21 @@ public class RegisterActivity extends BaseActivity implements HasComponent<UserC
     }
 
     private void initializeInjector() {
-        user = new User();
         this.userComponent =
-                getApplicationComponent().plus(new UserModule(user));
+                getApplicationComponent().plus(new UserModule(new User()));
+
+        userComponent.inject(this);
+        presenter.setView(this);
     }
 
     @Override
     public void onNext() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//        if (fragment instanceof  UsernamePasswordFragment){
-//            replaceFragment(UserDetailsFragment.class);
-//        } else if (fragment instanceof UserDetailsFragment){
-//            replaceFragment(ImagePickerFragment.class);
-//        }
+
         if (fragment instanceof EmailPasswordRegisterFragment){
             replaceFragment(UserDetailsRegisterFragment.class);
+        } else if (fragment instanceof UserDetailsRegisterFragment){
+            presenter.registerUser();
         }
     }
 
@@ -69,9 +71,6 @@ public class RegisterActivity extends BaseActivity implements HasComponent<UserC
             }
         }
 
-//        replaceFragment(R.id.fragment_container,
-//                fragment, R.anim.slide_in_right, R.anim.slide_in_left,
-//                R.anim.slide_out_left, R.anim.slide_out_right);
         replaceFragment(R.id.fragment_container, fragment);
     }
 
@@ -83,5 +82,10 @@ public class RegisterActivity extends BaseActivity implements HasComponent<UserC
     @Override
     public UserComponent getComponent() {
         return userComponent;
+    }
+
+    @Override
+    public void onUserRegistered(User user) {
+        Snackbar.make(findViewById(android.R.id.content), "User created", Snackbar.LENGTH_LONG).show();
     }
 }

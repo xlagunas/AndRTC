@@ -142,11 +142,6 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         }
     }
 
-    private void setError(TextInputLayout textInputLayout, String message ){
-        textInputLayout.setErrorEnabled(true);
-        textInputLayout.setError(message);
-    }
-
     @Override public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);

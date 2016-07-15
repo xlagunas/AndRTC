@@ -17,12 +17,14 @@ public class RegisterPresenter implements Presenter {
     private final static String TAG = RegisterPresenter.class.getSimpleName();
 
     private final RegisterUseCase registerUseCase;
+    private final User user;
     private RegisterDataView view;
 
 
     @Inject
-    public RegisterPresenter(RegisterUseCase useCase){
+    public RegisterPresenter(User user, RegisterUseCase useCase){
         this.registerUseCase = useCase;
+        this.user = user;
     }
 
     public void setView(RegisterDataView view){
@@ -36,7 +38,7 @@ public class RegisterPresenter implements Presenter {
     @Override
     public void pause() {}
 
-    public void registerUser(User user){
+    public void registerUser(){
         registerUseCase.setUser(user);
         registerUseCase.execute(new Observer<User>() {
             @Override
@@ -59,9 +61,5 @@ public class RegisterPresenter implements Presenter {
         registerUseCase.unsubscribe();
         this.view = null;
 
-    }
-
-    public void initialize() {
-//        view.disableSubmitButton();
     }
 }

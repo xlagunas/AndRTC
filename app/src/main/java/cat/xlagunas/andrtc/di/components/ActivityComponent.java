@@ -7,7 +7,6 @@ import cat.xlagunas.andrtc.view.activity.MainActivity;
 import cat.xlagunas.andrtc.view.activity.RegisterActivity;
 import cat.xlagunas.andrtc.view.activity.SplashActivity;
 import cat.xlagunas.andrtc.view.fragment.LoginFragment;
-import cat.xlagunas.andrtc.view.fragment.RegisterFragment;
 import dagger.Subcomponent;
 
 /**
@@ -18,7 +17,6 @@ import dagger.Subcomponent;
 @Subcomponent(modules = ActivityModule.class)
 public interface ActivityComponent {
     void inject(LoginFragment fragment);
-//    void inject(RegisterFragment fragment);
     void inject(SplashActivity activity);
     void inject(MainActivity activity);
 }

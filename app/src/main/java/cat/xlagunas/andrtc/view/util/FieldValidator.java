@@ -23,6 +23,10 @@ public class FieldValidator {
         return !TextUtils.isEmpty(textValue);
     }
 
+    public boolean isValidFullName(String textValue){
+        return !TextUtils.isEmpty(textValue) && textValue.trim().contains(" ");
+    }
+
     public boolean isValidPassword(String textValue){
         return !TextUtils.isEmpty(textValue) && textValue.length() >= 6;
     }
