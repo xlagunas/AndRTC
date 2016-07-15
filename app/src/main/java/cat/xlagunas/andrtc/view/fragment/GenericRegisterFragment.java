@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,15 @@ public abstract class GenericRegisterFragment extends BaseFragment {
         contentLayout = (ViewGroup) view.findViewById(R.id.register_fragment_container);
         inflater.inflate(getLayout(), contentLayout, true);
         ButterKnife.bind(this, view);
+        getNextButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextClicked();
+            }
+        });
+
+        //there's an option to supply own next button, if so, remove the current one
+        nextButton.setVisibility(getNextButton().getId() != nextButton.getId() ? View.GONE : View.VISIBLE);
         return view;
     }
 
@@ -70,6 +80,15 @@ public abstract class GenericRegisterFragment extends BaseFragment {
         if (listener != null){
             listener.onNext();
         }
+    }
+
+    protected void setError(TextInputLayout textInputLayout, String message ){
+        textInputLayout.setErrorEnabled(true);
+        textInputLayout.setError(message);
+    }
+
+    public View getNextButton(){
+        return nextButton;
     }
 
     public interface OnFragmentChangeRequest{
