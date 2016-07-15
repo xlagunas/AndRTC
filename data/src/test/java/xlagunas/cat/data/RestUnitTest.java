@@ -5,10 +5,18 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+
 import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import okhttp3.Credentials;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okio.ByteString;
+import retrofit2.http.Multipart;
 import rx.Observable;
 import rx.Subscriber;
 import cat.xlagunas.andrtc.data.di.component.DaggerTestNetworkComponent;
@@ -85,5 +93,37 @@ public class RestUnitTest {
                         System.out.println(user.toString());
                     }
                 });
+    }
+
+    @Test
+    public void test_image_post() throws Exception {
+        ClassLoader classLoader= this.getClass().getClassLoader();
+        URL resource = classLoader.getResource("clagunas.png");
+        File f = new File(resource.getPath());
+
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), f);
+
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("thumbnail", "aquivaelfilename", requestFile);
+
+        restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), RequestBody.create(MediaType.parse("text/plain"), "xlagunas2"),
+                body)
+        .subscribe(new Subscriber<Object>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Completed");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("on Next");
+            }
+        });
     }
 }
