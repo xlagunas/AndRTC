@@ -38,6 +38,7 @@ public class UserEntityMapper {
         entity.setLastSurname(user.getLastSurname());
         entity.setFirstSurname(user.getSurname());
         entity.setName(user.getName());
+        entity.setThumbnail(user.getThumbnail());
         //this is only used to register a new user and password is clear in this case so don't need to decode
         entity.setPassword(user.getHashedPassword());
 
