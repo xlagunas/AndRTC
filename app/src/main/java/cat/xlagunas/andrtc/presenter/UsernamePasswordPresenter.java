@@ -52,10 +52,10 @@ public class UsernamePasswordPresenter {
     }
 
     public void onResume() {
-        if (user.getUsername() != null && user.getHashedPassword() != null){
+        if (user.getUsername() != null && user.getPassword() != null){
             view.setUsername(user.getUsername());
-            view.setPassword(user.getHashedPassword());
-            view.setPasswordConfirmation(user.getHashedPassword());
+            view.setPassword(user.getPassword());
+            view.setPasswordConfirmation(user.getPassword());
             view.enableNextStep(true);
         } else {
             view.disableConfirmationPassword();
@@ -72,7 +72,7 @@ public class UsernamePasswordPresenter {
 
     public void onNextRequested(){
         user.setUsername(username);
-        user.setHashedPassword(password);
+        user.setPassword(password);
     }
 
     public void destroy() {

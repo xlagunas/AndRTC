@@ -11,6 +11,7 @@ import cat.xlagunas.andrtc.data.net.params.TokenParams;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 
 import cat.xlagunas.andrtc.data.net.params.UpdateParams;
+import okhttp3.Credentials;
 import rx.Observable;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
@@ -39,13 +40,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Observable<Friend> searchUsers(User user, String filterName) {
-        return restApi.findUsers(user.getHashedPassword(), filterName)
+        return restApi.findUsers(Credentials.basic(user.getUsername(), user.getPassword()), filterName)
                 .flatMapIterable(userEntities -> userEntities)
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));
     }
 
     public Observable updateProfile(User user){
-        return restApi.pullProfile(user.getHashedPassword())
+        return restApi.pullProfile(Credentials.basic(user.getUsername(), user.getPassword()))
                 .doOnNext(saveToCacheAction)
                 .doOnNext(invalidateCache)
                 .flatMap(userEntity -> Observable.empty());
@@ -75,7 +76,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Observable requestNewFriendship(User user, String id) {
-        return restApi.requestFriendship(user.getHashedPassword(), id)
+        return restApi.requestFriendship(Credentials.basic(user.getUsername(), user.getPassword()), id)
                 .doOnNext(saveToCacheAction)
                 .doOnNext(invalidateCache)
                 .map(userEntity -> Observable.empty());
@@ -83,7 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Observable<User> updateFriendship(User user, String id, String previousState, String newState) {
-        return restApi.updateFriendship(user.getHashedPassword(), new UpdateParams(id, previousState, newState))
+        return restApi.updateFriendship(Credentials.basic(user.getUsername(), user.getPassword()), new UpdateParams(id, previousState, newState))
                 .doOnNext(saveToCacheAction)
                 .map(userEntity -> mapper.transformUser(userEntity));
     }
@@ -98,7 +99,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Observable<UserEntity> registerGCMToken(User user, String token) {
-        return restApi.addToken(user.getHashedPassword(), new TokenParams(token))
+        return restApi.addToken(Credentials.basic(user.getUsername(), user.getPassword()), new TokenParams(token))
                 .doOnNext(updateTokenAction)
                 .flatMap(userEntity -> Observable.empty());
     }
