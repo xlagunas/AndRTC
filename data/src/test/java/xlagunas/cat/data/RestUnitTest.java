@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 
 import cat.xlagunas.andrtc.data.UserEntity;
@@ -16,7 +15,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okio.ByteString;
-import retrofit2.http.Multipart;
 import rx.Observable;
 import rx.Subscriber;
 import cat.xlagunas.andrtc.data.di.component.DaggerTestNetworkComponent;
@@ -98,7 +96,7 @@ public class RestUnitTest {
     @Test
     public void test_image_post() throws Exception {
         ClassLoader classLoader= this.getClass().getClassLoader();
-        URL resource = classLoader.getResource("clagunas.png");
+        URL resource = classLoader.getResource("test.png");
         File f = new File(resource.getPath());
 
         RequestBody requestFile =
