@@ -50,7 +50,6 @@ public interface RestApi {
 
     @POST("/user/image")
     @Multipart
-    Observable<Object> putUserProfilePicture(@Header("Authorization") String authorization, @Part("username") RequestBody description,
-                                     @Part MultipartBody.Part file);
+    Observable<Object> putUserProfilePicture(@Header("Authorization") String authorization, @Part MultipartBody.Part file);
 
 }

@@ -103,10 +103,9 @@ public class RestUnitTest {
                 RequestBody.create(MediaType.parse("multipart/form-data"), f);
 
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("thumbnail", "aquivaelfilename", requestFile);
+                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
 
-        restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), RequestBody.create(MediaType.parse("text/plain"), "xlagunas2"),
-                body)
+        restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), body)
         .subscribe(new Subscriber<Object>() {
             @Override
             public void onCompleted() {
