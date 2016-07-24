@@ -102,7 +102,7 @@ public class UserEntityMapper {
         user.setLastSurname(entity.getLastSurname());
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
-        user.setPassword(Credentials.basic(entity.getUsername(), entity.getPassword()));
+        user.setPassword(entity.getPassword());
 
         return user;
     }

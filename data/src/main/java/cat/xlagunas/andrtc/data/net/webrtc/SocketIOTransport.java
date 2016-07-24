@@ -33,7 +33,8 @@ public class SocketIOTransport implements Transport {
             socket.emit("login", new LoginMessage(user.getUsername(), user.getPassword()));
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        }    }
+        }
+    }
 
     @Override
     public void connectToRoom(String roomId) {
