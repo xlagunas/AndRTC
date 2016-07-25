@@ -84,10 +84,10 @@ dependencies {
     testCompile testDependencies.robolectric
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
-//    compile ('io.socket:socket.io-client:0.7.0') {
-//        exclude group: 'org.json', module: 'json'
-//    }
-    compile ('io.socket:socket.io-client:0.7.0')
+    compile ('io.socket:socket.io-client:0.7.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+    testCompile ('io.socket:socket.io-client:0.7.0')
 
     compile 'com.github.xlagunas:WebRTC:v0.1-beta'
 

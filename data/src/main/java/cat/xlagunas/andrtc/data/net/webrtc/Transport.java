@@ -7,10 +7,11 @@ public interface Transport {
 
     String JOIN_ROOM = "call:register";
 
-    public void init();
-    public void connectToRoom(String roomId);
-    public void disconnect();
-    public void sendOffer();//TODO PENDING PARAMS)
-    public void sendAnswer();//TODO PENDING PARAMS)
-    public void sendIceCandidate();
+    void init();
+    void connectToRoom(String roomId);
+    void disconnect();
+    void sendOffer();//TODO PENDING PARAMS)
+    void sendAnswer();//TODO PENDING PARAMS)
+    void sendIceCandidate();
+    void setWebRTCCallbacks(WebRTCCallbacks callbacks);
 }
