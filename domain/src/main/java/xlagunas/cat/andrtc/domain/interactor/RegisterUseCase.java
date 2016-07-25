@@ -1,5 +1,6 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
+
 import javax.inject.Inject;
 
 import rx.Observable;

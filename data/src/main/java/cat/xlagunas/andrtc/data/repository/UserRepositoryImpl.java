@@ -1,5 +1,9 @@
 package cat.xlagunas.andrtc.data.repository;
 
+import android.net.Uri;
+
+import java.io.File;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -12,7 +16,11 @@ import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 
 import cat.xlagunas.andrtc.data.net.params.UpdateParams;
 import okhttp3.Credentials;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -45,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));
     }
 
-    public Observable updateProfile(User user){
+    public Observable<User> updateProfile(User user){
         return restApi.pullProfile(Credentials.basic(user.getUsername(), user.getPassword()))
                 .doOnNext(saveToCacheAction)
                 .doOnNext(invalidateCache)
@@ -91,11 +99,36 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Observable<User> registerUser(User user) {
+
         UserEntity entity = mapper.tranformUserEntity(user);
-        return restApi.createUser(entity)
-                .doOnNext(saveToCacheAction)
-                .map(userEntity -> mapper.transformUser(userEntity));
+        //If user updates and image, we update it to the server, otherwise just create the user;
+        if (entity.getThumbnail() == null) {
+            return restApi.createUser(entity)
+                    .doOnNext(saveToCacheAction)
+                    .map(userEntity -> mapper.transformUser(userEntity));
+        } else {
+            return restApi.createUser(entity)
+                    .flatMap(userEntituy -> updateProfilePicture(user, user.getThumbnail()));
+        }
     }
+
+    @Override
+    public Observable<User> updateProfilePicture(User user, String uri) {
+        File file = new File(Uri.parse(uri).getPath());
+
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
+
+        return restApi.putUserProfilePicture(Credentials.basic(user.getUsername(), user.getPassword()), body)
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> mapper.transformUser(userEntity))
+                .doOnCompleted(() -> file.delete());
+
+    }
+
 
     @Override
     public Observable<UserEntity> registerGCMToken(User user, String token) {
@@ -117,6 +150,5 @@ public class UserRepositoryImpl implements UserRepository {
     private final Action1 invalidateCache = object -> {
         userCache.invalidateCache();
     };
-
 
 }

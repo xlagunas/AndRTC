@@ -106,7 +106,7 @@ public class RestUnitTest {
                 MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
 
         restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), body)
-        .subscribe(new Subscriber<Object>() {
+        .subscribe(new Subscriber<UserEntity>() {
             @Override
             public void onCompleted() {
                 System.out.println("Completed");
@@ -118,8 +118,9 @@ public class RestUnitTest {
             }
 
             @Override
-            public void onNext(Object o) {
+            public void onNext(UserEntity entity) {
                 System.out.println("on Next");
+                System.out.println(entity.toString());
             }
         });
     }
