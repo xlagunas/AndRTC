@@ -12,6 +12,7 @@ import cat.xlagunas.andrtc.data.cache.serializer.JsonSerializer;
 import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
 import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
+import okhttp3.Credentials;
 import rx.Observable;
 import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -70,6 +71,7 @@ public class UserCacheImpl implements UserCache {
     @Override
     public void putUser(UserEntity userEntity) {
         if (userEntity != null) {
+            userEntity.setPassword(userEntityMapper.encodeBasicAuthPassword(userEntity.getUsername(), userEntity.getPassword()));
             String jsonString = serializer.serialize(userEntity);
             fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_USER, jsonString);
             fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_VALIDATION, true);
@@ -84,6 +86,7 @@ public class UserCacheImpl implements UserCache {
                 String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
                 if (serializedUser != null) {
                     UserEntity entity = serializer.deserialize(serializedUser);
+                    entity.setPassword(userEntityMapper.decodeBasicAuthPassword(entity.getUsername(), entity.getPassword()));
                     User user = userEntityMapper.transformUser(entity);
                     if (entity != null && user != null) {
                         subscriber.onNext(user);

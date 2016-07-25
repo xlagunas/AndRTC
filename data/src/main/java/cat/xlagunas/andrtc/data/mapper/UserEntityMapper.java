@@ -40,17 +40,21 @@ public class UserEntityMapper {
         entity.setName(user.getName());
         entity.setThumbnail(user.getThumbnail());
         //this is only used to register a new user and password is clear in this case so don't need to decode
-        entity.setPassword(user.getHashedPassword());
+        entity.setPassword(user.getPassword());
 
         return entity;
     }
 
-    private String decodeBasicAuthPassword(String hashedPassword, String username) {
+    public String decodeBasicAuthPassword(String username, String hashedPassword) {
         //rip the "Basic " string in front of the password
         String secret = hashedPassword.substring(6);
         String str = ByteString.decodeBase64(secret).utf8();
 
         return str.substring(username.length()+1);
+    }
+
+    public String encodeBasicAuthPassword(String username, String password){
+        return Credentials.basic(username, password);
     }
 
     public List<Friend> transformFriends(UserEntity entity){
@@ -98,7 +102,7 @@ public class UserEntityMapper {
         user.setLastSurname(entity.getLastSurname());
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
-        user.setHashedPassword(Credentials.basic(entity.getUsername(), entity.getPassword()));
+        user.setPassword(entity.getPassword());
 
         return user;
     }

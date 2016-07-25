@@ -8,7 +8,7 @@ import java.util.List;
 public class User extends AbstractUser {
 
     private List<Friend> friends;
-    private String hashedPassword;
+    private String password;
 
     public List<Friend> getFriends() {
         return friends;
@@ -18,11 +18,11 @@ public class User extends AbstractUser {
         this.friends = friends;
     }
 
-    public String getHashedPassword() {
-        return hashedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

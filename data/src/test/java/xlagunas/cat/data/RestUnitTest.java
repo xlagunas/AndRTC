@@ -103,11 +103,10 @@ public class RestUnitTest {
                 RequestBody.create(MediaType.parse("multipart/form-data"), f);
 
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("thumbnail", "aquivaelfilename", requestFile);
+                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
 
-        restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), RequestBody.create(MediaType.parse("text/plain"), "xlagunas2"),
-                body)
-        .subscribe(new Subscriber<Object>() {
+        restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), body)
+        .subscribe(new Subscriber<UserEntity>() {
             @Override
             public void onCompleted() {
                 System.out.println("Completed");
@@ -119,8 +118,9 @@ public class RestUnitTest {
             }
 
             @Override
-            public void onNext(Object o) {
+            public void onNext(UserEntity entity) {
                 System.out.println("on Next");
+                System.out.println(entity.toString());
             }
         });
     }

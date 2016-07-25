@@ -1,5 +1,7 @@
 package xlagunas.cat.andrtc.domain.repository;
 
+import java.io.File;
+
 import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
@@ -42,6 +44,8 @@ public interface UserRepository {
     Observable<User> updateFriendship(User user, String id, String previousState, String newState);
 
     Observable<User> registerUser(User user);
+
+    Observable<User> updateProfilePicture(User user, String uri);
 
     Observable registerGCMToken(User user, String token);
 
