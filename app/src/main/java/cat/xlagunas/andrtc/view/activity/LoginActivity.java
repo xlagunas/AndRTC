@@ -8,13 +8,11 @@ import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.di.modules.ActivityModule;
 import cat.xlagunas.andrtc.view.fragment.LoginFragment;
-import cat.xlagunas.andrtc.view.fragment.RegisterFragment;
-import cat.xlagunas.andrtc.view.fragment.RegisterFragment.FragmentInterface;
 
 /**
  * Created by xlagunas on 2/03/16.
  */
-public class LoginActivity extends BaseActivity implements HasComponent<ActivityComponent>, LoginFragment.FragmentInterface, FragmentInterface {
+public class LoginActivity extends BaseActivity implements HasComponent<ActivityComponent>, LoginFragment.FragmentInterface {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private ActivityComponent activityComponent;
@@ -43,16 +41,11 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
 
     @Override
     public void onSignInRequested() {
-        replaceFragment(R.id.fragment_container, new RegisterFragment());
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 
     @Override
     public void onSuccessfullyLogged() {
-        startMainActivity();
-    }
-
-    @Override
-    public void onSuccessfullyRegistered() {
         startMainActivity();
     }
 

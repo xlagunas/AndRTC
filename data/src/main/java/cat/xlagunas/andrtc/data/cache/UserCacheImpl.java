@@ -2,6 +2,9 @@ package cat.xlagunas.andrtc.data.cache;
 
 import android.content.Context;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -46,6 +49,22 @@ public class UserCacheImpl implements UserCache {
 
     public void invalidateCache() {
         fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_VALIDATION, false);
+    }
+
+    @Override
+    public Observable<File> generateProfilePictureFile() {
+            return Observable.create(new Observable.OnSubscribe<File>() {
+                @Override
+                public void call(Subscriber<? super File> subscriber) {
+                    try {
+                        File imageFile = fileManager.createImageFile(context);
+                        subscriber.onNext(imageFile);
+                        subscriber.onCompleted();
+                    } catch (IOException e) {
+                        subscriber.onError(e);
+                    }
+                }
+            });
     }
 
     @Override

@@ -12,6 +12,13 @@
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.LoginActivity"/>
 
+        <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
         <activity android:name="cat.xlagunas.andrtc.view.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
@@ -62,7 +69,8 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
     <!--END OF PUSH NOTIFICATION SECTION -->
-
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
 </manifest>

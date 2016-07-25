@@ -7,8 +7,5 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface RegisterDataView {
 
-    void enableSubmitButton();
-    void disableSubmitButton();
     void onUserRegistered(User user);
-    void showProgress();
 }

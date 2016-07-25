@@ -7,6 +7,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import cat.xlagunas.andrtc.ServiceFacade;
+import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
 import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
 import dagger.Module;
 import dagger.Provides;
@@ -15,6 +16,7 @@ import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.data.cache.UserCacheImpl;
 import cat.xlagunas.andrtc.data.repository.UserRepositoryImpl;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
+import xlagunas.cat.andrtc.domain.repository.FileRepository;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
@@ -36,23 +38,33 @@ public class ApplicationModule {
         return application;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl){
         return userRepositoryImpl;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     PostExecutionThread providePostExecutionThread(UIThread thread){
         return thread;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     UserCache provideUserCache(UserCacheImpl userCache) {
         return userCache;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     ServiceFacade provideServerFacade(RegistrationServiceFacade service){
         return service;
+    }
+
+    @Provides
+    @Singleton
+    FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl){
+        return fileRepositoryImpl;
     }
 }
