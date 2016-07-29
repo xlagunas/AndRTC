@@ -6,7 +6,6 @@ import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
-import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import cat.xlagunas.andrtc.view.activity.RegisterActivity;
 import cat.xlagunas.andrtc.view.fragment.AddContactFragment;
@@ -30,7 +29,6 @@ public interface UserComponent {
     void inject(RegisterActivity activity);
     void inject(RegistrationIntentService service);
     void inject(AddContactsActivity activity);
-    void inject(ConferenceActivity activity);
 
     void inject(AddContactFragment fragment);
     void inject(CurrentContactFragment fragment);
