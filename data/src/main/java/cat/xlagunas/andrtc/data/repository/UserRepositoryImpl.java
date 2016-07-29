@@ -66,17 +66,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable<Void> requestCallUser(User user, String friendId) {
+    public Observable requestCallUser(User user, String friendId) {
         return restApi.requestCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
     @Override
-    public Observable<Void> acceptCallUser(User user, String friendId) {
+    public Observable acceptCallUser(User user, String friendId) {
         return restApi.acceptCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
     @Override
-    public Observable<Void> cancelCallUser(User user, String friendId) {
+    public Observable cancelCallUser(User user, String friendId) {
         return restApi.cancelCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
@@ -85,14 +85,14 @@ public class UserRepositoryImpl implements UserRepository {
 
         return userCache.getUser()
                 .flatMapIterable(persistedUser -> persistedUser.getFriends())
-                .filter(friend -> friend.getFriendState() != Friend.REQUESTED);
+                .filter(friend -> friend.getFriendState() == Friend.ACCEPTED);
     }
 
     @Override
     public Observable<Friend> listRequestedContacts() {
         return userCache.getUser()
                 .flatMapIterable(user -> user.getFriends())
-                .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
+                .filter(friend -> friend.getFriendState() == Friend.PENDING);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("thumbnail", file.getName(), requestFile);
+                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
 
         return restApi.putUserProfilePicture(Credentials.basic(user.getUsername(), user.getPassword()), body)
                 .doOnNext(saveToCacheAction)
