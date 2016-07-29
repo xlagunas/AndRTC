@@ -20,7 +20,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -45,6 +44,12 @@ public class UserRepositoryImpl implements UserRepository {
         this.userCache = userCache;
     }
 
+    @Override
+    public Observable<User> login(String username, String password) {
+        return restApi.loginUser(new LoginParams(username, password))
+                .doOnNext(saveToCacheAction)
+                .flatMap(userEntity -> userCache.getUser());
+    }
 
     @Override
     public Observable<Friend> searchUsers(User user, String filterName) {
@@ -61,6 +66,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Observable requestCallUser(User user, String friendId) {
+        return restApi.requestCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
+    }
+
+    @Override
+    public Observable acceptCallUser(User user, String friendId) {
+        return restApi.acceptCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
+    }
+
+    @Override
+    public Observable cancelCallUser(User user, String friendId) {
+        return restApi.cancelCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
+    }
+
+    @Override
     public Observable<Friend> listContacts(User user) {
 
         return userCache.getUser()
@@ -73,13 +93,6 @@ public class UserRepositoryImpl implements UserRepository {
         return userCache.getUser()
                 .flatMapIterable(user -> user.getFriends())
                 .filter(friend -> friend.getFriendState() == Friend.PENDING);
-    }
-
-    @Override
-    public Observable<User> login(String username, String password) {
-       return restApi.loginUser(new LoginParams(username, password))
-               .doOnNext(saveToCacheAction)
-               .map(userEntity -> mapper.transformUser(userEntity));
     }
 
     @Override

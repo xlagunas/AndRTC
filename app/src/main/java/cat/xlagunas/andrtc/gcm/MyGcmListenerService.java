@@ -2,6 +2,7 @@ package cat.xlagunas.andrtc.gcm;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -34,7 +35,11 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-        CustomApplication.getApp(this).getUserComponent().inject(this);
+        Context context = MyGcmListenerService.this;
+        Log.d(TAG, "Context is null? "+context == null ? "yes" : "no");
+        if (context != null) {
+            CustomApplication.getApp(context).getUserComponent().inject(this);
+        }
     }
 
     /**
