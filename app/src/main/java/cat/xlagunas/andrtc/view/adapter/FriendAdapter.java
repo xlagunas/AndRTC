@@ -41,6 +41,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
         switch (viewType) {
             case 0:
                 return new AddFriendViewHolder(inflater.inflate(R.layout.item_friend_add, parent, false));
+            //TODO PENDING IS REQUESTED! SHOULD BE CHANGED
             case Friend.PENDING:
                 return new PendingFriendViewHolder(inflater.inflate(R.layout.item_friend_pending, parent, false));
             case Friend.ACCEPTED:

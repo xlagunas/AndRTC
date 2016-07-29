@@ -25,6 +25,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
     private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
+    private static final int FRIENDSHIP_REJECTED_TYPE = 4;
     private static final int CALL_TYPE = 2;
 
     private static final String TAG = "MyGcmListenerService";
@@ -54,7 +55,7 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         int messageType = Integer.parseInt(data.getString("type"));
 
-        Log.d(TAG, "From: " + from);
+        Log.d(TAG, "From: " + from + "type: "+messageType);
 
         final Bundle information = data;
 
@@ -71,6 +72,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 Log.d(TAG, "Call message notification sent");
                 sendNotification("Title", "SOMEBODY IS CALLING YOU!");
                 break;
+
             case FRIENDSHIP_ACCEPTED_TYPE:
                 useCase.execute(new DefaultSubscriber() {
                     @Override
@@ -79,6 +81,14 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 });
                 break;
+            case FRIENDSHIP_REJECTED_TYPE:
+                useCase.execute(new DefaultSubscriber() {
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Log.d(TAG, "someone rejected relationship, roster updated");
+                    }
+                });
         }
 
         // [START_EXCLUDE]

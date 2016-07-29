@@ -85,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         return userCache.getUser()
                 .flatMapIterable(persistedUser -> persistedUser.getFriends())
-                .filter(friend -> friend.getFriendState() == Friend.ACCEPTED);
+                .filter(friend -> friend.getFriendState() != Friend.REQUESTED);
     }
 
     @Override
