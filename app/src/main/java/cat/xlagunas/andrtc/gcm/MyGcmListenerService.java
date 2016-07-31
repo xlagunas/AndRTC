@@ -26,6 +26,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
     private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
     private static final int FRIENDSHIP_REJECTED_TYPE = 4;
+    private static final int FRIENDSHIP_DELETED_TYPE = 5;
     private static final int CALL_TYPE = 2;
 
     private static final String TAG = "MyGcmListenerService";
@@ -87,6 +88,15 @@ public class MyGcmListenerService extends GcmListenerService {
                     public void onCompleted() {
                         super.onCompleted();
                         Log.d(TAG, "someone rejected relationship, roster updated");
+                    }
+                });
+                break;
+            case FRIENDSHIP_DELETED_TYPE:
+                useCase.execute(new DefaultSubscriber(){
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Log.d(TAG, "Someone deleted relationship, roster updated");
                     }
                 });
         }

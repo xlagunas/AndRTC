@@ -92,7 +92,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable<Friend> listRequestedContacts() {
         return userCache.getUser()
                 .flatMapIterable(user -> user.getFriends())
-                .filter(friend -> friend.getFriendState() == Friend.PENDING);
+                .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
     }
 
     @Override
