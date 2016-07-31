@@ -13,10 +13,9 @@ public abstract class CallRequestPresenter implements Presenter {
     private boolean isCaller;
 
     protected String friendId;
-    protected String callId;
     protected Timer timer;
-
     protected CallRequestDataView view;
+
     private final static int MAX_DIALING_TIME = 10000;
 
     public void init(boolean isCaller){
@@ -46,9 +45,9 @@ public abstract class CallRequestPresenter implements Presenter {
         }, MAX_DIALING_TIME);
     }
 
-    public void goToConference(){
+    public void goToConference(String conferenceId){
         timer.cancel();
-        view.startConference(callId);
+        view.startConference(conferenceId);
     }
 
     public void cancel(){
@@ -64,9 +63,5 @@ public abstract class CallRequestPresenter implements Presenter {
     @Override
     public void destroy() {
 
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
     }
 }

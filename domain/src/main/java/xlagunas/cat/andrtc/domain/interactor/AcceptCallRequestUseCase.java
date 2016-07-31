@@ -18,7 +18,7 @@ public class AcceptCallRequestUseCase extends UseCase {
 
     private String friendId;
 
-    public void setRoomId(String id){
+    public void setFriendId(String id){
         this.friendId = id;
     }
 
