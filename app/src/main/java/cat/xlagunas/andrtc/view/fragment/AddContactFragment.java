@@ -1,5 +1,8 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
@@ -78,6 +81,12 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void onResume() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.search("");
+            }
+        };
         super.onResume();
         presenter.resume();
     }
