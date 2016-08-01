@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -66,6 +67,8 @@ public class MyGcmListenerService extends GcmListenerService {
                     @Override
                     public void onCompleted() {
                         sendFriendshipRequestNotification(information);
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
                 break;
@@ -79,6 +82,8 @@ public class MyGcmListenerService extends GcmListenerService {
                     @Override
                     public void onCompleted() {
                         sendFriendshipAcceptedNotification(information);
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
                 break;
@@ -88,6 +93,8 @@ public class MyGcmListenerService extends GcmListenerService {
                     public void onCompleted() {
                         super.onCompleted();
                         Log.d(TAG, "someone rejected relationship, roster updated");
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
                 break;
@@ -97,23 +104,14 @@ public class MyGcmListenerService extends GcmListenerService {
                     public void onCompleted() {
                         super.onCompleted();
                         Log.d(TAG, "Someone deleted relationship, roster updated");
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
+                break;
         }
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        // [END_EXCLUDE]
     }
 
     private void sendFriendshipAcceptedNotification(Bundle data) {

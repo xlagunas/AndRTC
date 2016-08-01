@@ -1,5 +1,8 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -24,6 +27,17 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getComponent(UserComponent.class).inject(this);
+    }
+
+    @Override
+    public void onResume() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.updateContacts();
+            }
+        };
+        super.onResume();
         presenter.init();
     }
 
