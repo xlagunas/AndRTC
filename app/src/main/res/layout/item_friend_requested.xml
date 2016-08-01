@@ -6,21 +6,23 @@
 
     <include layout="@layout/item_friend"></include>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/contact_accept_friendship"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_input_add"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:background="@android:color/transparent"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/contact_reject_friendship"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_delete"
+        android:background="@android:color/transparent"
         android:tint="@color/colorAccent"
         android:layout_toLeftOf="@id/contact_accept_friendship"
         android:layout_marginRight="20dp"

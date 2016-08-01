@@ -1,9 +1,16 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +36,9 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
     protected static void bind(final FriendViewHolder holder, final Friend friend) {
         holder.username.setText(friend.getUsername());
         holder.fullName.setText(friend.getName() +" " +friend.getSurname() + " "+ friend.getLastSurname());
-        //TODO ADD THUMBNAIL
-//        holder.thumbnail
+        Glide.with(holder.itemView.getContext())
+                .load(Uri.parse("http://192.168.1.133:3000/images/"+friend.getThumbnail()))
+                .placeholder(R.drawable.common_ic_googleplayservices)
+                .into(holder.thumbnail);
     }
 }

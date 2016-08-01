@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,8 +57,8 @@ public class BaseContactFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
-    protected void onAddedFriend(Friend friend) {
-        adapter.add(friend);
+    protected void onAddedFriends(List<Friend> friends) {
+        adapter.addAll(friends);
         adapter.notifyDataSetChanged();
     }
 

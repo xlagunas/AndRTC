@@ -1,5 +1,7 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -24,7 +26,7 @@ public class ContactsUseCase extends UseCase {
 
 
         @Override
-    protected Observable<Friend> buildUseCaseObservable() {
-        return userRepository.listContacts(user);
+    protected Observable<List<Friend>> buildUseCaseObservable() {
+        return userRepository.listContacts(user).toSortedList();
     }
 }

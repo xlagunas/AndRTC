@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<RelativeLayout android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:alpha="0.4"
     >
 
-    <include layout="@layout/item_friend"/>
+    <include layout="@layout/item_friend"></include>
 
-    <ImageButton
-        android:id="@+id/contact_add_friendship"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add"
+        android:text="Pending request"
+        android:textStyle="italic"
         android:background="@android:color/transparent"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
-
 </RelativeLayout>
-

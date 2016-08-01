@@ -3,6 +3,8 @@ package cat.xlagunas.andrtc.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.components.UserComponent;
@@ -37,8 +39,8 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     }
 
     @Override
-    public void addFriend(Friend friend) {
-        super.onAddedFriend(friend);
+    public void addFriends(List<Friend> friends) {
+        super.onAddedFriends(friends);
     }
 
     @Override

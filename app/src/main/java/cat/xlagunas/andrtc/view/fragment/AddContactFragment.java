@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.R;
@@ -111,8 +113,8 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     }
 
     @Override
-    public void addFriendToList(Friend friend) {
-        onAddedFriend(friend);
+    public void addFriends(List<Friend> friends) {
+        onAddedFriends(friends);
     }
 
     @Override

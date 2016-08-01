@@ -103,6 +103,7 @@ public class UserEntityMapper {
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
+        user.setThumbnail(entity.getThumbnail());
 
         return user;
     }
@@ -115,6 +116,7 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
+        friend.setThumbnail(entity.getThumbnail());
 
         return friend;
     }

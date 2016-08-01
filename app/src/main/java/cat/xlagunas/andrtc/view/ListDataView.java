@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.view;
 
+import java.util.List;
+
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -7,6 +9,6 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public interface ListDataView {
     void showProgress();
-    void addFriend(Friend friend);
+    void addFriends(List<Friend> friend);
     void showList();
 }

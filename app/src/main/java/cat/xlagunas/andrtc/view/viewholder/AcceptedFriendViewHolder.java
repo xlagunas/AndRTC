@@ -1,6 +1,7 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import butterknife.Bind;
@@ -14,7 +15,7 @@ import xlagunas.cat.andrtc.domain.Friend;
 public class AcceptedFriendViewHolder extends FriendViewHolder {
 
     @Bind(R.id.contact_call)
-    ImageView callImageView;
+    ImageButton callImageView;
 
     public AcceptedFriendViewHolder(View itemView) {
         super(itemView);

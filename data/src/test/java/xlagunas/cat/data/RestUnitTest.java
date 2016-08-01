@@ -103,7 +103,7 @@ public class RestUnitTest {
                 RequestBody.create(MediaType.parse("multipart/form-data"), f);
 
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
+                MultipartBody.Part.createFormData("thumbnail", resource.getPath(), requestFile);
 
         restApi.putUserProfilePicture(Credentials.basic("xlagunas", "123456"), body)
         .subscribe(new Subscriber<UserEntity>() {
