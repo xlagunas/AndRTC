@@ -53,12 +53,12 @@ public interface RestApi {
     Observable<UserEntity> putUserProfilePicture(@Header("Authorization") String authorization, @Part MultipartBody.Part file);
 
     @POST("user/call/{id}")
-    Observable requestCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
+    Observable<Void> requestCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
 
     @POST("user/call/{id}/accept")
-    Observable acceptCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
+    Observable<Void> acceptCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
 
     @POST("user/call/{id}/reject")
-    Observable cancelCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
+    Observable<Void> cancelCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
 
 }

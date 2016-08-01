@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.ShowContactsPresenter;
 import cat.xlagunas.andrtc.view.ListDataView;
+import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
+import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -55,6 +57,27 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     @Override
     public void addFriends(List<Friend> friends) {
         super.onAddedFriends(friends);
+        adapter.setOnClickListener(new OnFriendClickListener() {
+            @Override
+            public void onItemClicked(int position, Friend item) {
+                startActivity(CallRequestActivity.makeCallerIntent(getContext(), item.getId()));
+            }
+
+            @Override
+            public void onFriendAccepted(Friend friend) {
+
+            }
+
+            @Override
+            public void onFriendRequested(Friend friend) {
+
+            }
+
+            @Override
+            public void onFriendRejected(Friend friend) {
+
+            }
+        });
     }
 
     @Override
