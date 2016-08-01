@@ -133,7 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("thumbnail", " ", requestFile);
+                MultipartBody.Part.createFormData("thumbnail", file.getName(), requestFile);
 
         return restApi.putUserProfilePicture(Credentials.basic(user.getUsername(), user.getPassword()), body)
                 .doOnNext(saveToCacheAction)

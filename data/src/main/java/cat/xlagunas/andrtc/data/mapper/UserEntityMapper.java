@@ -103,7 +103,7 @@ public class UserEntityMapper {
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
-        user.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
+        user.setThumbnail(entity.getThumbnail());
 
         return user;
     }
@@ -116,7 +116,7 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
-        friend.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
+        friend.setThumbnail(entity.getThumbnail());
 
         return friend;
     }
