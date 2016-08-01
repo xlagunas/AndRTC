@@ -60,8 +60,6 @@ dependencies {
     compile project(':domain')
     compile project(':data')
 
-
-
     apt presentationDependencies.daggerCompiler
     compile presentationDependencies.dagger
     compile presentationDependencies.butterKnife
@@ -93,6 +91,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
 
 
