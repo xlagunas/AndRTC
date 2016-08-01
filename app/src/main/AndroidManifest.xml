@@ -18,12 +18,8 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:name="cat.xlagunas.andrtc.view.activity.TestActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name="cat.xlagunas.andrtc.view.activity.CallRequestActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>

@@ -66,17 +66,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Observable requestCallUser(User user, String friendId) {
+    public Observable<Void> requestCallUser(User user, String friendId) {
         return restApi.requestCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
     @Override
-    public Observable acceptCallUser(User user, String friendId) {
+    public Observable<Void> acceptCallUser(User user, String friendId) {
         return restApi.acceptCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
     @Override
-    public Observable cancelCallUser(User user, String friendId) {
+    public Observable<Void> cancelCallUser(User user, String friendId) {
         return restApi.cancelCallUser(Credentials.basic(user.getUsername(), user.getPassword()), friendId);
     }
 
