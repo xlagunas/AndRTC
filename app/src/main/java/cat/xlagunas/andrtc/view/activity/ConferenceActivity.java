@@ -1,196 +1,116 @@
 package cat.xlagunas.andrtc.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.WindowManager;
 
-import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.EglBase;
 import org.webrtc.Logging;
+import org.webrtc.MediaConstraints;
+import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
+import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoRenderer;
 import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
 
 import java.util.concurrent.Executor;
-
-import javax.inject.Inject;
+import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
-import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
-import cat.xlagunas.andrtc.di.modules.ConferenceModule;
 
 /**
  * Created by xlagunas on 3/8/16.
  */
-public class ConferenceActivity extends BaseActivity implements WebRTCManagerImpl.ConferenceListener {
-    private static final String EXTRA_ROOM_ID = "room_id";
+public class ConferenceActivity extends BaseActivity {
+    public static final String VIDEO_TRACK_ID = "ARDAMSv0";
+    private static final String MAX_VIDEO_WIDTH_CONSTRAINT = "maxWidth";
+    private static final String MIN_VIDEO_WIDTH_CONSTRAINT = "minWidth";
+    private static final String MAX_VIDEO_HEIGHT_CONSTRAINT = "maxHeight";
+    private static final String MIN_VIDEO_HEIGHT_CONSTRAINT = "minHeight";
+    private static final String MAX_VIDEO_FPS_CONSTRAINT = "maxFrameRate";
+    private static final String MIN_VIDEO_FPS_CONSTRAINT = "minFrameRate";
 
     private static final String TAG = ConferenceActivity.class.getSimpleName();
-    private static final int CONFERENCE_REQUEST_CODE = 200;
-
-    private static final String[] permissions = {"android.permission.RECORD_AUDIO", "android.permission.CAMERA"};
-    private VideoSource videoSource;
-
     @Bind(R.id.local_video_view)
     SurfaceViewRenderer localRenderer;
     CameraVideoCapturer videoCapturer;
 
-    @Bind(R.id.remote_vide_view)
-    SurfaceViewRenderer remoteRenderer;
-
-    @Inject
-    Executor executor;
-
-    @Inject
-    WebRTCManager manager;
-
-    private boolean startedLocalStream = false;
-
-    public static Intent startActivity(Context context, String roomId) {
-        Intent intent = new Intent(context, ConferenceActivity.class);
-        intent.putExtra(EXTRA_ROOM_ID, roomId);
-
-        return intent;
-    }
+//    @Inject
+//    ConferencePresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        CustomApplication.getApp(this).getUserComponent().inject(this);
         setContentView(R.layout.activity_conference);
 
-        String room = getIntent().getStringExtra(EXTRA_ROOM_ID);
-
-        CustomApplication.getApp(this).getUserComponent().plus(new ConferenceModule(EglBase.create(), room)).inject(this);
+        EglBase eglBase = EglBase.create();
 
         ButterKnife.bind(this);
+        localRenderer.init(eglBase.getEglBaseContext(), null);
+        Executor executor = Executors.newSingleThreadScheduledExecutor();
 
-        checkPermissions();
-    }
-
-    private void checkPermissions(){
-        boolean arePermissionsOk = true;
-
-        for (int i=0;i<permissions.length; i++){
-            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
-                arePermissionsOk = false;
-                ActivityCompat.requestPermissions(this, permissions, CONFERENCE_REQUEST_CODE);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                createCapturer(new Camera2Enumerator(ConferenceActivity.this));
+                createVideoTrack();
+//                Looper.loop();
+                localRenderer.requestLayout();
             }
-        }
+        };
 
-        if (arePermissionsOk) {
-            init();
-        }
-    }
-
-    private void init() {
-        manager.setConferenceListener(this);
-        manager.init();
-        createCapturer(getCameraEnumerator());
-        manager.initLocalSource(localRenderer, videoCapturer);
-        manager.initRemoteSource(remoteRenderer);
-        localRenderer.setZOrderMediaOverlay(true);
-    }
-
-    private CameraEnumerator getCameraEnumerator(){
-        if (Build.VERSION.SDK_INT >= 21){
-            return new Camera2Enumerator(this);
-        } else {
-            return new Camera1Enumerator(true);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CONFERENCE_REQUEST_CODE) {
-            boolean arePermissionsGranted = true;
-
-            for (int i=0;i<permissions.length; i++){
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                    arePermissionsGranted = false;
-                }
-            }
-            if (arePermissionsGranted) {
-                init();
-            }
-        }
-    }
+       executor.execute(r);
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initLocalVideo();
-    }
-
-    private void initLocalVideo() {
-        if (videoSource != null && !startedLocalStream) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    videoSource.restart();
-                }
-            });
-            startedLocalStream = true;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        stopLocalVideo();
-        super.onPause();
 
     }
 
-    private void stopLocalVideo() {
-        if (videoSource != null && startedLocalStream) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    videoSource.stop();
-                }
-            });
-            startedLocalStream = false;
-        }
-    }
+    private VideoTrack createVideoTrack() {
 
-    @Override
-    protected void onDestroy() {
-        if (localRenderer != null) {
-            localRenderer.release();
-            localRenderer = null;
-        }
-        if (videoCapturer != null) {
-            videoCapturer.dispose();
-            videoCapturer = null;
-        }
+        PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
+        PeerConnectionFactory factory = new PeerConnectionFactory(null);
+        factory.createLocalMediaStream("ARDAMS");
 
-        manager.stop();
-        super.onDestroy();
+        MediaConstraints videoConstraints = new MediaConstraints();
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MIN_VIDEO_WIDTH_CONSTRAINT, Integer.toString(1920)));
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MAX_VIDEO_WIDTH_CONSTRAINT, Integer.toString(1920)));
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MIN_VIDEO_HEIGHT_CONSTRAINT, Integer.toString(720)));
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MAX_VIDEO_HEIGHT_CONSTRAINT, Integer.toString(720)));
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MIN_VIDEO_FPS_CONSTRAINT, Integer.toString(30)));
+        videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
+                MAX_VIDEO_FPS_CONSTRAINT, Integer.toString(30)));
+        VideoSource videoSource = factory.createVideoSource(videoCapturer, videoConstraints);
+
+        VideoTrack localVideoTrack = factory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
+        localVideoTrack.setEnabled(true);
+        localVideoTrack.addRenderer(new VideoRenderer(localRenderer));
+        MediaStream stream = factory.createLocalMediaStream("ARDAMS");
+        stream.addTrack(localVideoTrack);
+
+        return localVideoTrack;
     }
 
     private void createCapturer(CameraEnumerator enumerator) {
         final String[] deviceNames = enumerator.getDeviceNames();
 
-        // First, try to find back facing camera
+        // First, try to find front facing camera
         Logging.d(TAG, "Looking for front facing cameras.");
         for (String deviceName : deviceNames) {
             if (enumerator.isFrontFacing(deviceName)) {
-                Logging.d(TAG, "Creating back facing camera capturer.");
+                Logging.d(TAG, "Creating front facing camera capturer.");
                 videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
@@ -199,11 +119,11 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
             }
         }
 
-        // Front back camera not found, try something else
+        // Front facing camera not found, try something else
         Logging.d(TAG, "Looking for other cameras.");
         for (String deviceName : deviceNames) {
             if (!enumerator.isFrontFacing(deviceName)) {
-                Logging.d(TAG, "Creating front camera capturer.");
+                Logging.d(TAG, "Creating other camera capturer.");
                 videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
@@ -212,11 +132,4 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
             }
         }
     }
-
-    @Override
-    public void onLocalVideoGenerated(VideoSource videoSource) {
-        this.videoSource = videoSource;
-        initLocalVideo();
-    }
-
 }
