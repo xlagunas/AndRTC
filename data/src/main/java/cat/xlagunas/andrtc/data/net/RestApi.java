@@ -56,9 +56,9 @@ public interface RestApi {
     Observable<Void> requestCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
 
     @POST("user/call/{id}/accept")
-    Observable<Void> acceptCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
+    Observable<Void> acceptCallUser(@Header("Authorization") String authorization, @Path("id") String callId);
 
     @POST("user/call/{id}/reject")
-    Observable<Void> cancelCallUser(@Header("Authorization") String authorization, @Path("id") String friendId);
+    Observable<Void> cancelCallUser(@Header("Authorization") String authorization, @Path("id") String callId);
 
 }

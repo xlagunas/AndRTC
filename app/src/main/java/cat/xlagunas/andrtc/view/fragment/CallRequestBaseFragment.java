@@ -62,7 +62,7 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
 
     @Override
     public void updateUserData(Friend friend) {
-        Glide.with(this).load("http://192.168.1.133:3000/images/"+friend.getThumbnail()).centerCrop().into(callerImage);
+        Glide.with(this).load(friend.getThumbnail()).centerCrop().into(callerImage);
         StringBuilder builder = new StringBuilder(friend.getName())
                 .append(" "+friend.getSurname());
         if (friend.getLastSurname() != null && !friend.getLastSurname().isEmpty()){
