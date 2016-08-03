@@ -57,17 +57,17 @@ public class ConferenceActivity extends BaseActivity {
         localRenderer.init(eglBase.getEglBaseContext(), null);
         Executor executor = Executors.newSingleThreadScheduledExecutor();
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
+//        Runnable r = new Runnable() {
+//            @Override
+//            public void run() {
                 createCapturer(new Camera2Enumerator(ConferenceActivity.this));
                 createVideoTrack();
 //                Looper.loop();
                 localRenderer.requestLayout();
-            }
-        };
-
-       executor.execute(r);
+//            }
+//        };
+//
+//       executor.execute(r);
 
 
 
