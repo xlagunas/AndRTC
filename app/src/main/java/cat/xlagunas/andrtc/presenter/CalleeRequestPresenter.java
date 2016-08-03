@@ -5,26 +5,31 @@ import javax.inject.Inject;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.CallRequestUseCase;
+import xlagunas.cat.andrtc.domain.interactor.AcceptCallRequestUseCase;
 import xlagunas.cat.andrtc.domain.interactor.CancelCallRequestUseCase;
 import xlagunas.cat.andrtc.domain.interactor.SearchFriendUseCase;
 
 /**
  * Created by xlagunas on 25/7/16.
  */
-public class CallerRequestPresenter extends CallRequestPresenter {
+public class CalleeRequestPresenter extends CallRequestPresenter {
 
     private final User user;
-    private final CallRequestUseCase callRequestUseCase;
     private final CancelCallRequestUseCase cancelCallRequestUseCase;
+    private final AcceptCallRequestUseCase acceptCallRequestUseCase;
     private final SearchFriendUseCase searchFriendUseCase;
 
     @Inject
-    public CallerRequestPresenter(User user, SearchFriendUseCase searchFriendUseCase, CallRequestUseCase callRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase){
+    public CalleeRequestPresenter(User user, SearchFriendUseCase searchFriendUseCase, AcceptCallRequestUseCase acceptCallRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase){
         this.user = user;
-        this.callRequestUseCase = callRequestUseCase;
+        this.acceptCallRequestUseCase = acceptCallRequestUseCase;
         this.cancelCallRequestUseCase = cancelCallRequestUseCase;
         this.searchFriendUseCase = searchFriendUseCase;
+    }
+
+    @Override
+    public void resume() {
+        startTimer();
     }
 
     @Override
@@ -40,30 +45,25 @@ public class CallerRequestPresenter extends CallRequestPresenter {
         });
     }
 
-    @Override
-    public void resume() {
 
-        callRequestUseCase.setFriendId(friendId);
-        callRequestUseCase.execute(new DefaultSubscriber<Void>() {
+
+    public void accept(){
+        acceptCallRequestUseCase.setRoomId(callId);
+        acceptCallRequestUseCase.execute(new DefaultSubscriber<Void>(){
             @Override
             public void onCompleted() {
-                startTimer();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.setOnError(e);
+                super.onCompleted();
+                CalleeRequestPresenter.super.goToConference();
             }
         });
     }
-
     @Override
     public void cancel() {
-        cancelCallRequestUseCase.setRoomId(friendId);
+        cancelCallRequestUseCase.setRoomId(callId);
         cancelCallRequestUseCase.execute(new DefaultSubscriber<Void>() {
             @Override
             public void onCompleted() {
-                CallerRequestPresenter.super.cancel();
+                CalleeRequestPresenter.super.cancel();
             }
 
             @Override

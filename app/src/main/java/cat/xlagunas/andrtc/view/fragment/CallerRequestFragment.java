@@ -1,9 +1,14 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -13,6 +18,7 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
+import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.presenter.CallerRequestPresenter;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -25,10 +31,20 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
     @Inject
     CallerRequestPresenter presenter;
 
+    private BroadcastReceiver onCallAccepted;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getComponent(UserComponent.class).inject(this);
+        onCallAccepted = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.setCallId(intent.getStringExtra("callId"));
+                presenter.goToConference();
+            }
+        };
     }
 
     @Override
@@ -43,6 +59,14 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
     public void onResume() {
         super.onResume();
         presenter.resume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(onCallAccepted,
+                new IntentFilter(MyGcmListenerService.BROADCAST_CALL_ACCEPTED));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onCallAccepted);
     }
 
     @Override
@@ -50,10 +74,14 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
         Snackbar.make(getView(), "STARTING CONFERENCE", Snackbar.LENGTH_LONG).show();
     }
 
-    @Override
     @OnClick(R.id.cancel_call)
-    public void cancelConference() {
+    public void onCancelButton(){
         Snackbar.make(getView(), "CANCELLING CONFERENCE", Snackbar.LENGTH_LONG).show();
+        presenter.cancel();
+    }
+
+    @Override
+    public void cancelConference() {
         getActivity().finish();
     }
 

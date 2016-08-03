@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
+import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
@@ -25,12 +27,15 @@ import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
-    private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
-    private static final int FRIENDSHIP_REJECTED_TYPE = 4;
-    private static final int FRIENDSHIP_DELETED_TYPE = 5;
-    private static final int CALL_TYPE = 2;
+    private static final int FRIENDSHIP_ACCEPTED_TYPE = 2;
+    private static final int FRIENDSHIP_REJECTED_TYPE = 3;
+    private static final int FRIENDSHIP_DELETED_TYPE = 4;
+
+    private static final int CALL_RECEIVED_TYPE = 100;
+    private static final int CALL_ACCEPTED_TYPE = 101;
 
     private static final String TAG = "MyGcmListenerService";
+    public static final String BROADCAST_CALL_ACCEPTED = "call_accepted";
 
     @Inject
     UpdateProfileUseCase useCase;
@@ -72,11 +77,6 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 });
                 break;
-            case CALL_TYPE:
-                Log.d(TAG, "Call message notification sent");
-                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
-                break;
-
             case FRIENDSHIP_ACCEPTED_TYPE:
                 useCase.execute(new DefaultSubscriber() {
                     @Override
@@ -109,6 +109,23 @@ public class MyGcmListenerService extends GcmListenerService {
                     }
                 });
                 break;
+            case CALL_RECEIVED_TYPE:
+                Log.d(TAG, "Call message notification sent");
+                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
+                startActivity(CallRequestActivity
+                        .makeCalleeIntent(MyGcmListenerService.this,
+                                data.getString("callerId"),
+                                data.getString("roomId")));
+                break;
+            case CALL_ACCEPTED_TYPE:
+                Log.d(TAG, "Requestee accepted the call");
+                Intent intent = new Intent(BROADCAST_CALL_ACCEPTED);
+                intent.putExtra("roomId", data.getString("roomId"));
+                LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                        .sendBroadcast(intent);
+                break;
+
+
         }
 
 
