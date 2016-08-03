@@ -1,9 +1,11 @@
 package xlagunas.cat.andrtc.domain;
 
+import java.util.Comparator;
+
 /**
  * Created by xlagunas on 26/02/16.
  */
-public class Friend extends AbstractUser{
+public class Friend extends AbstractUser implements Comparable<Friend>{
 
     public final static int ACCEPTED    = 1;
     public final static int REQUESTED   = 2;
@@ -35,5 +37,14 @@ public class Friend extends AbstractUser{
         return super.toString() + "Friend{" +
                 "friendState=" + friendState +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Friend friend) {
+        if (this.getFriendState() == friend.getFriendState()){
+            return this.getUsername().compareTo(friend.getUsername());
+        }
+
+        return friend.getFriendState() - this.getFriendState();
     }
 }

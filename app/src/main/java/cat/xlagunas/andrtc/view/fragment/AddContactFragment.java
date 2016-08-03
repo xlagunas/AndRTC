@@ -1,5 +1,8 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
@@ -14,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -76,6 +81,12 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void onResume() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.search("");
+            }
+        };
         super.onResume();
         presenter.resume();
     }
@@ -111,8 +122,8 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     }
 
     @Override
-    public void addFriendToList(Friend friend) {
-        onAddedFriend(friend);
+    public void addFriends(List<Friend> friends) {
+        onAddedFriends(friends);
     }
 
     @Override

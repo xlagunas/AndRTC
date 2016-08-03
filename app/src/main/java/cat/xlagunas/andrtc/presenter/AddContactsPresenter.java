@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.presenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.SearchListView;
@@ -59,7 +61,7 @@ public class AddContactsPresenter implements Presenter {
 
     public void search(String keyword){
         searchUserUseCase.setFilter(keyword);
-        searchUserUseCase.execute(new Subscriber<Friend>() {
+        searchUserUseCase.execute(new Subscriber<List<Friend>>() {
 
             @Override
             public void onCompleted() {
@@ -77,8 +79,8 @@ public class AddContactsPresenter implements Presenter {
             }
 
             @Override
-            public void onNext(Friend friend) {
-                view.addFriendToList(friend);
+            public void onNext(List<Friend> friends) {
+                view.addFriends(friends);
             }
 
 

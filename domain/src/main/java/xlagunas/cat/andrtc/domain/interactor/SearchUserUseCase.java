@@ -1,5 +1,7 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -33,12 +35,12 @@ public class SearchUserUseCase extends UseCase {
     }
 
     @Override
-    protected Observable<Friend> buildUseCaseObservable() {
-        Observable<Friend> observable = filter.equals("")
+    protected Observable<List<Friend>> buildUseCaseObservable() {
+        Observable<Friend> observable = filter.isEmpty()
                 ? Observable.<Friend>empty()
                 : repository.searchUsers(user, filter);
 
         return  observable
-                .mergeWith(repository.listRequestedContacts());
+                .mergeWith(repository.listRequestedContacts()).toSortedList();
     }
 }

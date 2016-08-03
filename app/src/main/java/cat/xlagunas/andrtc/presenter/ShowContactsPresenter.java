@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.presenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.ListDataView;
@@ -41,7 +43,7 @@ public class ShowContactsPresenter implements Presenter {
     }
 
     public void init() {
-        useCase.execute(new DefaultSubscriber<Friend>(){
+        useCase.execute(new DefaultSubscriber<List<Friend>>(){
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
@@ -49,10 +51,14 @@ public class ShowContactsPresenter implements Presenter {
             }
 
             @Override
-            public void onNext(Friend friend) {
-                super.onNext(friend);
-                view.addFriend(friend);
+            public void onNext(List<Friend> friends) {
+                super.onNext(friends);
+                view.addFriends(friends);
             }
         });
+    }
+
+    public void updateContacts() {
+        init();
     }
 }

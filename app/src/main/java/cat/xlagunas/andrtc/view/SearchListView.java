@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.view;
 
+import java.util.List;
+
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -10,7 +12,7 @@ public interface SearchListView {
     void doSearch(String filter);
     void showEmpty();
     void showList();
-    void addFriendToList(Friend friend);
+    void addFriends(List<Friend> friend);
     void clearAdapter();
 
     void showConfirmationError(Throwable e);

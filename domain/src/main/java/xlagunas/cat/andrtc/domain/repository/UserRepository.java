@@ -51,5 +51,11 @@ public interface UserRepository {
 
     Observable updateProfile(User user);
 
+    Observable requestCallUser(User user, String friendId);
+
+    Observable acceptCallUser(User user, String friendId);
+
+    Observable cancelCallUser(User user, String friendId);
+
 
     }

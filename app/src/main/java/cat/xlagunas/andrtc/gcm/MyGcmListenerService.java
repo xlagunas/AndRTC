@@ -2,11 +2,14 @@ package cat.xlagunas.andrtc.gcm;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -15,6 +18,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
+import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
@@ -23,10 +27,15 @@ import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
-    private static final int FRIENDSHIP_ACCEPTED_TYPE = 3;
-    private static final int CALL_TYPE = 2;
+    private static final int FRIENDSHIP_ACCEPTED_TYPE = 2;
+    private static final int FRIENDSHIP_REJECTED_TYPE = 3;
+    private static final int FRIENDSHIP_DELETED_TYPE = 4;
+
+    private static final int CALL_RECEIVED_TYPE = 100;
+    private static final int CALL_ACCEPTED_TYPE = 101;
 
     private static final String TAG = "MyGcmListenerService";
+    public static final String BROADCAST_CALL_ACCEPTED = "call_accepted";
 
     @Inject
     UpdateProfileUseCase useCase;
@@ -34,7 +43,11 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-        CustomApplication.getApp(this).getUserComponent().inject(this);
+        Context context = MyGcmListenerService.this;
+        Log.d(TAG, "Context is null? "+context == null ? "yes" : "no");
+        if (context != null) {
+            CustomApplication.getApp(context).getUserComponent().inject(this);
+        }
     }
 
     /**
@@ -49,7 +62,7 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         int messageType = Integer.parseInt(data.getString("type"));
 
-        Log.d(TAG, "From: " + from);
+        Log.d(TAG, "From: " + from + "type: "+messageType);
 
         final Bundle information = data;
 
@@ -59,36 +72,63 @@ public class MyGcmListenerService extends GcmListenerService {
                     @Override
                     public void onCompleted() {
                         sendFriendshipRequestNotification(information);
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
-                break;
-            case CALL_TYPE:
-                Log.d(TAG, "Call message notification sent");
-                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
                 break;
             case FRIENDSHIP_ACCEPTED_TYPE:
                 useCase.execute(new DefaultSubscriber() {
                     @Override
                     public void onCompleted() {
                         sendFriendshipAcceptedNotification(information);
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
                     }
                 });
                 break;
+            case FRIENDSHIP_REJECTED_TYPE:
+                useCase.execute(new DefaultSubscriber() {
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Log.d(TAG, "someone rejected relationship, roster updated");
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
+                    }
+                });
+                break;
+            case FRIENDSHIP_DELETED_TYPE:
+                useCase.execute(new DefaultSubscriber(){
+                    @Override
+                    public void onCompleted() {
+                        super.onCompleted();
+                        Log.d(TAG, "Someone deleted relationship, roster updated");
+                        LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                                .sendBroadcast(new Intent("UPDATE_USERS"));
+                    }
+                });
+                break;
+            case CALL_RECEIVED_TYPE:
+                Log.d(TAG, "Call message notification sent");
+                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
+                startActivity(CallRequestActivity
+                        .makeCalleeIntent(MyGcmListenerService.this,
+                                data.getString("callerId"),
+                                data.getString("roomId")));
+                break;
+            case CALL_ACCEPTED_TYPE:
+                Log.d(TAG, "Requestee accepted the call");
+                Intent intent = new Intent(BROADCAST_CALL_ACCEPTED);
+                intent.putExtra("roomId", data.getString("roomId"));
+                LocalBroadcastManager.getInstance(MyGcmListenerService.this)
+                        .sendBroadcast(intent);
+                break;
+
+
         }
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        // [END_EXCLUDE]
     }
 
     private void sendFriendshipAcceptedNotification(Bundle data) {

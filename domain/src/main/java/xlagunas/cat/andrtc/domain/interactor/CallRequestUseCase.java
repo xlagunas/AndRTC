@@ -1,32 +1,36 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import rx.Observable;
-import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
- * Created by xlagunas on 19/03/16.
+ * Created by xlagunas on 25/7/16.
  */
-public class ContactsUseCase extends UseCase {
+public class CallRequestUseCase extends UseCase {
+
     private final User user;
     private final UserRepository userRepository;
 
+
+    private String friendId;
+
+    public void setFriendId(String id){
+        this.friendId = id;
+    }
+
     @Inject
-    public ContactsUseCase(PostExecutionThread postExecutionThread, User user, UserRepository userRepository) {
+    public CallRequestUseCase(User user, UserRepository userRepository, PostExecutionThread postExecutionThread) {
         super(postExecutionThread);
         this.user = user;
         this.userRepository = userRepository;
     }
 
-
-        @Override
-    protected Observable<List<Friend>> buildUseCaseObservable() {
-        return userRepository.listContacts(user).toSortedList();
+    @Override
+    protected Observable buildUseCaseObservable() {
+        return userRepository.requestCallUser(user, friendId);
     }
 }

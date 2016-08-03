@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import cat.xlagunas.andrtc.data.net.webrtc.SocketIOTransport;
-import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
+import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.WebRTCMessage;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -31,7 +31,7 @@ public class SocketIOTest {
 
     @Test
     public void checkConnection(){
-        WebRTCManager manager = new WebRTCManager(new SocketIOTransport(user));
+        WebRTCManagerImpl manager = new WebRTCManagerImpl(new SocketIOTransport(user));
         manager.observable.subscribeOn(Schedulers.immediate()).observeOn(Schedulers.immediate())
                 .subscribe(new Subscriber<WebRTCMessage>() {
                     @Override
