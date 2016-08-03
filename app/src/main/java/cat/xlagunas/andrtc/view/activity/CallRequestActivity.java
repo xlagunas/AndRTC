@@ -24,7 +24,7 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
 
     private final static String EXTRA_MODE = "type";
     public final static String EXTRA_FRIEND_ID = "friendId";
-    private final static boolean EXTRA_MODE_CALLER = true;
+    public final static String EXTRA_ROOM_ID = "roomId";
 
     private boolean isCaller;
 
@@ -44,8 +44,12 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
         return intent;
     }
 
-    public static Intent makeCalleeIntent(Context context){
-        return makeIntent(context, false);
+    public static Intent makeCalleeIntent(Context context, String friendId, String roomId){
+        Intent intent = makeIntent(context, false);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRA_FRIEND_ID, friendId);
+        intent.putExtra(EXTRA_ROOM_ID, roomId);
+        return intent;
     }
 
     @Override
@@ -55,30 +59,17 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
 
         isCaller = getIntent().getBooleanExtra(EXTRA_MODE, false);
         String friendId = getIntent().getStringExtra(EXTRA_FRIEND_ID);
+        String roomId = getIntent().getStringExtra(EXTRA_ROOM_ID);
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, isCaller ? CallerRequestFragment.makeInstance(friendId) : new CalleeRequestFragment())
+                .add(R.id.fragment_container, isCaller
+                        ? CallerRequestFragment.makeInstance(friendId)
+                        : CalleeRequestFragment.makeInstance(friendId, roomId))
                 .commit();
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (isCaller){
-            //TODO REGISTER BROADCAST FROM NOTIFICATION
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isCaller){
-            //TODO UNREGISTER BROADCAST FROM NOTIFICATION
-        }
     }
 
     @Override
