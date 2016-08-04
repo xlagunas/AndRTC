@@ -40,6 +40,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void onCompleted() {
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                        Intent intent = ConferenceActivity.startActivity(SplashActivity.this, "patata");
                         startActivity(intent);
                         finish();
                     }

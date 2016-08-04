@@ -21,6 +21,7 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.presenter.CallerRequestPresenter;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
+import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -41,7 +42,7 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
         onCallAccepted = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                presenter.setCallId(intent.getStringExtra("callId"));
+                presenter.setCallId(intent.getStringExtra("roomId"));
                 presenter.goToConference();
             }
         };
@@ -72,6 +73,7 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
     @Override
     public void startConference(String confId) {
         Snackbar.make(getView(), "STARTING CONFERENCE", Snackbar.LENGTH_LONG).show();
+        startActivity(ConferenceActivity.startActivity(getActivity(), confId));
     }
 
     @OnClick(R.id.cancel_call)
