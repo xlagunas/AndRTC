@@ -31,7 +31,6 @@ public interface UserComponent {
     void inject(RegisterActivity activity);
     void inject(RegistrationIntentService service);
     void inject(AddContactsActivity activity);
-    void inject(ConferenceActivity activity);
 
     void inject(AddContactFragment fragment);
     void inject(CurrentContactFragment fragment);

@@ -12,6 +12,7 @@ import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.CalleeRequestPresenter;
+import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 
 /**
  * Created by xlagunas on 25/7/16.
@@ -67,6 +68,7 @@ public class CalleeRequestFragment extends CallRequestBaseFragment {
     public void startConference(String roomId) {
         Log.d(TAG, "Starting conference with Id: "+roomId);
         Snackbar.make(getView(), "Starting conference with id"+roomId, Snackbar.LENGTH_SHORT).show();
+        startActivity(ConferenceActivity.startActivity(getActivity(), roomId));
     }
 
     @OnClick(R.id.accept_call)
