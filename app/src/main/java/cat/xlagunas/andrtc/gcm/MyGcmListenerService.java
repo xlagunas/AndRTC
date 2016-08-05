@@ -17,10 +17,13 @@ import com.google.android.gms.gcm.GcmListenerService;
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
+import cat.xlagunas.andrtc.data.cache.UserCache;
+import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 
 
@@ -39,6 +42,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Inject
     UpdateProfileUseCase useCase;
+    @Inject
+    UserCache userCache;
 
     @Override
     public void onCreate() {
@@ -46,7 +51,9 @@ public class MyGcmListenerService extends GcmListenerService {
         Context context = MyGcmListenerService.this;
         Log.d(TAG, "Context is null? "+context == null ? "yes" : "no");
         if (context != null) {
-            CustomApplication.getApp(context).getUserComponent().inject(this);
+            UserComponent component = CustomApplication.getApp(context).getUserComponent();
+
+            component.inject(this);
         }
     }
 
@@ -111,7 +118,6 @@ public class MyGcmListenerService extends GcmListenerService {
                 break;
             case CALL_RECEIVED_TYPE:
                 Log.d(TAG, "Call message notification sent");
-                sendNotification("Title", "SOMEBODY IS CALLING YOU!");
                 startActivity(CallRequestActivity
                         .makeCalleeIntent(MyGcmListenerService.this,
                                 data.getString("callerId"),
