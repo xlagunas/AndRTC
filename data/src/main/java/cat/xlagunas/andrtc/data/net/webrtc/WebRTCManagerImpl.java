@@ -3,6 +3,8 @@ package cat.xlagunas.andrtc.data.net.webrtc;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
@@ -26,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -35,6 +39,16 @@ import javax.inject.Inject;
 
 public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     public static final String VIDEO_TRACK_ID = "ARDAMSv0";
+
+    private static final String VIDEO_CODEC_VP8 = "VP8";
+    private static final String VIDEO_CODEC_VP9 = "VP9";
+    private static final String VIDEO_CODEC_H264 = "H264";
+    private static final String AUDIO_CODEC_OPUS = "opus";
+    private static final String AUDIO_CODEC_ISAC = "ISAC";
+    private static final String VIDEO_CODEC_PARAM_START_BITRATE =  "x-google-start-bitrate";
+    private static final String AUDIO_CODEC_PARAM_BITRATE = "maxaveragebitrate";
+
+
 
     private static final String MAX_VIDEO_WIDTH_CONSTRAINT = "maxWidth";
     private static final String MIN_VIDEO_WIDTH_CONSTRAINT = "minWidth";
@@ -61,6 +75,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     private MediaConstraints peerConnectionConstraints;
     private VideoTrack localVideoTrack;
     private VideoSource localVideoSource;
+    private MediaStream localMediaStream;
 
     private List<PeerConnection.IceServer> iceServerList;
     private Map<String, PeerData> peerConnectionMap;
@@ -197,31 +212,33 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
         PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, new PeerConnection.Observer() {
             @Override
             public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-                Log.d(TAG, "onSignalingChange");
+                Log.d(TAG, "onSignalingChange" +new Gson().toJson(signalingState));
             }
 
             @Override
             public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-                Log.d(TAG, "onIceConnectionChange");
+                Log.d(TAG, "onIceConnectionChange"+new Gson().toJson(iceConnectionState));
 
             }
 
             @Override
             public void onIceConnectionReceivingChange(boolean b) {
-                Log.d(TAG, "onIceConnectionReceivingChange");
+                Log.d(TAG, "onIceConnectionReceivingChange"+ new Gson().toJson(b));
 
             }
 
             @Override
             public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-                Log.d(TAG, "onIceGatheringChange");
+                Log.d(TAG, "onIceGatheringChange" +new Gson().toJson(iceGatheringState));
 
             }
 
             @Override
             public void onIceCandidate(IceCandidate iceCandidate) {
-                Log.d(TAG, "onIceCandidate");
-
+                Log.d(TAG, "onIceCandidate"+ new Gson().toJson(iceCandidate));
+                executor.execute(()-> {
+                    transport.sendIceCandidate(userId, iceCandidate);
+                });
             }
 
             @Override
@@ -244,7 +261,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
             @Override
             public void onDataChannel(DataChannel dataChannel) {
-                Log.d(TAG, "onDataChannel");
+                Log.d(TAG, "onDataChannel" +new Gson().toJson(dataChannel));
 
             }
 
@@ -254,22 +271,31 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
             }
         });
+        if (localMediaStream == null){
+            localMediaStream = factory.createLocalMediaStream("ARDAMS");
+            localMediaStream.addTrack(localVideoTrack);
+        }
+        peerConnection.addStream(localMediaStream);
+
         final SdpObserver sdpObserver = new SdpObserver() {
             @Override
             public void onCreateSuccess(SessionDescription sessionDescription) {
-                Log.d(TAG, "oncreateSuccess");
+                Log.d(TAG, "oncreateSuccess: " + sessionDescription.description);
                 executor.execute(() -> peerConnection.setLocalDescription(peerConnectionMap.get(userId).getObserver(), sessionDescription));
             }
 
             @Override
             public void onSetSuccess() {
-                Log.d(TAG, "oncreateSuccess");
-                if (createAsInitiator){
-                    transport.sendOffer(userId, peerConnection.getLocalDescription());
-                } else {
-                    transport.sendAnswer(userId, peerConnection.getLocalDescription());
-                }
-
+                executor.execute(()-> {
+                    Log.d(TAG, "oncreateSuccess");
+                    if (createAsInitiator){
+                        transport.sendOffer(userId, peerConnection.getLocalDescription());
+                    } else {
+                        if (peerConnection.getLocalDescription() != null) {
+                            transport.sendAnswer(userId, peerConnection.getLocalDescription());
+                        }
+                    }
+                });
             }
 
             @Override
@@ -287,11 +313,23 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
         peerConnectionMap.put(userId, new PeerData(peerConnection,sdpObserver));
 
+        if (createAsInitiator){
+            peerConnection.createOffer(sdpObserver, getCallConstraints(true, false));
+        }
+
     }
 
     @Override
     public void onAnswerReceived(String senderId, JSONObject receivedAnswer) {
+        PeerData peerData = peerConnectionMap.get(senderId);
 
+        PeerConnection peerConnection = peerData.getPeerConnection();
+        try {
+            SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
+            peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -300,7 +338,15 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
         PeerConnection peerConnection = peerData.getPeerConnection();
         try  {
-            peerConnection.setRemoteDescription(peerData.getObserver(), new SessionDescription(SessionDescription.Type.OFFER, receivedOffer.getString("sdp")));
+            SessionDescription sdpDescription = new SessionDescription
+                    (SessionDescription.Type.OFFER, receivedOffer.getString("sdp"));
+
+            String description = preferCodec(sdpDescription.description, VIDEO_CODEC_VP8, false);
+            SessionDescription sdpRemote = new SessionDescription(
+                    sdpDescription.type, description);
+
+            peerConnection.setRemoteDescription(peerData.getObserver(), sdpRemote);
+            peerConnection.createAnswer(peerData.getObserver(), getCallConstraints(true, false));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -310,10 +356,136 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     @Override
     public void onIceCandidate(String senderId, JSONObject receivedIceCandidate) {
-
+//        peerConnectionMap.get(senderId).getPeerConnection().addIceCandidate(new IceCandidate())
     }
 
     public interface ConferenceListener {
         void onLocalVideoGenerated(VideoSource videouSource);
+    }
+
+    private static String setStartBitrate(String codec, boolean isVideoCodec,
+                                          String sdpDescription, int bitrateKbps) {
+        String[] lines = sdpDescription.split("\r\n");
+        int rtpmapLineIndex = -1;
+        boolean sdpFormatUpdated = false;
+        String codecRtpMap = null;
+        // Search for codec rtpmap in format
+        // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
+        String regex = "^a=rtpmap:(\\d+) " + codec + "(/\\d+)+[\r]?$";
+        Pattern codecPattern = Pattern.compile(regex);
+        for (int i = 0; i < lines.length; i++) {
+            Matcher codecMatcher = codecPattern.matcher(lines[i]);
+            if (codecMatcher.matches()) {
+                codecRtpMap = codecMatcher.group(1);
+                rtpmapLineIndex = i;
+                break;
+            }
+        }
+        if (codecRtpMap == null) {
+            Log.w(TAG, "No rtpmap for " + codec + " codec");
+            return sdpDescription;
+        }
+        Log.d(TAG, "Found " +  codec + " rtpmap " + codecRtpMap
+                + " at " + lines[rtpmapLineIndex]);
+
+        // Check if a=fmtp string already exist in remote SDP for this codec and
+        // update it with new bitrate parameter.
+        regex = "^a=fmtp:" + codecRtpMap + " \\w+=\\d+.*[\r]?$";
+        codecPattern = Pattern.compile(regex);
+        for (int i = 0; i < lines.length; i++) {
+            Matcher codecMatcher = codecPattern.matcher(lines[i]);
+            if (codecMatcher.matches()) {
+                Log.d(TAG, "Found " +  codec + " " + lines[i]);
+                if (isVideoCodec) {
+                    lines[i] += "; " + VIDEO_CODEC_PARAM_START_BITRATE
+                            + "=" + bitrateKbps;
+                } else {
+                    lines[i] += "; " + AUDIO_CODEC_PARAM_BITRATE
+                            + "=" + (bitrateKbps * 1000);
+                }
+                Log.d(TAG, "Update remote SDP line: " + lines[i]);
+                sdpFormatUpdated = true;
+                break;
+            }
+        }
+
+        StringBuilder newSdpDescription = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            newSdpDescription.append(lines[i]).append("\r\n");
+            // Append new a=fmtp line if no such line exist for a codec.
+            if (!sdpFormatUpdated && i == rtpmapLineIndex) {
+                String bitrateSet;
+                if (isVideoCodec) {
+                    bitrateSet = "a=fmtp:" + codecRtpMap + " "
+                            + VIDEO_CODEC_PARAM_START_BITRATE + "=" + bitrateKbps;
+                } else {
+                    bitrateSet = "a=fmtp:" + codecRtpMap + " "
+                            + AUDIO_CODEC_PARAM_BITRATE + "=" + (bitrateKbps * 1000);
+                }
+                Log.d(TAG, "Add remote SDP line: " + bitrateSet);
+                newSdpDescription.append(bitrateSet).append("\r\n");
+            }
+
+        }
+        return newSdpDescription.toString();
+    }
+
+    private static String preferCodec(
+            String sdpDescription, String codec, boolean isAudio) {
+        String[] lines = sdpDescription.split("\r\n");
+        int mLineIndex = -1;
+        String codecRtpMap = null;
+        // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
+        String regex = "^a=rtpmap:(\\d+) " + codec + "(/\\d+)+[\r]?$";
+        Pattern codecPattern = Pattern.compile(regex);
+        String mediaDescription = "m=video ";
+        if (isAudio) {
+            mediaDescription = "m=audio ";
+        }
+        for (int i = 0; (i < lines.length)
+                && (mLineIndex == -1 || codecRtpMap == null); i++) {
+            if (lines[i].startsWith(mediaDescription)) {
+                mLineIndex = i;
+                continue;
+            }
+            Matcher codecMatcher = codecPattern.matcher(lines[i]);
+            if (codecMatcher.matches()) {
+                codecRtpMap = codecMatcher.group(1);
+            }
+        }
+        if (mLineIndex == -1) {
+            Log.w(TAG, "No " + mediaDescription + " line, so can't prefer " + codec);
+            return sdpDescription;
+        }
+        if (codecRtpMap == null) {
+            Log.w(TAG, "No rtpmap for " + codec);
+            return sdpDescription;
+        }
+        Log.d(TAG, "Found " +  codec + " rtpmap " + codecRtpMap + ", prefer at "
+                + lines[mLineIndex]);
+        String[] origMLineParts = lines[mLineIndex].split(" ");
+        if (origMLineParts.length > 3) {
+            StringBuilder newMLine = new StringBuilder();
+            int origPartIndex = 0;
+            // Format is: m=<media> <port> <proto> <fmt> ...
+            newMLine.append(origMLineParts[origPartIndex++]).append(" ");
+            newMLine.append(origMLineParts[origPartIndex++]).append(" ");
+            newMLine.append(origMLineParts[origPartIndex++]).append(" ");
+            newMLine.append(codecRtpMap);
+            for (; origPartIndex < origMLineParts.length; origPartIndex++) {
+                if (!origMLineParts[origPartIndex].equals(codecRtpMap)) {
+                    newMLine.append(" ").append(origMLineParts[origPartIndex]);
+                }
+            }
+            lines[mLineIndex] = newMLine.toString();
+            Log.d(TAG, "Change media description: " + lines[mLineIndex]);
+        } else {
+            Log.e(TAG, "Wrong SDP media description format: " + lines[mLineIndex]);
+        }
+        StringBuilder newSdpDescription = new StringBuilder();
+        for (String line : lines) {
+            newSdpDescription.append(line).append("\r\n");
+        }
+        return newSdpDescription.toString();
     }
 }

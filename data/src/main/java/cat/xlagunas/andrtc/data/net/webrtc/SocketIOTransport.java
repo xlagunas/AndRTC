@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.IceCandidate;
 import org.webrtc.SessionDescription;
 
 import java.net.URISyntaxException;
@@ -13,12 +14,13 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import cat.xlagunas.andrtc.data.net.webrtc.messages.AnswerMessage;
+import cat.xlagunas.andrtc.data.net.webrtc.messages.IceCandidateMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -61,11 +63,24 @@ public class SocketIOTransport implements Transport {
                 socket.emit("call:register", gson.toJson(new JoinRoomMsg(roomId)));
             });
             socket.on("call:addUser", userObject -> {
-                Log.d(TAG, userObject.toString());
-                callbacks.createNewPeerConnection("1", true);
+                Log.d(TAG, "call:addUser");
+                JSONObject user = (JSONObject) userObject[0];
+
+                try {
+                    String userId = user.getString("_id");
+                    socket.on(userId+":answer", callArgs -> {
+                        Log.d(TAG, "Received an answer from user"+userId);
+                        JSONObject receivedAnswer = (JSONObject) callArgs[0];
+                        callbacks.onAnswerReceived(userId, receivedAnswer);
+                    });
+                    callbacks.createNewPeerConnection(userId, true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             });
 
             socket.on("call:userDetails", args -> {
+                Log.d(TAG, "call:userDetails");
                 JSONObject user1 = (JSONObject) args[0];
                 try {
                     String userId = user1.getString("_id");
@@ -105,18 +120,23 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void sendOffer(String userId, SessionDescription localDescription) {
+        Log.d(TAG, "Sending offer message");
         OfferMessage message = new OfferMessage(userId, roomId, localDescription.toString());
-        socket.emit("create:offer", message);
+        socket.emit("webrtc:offer", gson.toJson(message));
     }
 
     @Override
     public void sendAnswer(String userId, SessionDescription localDescription) {
-
+        Log.d(TAG, "Sending answer message");
+        AnswerMessage message = new AnswerMessage(userId, roomId, localDescription);
+        socket.emit("webrtc:answer", gson.toJson(message));
     }
 
     @Override
-    public void sendIceCandidate() {
-
+    public void sendIceCandidate(String userId, IceCandidate iceCandidate) {
+        Log.d(TAG, "Sending Ice candidate");
+        IceCandidateMessage message = new IceCandidateMessage(userId, roomId, iceCandidate);
+        socket.emit("webrtc:iceCandidate", gson.toJson(message));
     }
 
     @Override

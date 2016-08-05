@@ -1,5 +1,6 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
+import org.webrtc.IceCandidate;
 import org.webrtc.SessionDescription;
 
 /**
@@ -11,6 +12,6 @@ public interface Transport {
     void disconnect();
     void sendOffer(String userId, SessionDescription localDescription);
     void sendAnswer(String userId, SessionDescription localDescription);
-    void sendIceCandidate();
+    void sendIceCandidate(String userId, IceCandidate iceCandidate);
     void setWebRTCCallbacks(WebRTCCallbacks callbacks);
 }
