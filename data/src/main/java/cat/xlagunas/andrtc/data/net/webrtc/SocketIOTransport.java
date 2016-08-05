@@ -49,7 +49,7 @@ public class SocketIOTransport implements Transport {
 
             IO.Options opts = new IO.Options();
             opts.forceNew = true;
-            opts.reconnection = true;
+            opts.reconnection = false;
             opts.secure = false;
 
             socket = IO.socket("http://192.168.1.133:3000", opts);
@@ -60,12 +60,9 @@ public class SocketIOTransport implements Transport {
             socket.on("login", args -> {
                 socket.emit("call:register", gson.toJson(new JoinRoomMsg(roomId)));
             });
-            socket.on("call:addUser", new Emitter.Listener() {
-                @Override
-                public void call(Object... userObject) {
-                    Log.d(TAG, userObject.toString());
-                    callbacks.createNewPeerConnection("1", true);
-                }
+            socket.on("call:addUser", userObject -> {
+                Log.d(TAG, userObject.toString());
+                callbacks.createNewPeerConnection("1", true);
             });
 
             socket.on("call:userDetails", args -> {
@@ -97,12 +94,7 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void init() {
-       executor.execute(new Runnable() {
-           @Override
-           public void run() {
-               connect();
-           }
-       });
+       executor.execute(() -> connect());
     }
 
 

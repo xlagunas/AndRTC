@@ -2,6 +2,7 @@ package cat.xlagunas.andrtc.di.components;
 
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.di.modules.ActivityModule;
 import cat.xlagunas.andrtc.di.modules.UserModule;
 import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
@@ -19,4 +20,7 @@ public interface ApplicationComponent {
 
     UserComponent plus(UserModule userModule);
     ActivityComponent plus(ActivityModule activityModule);
+
+    UserCache getUserCache();
+
 }

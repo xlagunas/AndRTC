@@ -22,6 +22,7 @@ import org.webrtc.VideoTrack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -59,10 +60,13 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     private MediaConstraints videoConstraints;
     private MediaConstraints peerConnectionConstraints;
     private VideoTrack localVideoTrack;
+    private VideoSource localVideoSource;
 
     private List<PeerConnection.IceServer> iceServerList;
     private Map<String, PeerData> peerConnectionMap;
     private Executor executor;
+
+    private ConferenceListener listener;
 
     @Inject
     Context context;
@@ -71,15 +75,13 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     public WebRTCManagerImpl(Transport transport, EglBase eglBase, Executor executor){
         this.transport = transport;
         this.eglBase = eglBase;
-        peerConnectionMap = new HashMap<>();
         this.executor = executor;
+        peerConnectionMap = new HashMap<>();
+    }
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                init();
-            }
-        });
+    @Override
+    public void setConferenceListener(ConferenceListener listener) {
+        this.listener = listener;
     }
 
     public PeerConnectionFactory getPeerConnectionFactory(){
@@ -87,30 +89,36 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     }
 
     @Override
-    public VideoSource initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer) {
-        localRenderer.init(eglBase.getEglBaseContext(), null);
-        createVideoConstraints(1280, 720, 30);
-        VideoSource videoSource = factory.createVideoSource(capturer, videoConstraints);
+    public void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer) {
+        executor.execute(()-> {
+            localRenderer.init(eglBase.getEglBaseContext(), null);
+            createVideoConstraints(1280, 720, 30);
+            localVideoSource = factory.createVideoSource(capturer, videoConstraints);
 
-        localVideoTrack = factory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
-        localVideoTrack.setEnabled(true);
-        localVideoTrack.addRenderer(new VideoRenderer(localRenderer));
+            localVideoTrack = factory.createVideoTrack(VIDEO_TRACK_ID, localVideoSource);
+            localVideoTrack.setEnabled(true);
+            localVideoTrack.addRenderer(new VideoRenderer(localRenderer));
 
-        return videoSource;
+            listener.onLocalVideoGenerated(localVideoSource);
+        });
 
     }
 
+
     @Override
     public void init() {
-        PeerConnectionFactory.initializeAndroidGlobals(context, true, true, true);
-        transport.setWebRTCCallbacks(this);
-        createPeerConstraints();
+        executor.execute(() -> {
+            PeerConnectionFactory.initializeAndroidGlobals(context, true, true, true);
+            transport.setWebRTCCallbacks(WebRTCManagerImpl.this);
+            createPeerConstraints();
 
-        factory = new PeerConnectionFactory(new PeerConnectionFactory.Options());
-        factory.setVideoHwAccelerationOptions(eglBase.getEglBaseContext(), null);
-        initIceServers();
+            factory = new PeerConnectionFactory(new PeerConnectionFactory.Options());
+            factory.setVideoHwAccelerationOptions(eglBase.getEglBaseContext(), null);
+            initIceServers();
 
-        transport.init();
+            transport.init();
+        });
+
     }
 
     private void initIceServers() {
@@ -121,7 +129,20 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     }
 
     public void stop(){
-        transport.setWebRTCCallbacks(null);
+        executor.execute(()-> {
+            transport.disconnect();
+            Iterator<PeerData> iterator = peerConnectionMap.values().iterator();
+            while (iterator.hasNext()) {
+                PeerData peerData = iterator.next();
+                peerData.getPeerConnection().dispose();
+            }
+            if (localVideoSource != null) {
+                localVideoSource = null;
+            }
+            eglBase.release();
+            factory.dispose();
+            transport.setWebRTCCallbacks(null);
+        });
     }
 
 
@@ -292,5 +313,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     }
 
-
+    public interface ConferenceListener {
+        void onLocalVideoGenerated(VideoSource videouSource);
+    }
 }

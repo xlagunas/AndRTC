@@ -8,6 +8,7 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.di.modules.ApplicationModule;
 import cat.xlagunas.andrtc.di.components.DaggerApplicationComponent;
 import cat.xlagunas.andrtc.di.modules.UserModule;
+import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -43,6 +44,15 @@ public class CustomApplication extends Application{
     }
 
     public UserComponent getUserComponent() {
+        if (userComponent == null){
+            getApplicationComponent().getUserCache().getUser().subscribe(new DefaultSubscriber<User>(){
+                @Override
+                public void onNext(User user) {
+                    super.onNext(user);
+                    createUserComponent(user);
+                }
+            });
+        }
         return userComponent;
     }
 
