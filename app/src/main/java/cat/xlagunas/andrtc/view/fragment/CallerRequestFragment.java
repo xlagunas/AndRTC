@@ -70,23 +70,10 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(onCallAccepted);
     }
 
-    @Override
-    public void startConference(String confId) {
-        Snackbar.make(getView(), "STARTING CONFERENCE", Snackbar.LENGTH_LONG).show();
-        startActivity(ConferenceActivity.startActivity(getActivity(), confId));
-    }
-
     @OnClick(R.id.cancel_call)
-    public void onCancelButton(){
-        Snackbar.make(getView(), "CANCELLING CONFERENCE", Snackbar.LENGTH_LONG).show();
+    public void onCancelButton() {
         presenter.cancel();
     }
-
-    @Override
-    public void cancelConference() {
-        getActivity().finish();
-    }
-
 
     public static Fragment makeInstance(String friendId) {
         CallerRequestFragment fragment = new CallerRequestFragment();

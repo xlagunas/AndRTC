@@ -6,16 +6,16 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.SessionDescription;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
-import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
-import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
+import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -64,14 +64,32 @@ public class SocketIOTransport implements Transport {
                 @Override
                 public void call(Object... userObject) {
                     Log.d(TAG, userObject.toString());
-//                    socket.emit('call:userDetails', gson.toJsonTree(new UserDetailsMessage())
+                    callbacks.createNewPeerConnection("1", true);
                 }
             });
-            socket.on(Socket.EVENT_DISCONNECT, args -> {
-                Log.d(TAG, "received disconnect event");
+
+            socket.on("call:userDetails", args -> {
+                JSONObject user1 = (JSONObject) args[0];
+                try {
+                    String userId = user1.getString("_id");
+                    socket.on(userId+":offer", callArgs -> {
+                        Log.d(TAG, "Received an offer from user"+userId);
+                        JSONObject receivedOffer = (JSONObject) callArgs[0];
+                        callbacks.onOfferReceived(userId, receivedOffer);
+                    });
+                    callbacks.createNewPeerConnection(userId, false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             });
 
             socket.connect();
+
+            socket.on(Socket.EVENT_DISCONNECT, args -> {
+            Log.d(TAG, "received disconnect event");
+            });
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -79,25 +97,14 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void init() {
-//       executor.execute(new Runnable() {
-//           @Override
-//           public void run() {
-//               connect();
-//           }
-//       });
-        connect();
+       executor.execute(new Runnable() {
+           @Override
+           public void run() {
+               connect();
+           }
+       });
     }
 
-    @Override
-    public void connectToRoom(String roomId) {
-        try {
-            Socket socket = IO.socket("http://127.0.0.1:3000");
-            socket.connect();
-            socket.emit(Transport.JOIN_ROOM, new JoinRoomMsg(roomId));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void disconnect() {
@@ -105,12 +112,13 @@ public class SocketIOTransport implements Transport {
     }
 
     @Override
-    public void sendOffer() {
-
+    public void sendOffer(String userId, SessionDescription localDescription) {
+        OfferMessage message = new OfferMessage(userId, roomId, localDescription.toString());
+        socket.emit("create:offer", message);
     }
 
     @Override
-    public void sendAnswer() {
+    public void sendAnswer(String userId, SessionDescription localDescription) {
 
     }
 

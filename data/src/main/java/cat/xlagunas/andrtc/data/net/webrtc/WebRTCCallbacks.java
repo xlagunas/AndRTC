@@ -9,5 +9,5 @@ public interface WebRTCCallbacks {
     void createNewPeerConnection(String userId, boolean createAsInitiator);
     void onAnswerReceived(String senderId, JSONObject receivedAnswer);
     void onOfferReceived(String senderId, JSONObject receivedOffer);
-    void onIceCandidateReceived(String senderId, JSONObject receivedIceCandidate);
+    void onIceCandidate(String senderId, JSONObject receivedIceCandidate);
 }

@@ -1,5 +1,6 @@
 package cat.xlagunas.andrtc.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -19,6 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.CallRequestDataView;
+import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -40,6 +42,24 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
 
     @Bind(R.id.cancel_call)
     protected Button cancel;
+
+    protected CallRequestListener listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            listener = (CallRequestListener) context;
+        } catch (ClassCastException e){
+            throw new RuntimeException("Activity must implement CallRequestListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
 
     @Nullable
     @Override
@@ -70,5 +90,20 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
         }
 
         getActivity().setTitle(builder.toString());
+    }
+
+    public void startConference(String roomId){
+        Log.d(TAG, "Starting conference with Id: "+roomId);
+        listener.onConferenceConfigured(roomId);
+    }
+
+    public void cancelConference(){
+        Log.d(TAG, "Canceling conference");
+        listener.onCancelConference();
+    }
+
+    public interface CallRequestListener {
+        void onConferenceConfigured(String roomId);
+        void onCancelConference();
     }
 }
