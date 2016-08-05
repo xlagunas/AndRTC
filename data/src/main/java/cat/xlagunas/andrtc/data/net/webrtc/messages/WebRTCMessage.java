@@ -1,14 +1,28 @@
 package cat.xlagunas.andrtc.data.net.webrtc.messages;
 
-/**
- * Created by xlagunas on 25/7/16.
- */
-public interface WebRTCMessage {
-    int LOGIN = 1000;
-    int CREATE_OFFER = 1001;
-    int CREATE_ANSWER = 1002;
-    int ICE_CANDIDATE = 1003;
+import com.google.gson.annotations.SerializedName;
 
-    int getType();
-    String getMessage();
+/**
+ * Created by xlagunas on 4/8/16.
+ */
+public class WebRTCMessage {
+
+    @SerializedName("idUser")
+    private String userId;
+
+    @SerializedName("idCall")
+    private String roomId;
+
+    public WebRTCMessage(String userId, String roomId) {
+        this.userId = userId;
+        this.roomId = roomId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
 }

@@ -4,13 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
-import cat.xlagunas.andrtc.data.net.webrtc.SocketIOTransport;
-import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
-import cat.xlagunas.andrtc.data.net.webrtc.messages.WebRTCMessage;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
