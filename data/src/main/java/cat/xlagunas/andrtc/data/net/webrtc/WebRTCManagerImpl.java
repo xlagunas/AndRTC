@@ -25,6 +25,7 @@ import org.webrtc.VideoTrack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -77,6 +78,14 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     private VideoSource localVideoSource;
     private MediaStream localMediaStream;
 
+    private LinkedList<IceCandidate> queuedRemoteCandidates;
+
+
+    //TODO THIS NEEDS REFACTOR!
+    private VideoTrack remoteVideoTrack;
+    private SurfaceViewRenderer remoteRenderer;
+
+
     private List<PeerConnection.IceServer> iceServerList;
     private Map<String, PeerData> peerConnectionMap;
     private Executor executor;
@@ -117,6 +126,11 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             listener.onLocalVideoGenerated(localVideoSource);
         });
 
+    }
+
+    public void setRemoteRendererSource(SurfaceViewRenderer remoteRenderer){
+        this.remoteRenderer = remoteRenderer;
+        remoteRenderer.init(eglBase.getEglBaseContext(), null);
     }
 
 
@@ -250,6 +264,21 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             @Override
             public void onAddStream(MediaStream mediaStream) {
                 Log.d(TAG, "onAddStream");
+                executor.execute(() -> {
+                    PeerConnection peerConnection = peerConnectionMap.get(userId).getPeerConnection();
+
+                    if (peerConnection != null) {
+
+                        if (mediaStream.videoTracks.size() == 1) {
+                            remoteVideoTrack = mediaStream.videoTracks.get(0);
+                            remoteVideoTrack.setEnabled(true);
+                            remoteVideoTrack.addRenderer(new VideoRenderer(remoteRenderer));
+                        }
+                    } else {
+                        Log.wtf(TAG, "Call onAddStream on a null peerconnection");
+                    }
+                });
+
 
             }
 
@@ -359,6 +388,13 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     @Override
     public void onIceCandidate(String senderId, JSONObject receivedIceCandidate) {
 //        peerConnectionMap.get(senderId).getPeerConnection().addIceCandidate(new IceCandidate())
+        PeerConnection peerConnection = peerConnectionMap.get(senderId).getPeerConnection();
+        try {
+            peerConnection.addIceCandidate(new IceCandidate(receivedIceCandidate.getString("sdpMid"), receivedIceCandidate.getInt("sdpMLineIndex"), receivedIceCandidate.getString("candidate")));
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing IceCandidate");
+        }
+
     }
 
     public interface ConferenceListener {
