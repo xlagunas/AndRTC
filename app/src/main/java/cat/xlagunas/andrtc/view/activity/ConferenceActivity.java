@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.WindowManager;
 
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
@@ -64,6 +65,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_conference);
 
         String room = getIntent().getStringExtra(EXTRA_ROOM_ID);
