@@ -19,6 +19,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.messages.IceCandidateMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
+import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import xlagunas.cat.andrtc.domain.User;
@@ -68,6 +69,9 @@ public class SocketIOTransport implements Transport {
 
                 try {
                     String userId = user.getString("_id");
+                    socket.emit("call:userDetails", gson.toJson(new UserDetailsMessage(userId, roomId)));
+
+                    Log.d(TAG, "creating listener for: "+userId+":answer");
                     socket.on(userId+":answer", callArgs -> {
                         Log.d(TAG, "Received an answer from user"+userId);
                         JSONObject receivedAnswer = (JSONObject) callArgs[0];
@@ -84,6 +88,7 @@ public class SocketIOTransport implements Transport {
                 JSONObject user1 = (JSONObject) args[0];
                 try {
                     String userId = user1.getString("_id");
+                    Log.d(TAG, "creating listener for: "+userId+":offer");
                     socket.on(userId+":offer", callArgs -> {
                         Log.d(TAG, "Received an offer from user"+userId);
                         JSONObject receivedOffer = (JSONObject) callArgs[0];
@@ -121,7 +126,7 @@ public class SocketIOTransport implements Transport {
     @Override
     public void sendOffer(String userId, SessionDescription localDescription) {
         Log.d(TAG, "Sending offer message");
-        OfferMessage message = new OfferMessage(userId, roomId, localDescription.toString());
+        OfferMessage message = new OfferMessage(userId, roomId, localDescription);
         socket.emit("webrtc:offer", gson.toJson(message));
     }
 

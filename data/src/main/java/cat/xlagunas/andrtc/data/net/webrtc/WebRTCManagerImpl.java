@@ -328,7 +328,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsinganswer: ",e);
         }
     }
 
@@ -338,8 +338,10 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
         PeerConnection peerConnection = peerData.getPeerConnection();
         try  {
+            //if offer comes from web (chrome) offer comes inside sdp, otherwise comes inside description
+            String offerField = receivedOffer.isNull("sdp") ? "description" : "sdp";
             SessionDescription sdpDescription = new SessionDescription
-                    (SessionDescription.Type.OFFER, receivedOffer.getString("sdp"));
+                    (SessionDescription.Type.OFFER, receivedOffer.getString(offerField));
 
             String description = preferCodec(sdpDescription.description, VIDEO_CODEC_VP8, false);
             SessionDescription sdpRemote = new SessionDescription(
@@ -348,7 +350,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpRemote);
             peerConnection.createAnswer(peerData.getObserver(), getCallConstraints(true, false));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing: ",e);
         }
 
 
