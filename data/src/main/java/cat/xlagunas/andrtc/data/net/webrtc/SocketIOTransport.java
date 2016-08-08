@@ -46,7 +46,7 @@ public class SocketIOTransport implements Transport {
         this.roomId = roomId;
     }
 
-    private void connect(){
+    private void connect() {
         try {
             gson = new Gson();
 
@@ -56,56 +56,53 @@ public class SocketIOTransport implements Transport {
             opts.secure = false;
 
             socket = IO.socket("http://192.168.1.133:3000", opts);
+
             socket.on(Socket.EVENT_CONNECT, args -> {
                 socket.emit("login", gson.toJson(new LoginMessage(user.getUsername(), user.getPassword())));
                 Log.d(TAG, "Emitted login event");
             });
-            socket.on("login", args -> {
-                socket.emit("call:register", gson.toJson(new JoinRoomMsg(roomId)));
-            });
+
+            socket.on("login",arg -> onLoginConfirmationReceived());
+
             socket.on("call:addUser", userObject -> {
                 Log.d(TAG, "call:addUser");
-                JSONObject user = (JSONObject) userObject[0];
+                JSONObject remoteUser = (JSONObject) userObject[0];
 
                 try {
-                    String userId = user.getString("_id");
+                    String userId = remoteUser.getString("_id");
                     socket.emit("call:userDetails", gson.toJson(new UserDetailsMessage(userId, roomId)));
-
-                    Log.d(TAG, "creating listener for: "+userId+":answer");
-                    socket.on(userId+":answer", callArgs -> {
-                        Log.d(TAG, "Received an answer from user"+userId);
-                        JSONObject receivedAnswer = (JSONObject) callArgs[0];
-                        callbacks.onAnswerReceived(userId, receivedAnswer);
-                    });
+                    Log.d(TAG, "creating listener for: " + userId + ":answer");
+                    socket.on(userId + ":answer", answer -> onAnswerReceived(userId, (JSONObject) answer[0]));
+                    Log.d(TAG, "creating listener for: " + userId + ":iceCandidate");
+                    socket.on(userId + ":iceCandidate", iceCandidate -> onIceCandidateReceived(userId, (JSONObject) iceCandidate[0]));
                     callbacks.createNewPeerConnection(userId, true);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error on call:addUser", e);
                 }
             });
 
             socket.on("call:userDetails", args -> {
                 Log.d(TAG, "call:userDetails");
-                JSONObject user1 = (JSONObject) args[0];
+                JSONObject remoteUserDetails = (JSONObject) args[0];
                 try {
-                    String userId = user1.getString("_id");
-                    Log.d(TAG, "creating listener for: "+userId+":offer");
-                    socket.on(userId+":offer", callArgs -> {
-                        Log.d(TAG, "Received an offer from user"+userId);
-                        JSONObject receivedOffer = (JSONObject) callArgs[0];
-                        callbacks.onOfferReceived(userId, receivedOffer);
-                    });
+                    String userId = remoteUserDetails.getString("_id");
+                    Log.d(TAG, "creating listener for: " + userId + ":offer");
+                    socket.on(userId + ":offer", offer -> onOfferReceived(userId, (JSONObject) offer[0]));
+                    Log.d(TAG, "creating listener for: " + userId + ":iceCandidate");
+                    socket.on(userId + ":iceCandidate", iceCandidate -> onIceCandidateReceived(userId, (JSONObject) iceCandidate[0]));
                     callbacks.createNewPeerConnection(userId, false);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error parsing call:userDetails", e);
                 }
 
             });
 
+            socket.on(Socket.EVENT_DISCONNECT, args -> {
+                Log.d(TAG, "received disconnect event");
+            });
+
             socket.connect();
 
-            socket.on(Socket.EVENT_DISCONNECT, args -> {
-            Log.d(TAG, "received disconnect event");
-            });
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -114,7 +111,7 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void init() {
-       executor.execute(() -> connect());
+        executor.execute(() -> connect());
     }
 
 
@@ -147,6 +144,24 @@ public class SocketIOTransport implements Transport {
     @Override
     public void setWebRTCCallbacks(WebRTCCallbacks callbacks) {
         this.callbacks = callbacks;
+    }
+
+    private void onIceCandidateReceived(String userId, JSONObject iceCandidate) {
+        Log.d(TAG, "Received an iceCandidate");
+        callbacks.onIceCandidate(userId, iceCandidate);
+    }
+
+    private void onOfferReceived(String userId, JSONObject offer) {
+        Log.d(TAG, "Received an offer from user" + userId);
+        callbacks.onOfferReceived(userId, offer);
+    }
+
+    private void onAnswerReceived(String userId, JSONObject answer) {
+        Log.d(TAG, "Received an answer from user" + userId);
+        callbacks.onAnswerReceived(userId, answer);
+    }
+    private void onLoginConfirmationReceived() {
+        socket.emit("call:register", gson.toJson(new JoinRoomMsg(roomId)));
     }
 
 }

@@ -43,6 +43,9 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     SurfaceViewRenderer localRenderer;
     CameraVideoCapturer videoCapturer;
 
+    @Bind(R.id.remote_vide_view)
+    SurfaceViewRenderer remoteRenderer;
+
     @Inject
     Executor executor;
 
@@ -82,6 +85,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         manager.init();
         createCapturer(new Camera2Enumerator(ConferenceActivity.this));
         manager.initLocalSource(localRenderer, videoCapturer);
+        manager.setRemoteRendererSource(remoteRenderer);
     }
 
     @Override
@@ -151,7 +155,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         // First, try to find back facing camera
         Logging.d(TAG, "Looking for front facing cameras.");
         for (String deviceName : deviceNames) {
-            if (!enumerator.isFrontFacing(deviceName)) {
+            if (enumerator.isFrontFacing(deviceName)) {
                 Logging.d(TAG, "Creating back facing camera capturer.");
                 videoCapturer = enumerator.createCapturer(deviceName, null);
 
@@ -164,7 +168,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         // Front back camera not found, try something else
         Logging.d(TAG, "Looking for other cameras.");
         for (String deviceName : deviceNames) {
-            if (enumerator.isFrontFacing(deviceName)) {
+            if (!enumerator.isFrontFacing(deviceName)) {
                 Logging.d(TAG, "Creating front camera capturer.");
                 videoCapturer = enumerator.createCapturer(deviceName, null);
 
