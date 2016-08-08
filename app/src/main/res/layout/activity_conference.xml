@@ -8,12 +8,14 @@
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/remote_vide_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 
 
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="5dp"
         >
 
         <org.webrtc.SurfaceViewRenderer
