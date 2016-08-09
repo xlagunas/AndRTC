@@ -3,6 +3,7 @@ package cat.xlagunas.andrtc.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.WindowManager;
 
+import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.CameraVideoCapturer;
@@ -37,7 +39,9 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     private static final String EXTRA_ROOM_ID = "room_id";
 
     private static final String TAG = ConferenceActivity.class.getSimpleName();
-    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int CONFERENCE_REQUEST_CODE = 200;
+
+    private static final String[] permissions = {"android.permission.RECORD_AUDIO", "android.permission.CAMERA"};
     private VideoSource videoSource;
 
     @Bind(R.id.local_video_view)
@@ -55,7 +59,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
 
     private boolean startedLocalStream = false;
 
-    public static Intent startActivity(Context context, String roomId){
+    public static Intent startActivity(Context context, String roomId) {
         Intent intent = new Intent(context, ConferenceActivity.class);
         intent.putExtra(EXTRA_ROOM_ID, roomId);
 
@@ -74,27 +78,55 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
 
         ButterKnife.bind(this);
 
-        if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, CAMERA_REQUEST_CODE);
-        } else {
-            init();
+        checkPermissions();
+    }
+
+    private void checkPermissions(){
+        boolean arePermissionsOk = true;
+
+        for (int i=0;i<permissions.length; i++){
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                arePermissionsOk = false;
+                ActivityCompat.requestPermissions(this, permissions, CONFERENCE_REQUEST_CODE);
+            }
         }
 
+        if (arePermissionsOk) {
+            init();
+        }
     }
 
     private void init() {
         manager.setConferenceListener(this);
         manager.init();
-        createCapturer(new Camera2Enumerator(ConferenceActivity.this));
+        createCapturer(getCameraEnumerator());
         manager.initLocalSource(localRenderer, videoCapturer);
-        manager.setRemoteRendererSource(remoteRenderer);
+        manager.initRemoteSource(remoteRenderer);
+        localRenderer.setZOrderMediaOverlay(true);
+    }
+
+    private CameraEnumerator getCameraEnumerator(){
+        if (Build.VERSION.SDK_INT >= 21){
+            return new Camera2Enumerator(this);
+        } else {
+            return new Camera1Enumerator(true);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            init();
+        if (requestCode == CONFERENCE_REQUEST_CODE) {
+            boolean arePermissionsGranted = true;
+
+            for (int i=0;i<permissions.length; i++){
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                    arePermissionsGranted = false;
+                }
+            }
+            if (arePermissionsGranted) {
+                init();
+            }
         }
     }
 
@@ -106,7 +138,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     }
 
     private void initLocalVideo() {
-        if (videoSource != null && !startedLocalStream){
+        if (videoSource != null && !startedLocalStream) {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -138,7 +170,7 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
 
     @Override
     protected void onDestroy() {
-        if (localRenderer != null){
+        if (localRenderer != null) {
             localRenderer.release();
             localRenderer = null;
         }
