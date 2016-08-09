@@ -13,7 +13,7 @@ public interface WebRTCManager {
     void init();
     PeerConnectionFactory getPeerConnectionFactory();
     void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer);
-    void setRemoteRendererSource(SurfaceViewRenderer remoteRenderer);
+    void initRemoteSource(SurfaceViewRenderer remoteRenderer);
     void setConferenceListener(WebRTCManagerImpl.ConferenceListener conferenceActivity);
     void stop();
 

@@ -1,6 +1,5 @@
 package cat.xlagunas.andrtc.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -20,7 +18,6 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.MainPresenter;
-import cat.xlagunas.andrtc.view.LoadDataView;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 
 
@@ -86,4 +83,5 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
+
 }

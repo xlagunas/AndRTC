@@ -116,6 +116,7 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
+//        friend.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
         friend.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
 
         return friend;

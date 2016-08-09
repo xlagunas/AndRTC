@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.AudioSource;
+import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
@@ -40,15 +42,15 @@ import javax.inject.Inject;
 
 public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     public static final String VIDEO_TRACK_ID = "ARDAMSv0";
+    public static final String AUDIO_TRACK_ID = "ARDAMSa0";
 
     private static final String VIDEO_CODEC_VP8 = "VP8";
     private static final String VIDEO_CODEC_VP9 = "VP9";
     private static final String VIDEO_CODEC_H264 = "H264";
     private static final String AUDIO_CODEC_OPUS = "opus";
     private static final String AUDIO_CODEC_ISAC = "ISAC";
-    private static final String VIDEO_CODEC_PARAM_START_BITRATE =  "x-google-start-bitrate";
+    private static final String VIDEO_CODEC_PARAM_START_BITRATE = "x-google-start-bitrate";
     private static final String AUDIO_CODEC_PARAM_BITRATE = "maxaveragebitrate";
-
 
 
     private static final String MAX_VIDEO_WIDTH_CONSTRAINT = "maxWidth";
@@ -75,11 +77,10 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     private MediaConstraints videoConstraints;
     private MediaConstraints peerConnectionConstraints;
     private VideoTrack localVideoTrack;
+    private AudioTrack localAudioTrack;
+    private AudioSource localAudioSource;
     private VideoSource localVideoSource;
     private MediaStream localMediaStream;
-
-    private LinkedList<IceCandidate> queuedRemoteCandidates;
-
 
     //TODO THIS NEEDS REFACTOR!
     private VideoTrack remoteVideoTrack;
@@ -96,7 +97,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     Context context;
 
     @Inject
-    public WebRTCManagerImpl(Transport transport, EglBase eglBase, Executor executor){
+    public WebRTCManagerImpl(Transport transport, EglBase eglBase, Executor executor) {
         this.transport = transport;
         this.eglBase = eglBase;
         this.executor = executor;
@@ -108,31 +109,36 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
         this.listener = listener;
     }
 
-    public PeerConnectionFactory getPeerConnectionFactory(){
+    public PeerConnectionFactory getPeerConnectionFactory() {
         return factory;
     }
 
     @Override
     public void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer) {
-        executor.execute(()-> {
+        executor.execute(() -> {
             localRenderer.init(eglBase.getEglBaseContext(), null);
             createVideoConstraints(1280, 720, 30);
             localVideoSource = factory.createVideoSource(capturer, videoConstraints);
-
             localVideoTrack = factory.createVideoTrack(VIDEO_TRACK_ID, localVideoSource);
             localVideoTrack.setEnabled(true);
             localVideoTrack.addRenderer(new VideoRenderer(localRenderer));
+
+            localAudioSource = factory.createAudioSource(new MediaConstraints());
+            localAudioTrack = factory.createAudioTrack(AUDIO_TRACK_ID, localAudioSource);
+
 
             listener.onLocalVideoGenerated(localVideoSource);
         });
 
     }
+    @Override
+    public void initRemoteSource(SurfaceViewRenderer remoteRenderer) {
+        executor.execute(() -> {
+            this.remoteRenderer = remoteRenderer;
+            this.remoteRenderer.init(eglBase.getEglBaseContext(), null);
+        });
 
-    public void setRemoteRendererSource(SurfaceViewRenderer remoteRenderer){
-        this.remoteRenderer = remoteRenderer;
-        remoteRenderer.init(eglBase.getEglBaseContext(), null);
     }
-
 
     @Override
     public void init() {
@@ -142,7 +148,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             createPeerConstraints();
 
             factory = new PeerConnectionFactory(new PeerConnectionFactory.Options());
-            factory.setVideoHwAccelerationOptions(eglBase.getEglBaseContext(), null);
+            factory.setVideoHwAccelerationOptions(eglBase.getEglBaseContext(), eglBase.getEglBaseContext());
             initIceServers();
 
             transport.init();
@@ -152,13 +158,13 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     private void initIceServers() {
         iceServerList = new ArrayList<>(ICE_SERVERS.length);
-        for (String iceServerUrl: ICE_SERVERS) {
+        for (String iceServerUrl : ICE_SERVERS) {
             iceServerList.add(new PeerConnection.IceServer(iceServerUrl));
         }
     }
 
-    public void stop(){
-        executor.execute(()-> {
+    public void stop() {
+        executor.execute(() -> {
             transport.disconnect();
             Iterator<PeerData> iterator = peerConnectionMap.values().iterator();
             while (iterator.hasNext()) {
@@ -175,8 +181,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     }
 
 
-
-    public void createVideoConstraints(int width, int height, int frameRate){
+    public void createVideoConstraints(int width, int height, int frameRate) {
         videoConstraints = new MediaConstraints();
         videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
                 MIN_VIDEO_WIDTH_CONSTRAINT, Integer.toString(1280)));
@@ -192,13 +197,13 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                 MAX_VIDEO_FPS_CONSTRAINT, Integer.toString(30)));
     }
 
-    public void createPeerConstraints(){
+    public void createPeerConstraints() {
         peerConnectionConstraints = new MediaConstraints();
         peerConnectionConstraints.optional.add(
                 new MediaConstraints.KeyValuePair(DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT, "true"));
     }
 
-    public MediaConstraints getCallConstraints(boolean video, boolean audio){
+    public MediaConstraints getCallConstraints(boolean video, boolean audio) {
         MediaConstraints sdpMediaConstraints = new MediaConstraints();
         sdpMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
                 "OfferToReceiveAudio", audio ? "true" : "false"));
@@ -206,7 +211,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                 "OfferToReceiveVideo", video ? "true" : "false"));
         return sdpMediaConstraints;
     }
-    
+
     private PeerConnection.RTCConfiguration getRTCConfiguration(List<PeerConnection.IceServer> iceServers) {
 
         PeerConnection.RTCConfiguration rtcConfig =
@@ -223,105 +228,42 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     @Override
     public void createNewPeerConnection(String userId, boolean createAsInitiator) {
-        PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, new PeerConnection.Observer() {
-            @Override
-            public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-                Log.d(TAG, "onSignalingChange" +new Gson().toJson(signalingState));
-            }
-
-            @Override
-            public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-                Log.d(TAG, "onIceConnectionChange"+new Gson().toJson(iceConnectionState));
-
-            }
-
-            @Override
-            public void onIceConnectionReceivingChange(boolean b) {
-                Log.d(TAG, "onIceConnectionReceivingChange"+ new Gson().toJson(b));
-
-            }
-
-            @Override
-            public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-                Log.d(TAG, "onIceGatheringChange" +new Gson().toJson(iceGatheringState));
-
-            }
-
-            @Override
-            public void onIceCandidate(IceCandidate iceCandidate) {
-                Log.d(TAG, "onIceCandidate"+ new Gson().toJson(iceCandidate));
-                executor.execute(()-> {
-                    transport.sendIceCandidate(userId, iceCandidate);
-                });
-            }
-
-            @Override
-            public void onIceCandidatesRemoved(IceCandidate[] iceCandidates) {
-                Log.d(TAG, "onIceCandidatesRemoved");
-
-            }
-
-            @Override
-            public void onAddStream(MediaStream mediaStream) {
-                Log.d(TAG, "onAddStream");
-                executor.execute(() -> {
-                    PeerConnection peerConnection = peerConnectionMap.get(userId).getPeerConnection();
-
-                    if (peerConnection != null) {
-
-                        if (mediaStream.videoTracks.size() == 1) {
-                            remoteVideoTrack = mediaStream.videoTracks.get(0);
-                            remoteVideoTrack.setEnabled(true);
-                            remoteVideoTrack.addRenderer(new VideoRenderer(remoteRenderer));
-                        }
-                    } else {
-                        Log.wtf(TAG, "Call onAddStream on a null peerconnection");
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onRemoveStream(MediaStream mediaStream) {
-                Log.d(TAG, "onRemoveStream");
-
-            }
-
-            @Override
-            public void onDataChannel(DataChannel dataChannel) {
-                Log.d(TAG, "onDataChannel" +new Gson().toJson(dataChannel));
-
-            }
-
-            @Override
-            public void onRenegotiationNeeded() {
-                Log.d(TAG, "onRenegotiationNeeded");
-
-            }
-        });
-        if (localMediaStream == null){
+        PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, generatePeerObserverPerUserId(userId));
+        if (localMediaStream == null) {
             localMediaStream = factory.createLocalMediaStream("ARDAMS");
             localMediaStream.addTrack(localVideoTrack);
+            localMediaStream.addTrack(localAudioTrack);
         }
+
         peerConnection.addStream(localMediaStream);
 
         final SdpObserver sdpObserver = new SdpObserver() {
             @Override
             public void onCreateSuccess(SessionDescription sessionDescription) {
                 Log.d(TAG, "oncreateSuccess: " + sessionDescription.description);
-                executor.execute(() -> peerConnection.setLocalDescription(peerConnectionMap.get(userId).getObserver(), sessionDescription));
+                String sdpDescription = preferCodec(sessionDescription.description, VIDEO_CODEC_VP8, false);
+
+                SessionDescription updatedDescription = new SessionDescription(sessionDescription.type, sdpDescription);
+
+                executor.execute(() -> peerConnection.setLocalDescription(peerConnectionMap.get(userId).getObserver(), updatedDescription));
             }
 
             @Override
             public void onSetSuccess() {
-                executor.execute(()-> {
+                executor.execute(() -> {
                     Log.d(TAG, "oncreateSuccess");
-                    if (createAsInitiator){
-                        transport.sendOffer(userId, peerConnection.getLocalDescription());
+                    if (createAsInitiator) {
+                        if (peerConnection.getRemoteDescription() == null) {
+                            transport.sendOffer(userId, peerConnection.getLocalDescription());
+                        } else {
+                            Log.d(TAG, "Draining the ice candidates being a initiator");
+                            drainCandidates(userId);
+                        }
                     } else {
                         if (peerConnection.getLocalDescription() != null) {
                             transport.sendAnswer(userId, peerConnection.getLocalDescription());
+                            Log.d(TAG, "Draining the ice candidates being a answerer");
+                            drainCandidates(userId);
                         }
                     }
                 });
@@ -329,21 +271,19 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
             @Override
             public void onCreateFailure(String s) {
-                Log.d(TAG, "oncreateSuccess");
-
+                Log.d(TAG, "onCreateFailure " + s);
             }
 
             @Override
             public void onSetFailure(String s) {
-                Log.d(TAG, "oncreateSuccess");
-
+                Log.d(TAG, "onSetFailure " + s);
             }
         };
 
-        peerConnectionMap.put(userId, new PeerData(peerConnection,sdpObserver));
+        peerConnectionMap.put(userId, new PeerData(peerConnection, sdpObserver));
 
-        if (createAsInitiator){
-            peerConnection.createOffer(sdpObserver, getCallConstraints(true, false));
+        if (createAsInitiator) {
+            peerConnection.createOffer(sdpObserver, getCallConstraints(true, true));
         }
 
     }
@@ -357,7 +297,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsinganswer: ",e);
+            Log.e(TAG, "Error parsinganswer: ", e);
         }
     }
 
@@ -366,7 +306,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
         PeerData peerData = peerConnectionMap.get(senderId);
 
         PeerConnection peerConnection = peerData.getPeerConnection();
-        try  {
+        try {
             //if offer comes from web (chrome) offer comes inside sdp, otherwise comes inside description
             String offerField = receivedOffer.isNull("sdp") ? "description" : "sdp";
             SessionDescription sdpDescription = new SessionDescription
@@ -377,28 +317,51 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                     sdpDescription.type, description);
 
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpRemote);
-            peerConnection.createAnswer(peerData.getObserver(), getCallConstraints(true, false));
+            peerConnection.createAnswer(peerData.getObserver(), getCallConstraints(true, true));
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing: ",e);
+            Log.e(TAG, "Error parsing: ", e);
         }
 
 
     }
 
     @Override
-    public void onIceCandidate(String senderId, JSONObject receivedIceCandidate) {
-//        peerConnectionMap.get(senderId).getPeerConnection().addIceCandidate(new IceCandidate())
-        PeerConnection peerConnection = peerConnectionMap.get(senderId).getPeerConnection();
-        try {
-            peerConnection.addIceCandidate(new IceCandidate(receivedIceCandidate.getString("sdpMid"), receivedIceCandidate.getInt("sdpMLineIndex"), receivedIceCandidate.getString("candidate")));
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsing IceCandidate");
-        }
+    public void onIceCandidateReceived(String senderId, JSONObject receivedIceCandidate) {
+        executor.execute(() -> {
+            try {
+                IceCandidate iceCandidate = (new IceCandidate(receivedIceCandidate.getString("sdpMid"), receivedIceCandidate.getInt("sdpMLineIndex"), receivedIceCandidate.getString("candidate")));
+                LinkedList<IceCandidate> queuedRemoteCandidates = peerConnectionMap.get(senderId).getQueuedRemoteCandidates();
+                if (queuedRemoteCandidates == null) {
+                    queuedRemoteCandidates = new LinkedList<>();
+                }
+                queuedRemoteCandidates.add(iceCandidate);
+//            peerConnectionMap.get(senderId).getPeerConnection().addIceCandidate(iceCandidate);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing IceCandidate");
+            }
+        });
 
     }
 
+    private void drainCandidates(String userId) {
+        executor.execute(() -> {
+            PeerData peerData = peerConnectionMap.get(userId);
+            PeerConnection peerConnection = peerData.getPeerConnection();
+            LinkedList<IceCandidate> queuedRemoteCandidates = peerData.getQueuedRemoteCandidates();
+            if (queuedRemoteCandidates != null) {
+                Log.d(TAG, "Add " + queuedRemoteCandidates.size() + " remote candidates");
+                for (IceCandidate candidate : queuedRemoteCandidates) {
+                    peerConnection.addIceCandidate(candidate);
+                }
+                peerData.setQueuedRemoteCandidates(null);
+            }
+        });
+    }
+
     public interface ConferenceListener {
-        void onLocalVideoGenerated(VideoSource videouSource);
+        void onLocalVideoGenerated(VideoSource videoSource);
+
+//        void onRemoteVideoGenerated();
     }
 
     private static String setStartBitrate(String codec, boolean isVideoCodec,
@@ -423,7 +386,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             Log.w(TAG, "No rtpmap for " + codec + " codec");
             return sdpDescription;
         }
-        Log.d(TAG, "Found " +  codec + " rtpmap " + codecRtpMap
+        Log.d(TAG, "Found " + codec + " rtpmap " + codecRtpMap
                 + " at " + lines[rtpmapLineIndex]);
 
         // Check if a=fmtp string already exist in remote SDP for this codec and
@@ -433,7 +396,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
         for (int i = 0; i < lines.length; i++) {
             Matcher codecMatcher = codecPattern.matcher(lines[i]);
             if (codecMatcher.matches()) {
-                Log.d(TAG, "Found " +  codec + " " + lines[i]);
+                Log.d(TAG, "Found " + codec + " " + lines[i]);
                 if (isVideoCodec) {
                     lines[i] += "; " + VIDEO_CODEC_PARAM_START_BITRATE
                             + "=" + bitrateKbps;
@@ -499,7 +462,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             Log.w(TAG, "No rtpmap for " + codec);
             return sdpDescription;
         }
-        Log.d(TAG, "Found " +  codec + " rtpmap " + codecRtpMap + ", prefer at "
+        Log.d(TAG, "Found " + codec + " rtpmap " + codecRtpMap + ", prefer at "
                 + lines[mLineIndex]);
         String[] origMLineParts = lines[mLineIndex].split(" ");
         if (origMLineParts.length > 3) {
@@ -525,5 +488,48 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             newSdpDescription.append(line).append("\r\n");
         }
         return newSdpDescription.toString();
+    }
+
+    private PeerConnection.Observer generatePeerObserverPerUserId(String userId) {
+
+        return new PeerObserver(userId){
+            @Override
+            public void onAddStream(MediaStream mediaStream) {
+                super.onAddStream(mediaStream);
+                executor.execute(() -> {
+                    PeerConnection peerConnection = peerConnectionMap.get(userId).getPeerConnection();
+
+                    if (peerConnection != null) {
+
+                        if (mediaStream.audioTracks.size() > 1 || mediaStream.videoTracks.size() > 1) {
+                            return;
+                        }
+
+                        if (mediaStream.videoTracks.size() == 1) {
+                            remoteVideoTrack = mediaStream.videoTracks.get(0);
+                            remoteVideoTrack.setEnabled(true);
+                            remoteVideoTrack.addRenderer(new VideoRenderer(remoteRenderer));
+                        }
+                    } else {
+                        Log.wtf(TAG, "Call onAddStream on a null peerconnection");
+                    }
+                });
+            }
+
+            @Override
+            public void onRemoveStream(MediaStream mediaStream) {
+                super.onRemoveStream(mediaStream);
+                executor.execute(() -> remoteVideoTrack = null);
+            }
+
+            @Override
+            public void onIceCandidate(IceCandidate iceCandidate) {
+                super.onIceCandidate(iceCandidate);
+                executor.execute(() -> {
+                    transport.sendIceCandidate(userId, iceCandidate);
+                });
+            }
+        };
+
     }
 }

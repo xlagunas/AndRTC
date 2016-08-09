@@ -148,7 +148,7 @@ public class SocketIOTransport implements Transport {
 
     private void onIceCandidateReceived(String userId, JSONObject iceCandidate) {
         Log.d(TAG, "Received an iceCandidate");
-        callbacks.onIceCandidate(userId, iceCandidate);
+        callbacks.onIceCandidateReceived(userId, iceCandidate);
     }
 
     private void onOfferReceived(String userId, JSONObject offer) {
