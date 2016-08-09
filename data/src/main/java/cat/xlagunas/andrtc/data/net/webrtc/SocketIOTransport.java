@@ -53,9 +53,9 @@ public class SocketIOTransport implements Transport {
             IO.Options opts = new IO.Options();
             opts.forceNew = true;
             opts.reconnection = false;
-            opts.secure = false;
+            opts.secure = true;
 
-            socket = IO.socket("http://192.168.1.133:3000", opts);
+            socket = IO.socket("https://xlagunas.cat", opts);
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 socket.emit("login", gson.toJson(new LoginMessage(user.getUsername(), user.getPassword())));
