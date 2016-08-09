@@ -24,7 +24,7 @@ public class AcceptedFriendViewHolder extends FriendViewHolder {
     public static void bind(final AcceptedFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener){
         FriendViewHolder.bind(holder, friend);
         if (listener != null) {
-            holder.callImageView.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClicked(holder.getAdapterPosition(), friend);

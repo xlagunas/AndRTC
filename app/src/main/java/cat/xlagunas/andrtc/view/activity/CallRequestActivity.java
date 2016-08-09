@@ -14,13 +14,14 @@ import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
+import cat.xlagunas.andrtc.view.fragment.CallRequestBaseFragment;
 import cat.xlagunas.andrtc.view.fragment.CalleeRequestFragment;
 import cat.xlagunas.andrtc.view.fragment.CallerRequestFragment;
 
 /**
  * Created by xlagunas on 25/7/16.
  */
-public class CallRequestActivity extends AppCompatActivity implements HasComponent<UserComponent>{
+public class CallRequestActivity extends AppCompatActivity implements HasComponent<UserComponent>, CallRequestBaseFragment.CallRequestListener{
 
     private final static String EXTRA_MODE = "type";
     public final static String EXTRA_FRIEND_ID = "friendId";
@@ -75,5 +76,16 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
     @Override
     public UserComponent getComponent() {
         return CustomApplication.getApp(this).getUserComponent();
+    }
+
+    @Override
+    public void onConferenceConfigured(String roomId) {
+        startActivity(ConferenceActivity.startActivity(this, roomId));
+        finish();
+    }
+
+    @Override
+    public void onCancelConference() {
+        finish();
     }
 }

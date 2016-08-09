@@ -3,26 +3,25 @@ package cat.xlagunas.andrtc.data.net.webrtc.messages;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by xlagunas on 4/8/16.
+ * Created by xlagunas on 22/07/16.
  */
-public class WebRTCMessage {
-
+public class UserDetailsMessage {
     @SerializedName("idUser")
     private String userId;
 
     @SerializedName("idCall")
-    private String roomId;
+    private String callId;
 
-    public WebRTCMessage(String userId, String roomId) {
+    public UserDetailsMessage(String userId, String callId) {
         this.userId = userId;
-        this.roomId = roomId;
+        this.callId = callId;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public String getCallId() {
+        return callId;
     }
 }

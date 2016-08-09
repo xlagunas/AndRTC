@@ -12,6 +12,7 @@ import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.CalleeRequestPresenter;
+import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 
 /**
  * Created by xlagunas on 25/7/16.
@@ -27,7 +28,7 @@ public class CalleeRequestFragment extends CallRequestBaseFragment {
     CalleeRequestPresenter presenter;
 
 
-    public static CalleeRequestFragment makeInstance(String callerId, String roomId){
+    public static CalleeRequestFragment makeInstance(String callerId, String roomId) {
         CalleeRequestFragment fragment = new CalleeRequestFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CALLER_ID, callerId);
@@ -63,26 +64,13 @@ public class CalleeRequestFragment extends CallRequestBaseFragment {
         presenter.init(false);
     }
 
-    @Override
-    public void startConference(String roomId) {
-        Log.d(TAG, "Starting conference with Id: "+roomId);
-        Snackbar.make(getView(), "Starting conference with id"+roomId, Snackbar.LENGTH_SHORT).show();
-    }
-
     @OnClick(R.id.accept_call)
-    public void onAcceptButton(){
+    public void onAcceptButton() {
         presenter.accept();
     }
 
     @OnClick(R.id.cancel_call)
-    public void onCancelButton(){
+    public void onCancelButton() {
         presenter.cancel();
-    }
-
-    @Override
-    public void cancelConference() {
-        Log.d(TAG, "Canceling conference");
-        Snackbar.make(getView(), "Canceling conference", Snackbar.LENGTH_SHORT).show();
-        getActivity().finish();
     }
 }

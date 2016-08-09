@@ -15,7 +15,7 @@ android {
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 2
-        versionName "1.0.1"
+        versionName "1.0.2"
     }
 
     defaultConfig {
@@ -92,6 +92,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:percent:23.2.1'
+
 
 
 

@@ -12,19 +12,11 @@
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.LoginActivity"/>
 
-        <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
+        <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity"/>
 
-        <activity android:name="cat.xlagunas.andrtc.view.activity.ConferenceActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name="cat.xlagunas.andrtc.view.activity.ConferenceActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name="cat.xlagunas.andrtc.view.activity.CallRequestActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
@@ -35,10 +27,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.SplashActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- GOOGLE PUSH NOTIFICATIONS -->
@@ -79,9 +71,8 @@
     <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
     <!--END OF PUSH NOTIFICATION SECTION -->
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.CAMERA">
-        ,
-    </uses-permission>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
