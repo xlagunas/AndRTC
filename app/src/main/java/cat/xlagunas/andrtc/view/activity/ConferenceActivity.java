@@ -90,10 +90,10 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         checkPermissions();
     }
 
-    private void checkPermissions(){
+    private void checkPermissions() {
         boolean arePermissionsOk = true;
 
-        for (int i=0;i<permissions.length; i++){
+        for (int i = 0; i < permissions.length; i++) {
             if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
                 arePermissionsOk = false;
                 ActivityCompat.requestPermissions(this, permissions, CONFERENCE_REQUEST_CODE);
@@ -113,8 +113,8 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         localRenderer.setZOrderMediaOverlay(true);
     }
 
-    private CameraEnumerator getCameraEnumerator(){
-        if (Build.VERSION.SDK_INT >= 21){
+    private CameraEnumerator getCameraEnumerator() {
+        if (Build.VERSION.SDK_INT >= 21) {
             return new Camera2Enumerator(this);
         } else {
             return new Camera1Enumerator(true);
@@ -127,8 +127,8 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         if (requestCode == CONFERENCE_REQUEST_CODE) {
             boolean arePermissionsGranted = true;
 
-            for (int i=0;i<permissions.length; i++){
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     arePermissionsGranted = false;
                 }
             }
@@ -243,21 +243,49 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
 
     }
 
+    @Override
+    public void onConnectionClosed(final SurfaceViewRenderer renderer) {
+        Log.d(TAG, "onConnectionClosed!");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = remoteRenderers.getChildCount() -1; i >= 0; i--) {
+                    View view = remoteRenderers.getChildAt(i);
+                    if (renderer == view) {
+                        Log.d(TAG, "Deleting stream");
+                        remoteRenderers.removeView(remoteRenderers.getChildAt(i));
+                        updateVideo();
+                        return;
+                    }
+                    Log.d(TAG, "Stream not found");
+                }
+            }
+        });
+    }
+
     private void updateVideo() {
         int totalChilds = remoteRenderers.getChildCount();
-
-        switch (totalChilds){
+        PercentLayoutHelper.PercentLayoutParams params;
+        switch (totalChilds) {
+            case 0:
+                params = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
+                params.getPercentLayoutInfo().topMarginPercent = 0f;
+                params.getPercentLayoutInfo().leftMarginPercent = 0f;
+                params.getPercentLayoutInfo().widthPercent = 1f;
+                params.getPercentLayoutInfo().heightPercent = 1f;
+                localRenderer.requestLayout();
+                break;
             case 1:
             case 2:
-                for(int i=0;i<totalChilds;i++){
-                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
+                for (int i = 0; i < totalChilds; i++) {
+                    params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
                     params.getPercentLayoutInfo().widthPercent = 1f / totalChilds;
-                    params.getPercentLayoutInfo().leftMarginPercent = i *0.5f;
-                    Log.d(TAG, "Total width from child: "+i+" "+params.getPercentLayoutInfo().widthPercent);
+                    params.getPercentLayoutInfo().leftMarginPercent = i * 0.5f;
+                    Log.d(TAG, "Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
                     remoteRenderers.getChildAt(i).requestLayout();
                 }
-                if (totalChilds == 1){
-                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
+                if (totalChilds == 1) {
+                    params = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
                     params.getPercentLayoutInfo().widthPercent = 0.3f;
                     params.getPercentLayoutInfo().heightPercent = 0.3f;
                     localRenderer.requestLayout();
@@ -265,23 +293,23 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
                 break;
             case 3:
             case 4:
-                for (int i=0;i<totalChilds;i++){
-                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
+                for (int i = 0; i < totalChilds; i++) {
+                    params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
                     params.getPercentLayoutInfo().widthPercent = 0.5f;
                     params.getPercentLayoutInfo().heightPercent = 0.5f;
                     //pull pair streams (aka 2 and 4 if it exists) to the right side of the screen
                     params.getPercentLayoutInfo().leftMarginPercent = (i % 2 == 0) ? 0f : 0.5f;
                     //pull down half the screen for the streams number 3 and 4
                     params.getPercentLayoutInfo().topMarginPercent = (i >= 2) ? 0.5f : 0f;
-                    Log.d(TAG, "Total width from child: "+i+" "+params.getPercentLayoutInfo().widthPercent);
+                    Log.d(TAG, "Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
                     remoteRenderers.getChildAt(i).requestLayout();
                 }
                 if (totalChilds == 3) {
-                    PercentLayoutHelper.PercentLayoutParams localParams = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
-                    localParams.getPercentLayoutInfo().topMarginPercent = 0.5f;
-                    localParams.getPercentLayoutInfo().leftMarginPercent = 0.5f;
-                    localParams.getPercentLayoutInfo().widthPercent = 0.5f;
-                    localParams.getPercentLayoutInfo().heightPercent = 0.5f;
+                    params = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
+                    params.getPercentLayoutInfo().topMarginPercent = 0.5f;
+                    params.getPercentLayoutInfo().leftMarginPercent = 0.5f;
+                    params.getPercentLayoutInfo().widthPercent = 0.5f;
+                    params.getPercentLayoutInfo().heightPercent = 0.5f;
                     localRenderer.setVisibility(View.VISIBLE);
                 } else {
                     localRenderer.setVisibility(View.GONE);

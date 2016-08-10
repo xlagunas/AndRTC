@@ -24,6 +24,10 @@ public class PeerData {
         this.queuedRemoteCandidates = new LinkedList<>();
     }
 
+    public void setObserver(SdpObserver observer) {
+        this.observer = observer;
+    }
+
     public void setRemoteVideoTrack(VideoTrack remoteVideoTrack) {
         this.remoteVideoTrack = remoteVideoTrack;
     }

@@ -41,8 +41,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     public static final String VIDEO_TRACK_ID = "ARDAMSv0";
     public static final String AUDIO_TRACK_ID = "ARDAMSa0";
 
-    private static final String VIDEO_CODEC_VP8 = "VP8";
-
     private static final String MAX_VIDEO_WIDTH_CONSTRAINT = "maxWidth";
     private static final String MIN_VIDEO_WIDTH_CONSTRAINT = "minWidth";
     private static final String MAX_VIDEO_HEIGHT_CONSTRAINT = "maxHeight";
@@ -326,11 +324,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
         });
     }
 
-    public interface ConferenceListener {
-        void onLocalVideoGenerated(VideoSource videoSource);
-        void onNewMediaStreamReceived(String userId);
-    }
-
     private PeerConnection.Observer generatePeerObserverPerUserId(String userId) {
 
         return new PeerObserver(userId){
@@ -378,7 +371,28 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                     transport.sendIceCandidate(userId, iceCandidate);
                 });
             }
+
+            @Override
+            public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+                super.onIceConnectionChange(iceConnectionState);
+                if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED){
+                    Log.d(TAG, "Connection with user "+userId+" has been finished, removing it");
+                    PeerData data = peerConnectionMap.get(userId);
+                    data.getRemoteVideoTrack().dispose();
+                    data.setQueuedRemoteCandidates(null);
+                    data.getPeerConnection().close();
+                    Log.d(TAG, "proceeding to delete stream");
+                    listener.onConnectionClosed(data.getRemoteRenderer());
+                    peerConnectionMap.remove(userId);
+                }
+            }
         };
 
+    }
+
+    public interface ConferenceListener {
+        void onLocalVideoGenerated(VideoSource videoSource);
+        void onNewMediaStreamReceived(String userId);
+        void onConnectionClosed(SurfaceViewRenderer renderer);
     }
 }
