@@ -1,6 +1,6 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
-import org.webrtc.PeerConnectionFactory;
+
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 
@@ -11,10 +11,9 @@ import org.webrtc.VideoCapturer;
 public interface WebRTCManager {
 
     void init();
-    PeerConnectionFactory getPeerConnectionFactory();
     void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer);
-    void initRemoteSource(SurfaceViewRenderer remoteRenderer);
     void setConferenceListener(WebRTCManagerImpl.ConferenceListener conferenceActivity);
+    void addRendererForUser(String userId, SurfaceViewRenderer renderer);
     void stop();
 
 }
