@@ -15,7 +15,7 @@
         <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.ConferenceActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="landscape"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.CallRequestActivity"
             android:theme="@style/AppTheme.NoActionBar"/>

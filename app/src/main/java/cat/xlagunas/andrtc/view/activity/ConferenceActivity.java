@@ -7,9 +7,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.percent.PercentLayoutHelper;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
@@ -17,10 +22,13 @@ import org.webrtc.CameraEnumerator;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.EglBase;
 import org.webrtc.Logging;
+import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSource;
 
+import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -28,6 +36,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.data.net.webrtc.PeerData;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
 import cat.xlagunas.andrtc.di.modules.ConferenceModule;
@@ -48,8 +57,8 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     SurfaceViewRenderer localRenderer;
     CameraVideoCapturer videoCapturer;
 
-    @Bind(R.id.remote_vide_view)
-    SurfaceViewRenderer remoteRenderer;
+    @Bind(R.id.remote_video_container)
+    PercentRelativeLayout remoteRenderers;
 
     @Inject
     Executor executor;
@@ -101,7 +110,6 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
         manager.init();
         createCapturer(getCameraEnumerator());
         manager.initLocalSource(localRenderer, videoCapturer);
-        manager.initRemoteSource(remoteRenderer);
         localRenderer.setZOrderMediaOverlay(true);
     }
 
@@ -217,6 +225,69 @@ public class ConferenceActivity extends BaseActivity implements WebRTCManagerImp
     public void onLocalVideoGenerated(VideoSource videoSource) {
         this.videoSource = videoSource;
         initLocalVideo();
+    }
+
+    @Override
+    public void onNewMediaStreamReceived(final String userId) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SurfaceViewRenderer renderer = new SurfaceViewRenderer(ConferenceActivity.this);
+                renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+                remoteRenderers.addView(renderer);
+                manager.addRendererForUser(userId, renderer);
+                updateVideo();
+            }
+        });
+
+    }
+
+    private void updateVideo() {
+        int totalChilds = remoteRenderers.getChildCount();
+
+        switch (totalChilds){
+            case 1:
+            case 2:
+                for(int i=0;i<totalChilds;i++){
+                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
+                    params.getPercentLayoutInfo().widthPercent = 1f / totalChilds;
+                    params.getPercentLayoutInfo().leftMarginPercent = i *0.5f;
+                    Log.d(TAG, "Total width from child: "+i+" "+params.getPercentLayoutInfo().widthPercent);
+                    remoteRenderers.getChildAt(i).requestLayout();
+                }
+                if (totalChilds == 1){
+                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
+                    params.getPercentLayoutInfo().widthPercent = 0.3f;
+                    params.getPercentLayoutInfo().heightPercent = 0.3f;
+                    localRenderer.requestLayout();
+                }
+                break;
+            case 3:
+            case 4:
+                for (int i=0;i<totalChilds;i++){
+                    PercentLayoutHelper.PercentLayoutParams params = (PercentLayoutHelper.PercentLayoutParams) remoteRenderers.getChildAt(i).getLayoutParams();
+                    params.getPercentLayoutInfo().widthPercent = 0.5f;
+                    params.getPercentLayoutInfo().heightPercent = 0.5f;
+                    //pull pair streams (aka 2 and 4 if it exists) to the right side of the screen
+                    params.getPercentLayoutInfo().leftMarginPercent = (i % 2 == 0) ? 0f : 0.5f;
+                    //pull down half the screen for the streams number 3 and 4
+                    params.getPercentLayoutInfo().topMarginPercent = (i >= 2) ? 0.5f : 0f;
+                    Log.d(TAG, "Total width from child: "+i+" "+params.getPercentLayoutInfo().widthPercent);
+                    remoteRenderers.getChildAt(i).requestLayout();
+                }
+                if (totalChilds == 3) {
+                    PercentLayoutHelper.PercentLayoutParams localParams = (PercentLayoutHelper.PercentLayoutParams) localRenderer.getLayoutParams();
+                    localParams.getPercentLayoutInfo().topMarginPercent = 0.5f;
+                    localParams.getPercentLayoutInfo().leftMarginPercent = 0.5f;
+                    localParams.getPercentLayoutInfo().widthPercent = 0.5f;
+                    localParams.getPercentLayoutInfo().heightPercent = 0.5f;
+                    localRenderer.setVisibility(View.VISIBLE);
+                } else {
+                    localRenderer.setVisibility(View.GONE);
+                }
+                break;
+        }
     }
 
 }
