@@ -35,7 +35,7 @@ import javax.inject.Inject;
  * Created by xlagunas on 25/7/16.
  */
 
-public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
+public class WebRTCManagerImpl implements WebRTCManager {
     public static final String VIDEO_TRACK_ID = "ARDAMSv0";
     public static final String AUDIO_TRACK_ID = "ARDAMSa0";
 
@@ -73,7 +73,7 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     Context context;
 
     @Inject
-    public WebRTCManagerImpl(Transport transport, WebRTCAudioManager audioManager, EglBase eglBase, Executor executor) {
+    public WebRTCManagerImpl(WebRTCAudioManager audioManager, EglBase eglBase, Executor executor) {
         this.transport = transport;
         this.eglBase = eglBase;
         this.executor = executor;
@@ -181,18 +181,19 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                 new MediaConstraints.KeyValuePair(DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT, "true"));
     }
 
-    public MediaConstraints getCallConstraints(boolean video, boolean audio) {
+    @Override
+    public MediaConstraints getCallConstraints(boolean offerToReceiveVideo, boolean offerToReceiveAudio) {
         MediaConstraints sdpMediaConstraints = new MediaConstraints();
         sdpMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
-                "OfferToReceiveAudio", audio ? "true" : "false"));
+                "OfferToReceiveAudio", offerToReceiveAudio ? "true" : "false"));
         sdpMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
-                "OfferToReceiveVideo", video ? "true" : "false"));
+                "OfferToReceiveVideo", offerToReceiveVideo ? "true" : "false"));
         return sdpMediaConstraints;
     }
 
-    @Override
-    public void createNewPeerConnection(String userId, boolean createAsInitiator) {
-        PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, generatePeerObserverPerUserId(userId));
+    public PeerConnection createPeerConnection(PeerConnection.Observer observer) {
+
+        PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, observer);
         if (localMediaStream == null) {
             localMediaStream = factory.createLocalMediaStream("ARDAMS");
             localMediaStream.addTrack(localVideoTrack);
@@ -201,128 +202,19 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
         peerConnection.addStream(localMediaStream);
 
-        final SdpObserver sdpObserver = new SdpObserver() {
-            @Override
-            public void onCreateSuccess(SessionDescription sessionDescription) {
-                Log.d(TAG, "oncreateSuccess: " + sessionDescription.description);
-                executor.execute(() -> peerConnection.setLocalDescription(peerConnectionMap.get(userId).getObserver(), sessionDescription));
-            }
-
-            @Override
-            public void onSetSuccess() {
-                executor.execute(() -> {
-                    Log.d(TAG, "oncreateSuccess");
-                    if (createAsInitiator) {
-                        if (peerConnection.getRemoteDescription() == null) {
-                            transport.sendOffer(userId, peerConnection.getLocalDescription());
-                        } else {
-                            Log.d(TAG, "Draining the ice candidates being a initiator");
-                            drainCandidates(userId);
-                        }
-                    } else {
-                        if (peerConnection.getLocalDescription() != null) {
-                            transport.sendAnswer(userId, peerConnection.getLocalDescription());
-                            Log.d(TAG, "Draining the ice candidates being a answerer");
-                            drainCandidates(userId);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCreateFailure(String s) {
-                Log.d(TAG, "onCreateFailure " + s);
-            }
-
-            @Override
-            public void onSetFailure(String s) {
-                Log.d(TAG, "onSetFailure " + s);
-            }
-        };
-
-        peerConnectionMap.put(userId, new PeerData(peerConnection, sdpObserver));
-
-        if (createAsInitiator) {
-            peerConnection.createOffer(sdpObserver, getCallConstraints(true, true));
-        }
-
+        return peerConnection;
     }
 
-    @Override
-    public void onAnswerReceived(String senderId, JSONObject receivedAnswer) {
-        PeerData peerData = peerConnectionMap.get(senderId);
-
-        PeerConnection peerConnection = peerData.getPeerConnection();
-        try {
-            SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
-            peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsinganswer: ", e);
-        }
-    }
-
-    @Override
-    public void onOfferReceived(String senderId, JSONObject receivedOffer) {
-        PeerData peerData = peerConnectionMap.get(senderId);
-
-        PeerConnection peerConnection = peerData.getPeerConnection();
-        try {
-            //if offer comes from web (chrome) offer comes inside sdp, otherwise comes inside description
-            String offerField = receivedOffer.isNull("sdp") ? "description" : "sdp";
-            SessionDescription sdpDescription = new SessionDescription
-                    (SessionDescription.Type.OFFER, receivedOffer.getString(offerField));
-
-            peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
-            peerConnection.createAnswer(peerData.getObserver(), getCallConstraints(true, true));
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsing: ", e);
-        }
 
 
-    }
 
-    @Override
-    public void onIceCandidateReceived(String senderId, JSONObject receivedIceCandidate) {
-        executor.execute(() -> {
-            try {
-                IceCandidate iceCandidate = (new IceCandidate(receivedIceCandidate.getString("sdpMid"), receivedIceCandidate.getInt("sdpMLineIndex"), receivedIceCandidate.getString("candidate")));
-                LinkedList<IceCandidate> queuedRemoteCandidates = peerConnectionMap.get(senderId).getQueuedRemoteCandidates();
-                if (queuedRemoteCandidates == null) {
-                    queuedRemoteCandidates = new LinkedList<>();
-                }
-                queuedRemoteCandidates.add(iceCandidate);
-            } catch (JSONException e) {
-                Log.e(TAG, "Error parsing IceCandidate");
-            }
-        });
-
-    }
-
-    private void drainCandidates(String userId) {
-        executor.execute(() -> {
-            PeerData peerData = peerConnectionMap.get(userId);
-            PeerConnection peerConnection = peerData.getPeerConnection();
-            LinkedList<IceCandidate> queuedRemoteCandidates = peerData.getQueuedRemoteCandidates();
-            if (queuedRemoteCandidates != null) {
-                Log.d(TAG, "Add " + queuedRemoteCandidates.size() + " remote candidates");
-                for (IceCandidate candidate : queuedRemoteCandidates) {
-                    peerConnection.addIceCandidate(candidate);
-                }
-                peerData.setQueuedRemoteCandidates(null);
-            }
-        });
-    }
-
-    private PeerConnection.Observer generatePeerObserverPerUserId(String userId) {
+    public PeerConnection.Observer generatePeerObserverPerUserId(String userId, PeerConnection peerConnection) {
 
         return new PeerObserver(userId){
 
             @Override
             public void onAddStream(MediaStream mediaStream) {
                 super.onAddStream(mediaStream);
-                executor.execute(() -> {
-                    PeerData peerData = peerConnectionMap.get(userId);
-                    PeerConnection peerConnection = peerData.getPeerConnection();
 
                     if (peerConnection != null) {
 
@@ -343,7 +235,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                     } else {
                         Log.wtf(TAG, "Call onAddStream on a null peerconnection");
                     }
-                });
             }
 
             @Override
