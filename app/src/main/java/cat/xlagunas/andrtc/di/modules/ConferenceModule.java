@@ -1,5 +1,8 @@
 package cat.xlagunas.andrtc.di.modules;
 
+import android.content.Context;
+import android.media.AudioManager;
+
 import org.webrtc.EglBase;
 
 import java.util.concurrent.Executor;
@@ -7,6 +10,8 @@ import java.util.concurrent.Executors;
 
 import cat.xlagunas.andrtc.data.net.webrtc.SocketIOTransport;
 import cat.xlagunas.andrtc.data.net.webrtc.Transport;
+import cat.xlagunas.andrtc.data.net.webrtc.WebRTCAudioManager;
+import cat.xlagunas.andrtc.data.net.webrtc.WebRTCAudioManagerImpl;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
 import cat.xlagunas.andrtc.di.ConferenceScope;
@@ -55,6 +60,18 @@ public class ConferenceModule {
     @ConferenceScope
     public Executor getExecutor(){
         return Executors.newSingleThreadExecutor();
+    }
+
+    @Provides
+    @ConferenceScope
+    public WebRTCAudioManager getWebRTCAudioManager(WebRTCAudioManagerImpl webRTCAudioManager) {
+        return webRTCAudioManager;
+    }
+
+    @Provides
+    @ConferenceScope
+    public AudioManager getAudioManager(Context context){
+        return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
 

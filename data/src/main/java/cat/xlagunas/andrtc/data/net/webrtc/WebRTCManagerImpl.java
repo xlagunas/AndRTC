@@ -28,8 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -50,19 +48,14 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     private static final String DTLS_SRTP_KEY_AGREEMENT_CONSTRAINT = "DtlsSrtpKeyAgreement";
 
 
-    private static final String[] ICE_SERVERS = {
-            "stun:stun.l.google.com:19302",
-            "stun:stun1.l.google.com:19302",
-            "stun:stun3.l.google.com:19302",
-            "stun:stun4.l.google.com:19302"
-    };
-
     private static final String TAG = WebRTCManagerImpl.class.getSimpleName();
 
-    final Transport transport;
+    private final Transport transport;
+    private final EglBase eglBase;
+    private final Executor executor;
+    private final WebRTCAudioManager audioManager;
 
     private PeerConnectionFactory factory;
-    private EglBase eglBase;
     private MediaConstraints videoConstraints;
     private MediaConstraints peerConnectionConstraints;
     private VideoTrack localVideoTrack;
@@ -73,7 +66,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     private List<PeerConnection.IceServer> iceServerList;
     private Map<String, PeerData> peerConnectionMap;
-    private Executor executor;
 
     private ConferenceListener listener;
 
@@ -81,10 +73,11 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     Context context;
 
     @Inject
-    public WebRTCManagerImpl(Transport transport, EglBase eglBase, Executor executor) {
+    public WebRTCManagerImpl(Transport transport, WebRTCAudioManager audioManager, EglBase eglBase, Executor executor) {
         this.transport = transport;
         this.eglBase = eglBase;
         this.executor = executor;
+        this.audioManager = audioManager;
         peerConnectionMap = new HashMap<>();
     }
 
@@ -119,8 +112,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
             if (data != null){
                 data.setRemoteRenderer(renderer);
                 data.getRemoteRenderer().init(eglBase.getEglBaseContext(), null);
-
-                //At this point remoteVideoTrack should never be null...
                 data.getRemoteVideoTrack().addRenderer(new VideoRenderer(renderer));
             }
         });
@@ -143,10 +134,9 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
     }
 
     private void initIceServers() {
-        iceServerList = new ArrayList<>(ICE_SERVERS.length);
-        for (String iceServerUrl : ICE_SERVERS) {
-            iceServerList.add(new PeerConnection.IceServer(iceServerUrl));
-        }
+        iceServerList = new ArrayList<>();
+        PeerConnection.IceServer iceServer = new PeerConnection.IceServer("turn:xlagunas.cat", "Hercules", "X4v1");
+        iceServerList.add(iceServer);
     }
 
     public void stop() {
@@ -202,7 +192,6 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
 
     @Override
     public void createNewPeerConnection(String userId, boolean createAsInitiator) {
-
         PeerConnection peerConnection = factory.createPeerConnection(iceServerList, peerConnectionConstraints, generatePeerObserverPerUserId(userId));
         if (localMediaStream == null) {
             localMediaStream = factory.createLocalMediaStream("ARDAMS");
@@ -384,6 +373,8 @@ public class WebRTCManagerImpl implements WebRTCManager, WebRTCCallbacks {
                     Log.d(TAG, "proceeding to delete stream");
                     listener.onConnectionClosed(data.getRemoteRenderer());
                     peerConnectionMap.remove(userId);
+                } else if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED){
+                    audioManager.init();
                 }
             }
         };
