@@ -20,6 +20,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
+import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import xlagunas.cat.andrtc.domain.User;
@@ -118,7 +119,7 @@ public class SocketIOTransport implements Transport {
     @Override
     public void disconnect() {
         if (socket != null) {
-            socket.emit("call:unregister", new JoinRoomMsg(roomId));
+            socket.emit("call:unregister", gson.toJson(new JoinRoomMsg(roomId)));
             socket.disconnect();
         }
     }
