@@ -13,7 +13,7 @@ import org.webrtc.PeerConnection;
 public class PeerObserver implements PeerConnection.Observer {
 
     private final static String TAG = PeerObserver.class.getSimpleName();
-    private final String userId;
+    protected final String userId;
 
     public String getUserId() {
         return userId;

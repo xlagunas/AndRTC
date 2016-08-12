@@ -18,10 +18,12 @@ public class PeerData {
     private SurfaceViewRenderer remoteRenderer;
     private VideoTrack remoteVideoTrack;
 
-    public PeerData(PeerConnection peerConnection, SdpObserver observer) {
-        this.peerConnection = peerConnection;
-        this.observer = observer;
+    public PeerData(){
         this.queuedRemoteCandidates = new LinkedList<>();
+    }
+
+    public void setPeerConnection(PeerConnection peerConnection) {
+        this.peerConnection = peerConnection;
     }
 
     public void setObserver(SdpObserver observer) {

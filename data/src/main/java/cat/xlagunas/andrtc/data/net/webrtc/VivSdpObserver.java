@@ -15,36 +15,35 @@ public class VivSdpObserver implements SdpObserver {
     private final String userId;
     private final boolean shouldGenerateOffer;
     private final SdpEvents sdpEvents;
-    private final PeerConnection currentConnection;
+    private PeerConnection peerConnection;
 
-    public VivSdpObserver(String userId, PeerConnection currentConnection, SdpEvents events, boolean shouldGenerateOffer) {
+    public VivSdpObserver(String userId, SdpEvents events, boolean shouldGenerateOffer) {
         this.userId = userId;
         this.shouldGenerateOffer = shouldGenerateOffer;
         this.sdpEvents = events;
-        this.currentConnection = currentConnection;
     }
 
     @Override
     public void onCreateSuccess(SessionDescription sessionDescription) {
         Log.d(TAG, "Successfully created LocalDescription");
-        currentConnection.setLocalDescription(this, sessionDescription);
+        peerConnection.setLocalDescription(this, sessionDescription);
     }
 
     @Override
     public void onSetSuccess() {
         Log.d(TAG, "oncreateSuccess");
         if (shouldGenerateOffer) {
-            if (currentConnection.getRemoteDescription() == null) {
-                sdpEvents.onOfferGenerated(userId, currentConnection.getLocalDescription());
+            if (peerConnection.getRemoteDescription() == null) {
+                sdpEvents.onOfferGenerated(userId, peerConnection.getLocalDescription());
             } else {
                 Log.d(TAG, "Draining the ice candidates being a initiator");
-                sdpEvents.onFinishedGatheringIceCandidates(userId);
+//                sdpEvents.onFinishedGatheringIceCandidates(userId);
             }
         } else {
-            if (currentConnection.getLocalDescription() != null) {
-                sdpEvents.onAnswerGenerated(userId, currentConnection.getLocalDescription());
+            if (peerConnection.getLocalDescription() != null) {
+                sdpEvents.onAnswerGenerated(userId, peerConnection.getLocalDescription());
                 Log.d(TAG, "Draining the ice candidates being a answerer");
-                sdpEvents.onFinishedGatheringIceCandidates(userId);
+//                sdpEvents.onFinishedGatheringIceCandidates(userId);
             }
         }
     }
@@ -57,6 +56,10 @@ public class VivSdpObserver implements SdpObserver {
     @Override
     public void onSetFailure(String s) {
        Log.e(TAG, "Error setting offer/answer: "+s);
+    }
+
+    public void setCurrentConnection(PeerConnection currentConnection) {
+        this.peerConnection = currentConnection;
     }
 
     public interface SdpEvents {

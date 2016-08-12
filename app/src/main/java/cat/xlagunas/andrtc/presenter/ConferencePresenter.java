@@ -8,43 +8,57 @@ import org.webrtc.IceCandidate;
 import org.webrtc.PeerConnection;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoSource;
+import org.webrtc.VideoCapturer;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import cat.xlagunas.andrtc.data.net.webrtc.PeerData;
-import cat.xlagunas.andrtc.data.net.webrtc.PeerObserver;
 import cat.xlagunas.andrtc.data.net.webrtc.Transport;
+import cat.xlagunas.andrtc.data.net.webrtc.VivPeerObserver;
 import cat.xlagunas.andrtc.data.net.webrtc.VivSdpObserver;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCAudioManager;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCCallbacks;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
-import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
+import cat.xlagunas.andrtc.view.ConferenceDataView;
 
 /**
  * Created by xlagunas on 3/8/16.
  */
-public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCManagerImpl.ConferenceListener, VivSdpObserver.SdpEvents {
+public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpObserver.SdpEvents {
     private static final String TAG = ConferencePresenter.class.getSimpleName();
 
     private final Transport transport;
-    private final WebRTCManager manager;
+    private final WebRTCManager webRTCManager;
     private final WebRTCAudioManager audioManager;
 
     private Map<String, PeerData> peerConnectionMap;
 
-    public ConferencePresenter(Transport transport, WebRTCManager manager, WebRTCAudioManager audioManager){
+    private ConferenceDataView view;
+
+    @Inject
+    public ConferencePresenter(Transport transport, WebRTCManager webRTCManager, WebRTCAudioManager audioManager) {
         this.transport = transport;
-        this.manager = manager;
+        this.webRTCManager = webRTCManager;
         this.audioManager = audioManager;
         //Typically maximum users are going to be <5
         this.peerConnectionMap = new HashMap<>(5);
     }
 
+    public void setView(ConferenceDataView view) {
+        this.view = view;
+    }
+
     @Override
     public void resume() {
+        webRTCManager.init();
+        view.startCameraStream();
+        transport.setWebRTCCallbacks(this);
+        transport.init();
 
     }
 
@@ -55,22 +69,41 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCMa
 
     @Override
     public void destroy() {
-
+        Iterator<PeerData> iterator = peerConnectionMap.values().iterator();
+        while (iterator.hasNext()) {
+            PeerData peerData = iterator.next();
+            peerData.getRemoteRenderer().release();
+            peerData.setRemoteVideoTrack(null);
+            peerData.getPeerConnection().dispose();
+        }
+        webRTCManager.stop();
     }
+
+
 
     //Transport callbacks reacting to signaling events
 
     @Override
     public void createNewPeerConnection(String userId, boolean createAsInitiator) {
-        PeerObserver observer = new PeerObserver(userId);
-        PeerConnection connection = manager.createPeerConnection(observer);
-        VivSdpObserver sdpObserver = new VivSdpObserver(userId, connection, this, createAsInitiator);
-        PeerData peerData = new PeerData(connection, sdpObserver);
+        PeerData peerData = new PeerData();
+        VivPeerObserver peerObserver = new VivPeerObserver(peerData, view, userId);
+        VivSdpObserver sdpObserver = new VivSdpObserver(userId, this, createAsInitiator);
+
+        PeerConnection connection = webRTCManager.createPeerConnection(peerObserver);
+
+        peerData.setPeerConnection(connection);
+        peerData.setObserver(sdpObserver);
+
+        // SDPObserver and PeerObserver are mainly callbacks that need a pointer to the peerConnection
+        //but at same time, to create a peer connection we need a SdpObserver so there's no way we can
+        // pass this as a paremeter in the constructor..
+        sdpObserver.setCurrentConnection(connection);
+        peerObserver.setPeerConnection(connection);
 
         peerConnectionMap.put(userId, peerData);
 
         if (createAsInitiator) {
-            connection.createOffer(sdpObserver, manager.getCallConstraints(true, true));
+            connection.createOffer(sdpObserver, webRTCManager.getCallConstraints(true, true));
         }
     }
 
@@ -83,7 +116,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCMa
             SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing answer received from user: "+senderId, e);
+            Log.e(TAG, "Error parsing answer received from user: " + senderId, e);
         }
     }
 
@@ -96,9 +129,9 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCMa
             SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.OFFER, receivedOffer.getString("sdp"));
 
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
-            peerConnection.createAnswer(peerData.getObserver(), manager.getCallConstraints(true, true));
+            peerConnection.createAnswer(peerData.getObserver(), webRTCManager.getCallConstraints(true, true));
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing offer received from user: "+senderId, e);
+            Log.e(TAG, "Error parsing offer received from user: " + senderId, e);
         }
 
     }
@@ -117,20 +150,19 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCMa
         }
     }
 
-//    ConferenceCallbacks from the Manager
-    @Override
-    public void onLocalVideoGenerated(VideoSource videoSource) {
 
+    public void startRenderingVideo(String userId, SurfaceViewRenderer renderer){
+        PeerData peerData = peerConnectionMap.get(userId);
+        webRTCManager.assignRendererToSurface(peerData.getRemoteVideoTrack(), renderer);
+        view.updateLayout();
     }
 
-    @Override
-    public void onNewMediaStreamReceived(String userId) {
-
+    public void sendIceCandidate(String userId, IceCandidate iceCandidate){
+        transport.sendIceCandidate(userId, iceCandidate);
     }
 
-    @Override
-    public void onConnectionClosed(SurfaceViewRenderer renderer) {
-
+    public void cleanConnection(String userId, SurfaceViewRenderer remoteRenderer){
+        view.removeRenderer(remoteRenderer);
     }
 
     //SdpEvents
@@ -148,14 +180,12 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, WebRTCMa
     @Override
     public void onFinishedGatheringIceCandidates(String userId) {
         PeerData peerData = peerConnectionMap.get(userId);
-        PeerConnection peerConnection = peerData.getPeerConnection();
-        LinkedList<IceCandidate> queuedRemoteCandidates = peerData.getQueuedRemoteCandidates();
-        if (queuedRemoteCandidates != null) {
-            Log.d(TAG, "Add " + queuedRemoteCandidates.size() + " remote candidates");
-            for (IceCandidate candidate : queuedRemoteCandidates) {
-                peerConnection.addIceCandidate(candidate);
-            }
-            peerData.setQueuedRemoteCandidates(null);
-        }
+        webRTCManager.drainRemoteCandidates(peerData.getPeerConnection(), peerData.getQueuedRemoteCandidates());
+        peerData.setQueuedRemoteCandidates(null);
+    }
+
+    public void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer videoSource) {
+        webRTCManager.setConferenceListener(view);
+        webRTCManager.initLocalSource(localRenderer, videoSource);
     }
 }
