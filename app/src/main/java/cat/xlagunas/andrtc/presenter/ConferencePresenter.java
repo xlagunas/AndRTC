@@ -80,7 +80,6 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
     }
 
 
-
     //Transport callbacks reacting to signaling events
 
     @Override
@@ -151,17 +150,19 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
     }
 
 
-    public void startRenderingVideo(String userId, SurfaceViewRenderer renderer){
+    public void startRenderingVideo(String userId, SurfaceViewRenderer renderer) {
         PeerData peerData = peerConnectionMap.get(userId);
         webRTCManager.assignRendererToSurface(peerData.getRemoteVideoTrack(), renderer);
+        peerData.setRemoteRenderer(renderer);
         view.updateLayout();
     }
 
-    public void sendIceCandidate(String userId, IceCandidate iceCandidate){
+    public void sendIceCandidate(String userId, IceCandidate iceCandidate) {
         transport.sendIceCandidate(userId, iceCandidate);
     }
 
-    public void cleanConnection(String userId, SurfaceViewRenderer remoteRenderer){
+    public void cleanConnection(String userId) {
+        SurfaceViewRenderer remoteRenderer = peerConnectionMap.get(userId).getRemoteRenderer();
         view.removeRenderer(remoteRenderer);
     }
 

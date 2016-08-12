@@ -187,8 +187,8 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
     }
 
     @Override
-    public void onDisconnected(String userId, SurfaceViewRenderer remoteRenderer) {
-        presenter.cleanConnection(userId, remoteRenderer);
+    public void onDisconnected(String userId) {
+        presenter.cleanConnection(userId);
     }
 
     @Override

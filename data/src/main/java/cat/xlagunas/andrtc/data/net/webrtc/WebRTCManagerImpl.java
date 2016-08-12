@@ -184,7 +184,7 @@ public class WebRTCManagerImpl implements WebRTCManager {
 
         void onConnected(String userId);
 
-        void onDisconnected(String userId, SurfaceViewRenderer remoteRenderer);
+        void onDisconnected(String userId);
 
         void drainCandidates(String userId);
     }
