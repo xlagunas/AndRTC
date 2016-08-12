@@ -1,8 +1,14 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
-import org.webrtc.PeerConnectionFactory;
+
+import org.webrtc.IceCandidate;
+import org.webrtc.MediaConstraints;
+import org.webrtc.PeerConnection;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
+import org.webrtc.VideoTrack;
+
+import java.util.LinkedList;
 
 /**
  * Created by xlagunas on 3/8/16.
@@ -11,10 +17,14 @@ import org.webrtc.VideoCapturer;
 public interface WebRTCManager {
 
     void init();
-    PeerConnectionFactory getPeerConnectionFactory();
     void initLocalSource(SurfaceViewRenderer localRenderer, VideoCapturer capturer);
-    void initRemoteSource(SurfaceViewRenderer remoteRenderer);
     void setConferenceListener(WebRTCManagerImpl.ConferenceListener conferenceActivity);
+    void assignRendererToSurface(VideoTrack videoTrack, SurfaceViewRenderer renderer);
+
+    PeerConnection createPeerConnection(PeerConnection.Observer observer);
     void stop();
 
+    MediaConstraints getCallConstraints(boolean offerToReceiveVideo, boolean offerToReceiveAudio);
+
+    void drainRemoteCandidates(PeerConnection peerConnection, LinkedList<IceCandidate> queuedRemoteCandidates);
 }

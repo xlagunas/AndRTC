@@ -20,6 +20,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
+import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import xlagunas.cat.andrtc.domain.User;
@@ -53,9 +54,9 @@ public class SocketIOTransport implements Transport {
             IO.Options opts = new IO.Options();
             opts.forceNew = true;
             opts.reconnection = false;
-            opts.secure = false;
+            opts.secure = true;
 
-            socket = IO.socket("http://192.168.1.133:3000", opts);
+            socket = IO.socket("https://xlagunas.cat", opts);
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 socket.emit("login", gson.toJson(new LoginMessage(user.getUsername(), user.getPassword())));
@@ -117,7 +118,10 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void disconnect() {
-        socket.disconnect();
+        if (socket != null) {
+            socket.emit("call:unregister", gson.toJson(new JoinRoomMsg(roomId)));
+            socket.disconnect();
+        }
     }
 
     @Override
