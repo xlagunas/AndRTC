@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
@@ -129,18 +130,37 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
+        initLocalVideo();
+    }
+
+    private void initLocalVideo() {
+        if (videoSource != null && !startedLocalStream){
+
+
+
+            startedLocalStream = true;
+        }
     }
 
     @Override
     protected void onPause() {
-        presenter.pause();
         super.onPause();
+        stopLocalVideo();
+        presenter.pause();
+
     }
 
+    private void stopLocalVideo() {
+        if (videoSource != null && startedLocalStream) {
+
+                    videoSource.stop();
+
+            startedLocalStream = false;
+        }
+    }
     @Override
     protected void onDestroy() {
         if (localRenderer != null) {
@@ -183,11 +203,12 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
 
     @Override
     public void onConnected(String userId) {
-
+        Snackbar.make(findViewById(android.R.id.content), String.format("User %s connected", userId), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDisconnected(String userId) {
+        Snackbar.make(findViewById(android.R.id.content), String.format("User %s disconnected", userId), Snackbar.LENGTH_SHORT).show();
         presenter.cleanConnection(userId);
     }
 

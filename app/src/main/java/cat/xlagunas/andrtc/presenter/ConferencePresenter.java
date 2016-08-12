@@ -64,11 +64,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
 
     @Override
     public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
+        Log.d(TAG, "Destroying all instances in presenter");
         Iterator<PeerData> iterator = peerConnectionMap.values().iterator();
         while (iterator.hasNext()) {
             PeerData peerData = iterator.next();
@@ -76,7 +72,13 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
             peerData.setRemoteVideoTrack(null);
             peerData.getPeerConnection().dispose();
         }
+        transport.disconnect();
         webRTCManager.stop();
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
 
