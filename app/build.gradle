@@ -14,8 +14,8 @@ android {
         applicationId "cat.xlagunas.andrtc"
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.1.1"
     }
 
     defaultConfig {

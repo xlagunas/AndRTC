@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
@@ -27,6 +28,9 @@ import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSource;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,16 +91,22 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
 
     private void checkPermissions() {
         boolean arePermissionsOk = true;
+        List<String> permissionsToAsk = null;
 
         for (int i = 0; i < permissions.length; i++) {
             if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
                 arePermissionsOk = false;
-                ActivityCompat.requestPermissions(this, permissions, CONFERENCE_REQUEST_CODE);
+                if (permissionsToAsk == null){
+                    permissionsToAsk = new ArrayList<>();
+                }
+                permissionsToAsk.add(permissions[i]);
             }
         }
 
         if (arePermissionsOk) {
             init();
+        } else {
+            ActivityCompat.requestPermissions(this, permissionsToAsk.toArray(new String[permissionsToAsk.size()]), CONFERENCE_REQUEST_CODE);
         }
     }
 
@@ -126,6 +136,8 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
             }
             if (arePermissionsGranted) {
                 init();
+            } else {
+                Toast.makeText(this, "some permissions are not accepted, can't go on!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -137,8 +149,7 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
     }
 
     private void initLocalVideo() {
-        if (videoSource != null && !startedLocalStream){
-
+        if (videoSource != null && !startedLocalStream) {
 
 
             startedLocalStream = true;
@@ -156,11 +167,12 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
     private void stopLocalVideo() {
         if (videoSource != null && startedLocalStream) {
 
-                    videoSource.stop();
+            videoSource.stop();
 
             startedLocalStream = false;
         }
     }
+
     @Override
     protected void onDestroy() {
         if (localRenderer != null) {
@@ -295,7 +307,7 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (int i = remoteRenderers.getChildCount() -1; i >= 0; i--) {
+                for (int i = remoteRenderers.getChildCount() - 1; i >= 0; i--) {
                     View view = remoteRenderers.getChildAt(i);
                     if (remoteRenderer == view) {
                         Log.d(TAG, "Deleting stream");

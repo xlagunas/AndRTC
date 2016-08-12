@@ -119,8 +119,9 @@ public class WebRTCManagerImpl implements WebRTCManager {
         if (localVideoSource != null) {
             localVideoSource = null;
         }
-        eglBase.release();
-        factory.dispose();
+        if (factory != null) {
+            factory.dispose();
+        }
     }
 
 

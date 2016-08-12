@@ -117,7 +117,10 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void disconnect() {
-        socket.disconnect();
+        if (socket != null) {
+            socket.emit("call:unregister", new JoinRoomMsg(roomId));
+            socket.disconnect();
+        }
     }
 
     @Override
