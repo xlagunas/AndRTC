@@ -20,6 +20,6 @@ public class FacebookLoginUseCase extends UseCase {
 
     @Override
     protected Observable buildUseCaseObservable() {
-        return socialRepository.registerFacebookUser();
+        return socialRepository.getFacebookFriends();
     }
 }

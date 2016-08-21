@@ -11,10 +11,12 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -101,6 +103,29 @@ public class FacebookManagerImpl implements FacebookManager {
 
     }
 
+    public Observable<JSONArray> requestFriends(AccessToken accessToken) {
+        return Observable.create(new Observable.OnSubscribe<JSONArray>() {
+            @Override
+            public void call(Subscriber<? super JSONArray> subscriber) {
+                GraphRequest request = GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(JSONArray objects, GraphResponse response) {
+                        if (response.getError() != null){
+                            subscriber.onError(response.getError().getException());
+                        } else {
+                            subscriber.onNext(objects);
+                            subscriber.onCompleted();
+                        }
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,link,gender,first_name,middle_name,last_name,email,picture");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+        });
+    }
+
     private void generateProfileDataRequest(AccessToken accessToken, GraphRequest.GraphJSONObjectCallback callback) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken, callback);
         Bundle parameters = new Bundle();
@@ -108,4 +133,6 @@ public class FacebookManagerImpl implements FacebookManager {
         request.setParameters(parameters);
         request.executeAsync();
     }
+
+
 }

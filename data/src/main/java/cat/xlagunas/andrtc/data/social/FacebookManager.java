@@ -2,6 +2,7 @@ package cat.xlagunas.andrtc.data.social;
 
 import com.facebook.AccessToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import rx.Observable;
@@ -11,5 +12,9 @@ import rx.Observable;
  */
 public interface FacebookManager {
     Observable<AccessToken> login();
+
     Observable<JSONObject> requestProfileData(AccessToken accessToken);
+
+    Observable<JSONArray> requestFriends(AccessToken accessToken);
+
 }

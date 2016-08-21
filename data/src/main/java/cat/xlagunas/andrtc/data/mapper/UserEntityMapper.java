@@ -3,6 +3,8 @@ package cat.xlagunas.andrtc.data.mapper;
 import com.facebook.login.LoginResult;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -143,5 +145,20 @@ public class UserEntityMapper {
         userEntity.setLastSurname(jsonUserData.optString("last_name"));
         userEntity.setJoinDate(new DateTime());
         return userEntity;
+    }
+
+    public Observable<List<FriendEntity>> transformFacebookFriends(JSONArray jsonFriendList) {
+        List<FriendEntity> friendEntities = new ArrayList<>(jsonFriendList.length());
+        for (int i = 0; i < jsonFriendList.length(); i++) {
+            try {
+                JSONObject friend = jsonFriendList.getJSONObject(i);
+                FriendEntity friendEntity = new FriendEntity();
+                //TODO transform friend and add to array
+                friendEntities.add(friendEntity);
+            } catch (JSONException e) {
+                return Observable.error(e);
+            }
+        }
+        return Observable.just(friendEntities);
     }
 }
