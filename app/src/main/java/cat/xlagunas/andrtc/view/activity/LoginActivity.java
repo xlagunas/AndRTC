@@ -2,6 +2,12 @@ package cat.xlagunas.andrtc.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
+
+import com.facebook.CallbackManager;
+
+import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
@@ -16,6 +22,9 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private ActivityComponent activityComponent;
+
+    @Inject
+    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,8 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
     private void initializeInjector() {
         this.activityComponent =
                 getApplicationComponent().plus(new ActivityModule(this));
+        activityComponent.inject(this);
+        Log.d(TAG, "CallbackManager "+callbackManager.toString());
     }
 
     @Override
@@ -49,7 +60,7 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
         startMainActivity();
     }
 
-    private void startMainActivity(){
+    private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -60,5 +71,11 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
         if (isLast) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

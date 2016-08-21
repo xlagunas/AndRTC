@@ -3,10 +3,13 @@ package cat.xlagunas.andrtc;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import cat.xlagunas.andrtc.di.components.ApplicationComponent;
+import cat.xlagunas.andrtc.di.components.DaggerApplicationComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.di.modules.ApplicationModule;
-import cat.xlagunas.andrtc.di.components.DaggerApplicationComponent;
 import cat.xlagunas.andrtc.di.modules.UserModule;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
@@ -23,6 +26,9 @@ public class CustomApplication extends Application{
     public void onCreate() {
         super.onCreate();
         setupGraph();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
     }
 
     private void setupGraph() {

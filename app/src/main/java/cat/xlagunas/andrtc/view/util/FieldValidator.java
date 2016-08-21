@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import javax.inject.Inject;
 
-import cat.xlagunas.andrtc.di.ActivityScope;
 import cat.xlagunas.andrtc.di.UserScope;
+
 
 /**
  * Created by xlagunas on 9/03/16.

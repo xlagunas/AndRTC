@@ -1,6 +1,7 @@
 package cat.xlagunas.andrtc.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.login.widget.LoginButton;
 
 import javax.inject.Inject;
 
@@ -44,6 +47,9 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
 
     @Bind(R.id.sign_in)
     TextView signIn;
+
+    @Bind(R.id.facebook_login_button)
+    Button facebookLoginButton;
 
     @Inject
     LoginPresenter loginPresenter;
@@ -156,8 +162,18 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         fragmentInterface.onSuccessfullyLogged();
     }
 
+    @OnClick(R.id.facebook_login_button)
+    void onFacebookLoginClick(){
+        loginPresenter.doFacebookLogin();
+    }
+
     public interface FragmentInterface {
         void onSignInRequested();
         void onSuccessfullyLogged();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

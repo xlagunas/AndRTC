@@ -36,9 +36,8 @@ public class UserRepositoryImpl implements UserRepository {
     private UserCache userCache;
     private UserEntityMapper mapper;
 
-
     @Inject
-    public UserRepositoryImpl(RestApi restApi, UserEntityMapper mapper, UserCache userCache){
+    public UserRepositoryImpl(RestApi restApi, UserEntityMapper mapper, UserCache userCache) {
         this.restApi = restApi;
         this.mapper = mapper;
         this.userCache = userCache;
@@ -58,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .map(userEntity -> mapper.mapFriendEntity(userEntity));
     }
 
-    public Observable<User> updateProfile(User user){
+    public Observable<User> updateProfile(User user) {
         return restApi.pullProfile(Credentials.basic(user.getUsername(), user.getPassword()))
                 .doOnNext(saveToCacheAction)
                 .doOnNext(invalidateCache)
@@ -150,6 +149,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .flatMap(userEntity -> Observable.empty());
     }
 
+
     private final Action1<UserEntity> saveToCacheAction = userEntity -> {
         if (userEntity != null) {
             userCache.putUser(userEntity);
@@ -157,7 +157,7 @@ public class UserRepositoryImpl implements UserRepository {
     };
 
     private final Action1 updateTokenAction = userEntity -> {
-            userCache.setGCMRegistrationStatus(true);
+        userCache.setGCMRegistrationStatus(true);
     };
 
     private final Action1 invalidateCache = object -> {

@@ -57,5 +57,4 @@ public interface UserRepository {
 
     Observable cancelCallUser(User user, String friendId);
 
-
     }

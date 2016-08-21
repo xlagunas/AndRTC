@@ -1,5 +1,10 @@
 package cat.xlagunas.andrtc.data.mapper;
 
+import com.facebook.login.LoginResult;
+
+import org.joda.time.DateTime;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +15,7 @@ import cat.xlagunas.andrtc.data.FriendEntity;
 import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
+import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
 
@@ -41,6 +47,12 @@ public class UserEntityMapper {
         entity.setThumbnail(user.getThumbnail());
         //this is only used to register a new user and password is clear in this case so don't need to decode
         entity.setPassword(user.getPassword());
+
+        return entity;
+    }
+
+    public UserEntity transformFacebookUser(LoginResult result){
+        UserEntity entity = new UserEntity();
 
         return entity;
     }
@@ -120,5 +132,16 @@ public class UserEntityMapper {
         friend.setThumbnail("https://xlagunas.cat/images/"+entity.getThumbnail());
 
         return friend;
+    }
+
+    public UserEntity parseFacebookJsonData(JSONObject jsonUserData) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(jsonUserData.optString("id"));
+        userEntity.setEmail(jsonUserData.optString("email"));
+        userEntity.setName(jsonUserData.optString("first_name"));
+        userEntity.setFirstSurname(jsonUserData.optString("middle_name"));
+        userEntity.setLastSurname(jsonUserData.optString("last_name"));
+        userEntity.setJoinDate(new DateTime());
+        return userEntity;
     }
 }

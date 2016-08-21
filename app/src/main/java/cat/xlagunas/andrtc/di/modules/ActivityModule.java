@@ -2,9 +2,9 @@ package cat.xlagunas.andrtc.di.modules;
 
 import android.app.Activity;
 
+import cat.xlagunas.andrtc.di.ActivityScope;
 import dagger.Module;
 import dagger.Provides;
-import cat.xlagunas.andrtc.di.ActivityScope;
 
 /**
  * Created by xlagunas on 2/03/16.
