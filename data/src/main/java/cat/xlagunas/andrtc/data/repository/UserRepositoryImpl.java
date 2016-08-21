@@ -80,6 +80,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Observable registerFacebookUser(User user) {
+        UserEntity entity = mapper.tranformUserEntity(user);
+        return restApi.createFBUser(entity)
+                .doOnNext(saveToCacheAction)
+                .map(userEntity -> mapper.transformUser(userEntity));
+    }
+
+    @Override
     public Observable<Friend> listContacts(User user) {
 
         return userCache.getUser()

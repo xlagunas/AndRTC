@@ -57,4 +57,6 @@ public interface UserRepository {
 
     Observable cancelCallUser(User user, String friendId);
 
+    Observable<User> registerFacebookUser(User user);
+
     }

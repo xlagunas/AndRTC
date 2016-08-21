@@ -72,19 +72,20 @@ public class LoginPresenter implements Presenter {
     }
 
     public void doFacebookLogin() {
-        facebookLoginUseCase.execute(new DefaultSubscriber<Void>() {
+        facebookLoginUseCase.execute(new DefaultSubscriber<User>() {
             @Override
             public void onCompleted() {
             }
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 view.hideLoading();
                 view.showError("Error loading");
             }
 
             @Override
-            public void onNext(Void user) {
+            public void onNext(User user) {
                 view.hideLoading();
 //                view.onUserRecovered(user);
             }
