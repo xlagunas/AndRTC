@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.constants.ServerConstants;
 import cat.xlagunas.andrtc.data.FriendEntity;
 import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
@@ -117,7 +118,7 @@ public class UserEntityMapper {
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
-        user.setThumbnail("https://xlagunas.cat/images/"+entity.getThumbnail());
+        user.setThumbnail(ServerConstants.IMAGE_SERVER+entity.getThumbnail());
 
         return user;
     }
@@ -130,8 +131,7 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
-//        friend.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
-        friend.setThumbnail("https://xlagunas.cat/images/"+entity.getThumbnail());
+        friend.setThumbnail(ServerConstants.IMAGE_SERVER+entity.getThumbnail());
 
         return friend;
     }
