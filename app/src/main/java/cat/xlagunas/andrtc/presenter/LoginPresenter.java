@@ -87,6 +87,7 @@ public class LoginPresenter implements Presenter {
             @Override
             public void onNext(User user) {
                 view.hideLoading();
+                view.onUserRecovered(user);
 //                view.onUserRecovered(user);
             }
         });
