@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.ActivityScope;
 import cat.xlagunas.andrtc.view.LoginDataView;
-import rx.Observer;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.FacebookLoginUseCase;
@@ -30,6 +29,11 @@ public class LoginPresenter implements Presenter {
         this.view = view;
     }
 
+    public void initialize() {
+        view.hideLoading();
+    }
+
+
     @Override
     public void resume() {
     }
@@ -46,40 +50,20 @@ public class LoginPresenter implements Presenter {
 
     public void doLogin(String username, String password) {
         loginUseCase.setCredentials(username, password);
-        loginUseCase.execute(new Observer<User>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.hideLoading();
-                view.showError("Error loading");
-            }
-
-            @Override
-            public void onNext(User user) {
-                view.hideLoading();
-                view.onUserRecovered(user);
-            }
-        });
+        loginUseCase.execute(getLoginSubscriber());
 
         view.showLoading();
     }
 
-    public void initialize() {
-        view.hideLoading();
+    public void doFacebookLogin() {
+        facebookLoginUseCase.execute(getLoginSubscriber());
     }
 
-    public void doFacebookLogin() {
-        facebookLoginUseCase.execute(new DefaultSubscriber<User>() {
-            @Override
-            public void onCompleted() {
-            }
+    private DefaultSubscriber<User> getLoginSubscriber() {
+        return new DefaultSubscriber<User>() {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
                 view.hideLoading();
                 view.showError("Error loading");
             }
@@ -88,8 +72,7 @@ public class LoginPresenter implements Presenter {
             public void onNext(User user) {
                 view.hideLoading();
                 view.onUserRecovered(user);
-//                view.onUserRecovered(user);
             }
-        });
+        };
     }
 }
