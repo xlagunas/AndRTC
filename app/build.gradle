@@ -14,8 +14,8 @@ android {
         applicationId "cat.xlagunas.andrtc"
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
-        versionCode 4
-        versionName "1.1.1"
+        versionCode 5
+        versionName "1.1.2"
     }
 
     defaultConfig {
@@ -47,10 +47,25 @@ android {
         }
     }
 
+    productFlavors {
+        prod {
+        }
+        dev {
+        }
+    }
+}
+
+configurations {
+    prodDebugCompile
+    devDebugCompile
+    prodReleaseCompile
+    devReleaseCompile
+}
+
     testfairyConfig {
         apiKey "006eb235b09d94de6ff30f00e6cf3dd77571a402"
     }
-}
+
 
 dependencies {
     def presentationDependencies = rootProject.ext.presentationDependencies
@@ -58,6 +73,11 @@ dependencies {
     def developmentDependencies = rootProject.ext.developmentDependencies
 
     compile project(':domain')
+
+    prodDebugCompile project(path: ':data', configuration: 'prodDebug')
+    devDebugCompile project(path: ':data', configuration: 'devDebug')
+    prodReleaseCompile project(path: ':data', configuration: 'prodRelease')
+    devReleaseCompile project(path: ':data', configuration: 'devRelease')
     compile project(':data')
 
     apt presentationDependencies.daggerCompiler
@@ -93,6 +113,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:percent:23.2.1'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 
 

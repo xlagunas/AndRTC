@@ -4,16 +4,13 @@ import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
 
-import java.io.IOException;
-
+import cat.xlagunas.andrtc.constants.ServerConstants;
 import cat.xlagunas.andrtc.data.net.RestApi;
 import cat.xlagunas.andrtc.data.util.DateTimeTypeConverter;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -33,9 +30,7 @@ public class NetworkModule {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://xlagunas.cat")
-//                .baseUrl("http://172.20.17.44:3000")
-                .baseUrl("https://xlagunas.cat")
+                .baseUrl(ServerConstants.SERVER_ADDRESS)
                 .addConverterFactory(GsonConverterFactory.create(builder.create()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)

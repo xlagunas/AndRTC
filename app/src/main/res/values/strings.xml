@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Viv</string>
     <string name="search_title">Search by full name or username</string>
+    <string name="facebook_app_id">729615833842955</string>
 </resources>
+

@@ -12,7 +12,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    defaultPublishConfig "debug"
+    publishNonDefault true
 
     testOptions {
         unitTests.returnDefaultValues = true
@@ -55,6 +55,11 @@ android {
 //        unitTests.returnDefaultValues = true
 //    }
 
+    productFlavors {
+        prod {}
+        dev {}
+    }
+
 }
 
 dependencies {
@@ -90,6 +95,7 @@ dependencies {
     }
     testCompile ('io.socket:socket.io-client:0.7.0')
 
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.github.xlagunas:WebRTC:v0.1-beta'
 
 }

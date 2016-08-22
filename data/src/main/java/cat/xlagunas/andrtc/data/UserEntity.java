@@ -39,6 +39,8 @@ public class UserEntity {
     private List<FriendEntity> accepted;
     @SerializedName("status")
     private String status;
+    @SerializedName("facebookId")
+    private String facebookId;
 
     public UserEntity() {
         super();
@@ -154,6 +156,14 @@ public class UserEntity {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 
     @Override

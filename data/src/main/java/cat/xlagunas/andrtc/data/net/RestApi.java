@@ -36,6 +36,9 @@ public interface RestApi {
     @PUT("/user")
     Observable<UserEntity> createUser(@Body UserEntity entity);
 
+    @PUT("/user/social/fb")
+    Observable<UserEntity> createFBUser(@Body UserEntity entity);
+
     @PUT("/user/token")
     Observable<UserEntity> addToken(@Header("Authorization") String authorization, @Body TokenParams tokenParams);
 

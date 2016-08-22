@@ -9,6 +9,7 @@ public class User extends AbstractUser {
 
     private List<Friend> friends;
     private String password;
+    private String facebookId;
 
     public List<Friend> getFriends() {
         return friends;
@@ -24,5 +25,13 @@ public class User extends AbstractUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
     }
 }

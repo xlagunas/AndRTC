@@ -1,15 +1,24 @@
 package cat.xlagunas.andrtc.data.mapper;
 
+import com.facebook.login.LoginResult;
+
+import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.constants.ServerConstants;
 import cat.xlagunas.andrtc.data.FriendEntity;
 import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
+import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
 
@@ -39,8 +48,15 @@ public class UserEntityMapper {
         entity.setFirstSurname(user.getSurname());
         entity.setName(user.getName());
         entity.setThumbnail(user.getThumbnail());
+        entity.setFacebookId(user.getFacebookId());
         //this is only used to register a new user and password is clear in this case so don't need to decode
         entity.setPassword(user.getPassword());
+
+        return entity;
+    }
+
+    public UserEntity transformFacebookUser(LoginResult result){
+        UserEntity entity = new UserEntity();
 
         return entity;
     }
@@ -103,7 +119,8 @@ public class UserEntityMapper {
         user.setSurname(entity.getFirstSurname());
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
-        user.setThumbnail("https://xlagunas.cat/images/"+entity.getThumbnail());
+        user.setFacebookId(entity.getFacebookId());
+        user.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER+entity.getThumbnail());
 
         return user;
     }
@@ -116,9 +133,40 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
-//        friend.setThumbnail("http://192.168.1.133:3000/images/"+entity.getThumbnail());
-        friend.setThumbnail("https://xlagunas.cat/images/"+entity.getThumbnail());
+        friend.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER+entity.getThumbnail());
 
         return friend;
+    }
+
+    public Observable<UserEntity> parseFacebookJsonData(JSONObject jsonUserData) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(jsonUserData.optString("id"));
+        userEntity.setEmail(jsonUserData.optString("email"));
+        userEntity.setName(jsonUserData.optString("first_name"));
+        userEntity.setFirstSurname(jsonUserData.optString("middle_name"));
+        userEntity.setLastSurname(jsonUserData.optString("last_name"));
+        userEntity.setJoinDate(new DateTime());
+        userEntity.setFacebookId(jsonUserData.optString("id"));
+        try {
+            userEntity.setThumbnail(jsonUserData.getJSONObject("picture").getJSONObject("data").getString("url"));
+        } catch (JSONException e) {
+            return Observable.error(e);
+        }
+        return Observable.just(userEntity);
+    }
+
+    public Observable<List<FriendEntity>> transformFacebookFriends(JSONArray jsonFriendList) {
+        List<FriendEntity> friendEntities = new ArrayList<>(jsonFriendList.length());
+        for (int i = 0; i < jsonFriendList.length(); i++) {
+            try {
+                JSONObject friend = jsonFriendList.getJSONObject(i);
+                FriendEntity friendEntity = new FriendEntity();
+                //TODO transform friend and add to array
+                friendEntities.add(friendEntity);
+            } catch (JSONException e) {
+                return Observable.error(e);
+            }
+        }
+        return Observable.just(friendEntities);
     }
 }
