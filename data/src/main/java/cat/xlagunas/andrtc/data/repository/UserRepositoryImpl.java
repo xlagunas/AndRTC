@@ -84,7 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity entity = mapper.tranformUserEntity(user);
         return restApi.createFBUser(entity)
                 .doOnNext(saveToCacheAction)
-                .map(userEntity -> mapper.transformUser(userEntity));
+                .flatMap(userEntity -> userCache.getUser());
     }
 
     @Override
