@@ -42,7 +42,6 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
         this.activityComponent =
                 getApplicationComponent().plus(new ActivityModule(this));
         activityComponent.inject(this);
-        Log.d(TAG, "CallbackManager "+callbackManager.toString());
     }
 
     @Override
