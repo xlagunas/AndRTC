@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -87,5 +88,13 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
     @Override
     public void onCancelConference() {
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        CallRequestBaseFragment fragment = (CallRequestBaseFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.onBackPressed();
+
+        super.onBackPressed();
     }
 }

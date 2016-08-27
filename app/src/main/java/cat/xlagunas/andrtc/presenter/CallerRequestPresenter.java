@@ -59,11 +59,12 @@ public class CallerRequestPresenter extends CallRequestPresenter {
 
     @Override
     public void cancel() {
+        timer.cancel();
         cancelCallRequestUseCase.setRoomId(friendId);
         cancelCallRequestUseCase.execute(new DefaultSubscriber<Void>() {
             @Override
             public void onCompleted() {
-                CallerRequestPresenter.super.cancel();
+                view.cancelConference();
             }
 
             @Override
@@ -72,5 +73,13 @@ public class CallerRequestPresenter extends CallRequestPresenter {
             }
 
         });
+    }
+
+    @Override
+    public void destroy() {
+        searchFriendUseCase.unsubscribe();
+        callRequestUseCase.unsubscribe();
+        cancelCallRequestUseCase.unsubscribe();
+        this.view = null;
     }
 }

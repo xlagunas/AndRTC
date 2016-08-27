@@ -33,6 +33,11 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
     }
 
     @Override
+    public void destroy() {
+
+    }
+
+    @Override
     public void init(boolean isCaller) {
         super.init(isCaller);
         searchFriendUseCase.setId(friendId);
@@ -59,11 +64,12 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
     }
     @Override
     public void cancel() {
+        timer.cancel();
         cancelCallRequestUseCase.setRoomId(callId);
         cancelCallRequestUseCase.execute(new DefaultSubscriber<Void>() {
             @Override
             public void onCompleted() {
-                CalleeRequestPresenter.super.cancel();
+                view.cancelConference();
             }
 
             @Override
