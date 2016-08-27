@@ -14,6 +14,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import cat.xlagunas.andrtc.constants.ServerConstants;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.AnswerMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.IceCandidateMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
@@ -56,7 +57,7 @@ public class SocketIOTransport implements Transport {
             opts.reconnection = false;
             opts.secure = true;
 
-            socket = IO.socket("https://xlagunas.cat", opts);
+            socket = IO.socket(ServerConstants.SERVER_ADDRESS, opts);
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 socket.emit("login", gson.toJson(new LoginMessage(user.getUsername(), user.getPassword())));

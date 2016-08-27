@@ -73,4 +73,15 @@ public class CalleeRequestFragment extends CallRequestBaseFragment {
     public void onCancelButton() {
         presenter.cancel();
     }
+
+    @Override
+    public void onBackPressed() {
+        presenter.cancel();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
+    }
 }

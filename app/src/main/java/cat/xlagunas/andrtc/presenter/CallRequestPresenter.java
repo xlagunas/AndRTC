@@ -61,12 +61,8 @@ public abstract class CallRequestPresenter implements Presenter {
 
     }
 
-    @Override
-    public void destroy() {
-
-    }
-
     public void setCallId(String callId) {
         this.callId = callId;
     }
+
 }

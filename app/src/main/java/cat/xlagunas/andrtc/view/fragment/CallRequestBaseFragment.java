@@ -106,4 +106,6 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
         void onConferenceConfigured(String roomId);
         void onCancelConference();
     }
+
+    public abstract void onBackPressed();
 }

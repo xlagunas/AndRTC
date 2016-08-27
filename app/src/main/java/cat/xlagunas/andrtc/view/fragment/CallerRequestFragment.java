@@ -82,4 +82,15 @@ public class CallerRequestFragment extends CallRequestBaseFragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    @Override
+    public void onBackPressed() {
+        presenter.cancel();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
+    }
 }
