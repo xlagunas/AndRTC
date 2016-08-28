@@ -8,6 +8,8 @@ import javax.inject.Singleton;
 import cat.xlagunas.andrtc.data.repository.SocialRepositoryImpl;
 import cat.xlagunas.andrtc.data.social.FacebookManager;
 import cat.xlagunas.andrtc.data.social.FacebookManagerImpl;
+import cat.xlagunas.andrtc.data.social.GoogleManager;
+import cat.xlagunas.andrtc.data.social.GoogleManagerImpl;
 import cat.xlagunas.andrtc.di.ActivityScope;
 import dagger.Module;
 import dagger.Provides;
@@ -22,20 +24,20 @@ public class SocialModule {
 
     @Provides
     @ActivityScope
-    FacebookManager provideFacebookManager(FacebookManagerImpl facebookManager){
+    FacebookManager provideFacebookManager(FacebookManagerImpl facebookManager) {
         return facebookManager;
-    }
-
-    @Provides
-    @ActivityScope
-    CallbackManager provideCallbackManager(){
-        return CallbackManager.Factory.create();
     }
 
     @Provides
     @ActivityScope
     SocialRepository provideSocialRepository(SocialRepositoryImpl socialRepositoryImpl){
         return socialRepositoryImpl;
+    }
+
+    @Provides
+    @ActivityScope
+    GoogleManager provideGoogleManager(GoogleManagerImpl googleManager) {
+        return googleManager;
     }
 
 }

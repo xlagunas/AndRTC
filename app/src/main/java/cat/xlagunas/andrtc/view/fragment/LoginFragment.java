@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.common.SignInButton;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,9 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
 
     @Bind(R.id.facebook_login_button)
     Button facebookLoginButton;
+
+    @Bind(R.id.google_login_button)
+    SignInButton googleLoginButton;
 
     @Inject
     LoginPresenter loginPresenter;

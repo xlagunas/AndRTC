@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.data.social;
 
+import android.content.Intent;
+
 import com.facebook.AccessToken;
 
 import org.json.JSONArray;
@@ -16,5 +18,8 @@ public interface FacebookManager {
     Observable<JSONObject> requestProfileData(AccessToken accessToken);
 
     Observable<JSONArray> requestFriends(AccessToken accessToken);
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
+
 
 }
