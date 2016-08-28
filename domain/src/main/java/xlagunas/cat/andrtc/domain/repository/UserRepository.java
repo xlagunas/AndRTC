@@ -59,4 +59,6 @@ public interface UserRepository {
 
     Observable<User> registerFacebookUser(User user);
 
+    Observable<User> registerGoogleUser(User user);
+
     }

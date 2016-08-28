@@ -16,8 +16,6 @@ package cat.xlagunas.andrtc.gcm; /**
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -28,9 +26,6 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.ServiceFacade;
-import retrofit2.Response;
-import rx.Observer;
-import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 

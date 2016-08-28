@@ -41,6 +41,8 @@ public class UserEntity {
     private String status;
     @SerializedName("facebookId")
     private String facebookId;
+    @SerializedName("googleId")
+    private String googleId;
 
     public UserEntity() {
         super();
@@ -166,6 +168,14 @@ public class UserEntity {
         this.facebookId = facebookId;
     }
 
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +
@@ -183,6 +193,8 @@ public class UserEntity {
                 ", blocked=" + blocked +
                 ", accepted=" + accepted +
                 ", status='" + status + '\'' +
+                ", facebookId='" + facebookId + '\'' +
+                ", googleId='" + googleId + '\'' +
                 '}';
     }
 }

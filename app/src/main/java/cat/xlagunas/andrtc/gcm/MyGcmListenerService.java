@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.activity.MainActivity;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 
 

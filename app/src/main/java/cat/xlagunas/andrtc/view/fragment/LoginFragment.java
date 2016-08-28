@@ -171,6 +171,11 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         loginPresenter.doFacebookLogin();
     }
 
+    @OnClick(R.id.google_login_button)
+    void onGoogleLoginClick(){
+        loginPresenter.doGoogleLogin();
+    }
+
     public interface FragmentInterface {
         void onSignInRequested();
         void onSuccessfullyLogged();

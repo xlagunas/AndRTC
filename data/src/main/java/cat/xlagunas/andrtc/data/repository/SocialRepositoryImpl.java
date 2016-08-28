@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import cat.xlagunas.andrtc.data.social.FacebookManager;
+import cat.xlagunas.andrtc.data.social.GoogleManager;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -20,11 +21,13 @@ import xlagunas.cat.andrtc.domain.repository.UserRepository;
 public class SocialRepositoryImpl implements SocialRepository {
 
     private final FacebookManager facebookManager;
+    private final GoogleManager googleManager;
     private final UserEntityMapper entityMapper;
 
     @Inject
-    public SocialRepositoryImpl(FacebookManager facebookManager, UserEntityMapper entityMapper) {
+    public SocialRepositoryImpl(FacebookManager facebookManager, GoogleManager googleManager, UserEntityMapper entityMapper) {
         this.facebookManager = facebookManager;
+        this.googleManager = googleManager;
         this.entityMapper = entityMapper;
     }
 
@@ -45,6 +48,13 @@ public class SocialRepositoryImpl implements SocialRepository {
                 .map(userEntity -> entityMapper.mapFriendEntity(userEntity))
                 .toList();
 
+    }
+
+    @Override
+    public Observable<User> registerGoogleUser() {
+        return googleManager.login()
+                .flatMap(accountDetails -> entityMapper.parseGoogleData(accountDetails))
+                .map(userEntity -> entityMapper.transformUser(userEntity));
     }
 
 }

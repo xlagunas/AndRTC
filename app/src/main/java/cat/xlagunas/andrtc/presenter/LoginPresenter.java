@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.presenter;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.ActivityScope;
@@ -7,6 +9,7 @@ import cat.xlagunas.andrtc.view.LoginDataView;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.FacebookLoginUseCase;
+import xlagunas.cat.andrtc.domain.interactor.GoogleLoginUseCase;
 import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
 
 /**
@@ -17,12 +20,14 @@ public class LoginPresenter implements Presenter {
 
     private final LoginUseCase loginUseCase;
     private final FacebookLoginUseCase facebookLoginUseCase;
+    private final GoogleLoginUseCase googleLoginUseCase;
     private LoginDataView view;
 
     @Inject
-    LoginPresenter(LoginUseCase loginUseCase, FacebookLoginUseCase facebookLoginUseCase) {
+    LoginPresenter(LoginUseCase loginUseCase, FacebookLoginUseCase facebookLoginUseCase, GoogleLoginUseCase googleLoginUseCase) {
         this.loginUseCase = loginUseCase;
         this.facebookLoginUseCase = facebookLoginUseCase;
+        this.googleLoginUseCase = googleLoginUseCase;
     }
 
     public void setView(LoginDataView view) {
@@ -45,6 +50,8 @@ public class LoginPresenter implements Presenter {
     @Override
     public void destroy() {
         loginUseCase.unsubscribe();
+        facebookLoginUseCase.unsubscribe();
+        googleLoginUseCase.unsubscribe();
         this.view = null;
     }
 
@@ -59,6 +66,10 @@ public class LoginPresenter implements Presenter {
         facebookLoginUseCase.execute(getLoginSubscriber());
     }
 
+    public void doGoogleLogin() {
+        googleLoginUseCase.execute(getLoginSubscriber());
+    }
+
     private DefaultSubscriber<User> getLoginSubscriber() {
         return new DefaultSubscriber<User>() {
 
@@ -66,6 +77,7 @@ public class LoginPresenter implements Presenter {
             public void onError(Throwable e) {
                 view.hideLoading();
                 view.showError("Error loading");
+                e.printStackTrace();
             }
 
             @Override
@@ -75,4 +87,6 @@ public class LoginPresenter implements Presenter {
             }
         };
     }
+
+
 }

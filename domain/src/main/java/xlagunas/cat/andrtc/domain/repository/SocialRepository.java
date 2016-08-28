@@ -14,4 +14,5 @@ public interface SocialRepository {
 
     Observable<User> registerFacebookUser();
     Observable<List<Friend>> getFacebookFriends();
+    Observable<User> registerGoogleUser();
 }
