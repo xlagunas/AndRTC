@@ -46,18 +46,21 @@
 
             <Button
                 android:id="@+id/facebook_login_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/com_facebook_loginview_log_in_button_long"
                 android:drawableLeft="@drawable/com_facebook_button_icon_white"
                 android:drawablePadding="10dp"
                 style="@style/com_facebook_button"
-                android:layout_marginRight="40dp"/>
+                android:layout_marginRight="10dp"
+                />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/google_login_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 />
