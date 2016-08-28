@@ -6,6 +6,7 @@ import android.util.Log;
 
 
 import com.facebook.CallbackManager;
+import com.facebook.internal.CallbackManagerImpl;
 
 import javax.inject.Inject;
 
@@ -18,13 +19,10 @@ import cat.xlagunas.andrtc.view.fragment.LoginFragment;
 /**
  * Created by xlagunas on 2/03/16.
  */
-public class LoginActivity extends BaseActivity implements HasComponent<ActivityComponent>, LoginFragment.FragmentInterface {
+public class LoginActivity extends SocialLoginActivity implements HasComponent<ActivityComponent>, LoginFragment.FragmentInterface {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private ActivityComponent activityComponent;
-
-    @Inject
-    CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +34,7 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
         if (savedInstanceState == null) {
             addFragment(R.id.fragment_container, new LoginFragment());
         }
+
     }
 
     private void initializeInjector() {
@@ -72,9 +71,4 @@ public class LoginActivity extends BaseActivity implements HasComponent<Activity
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
 }

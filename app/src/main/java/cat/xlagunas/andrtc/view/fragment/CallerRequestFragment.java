@@ -11,8 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
-import com.bumptech.glide.Glide;
-
 import javax.inject.Inject;
 
 import butterknife.OnClick;
@@ -21,8 +19,6 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.presenter.CallerRequestPresenter;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
-import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
-import xlagunas.cat.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 25/7/16.

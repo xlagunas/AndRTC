@@ -1,6 +1,7 @@
 package cat.xlagunas.andrtc.data.social;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
+import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
@@ -35,10 +37,9 @@ public class FacebookManagerImpl implements FacebookManager {
     private final CallbackManager callbackManager;
 
     @Inject
-    public FacebookManagerImpl(Activity activity, CallbackManager callbackManager) {
+    public FacebookManagerImpl(Activity activity) {
         this.activity = activity;
-        this.callbackManager = callbackManager;
-        Log.d(TAG, "CallbackManager " + callbackManager.toString());
+        this.callbackManager = CallbackManager.Factory.create();
     }
 
     public Observable<AccessToken> login() {
@@ -122,6 +123,13 @@ public class FacebookManagerImpl implements FacebookManager {
                 request.executeAsync();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode() == requestCode) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void generateProfileDataRequest(AccessToken accessToken, GraphRequest.GraphJSONObjectCallback callback) {

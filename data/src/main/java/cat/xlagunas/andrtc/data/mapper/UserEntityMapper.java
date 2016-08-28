@@ -1,6 +1,8 @@
 package cat.xlagunas.andrtc.data.mapper;
 
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.SignInAccount;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -168,5 +170,19 @@ public class UserEntityMapper {
             }
         }
         return Observable.just(friendEntities);
+    }
+
+    public Observable<UserEntity> parseGoogleData(GoogleSignInAccount account){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(account.getEmail());
+        userEntity.setEmail(account.getEmail());
+        userEntity.setName(account.getDisplayName());
+        userEntity.setFirstSurname("");
+        userEntity.setLastSurname("");
+        userEntity.setJoinDate(new DateTime());
+        userEntity.setThumbnail(account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "");
+        userEntity.setGoogleId(account.getId());
+
+        return Observable.just(userEntity);
     }
 }

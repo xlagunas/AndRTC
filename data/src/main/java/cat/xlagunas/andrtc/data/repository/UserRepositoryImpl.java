@@ -88,6 +88,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Observable<User> registerGoogleUser(User user) {
+        UserEntity entity = mapper.tranformUserEntity(user);
+        return restApi.createGoogleUser(entity)
+                .doOnNext(saveToCacheAction)
+                .flatMap(userEntity -> userCache.getUser());
+    }
+
+    @Override
     public Observable<Friend> listContacts(User user) {
 
         return userCache.getUser()
