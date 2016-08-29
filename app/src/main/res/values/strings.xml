@@ -2,7 +2,7 @@
     <string name="app_name">Viv</string>
     <string name="search_title">Search by full name or username</string>
     <string name="facebook_app_id">729615833842955</string>
-    <string name="menut_logout">Logout</string>
+    <string name="menu_logout">Logout</string>
     <string name="friend_pending">Pending request</string>
 
     <string name="hint_user_name">Name</string>
@@ -24,6 +24,7 @@
     <string name="register_select_media_text">or select media</string>
 
     <string name="login_new_user_text">New user?</string>
+    <string name="friend_item_name">%s %s %s</string>
 
 </resources>
 

@@ -35,7 +35,7 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
 
     protected static void bind(final FriendViewHolder holder, final Friend friend) {
         holder.username.setText(friend.getUsername());
-        holder.fullName.setText(friend.getName() +" " +friend.getSurname() + " "+ friend.getLastSurname());
+        holder.fullName.setText(holder.itemView.getContext().getString(R.string.friend_item_name, friend.getName(), friend.getSurname(), friend.getLastSurname()));
         //TODO ADD THUMBNAIL
         Glide.with(holder.itemView.getContext())
                 .load(Uri.parse(friend.getThumbnail()))

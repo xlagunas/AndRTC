@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.AcceptCallRequestUseCase;
 import xlagunas.cat.andrtc.domain.interactor.CancelCallRequestUseCase;
 import xlagunas.cat.andrtc.domain.interactor.SearchFriendUseCase;
@@ -14,14 +13,12 @@ import xlagunas.cat.andrtc.domain.interactor.SearchFriendUseCase;
  */
 public class CalleeRequestPresenter extends CallRequestPresenter {
 
-    private final User user;
     private final CancelCallRequestUseCase cancelCallRequestUseCase;
     private final AcceptCallRequestUseCase acceptCallRequestUseCase;
     private final SearchFriendUseCase searchFriendUseCase;
 
     @Inject
-    public CalleeRequestPresenter(User user, SearchFriendUseCase searchFriendUseCase, AcceptCallRequestUseCase acceptCallRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase){
-        this.user = user;
+    public CalleeRequestPresenter(SearchFriendUseCase searchFriendUseCase, AcceptCallRequestUseCase acceptCallRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase){
         this.acceptCallRequestUseCase = acceptCallRequestUseCase;
         this.cancelCallRequestUseCase = cancelCallRequestUseCase;
         this.searchFriendUseCase = searchFriendUseCase;

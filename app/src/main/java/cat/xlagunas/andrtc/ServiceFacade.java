@@ -8,5 +8,5 @@ import javax.inject.Singleton;
 @Singleton
 public interface ServiceFacade {
 
-    public void startService();
+    void startService();
 }
