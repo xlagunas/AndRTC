@@ -31,14 +31,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="REJECT"/>
+            android:text="@string/button_call_reject"/>
 
         <Button
             android:id="@+id/accept_call"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ACCEPT"/>
+            android:text="@string/button_call_accept"/>
     </LinearLayout>
 
 </RelativeLayout>

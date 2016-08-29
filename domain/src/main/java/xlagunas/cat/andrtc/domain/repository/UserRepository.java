@@ -11,12 +11,6 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface UserRepository {
 
-    /**
-     * AbstractUser search filter
-     * @param @link{User} who is authenticated to request data
-     * @param filterName String to filter
-     * @return All users whose username matches the filter
-     */
      Observable<Friend> searchUsers(User user, String filterName);
 
     /**
