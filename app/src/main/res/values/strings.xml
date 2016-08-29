@@ -24,7 +24,7 @@
     <string name="register_select_media_text">or select media</string>
 
     <string name="login_new_user_text">New user?</string>
-    <string name="friend_item_name">%s %s %s</string>
+    <string name="friend_item_name">%1$s %2$s %3$s</string>
 
 </resources>
 
