@@ -4,6 +4,7 @@ import java.io.File;
 
 import cat.xlagunas.andrtc.data.UserEntity;
 import rx.Observable;
+import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
 
@@ -18,7 +19,7 @@ public interface UserCache {
 
     Observable<User> getUser();
 
-    void removeCache();
+    Action1 removeCache();
 
     boolean isGCMRegistered();
 

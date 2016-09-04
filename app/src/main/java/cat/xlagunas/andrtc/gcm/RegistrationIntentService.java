@@ -1,12 +1,12 @@
 package cat.xlagunas.andrtc.gcm; /**
  * Copyright 2015 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.ServiceFacade;
+import cat.xlagunas.andrtc.data.cache.UserCache;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
@@ -36,6 +37,9 @@ public class RegistrationIntentService extends IntentService {
 
     @Inject
     RegisterGCMTokenUseCase useCase;
+
+    @Inject
+    UserCache userCache;
 
     public RegistrationIntentService() {
         super(TAG);
@@ -49,19 +53,20 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (!userCache.isGCMRegistered()) {
+            try {
 
-        try {
+                InstanceID instanceID = InstanceID.getInstance(this);
+                String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
-            InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                Log.i(TAG, "GCM Registration Token: " + token);
 
-            Log.i(TAG, "GCM Registration Token: " + token);
+                sendRegistrationToServer(token);
 
-            sendRegistrationToServer(token);
-
-        } catch (Exception e) {
-            Log.d(TAG, "Failed to complete token refresh", e);
+            } catch (Exception e) {
+                Log.d(TAG, "Failed to complete token refresh", e);
+            }
         }
 
     }
@@ -76,11 +81,10 @@ public class RegistrationIntentService extends IntentService {
      */
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
-        Log.d(TAG, "Token: "+token);
+        Log.d(TAG, "Token: " + token);
         useCase.setToken(token);
         useCase.execute(new TokenSubscriber());
     }
-
 
 
     @Override
@@ -98,6 +102,7 @@ public class RegistrationIntentService extends IntentService {
 
         @Override
         public void onError(Throwable e) {
+
             Log.d(TAG, "Error registering token", e);
         }
     }

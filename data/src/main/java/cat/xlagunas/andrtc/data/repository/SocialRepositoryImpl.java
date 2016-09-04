@@ -8,6 +8,8 @@ import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import cat.xlagunas.andrtc.data.social.FacebookManager;
 import cat.xlagunas.andrtc.data.social.GoogleManager;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
@@ -55,6 +57,16 @@ public class SocialRepositoryImpl implements SocialRepository {
         return googleManager.login()
                 .flatMap(accountDetails -> entityMapper.parseGoogleData(accountDetails))
                 .map(userEntity -> entityMapper.transformUser(userEntity));
+    }
+
+    @Override
+    public Action0 logoutFacebook() {
+        return facebookManager.logOut();
+    }
+
+    @Override
+    public Observable<Void> logoutGoogle() {
+        return null;
     }
 
 }

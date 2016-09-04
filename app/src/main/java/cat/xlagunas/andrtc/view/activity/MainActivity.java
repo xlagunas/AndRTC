@@ -18,13 +18,14 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.MainPresenter;
+import cat.xlagunas.andrtc.view.LogOutDataView;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 
 
 /**
  * Created by xlagunas on 9/03/16.
  */
-public class MainActivity extends BaseActivity implements HasComponent<UserComponent> {
+public class MainActivity extends BaseActivity implements HasComponent<UserComponent>, LogOutDataView{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -47,6 +48,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         getActivityComponent().inject(this);
         setSupportActionBar(toolbar);
         presenter.initPresenter();
+        presenter.setView(this);
 
         addFragment(R.id.fragment_container, new CurrentContactFragment());
     }
@@ -72,16 +74,19 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_logout:
-                onLogout();
+                logOut();
                 break;
         }
         return true;
     }
 
-    public void onLogout() {
+    private void logOut(){
         presenter.logout();
+    }
+
+    @Override
+    public void onLogOut() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
-
 }

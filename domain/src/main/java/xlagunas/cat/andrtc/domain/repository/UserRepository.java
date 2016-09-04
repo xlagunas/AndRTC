@@ -55,4 +55,5 @@ public interface UserRepository {
 
     Observable<User> registerGoogleUser(User user);
 
-    }
+    Observable<Void> logoutUser();
+}
