@@ -1,10 +1,8 @@
 package cat.xlagunas.andrtc.view.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
@@ -81,14 +79,14 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void onResume() {
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                presenter.search("");
-            }
-        };
         super.onResume();
+
         presenter.resume();
+    }
+
+    @Override
+    protected void invalidateAdapterData() {
+        presenter.updateContacts();
     }
 
     @Override
@@ -113,7 +111,6 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     @Override
     public void showEmpty() {
         recyclerView.setVisibility(View.GONE);
-        //TODO if there's some view to show when nothing is presented, show it here
     }
 
     @Override
@@ -132,6 +129,23 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     }
 
     @Override
+    protected void onFriendshipRequested(Bundle bundle) {
+        Snackbar.make(getView(),
+                getString(R.string.info_contact_requested,
+                bundle.getString("username")), Snackbar.LENGTH_SHORT)
+                .show();
+        invalidateAdapterData();
+    }
+
+    @Override
+    protected void onFriendshipUpdated(Bundle bundle) {
+        Snackbar.make(getView(),
+                getString(R.string.info_contact_accepted, bundle.getString("username")),
+                Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
     public void showConfirmationError(Throwable e) {
         Log.e(TAG, "Error adding new friendship", e);
     }
@@ -139,17 +153,18 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     @Override
     public void showConfirmation() {
         Toast.makeText(getActivity(), "New friendship requested", Toast.LENGTH_LONG).show();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void notifyContactUpdate(Friend friend, String message) {
-        Toast.makeText(getActivity(), friend.getUsername() + "friendship updated to: "+message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), friend.getUsername() + "friendship updated to: " + message, Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void notifiyUpdateError(Friend friend, Throwable e) {
-        Log.e(TAG, "Error updating notification error: "+e);
+        Log.e(TAG, "Error updating notification error: " + e);
         adapter.notifyDataSetChanged();
     }
 

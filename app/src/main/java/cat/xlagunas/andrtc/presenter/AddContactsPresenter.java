@@ -61,6 +61,10 @@ public class AddContactsPresenter implements Presenter {
 
     public void search(String keyword){
         searchUserUseCase.setFilter(keyword);
+        executeSearch();
+    }
+
+    private void executeSearch(){
         searchUserUseCase.execute(new Subscriber<List<Friend>>() {
 
             @Override
@@ -132,6 +136,10 @@ public class AddContactsPresenter implements Presenter {
                 view.notifiyUpdateError(friend, e);
             }
         });
+    }
+
+    public void updateContacts() {
+        executeSearch();
     }
 
 }

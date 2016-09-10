@@ -25,6 +25,12 @@
 
     <string name="login_new_user_text">New user?</string>
     <string name="friend_item_name">%1$s %2$s %3$s</string>
+    <string name="notification_accepted_text">%1$s (%2$s) has accepted your friendship request</string>
+    <string name="notification_requested_text">%1$s (%2$s) wants to be friends with you</string>
+    <string name="info_contact_requested">(%1$s) wants to be friends with you, Accept or Decline the proposal on Add contacts page</string>
+    <string name="info_contact_accepted">You\'ve got a new contact!. (%1$s) has accepted your friendship</string>
+    <string name="notification_requested_title">New friendship request</string>
+    <string name="notification_updated_title">You have a new contact</string>
 
 </resources>
 

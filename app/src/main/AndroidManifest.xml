@@ -57,6 +57,13 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".receiver.FriendshipUpdateReceiver"
+            android:exported="false">
+            <intent-filter android:priority="300">
+                <action android:name="CONTACTS_UPDATE"/>
+            </intent-filter>
+        </receiver>
+
         <!-- GOOGLE PUSH NOTIFICATIONS -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
