@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
@@ -21,13 +21,13 @@ import cat.xlagunas.andrtc.view.util.TextValidator;
 /**
  * Created by xlagunas on 14/7/16.
  */
-public class EmailPasswordRegisterFragment extends GenericRegisterFragment implements EmailPasswordDataView{
+public class EmailPasswordRegisterFragment extends GenericRegisterFragment implements EmailPasswordDataView {
 
-    @Bind(R.id.password)
+    @BindView(R.id.password)
     TextInputLayout password;
-    @Bind(R.id.confirm_password)
+    @BindView(R.id.confirm_password)
     TextInputLayout passwordConfirmation;
-    @Bind(R.id.email)
+    @BindView(R.id.email)
     TextInputLayout email;
 
     @Inject
@@ -42,7 +42,7 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         return view;
     }
 
@@ -117,8 +117,8 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         nextButton.setEnabled(enable);
     }
 
-    private void validateEmail(String text){
-        if (presenter.isEmailValid(text)){
+    private void validateEmail(String text) {
+        if (presenter.isEmailValid(text)) {
             email.setError(null);
             email.setErrorEnabled(false);
         } else {
@@ -126,8 +126,8 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         }
     }
 
-    private void validatePasswordText(String text){
-        if (presenter.isPasswordValid(text)){
+    private void validatePasswordText(String text) {
+        if (presenter.isPasswordValid(text)) {
             password.setError(null);
             password.setErrorEnabled(false);
         } else {
@@ -136,8 +136,8 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         }
     }
 
-    private void validatePasswordConfirmationText(String text){
-        if (presenter.validatePasswordConfirmation(text)){
+    private void validatePasswordConfirmationText(String text) {
+        if (presenter.validatePasswordConfirmation(text)) {
             passwordConfirmation.setError(null);
             passwordConfirmation.setErrorEnabled(false);
         } else {
@@ -145,12 +145,8 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         }
     }
 
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         this.presenter.destroy();
     }

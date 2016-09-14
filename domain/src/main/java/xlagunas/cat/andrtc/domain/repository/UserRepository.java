@@ -14,7 +14,7 @@ public interface UserRepository {
      Observable<Friend> searchUsers(User user, String filterName);
 
     /**
-     * Return the list of all the contacts
+     * Return the list of all the contacts except the non Requested
      * @return a list of users
      */
     Observable<Friend> listContacts(User user);
@@ -24,6 +24,8 @@ public interface UserRepository {
      * @return a list of users
      */
     Observable<Friend> listRequestedContacts();
+
+    Observable<Friend> listAllContacts();
 
     /**
      * Return the user if logged

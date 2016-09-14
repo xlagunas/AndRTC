@@ -28,13 +28,12 @@ import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSource;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
@@ -54,13 +53,12 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
     private static final String[] permissions = {"android.permission.RECORD_AUDIO", "android.permission.CAMERA"};
     private VideoSource videoSource;
 
-    @Bind(R.id.local_video_view)
+    @BindView(R.id.local_video_view)
     SurfaceViewRenderer localRenderer;
     CameraVideoCapturer videoCapturer;
 
-    @Bind(R.id.remote_video_container)
+    @BindView(R.id.remote_video_container)
     PercentRelativeLayout remoteRenderers;
-
 
     @Inject
     ConferencePresenter presenter;
@@ -96,7 +94,7 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
         for (int i = 0; i < permissions.length; i++) {
             if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
                 arePermissionsOk = false;
-                if (permissionsToAsk == null){
+                if (permissionsToAsk == null) {
                     permissionsToAsk = new ArrayList<>();
                 }
                 permissionsToAsk.add(permissions[i]);
@@ -150,7 +148,6 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
 
     private void initLocalVideo() {
         if (videoSource != null && !startedLocalStream) {
-
 
             startedLocalStream = true;
         }
@@ -350,6 +347,5 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
             }
         }
     }
-
 
 }

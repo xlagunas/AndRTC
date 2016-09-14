@@ -3,9 +3,7 @@ package cat.xlagunas.andrtc.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +14,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.CallRequestDataView;
-import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -28,19 +25,18 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public abstract class CallRequestBaseFragment extends BaseFragment implements CallRequestDataView {
 
-
     private static final String TAG = CallRequestBaseFragment.class.getSimpleName();
 
-    @Bind(R.id.caller_image)
+    @BindView(R.id.caller_image)
     protected ImageView callerImage;
 
-    @Bind(R.id.caller_name)
+    @BindView(R.id.caller_name)
     protected TextView callerName;
 
-    @Bind(R.id.accept_call)
+    @BindView(R.id.accept_call)
     protected Button accept;
 
-    @Bind(R.id.cancel_call)
+    @BindView(R.id.cancel_call)
     protected Button cancel;
 
     protected CallRequestListener listener;
@@ -48,9 +44,9 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try{
+        try {
             listener = (CallRequestListener) context;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException("Activity must implement CallRequestListener");
         }
     }
@@ -76,7 +72,7 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
 
     @Override
     public void setOnError(Throwable e) {
-        Snackbar.make(getView(), "Error: "+e.getMessage(), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(), "Error: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
         Log.e(TAG, "Error", e);
     }
 
@@ -84,26 +80,27 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
     public void updateUserData(Friend friend) {
         Glide.with(this).load(friend.getThumbnail()).centerCrop().into(callerImage);
         StringBuilder builder = new StringBuilder(friend.getName())
-                .append(" "+friend.getSurname());
-        if (friend.getLastSurname() != null && !friend.getLastSurname().isEmpty()){
-            builder.append(" "+friend.getLastSurname());
+                .append(" " + friend.getSurname());
+        if (friend.getLastSurname() != null && !friend.getLastSurname().isEmpty()) {
+            builder.append(" " + friend.getLastSurname());
         }
 
         getActivity().setTitle(builder.toString());
     }
 
-    public void startConference(String roomId){
-        Log.d(TAG, "Starting conference with Id: "+roomId);
+    public void startConference(String roomId) {
+        Log.d(TAG, "Starting conference with Id: " + roomId);
         listener.onConferenceConfigured(roomId);
     }
 
-    public void cancelConference(){
+    public void cancelConference() {
         Log.d(TAG, "Canceling conference");
         listener.onCancelConference();
     }
 
     public interface CallRequestListener {
         void onConferenceConfigured(String roomId);
+
         void onCancelConference();
     }
 

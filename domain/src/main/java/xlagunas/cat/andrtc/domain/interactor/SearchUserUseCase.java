@@ -36,11 +36,12 @@ public class SearchUserUseCase extends UseCase {
 
     @Override
     protected Observable<List<Friend>> buildUseCaseObservable() {
+
         Observable<Friend> observable = filter.isEmpty()
-                ? Observable.<Friend>empty()
-                : repository.searchUsers(user, filter);
+                ? repository.listRequestedContacts()
+                : repository.listAllContacts().mergeWith(repository.searchUsers(user, filter));
 
         return  observable
-                .mergeWith(repository.listRequestedContacts()).toSortedList();
+                .distinct().toSortedList();
     }
 }

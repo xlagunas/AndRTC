@@ -158,8 +158,7 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void notifyContactUpdate(Friend friend, String message) {
-        Toast.makeText(getActivity(), friend.getUsername() + "friendship updated to: " + message, Toast.LENGTH_SHORT).show();
-        adapter.notifyDataSetChanged();
+        presenter.updateContacts();
     }
 
     @Override

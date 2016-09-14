@@ -61,12 +61,12 @@ dependencies {
     compile project(':domain')
 
     apt dataDependencies.daggerCompiler
+
     provided dataDependencies.javaxAnnotation
     compile dataDependencies.dagger
     compile dataDependencies.gson
     compile dataDependencies.rxJava
     compile dataDependencies.rxAndroid
-    compile dataDependencies.androidAnnotations
     compile dataDependencies.jodaTime
     compile dataDependencies.retrofit
     compile dataDependencies.retrofitGson
@@ -74,23 +74,22 @@ dependencies {
     compile dataDependencies.okio
     compile dataDependencies.okHttp
     compile dataDependencies.retrofitRxAdapter
+    compile dataDependencies.glide
+    compile dataDependencies.facebookSdk
+    compile dataDependencies.gcmServices
+    compile dataDependencies.gcmAuth
+    compile (dataDependencies.socketIO) {
+        exclude group: 'org.json', module: 'json'
+    }
+    compile dataDependencies.webRTC
 
 
     testCompile testDependencies.junit
     testCompile testDependencies.assertj
     testCompile testDependencies.mockito
     testCompile testDependencies.robolectric
-
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile ('io.socket:socket.io-client:0.7.0') {
-        exclude group: 'org.json', module: 'json'
-    }
-    testCompile ('io.socket:socket.io-client:0.7.0')
-
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.github.xlagunas:WebRTC:v0.1-beta'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-auth:8.4.0'
+    testCompile testDependencies.socketIO
 
 }
+
 apply plugin: 'com.google.gms.google-services'

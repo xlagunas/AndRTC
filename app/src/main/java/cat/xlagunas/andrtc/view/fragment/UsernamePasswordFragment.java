@@ -8,8 +8,7 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.UsernamePasswordPresenter;
@@ -19,13 +18,13 @@ import cat.xlagunas.andrtc.view.util.TextValidator;
 /**
  * Created by xlagunas on 4/04/16.
  */
-public class UsernamePasswordFragment extends GenericRegisterFragment implements UsernamePasswordDataView{
+public class UsernamePasswordFragment extends GenericRegisterFragment implements UsernamePasswordDataView {
 
-    @Bind(R.id.username)
+    @BindView(R.id.username)
     TextInputLayout username;
-    @Bind(R.id.password)
+    @BindView(R.id.password)
     TextInputLayout password;
-    @Bind(R.id.confirm_password)
+    @BindView(R.id.confirm_password)
     TextInputLayout passwordConfirmation;
 
     @Inject
@@ -64,7 +63,7 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         password.getEditText().addTextChangedListener(new TextValidator(password.getEditText()) {
             @Override
             public void validate(TextView textView, String text) {
-               validatePasswordText(text);
+                validatePasswordText(text);
                 presenter.validateChecks();
             }
         });
@@ -114,8 +113,8 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         super.onNextClicked();
     }
 
-    private void validateUsernameText(String text){
-        if (presenter.isUsernameValid(text)){
+    private void validateUsernameText(String text) {
+        if (presenter.isUsernameValid(text)) {
             username.setError(null);
             username.setErrorEnabled(false);
         } else {
@@ -123,8 +122,8 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         }
     }
 
-    private void validatePasswordText(String text){
-        if (presenter.isPasswordValid(text)){
+    private void validatePasswordText(String text) {
+        if (presenter.isPasswordValid(text)) {
             password.setError(null);
             password.setErrorEnabled(false);
         } else {
@@ -133,8 +132,8 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         }
     }
 
-    private void validatePasswordConfirmationText(String text){
-        if (presenter.validatePasswordConfirmation(text)){
+    private void validatePasswordConfirmationText(String text) {
+        if (presenter.validatePasswordConfirmation(text)) {
             passwordConfirmation.setError(null);
             passwordConfirmation.setErrorEnabled(false);
         } else {
@@ -142,12 +141,8 @@ public class UsernamePasswordFragment extends GenericRegisterFragment implements
         }
     }
 
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         this.presenter.destroy();
     }

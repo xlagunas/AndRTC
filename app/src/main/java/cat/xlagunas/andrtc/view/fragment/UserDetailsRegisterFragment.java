@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
@@ -39,13 +39,13 @@ public class UserDetailsRegisterFragment extends GenericRegisterFragment impleme
     private final static int REQUEST_LOAD_GALLERY_IMAGE = 10010;
     private static final String TAG = UserDetailsRegisterFragment.class.getSimpleName();
 
-    @Bind(R.id.camera_button)
+    @BindView(R.id.camera_button)
     ImageView userImage;
 
-    @Bind(R.id.fullname)
+    @BindView(R.id.fullname)
     TextInputLayout fullName;
 
-    @Bind(R.id.finish_button)
+    @BindView(R.id.finish_button)
     Button finishButton;
 
     @Inject
@@ -151,19 +151,13 @@ public class UserDetailsRegisterFragment extends GenericRegisterFragment impleme
         }
     }
 
-    private void validateFullUser(String fullUser){
-        if (presenter.validateUsername(fullUser)){
+    private void validateFullUser(String fullUser) {
+        if (presenter.validateUsername(fullUser)) {
             this.fullName.setError(null);
             this.fullName.setErrorEnabled(false);
         } else {
             setError(fullName, "Please insert your full name");
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override

@@ -10,7 +10,7 @@ import android.view.View;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.CustomApplication;
@@ -21,21 +21,20 @@ import cat.xlagunas.andrtc.presenter.MainPresenter;
 import cat.xlagunas.andrtc.view.LogOutDataView;
 import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
 
-
 /**
  * Created by xlagunas on 9/03/16.
  */
-public class MainActivity extends BaseActivity implements HasComponent<UserComponent>, LogOutDataView{
+public class MainActivity extends BaseActivity implements HasComponent<UserComponent>, LogOutDataView {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Inject
     MainPresenter presenter;
 
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
@@ -54,7 +53,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     }
 
     @OnClick(R.id.fab)
-    public void handleAddFriends(){
+    public void handleAddFriends() {
         Intent intent = AddContactsActivity.buildAddContactsIntent(MainActivity.this);
         startActivity(intent);
     }
@@ -72,7 +71,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_logout:
                 logOut();
                 break;
@@ -80,7 +79,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         return true;
     }
 
-    private void logOut(){
+    private void logOut() {
         presenter.logout();
     }
 

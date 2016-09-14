@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import cat.xlagunas.andrtc.R;
 
 /**
@@ -25,10 +26,11 @@ public abstract class GenericRegisterFragment extends BaseFragment {
 
     private OnFragmentChangeRequest listener;
 
-    @Bind(R.id.button_next)
+    @BindView(R.id.button_next)
     protected Button nextButton;
 
     ViewGroup contentLayout;
+    protected Unbinder unBinder;
 
     public abstract @LayoutRes int getLayout();
 
@@ -56,7 +58,7 @@ public abstract class GenericRegisterFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_generic_register, container, false);
         contentLayout = (ViewGroup) view.findViewById(R.id.register_fragment_container);
         inflater.inflate(getLayout(), contentLayout, true);
-        ButterKnife.bind(this, view);
+        unBinder = ButterKnife.bind(this, view);
         getNextButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +74,12 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unBinder.unbind();
     }
 
     @OnClick(R.id.button_next)

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
@@ -28,7 +28,7 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public abstract class BaseContactFragment extends BaseFragment {
 
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
     FriendAdapter adapter;
