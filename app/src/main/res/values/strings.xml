@@ -31,6 +31,7 @@
     <string name="info_contact_accepted">You\'ve got a new contact!. (%1$s) has accepted your friendship</string>
     <string name="notification_requested_title">New friendship request</string>
     <string name="notification_updated_title">You have a new contact</string>
+    <string name="registration_full_name_error">Please insert your full name</string>
 
 </resources>
 

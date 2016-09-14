@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
@@ -156,7 +155,7 @@ public class UserDetailsRegisterFragment extends GenericRegisterFragment impleme
             this.fullName.setError(null);
             this.fullName.setErrorEnabled(false);
         } else {
-            setError(fullName, "Please insert your full name");
+            setError(fullName, getString(R.string.registration_full_name_error));
         }
     }
 

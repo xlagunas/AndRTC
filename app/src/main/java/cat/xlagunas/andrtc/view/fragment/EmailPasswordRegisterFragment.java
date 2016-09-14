@@ -11,7 +11,6 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.EmailPasswordPresenter;
@@ -25,8 +24,7 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
 
     @BindView(R.id.password)
     TextInputLayout password;
-    @BindView(R.id.confirm_password)
-    TextInputLayout passwordConfirmation;
+
     @BindView(R.id.email)
     TextInputLayout email;
 
@@ -66,14 +64,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
                 presenter.validateChecks();
             }
         });
-
-        passwordConfirmation.getEditText().addTextChangedListener(new TextValidator(passwordConfirmation.getEditText()) {
-            @Override
-            public void validate(TextView textView, String text) {
-                validatePasswordConfirmationText(text);
-                presenter.validateChecks();
-            }
-        });
     }
 
     @Override
@@ -88,16 +78,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
     }
 
     @Override
-    public void enableConfirmationPassword() {
-        passwordConfirmation.setEnabled(true);
-    }
-
-    @Override
-    public void disableConfirmationPassword() {
-        passwordConfirmation.setEnabled(false);
-    }
-
-    @Override
     public void setEmail(String email) {
         this.email.getEditText().setText(email);
     }
@@ -105,11 +85,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
     @Override
     public void setPassword(String password) {
         this.password.getEditText().setText(password);
-    }
-
-    @Override
-    public void setPasswordConfirmation(String passwordConfirmation) {
-        this.passwordConfirmation.getEditText().setText(passwordConfirmation);
     }
 
     @Override
@@ -133,15 +108,6 @@ public class EmailPasswordRegisterFragment extends GenericRegisterFragment imple
         } else {
             password.setErrorEnabled(true);
             setError(password, "Invalid password");
-        }
-    }
-
-    private void validatePasswordConfirmationText(String text) {
-        if (presenter.validatePasswordConfirmation(text)) {
-            passwordConfirmation.setError(null);
-            passwordConfirmation.setErrorEnabled(false);
-        } else {
-            setError(passwordConfirmation, "Passwords doesn't match");
         }
     }
 
