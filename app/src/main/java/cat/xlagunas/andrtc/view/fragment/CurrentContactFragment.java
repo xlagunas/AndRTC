@@ -1,15 +1,14 @@
 package cat.xlagunas.andrtc.view.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.ShowContactsPresenter;
 import cat.xlagunas.andrtc.view.ListDataView;
@@ -33,20 +32,30 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
 
     @Override
     public void onResume() {
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                presenter.updateContacts();
-            }
-        };
         super.onResume();
         presenter.init();
+    }
+
+    @Override
+    protected void invalidateAdapterData() {
+        presenter.updateContacts();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+    }
+
+    @Override
+    protected void onFriendshipRequested(Bundle data) {
+        Snackbar.make(getView(), getString(R.string.info_contact_requested, data.getString("username")), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onFriendshipUpdated(Bundle data) {
+        Snackbar.make(getView(), getString(R.string.info_contact_accepted, data.getString("username")), Snackbar.LENGTH_LONG).show();
+        invalidateAdapterData();
     }
 
     @Override

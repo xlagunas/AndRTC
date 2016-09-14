@@ -27,7 +27,6 @@ public class FacebookLoginUseCase extends UseCase {
     @Override
     protected Observable buildUseCaseObservable() {
         return socialRepository.registerFacebookUser()
-                .observeOn(Schedulers.io())
                 .flatMap(new Func1<User, Observable<User>>() {
                     @Override
                     public Observable<User> call(User user) {

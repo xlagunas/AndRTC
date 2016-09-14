@@ -2,6 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cat.xlagunas.andrtc">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
+    <!--END OF PUSH NOTIFICATION SECTION -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
+
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -43,6 +57,13 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".receiver.FriendshipUpdateReceiver"
+            android:exported="false">
+            <intent-filter android:priority="300">
+                <action android:name="CONTACTS_UPDATE"/>
+            </intent-filter>
+        </receiver>
+
         <!-- GOOGLE PUSH NOTIFICATIONS -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -73,19 +94,5 @@
         </service>
 
     </application>
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
-    <!--END OF PUSH NOTIFICATION SECTION -->
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-
-
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
 </manifest>

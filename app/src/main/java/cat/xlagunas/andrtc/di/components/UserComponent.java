@@ -26,7 +26,6 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {UserModule.class})
 public interface UserComponent {
 
-    void inject(MainActivity activity);
     void inject(RegisterActivity activity);
     void inject(RegistrationIntentService service);
     void inject(AddContactsActivity activity);

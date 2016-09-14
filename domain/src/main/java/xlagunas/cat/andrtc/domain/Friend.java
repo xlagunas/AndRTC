@@ -1,7 +1,5 @@
 package xlagunas.cat.andrtc.domain;
 
-import java.util.Comparator;
-
 /**
  * Created by xlagunas on 26/02/16.
  */
@@ -47,4 +45,5 @@ public class Friend extends AbstractUser implements Comparable<Friend>{
 
         return friend.getFriendState() - this.getFriendState();
     }
+
 }

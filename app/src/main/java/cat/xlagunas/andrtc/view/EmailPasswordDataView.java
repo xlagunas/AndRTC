@@ -5,10 +5,6 @@ package cat.xlagunas.andrtc.view;
  */
 public interface EmailPasswordDataView extends BaseRegisterDataView {
 
-    void enableConfirmationPassword();
-    void disableConfirmationPassword();
-
     void setEmail(String email);
     void setPassword(String password);
-    void setPasswordConfirmation(String passwordConfirmation);
 }

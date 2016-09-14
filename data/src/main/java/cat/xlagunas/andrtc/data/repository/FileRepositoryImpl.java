@@ -17,13 +17,10 @@ import xlagunas.cat.andrtc.domain.repository.FileRepository;
 public class FileRepositoryImpl implements FileRepository {
 
 
-
-    private final FileManager fileManager;
     private final UserCache userCache;
 
     @Inject
-    public FileRepositoryImpl(FileManager fileManager, UserCache userCache){
-        this.fileManager = fileManager;
+    public FileRepositoryImpl(UserCache userCache){
         this.userCache = userCache;
     }
 

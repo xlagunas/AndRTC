@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'testfairy'
 
-
-
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
 
@@ -16,9 +14,6 @@ android {
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 7
         versionName "1.1.7"
-    }
-
-    defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -53,6 +48,15 @@ android {
         dev {
         }
     }
+
+    lintOptions {
+        // set to true to turn off analysis progress reporting by lint
+        quiet false
+        // if true, stop the gradle build if errors are found
+        abortOnError true
+        // if true, only report errors
+        ignoreWarnings false
+    }
 }
 
 configurations {
@@ -62,9 +66,9 @@ configurations {
     devReleaseCompile
 }
 
-    testfairyConfig {
-        apiKey "006eb235b09d94de6ff30f00e6cf3dd77571a402"
-    }
+testfairyConfig {
+    apiKey "006eb235b09d94de6ff30f00e6cf3dd77571a402"
+}
 
 
 dependencies {
@@ -73,7 +77,6 @@ dependencies {
     def developmentDependencies = rootProject.ext.developmentDependencies
 
     compile project(':domain')
-
     prodDebugCompile project(path: ':data', configuration: 'prodDebug')
     devDebugCompile project(path: ':data', configuration: 'devDebug')
     prodReleaseCompile project(path: ':data', configuration: 'prodRelease')
@@ -81,6 +84,8 @@ dependencies {
     compile project(':data')
 
     apt presentationDependencies.daggerCompiler
+    apt presentationDependencies.butterKnifeCompiler
+
     compile presentationDependencies.dagger
     compile presentationDependencies.butterKnife
     compile presentationDependencies.recyclerView
@@ -92,6 +97,13 @@ dependencies {
     compile presentationDependencies.appCompatSupport
     compile presentationDependencies.recyclerSupport
     compile presentationDependencies.supportV4
+    compile presentationDependencies.gcmServices
+    compile presentationDependencies.gcmAuth
+    compile presentationDependencies.circleImageView
+    compile presentationDependencies.glide
+    compile presentationDependencies.percentSupport
+    compile presentationDependencies.facebookSdk
+    compile developmentDependencies.leakCanary
 
     provided presentationDependencies.javaxAnnotation
 
@@ -100,23 +112,6 @@ dependencies {
     androidTestCompile presentationTestDependencies.dexmakerMockito
     androidTestCompile presentationTestDependencies.espresso
     androidTestCompile presentationTestDependencies.testingSupportLib
-
-    //Development
-    compile developmentDependencies.leakCanary
-    //CircularImageView
-    compile 'com.android.support:cardview-v7:23.2.1'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
-
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-auth:8.4.0'
-
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.android.support:percent:23.2.1'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
 }
 

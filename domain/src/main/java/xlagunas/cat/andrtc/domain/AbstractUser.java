@@ -80,4 +80,25 @@ public abstract class AbstractUser {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractUser that = (AbstractUser) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!username.equals(that.username)) return false;
+        return email.equals(that.email);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
+    }
 }

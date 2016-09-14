@@ -2,9 +2,8 @@ package cat.xlagunas.andrtc.view.viewholder;
 
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -14,14 +13,14 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public class AcceptedFriendViewHolder extends FriendViewHolder {
 
-    @Bind(R.id.contact_call)
+    @BindView(R.id.contact_call)
     ImageButton callImageView;
 
     public AcceptedFriendViewHolder(View itemView) {
         super(itemView);
     }
 
-    public static void bind(final AcceptedFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener){
+    public static void bind(final AcceptedFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
         FriendViewHolder.bind(holder, friend);
         if (listener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {

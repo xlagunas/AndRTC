@@ -12,10 +12,9 @@ import cat.xlagunas.andrtc.data.cache.serializer.JsonSerializer;
 import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
 import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
-import okhttp3.Credentials;
 import rx.Observable;
 import rx.Subscriber;
-import xlagunas.cat.andrtc.domain.Friend;
+import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -36,8 +35,8 @@ public class UserCacheImpl implements UserCache {
     private final UserEntityMapper userEntityMapper;
 
     @Inject
-    public UserCacheImpl(Context context, FileManager fileManager, JsonSerializer serializer, UserEntityMapper userEntityMapper){
-        this.context  = context;
+    public UserCacheImpl(Context context, FileManager fileManager, JsonSerializer serializer, UserEntityMapper userEntityMapper) {
+        this.context = context;
         this.fileManager = fileManager;
         this.serializer = serializer;
         this.userEntityMapper = userEntityMapper;
@@ -54,18 +53,18 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<File> generateProfilePictureFile() {
-            return Observable.create(new Observable.OnSubscribe<File>() {
-                @Override
-                public void call(Subscriber<? super File> subscriber) {
-                    try {
-                        File imageFile = fileManager.createImageFile(context);
-                        subscriber.onNext(imageFile);
-                        subscriber.onCompleted();
-                    } catch (IOException e) {
-                        subscriber.onError(e);
-                    }
+        return Observable.create(new Observable.OnSubscribe<File>() {
+            @Override
+            public void call(Subscriber<? super File> subscriber) {
+                try {
+                    File imageFile = fileManager.createImageFile(context);
+                    subscriber.onNext(imageFile);
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    subscriber.onError(e);
                 }
-            });
+            }
+        });
     }
 
     @Override
@@ -80,28 +79,21 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<User> getUser() {
-        return Observable.create(new Observable.OnSubscribe<User>() {
-            @Override
-            public void call(Subscriber<? super User> subscriber) {
-                String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
-                if (serializedUser != null) {
-                    UserEntity entity = serializer.deserialize(serializedUser);
-                    entity.setPassword(userEntityMapper.decodeBasicAuthPassword(entity.getUsername(), entity.getPassword()));
-                    User user = userEntityMapper.transformUser(entity);
-                    if (entity != null && user != null) {
-                        subscriber.onNext(user);
-                        subscriber.onCompleted();
-                    }
-                } else {
-                    subscriber.onError(new UserNotFoundException());
-                }
-            }
+        return Observable.fromCallable(() -> {
+            String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
+            if (serializedUser != null) {
+                UserEntity entity = serializer.deserialize(serializedUser);
+                entity.setPassword(userEntityMapper.decodeBasicAuthPassword(entity.getUsername(), entity.getPassword()));
+                return userEntityMapper.transformUser(entity);
+            } else
+                throw new UserNotFoundException("User not stored");
         });
     }
 
     @Override
-    public void removeCache() {
-        fileManager.clearPreferences(context, SETTINGS_FILE_NAME);
+    public Action1 removeCache() {
+        return action1 -> fileManager.clearPreferences(context, SETTINGS_FILE_NAME);
+
     }
 
     @Override

@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
@@ -22,7 +20,7 @@ import cat.xlagunas.andrtc.view.fragment.CallerRequestFragment;
 /**
  * Created by xlagunas on 25/7/16.
  */
-public class CallRequestActivity extends AppCompatActivity implements HasComponent<UserComponent>, CallRequestBaseFragment.CallRequestListener{
+public class CallRequestActivity extends AppCompatActivity implements HasComponent<UserComponent>, CallRequestBaseFragment.CallRequestListener {
 
     private final static String EXTRA_MODE = "type";
     public final static String EXTRA_FRIEND_ID = "friendId";
@@ -30,23 +28,22 @@ public class CallRequestActivity extends AppCompatActivity implements HasCompone
 
     private boolean isCaller;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
-    private static Intent makeIntent(Context context, boolean isCaller){
+    private static Intent makeIntent(Context context, boolean isCaller) {
         Intent intent = new Intent(context, CallRequestActivity.class);
         intent.putExtra(EXTRA_MODE, isCaller);
         return intent;
     }
 
-    public static Intent makeCallerIntent(Context context, String friendId){
+    public static Intent makeCallerIntent(Context context, String friendId) {
         Intent intent = makeIntent(context, true);
         intent.putExtra(EXTRA_FRIEND_ID, friendId);
         return intent;
     }
 
-    public static Intent makeCalleeIntent(Context context, String friendId, String roomId){
+    public static Intent makeCalleeIntent(Context context, String friendId, String roomId) {
         Intent intent = makeIntent(context, false);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_FRIEND_ID, friendId);

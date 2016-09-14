@@ -23,8 +23,11 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
+import rx.AsyncEmitter;
 import rx.Observable;
-import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by xlagunas on 20/8/16.
@@ -36,6 +39,8 @@ public class FacebookManagerImpl implements FacebookManager {
     private final Activity activity;
     private final CallbackManager callbackManager;
 
+    private final String REQUESTED_FIELDS = "id,name,link,gender,first_name,middle_name,last_name,email,picture";
+
     @Inject
     public FacebookManagerImpl(Activity activity) {
         this.activity = activity;
@@ -43,86 +48,32 @@ public class FacebookManagerImpl implements FacebookManager {
     }
 
     public Observable<AccessToken> login() {
-
-        return Observable.create(new Observable.OnSubscribe<AccessToken>() {
+        return Observable.fromAsync(new Action1<AsyncEmitter<AccessToken>>() {
             @Override
-            public void call(Subscriber<? super AccessToken> subscriber) {
+            public void call(AsyncEmitter<AccessToken> objectAsyncEmitter) {
                 if (AccessToken.getCurrentAccessToken() == null) {
-                    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                        @Override
-                        public void onSuccess(LoginResult loginResult) {
-                            Profile.getCurrentProfile();
-                            subscriber.onNext(loginResult.getAccessToken());
-                            subscriber.onCompleted();
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            subscriber.onError(new Throwable("Canceled task"));
-                        }
-
-                        @Override
-                        public void onError(FacebookException error) {
-                            subscriber.onError(error);
-                        }
-                    });
-
+                    FacebookCallback<LoginResult> loginResultFacebookCallback = generateAsyncLogin(objectAsyncEmitter);
+                    LoginManager.getInstance().registerCallback(callbackManager, loginResultFacebookCallback);
                     LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends", "email"));
                 } else {
                     Log.d(TAG, "Successfully logged in user");
-                    subscriber.onNext(AccessToken.getCurrentAccessToken());
-                    subscriber.onCompleted();
+                    objectAsyncEmitter.onNext(AccessToken.getCurrentAccessToken());
+                    objectAsyncEmitter.onCompleted();
                 }
             }
-        });
+        }, AsyncEmitter.BackpressureMode.BUFFER).observeOn(Schedulers.io());
 
     }
 
     @Override
     public Observable<JSONObject> requestProfileData(AccessToken accessToken) {
-
-        return Observable.create(new Observable.OnSubscribe<JSONObject>() {
-
-            @Override
-            public void call(Subscriber<? super JSONObject> subscriber) {
-
-                GraphRequest.GraphJSONObjectCallback callback = (userJson, response) -> {
-                    if (response.getError() != null) {
-                        subscriber.onError(response.getError().getException());
-                    } else {
-                        subscriber.onNext(userJson);
-                        subscriber.onCompleted();
-                    }
-                };
-
-                generateProfileDataRequest(accessToken, callback);
-            }
-
-        });
-
+        return Observable.fromCallable(() -> generateProfileDataRequest(accessToken)
+                .getJSONObject());
     }
 
     public Observable<JSONArray> requestFriends(AccessToken accessToken) {
-        return Observable.create(new Observable.OnSubscribe<JSONArray>() {
-            @Override
-            public void call(Subscriber<? super JSONArray> subscriber) {
-                GraphRequest request = GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray objects, GraphResponse response) {
-                        if (response.getError() != null){
-                            subscriber.onError(response.getError().getException());
-                        } else {
-                            subscriber.onNext(objects);
-                            subscriber.onCompleted();
-                        }
-                    }
-                });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,link,gender,first_name,middle_name,last_name,email,picture");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-        });
+        return Observable.fromCallable(() -> generateFriendsDataRequest(accessToken)
+                .getJSONArray());
     }
 
     @Override
@@ -132,13 +83,48 @@ public class FacebookManagerImpl implements FacebookManager {
         }
     }
 
-    private void generateProfileDataRequest(AccessToken accessToken, GraphRequest.GraphJSONObjectCallback callback) {
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, callback);
+    private GraphResponse generateProfileDataRequest(AccessToken accessToken) {
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, null);
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,gender,first_name,middle_name,last_name,email,picture");
+        parameters.putString("fields", REQUESTED_FIELDS);
         request.setParameters(parameters);
-        request.executeAsync();
+        return request.executeAndWait();
     }
 
+    private GraphResponse generateFriendsDataRequest(AccessToken accessToken) {
+        GraphRequest request = GraphRequest.newMyFriendsRequest(accessToken, null);
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", REQUESTED_FIELDS);
+        request.setParameters(parameters);
+        return request.executeAndWait();
+    }
+
+    private FacebookCallback<LoginResult> generateAsyncLogin(AsyncEmitter emitter) {
+        FacebookCallback<LoginResult> loginResultFacebookCallback = new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Profile.getCurrentProfile();
+                emitter.onNext(loginResult.getAccessToken());
+                emitter.onCompleted();
+            }
+
+            @Override
+            public void onCancel() {
+                emitter.onError(new Throwable("Canceled task"));
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                emitter.onError(error);
+            }
+        };
+
+        return loginResultFacebookCallback;
+    }
+
+    @Override
+    public Action0 logOut(){
+        return () -> LoginManager.getInstance().logOut();
+    }
 
 }

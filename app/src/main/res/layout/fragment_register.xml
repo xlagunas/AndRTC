@@ -15,7 +15,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Name"/>
+                android:hint="@string/hint_user_name"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Surname"/>
+            android:hint="@string/hint_user_surname"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Lastname"/>
+            android:hint="@string/hint_user_last_name"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Email"/>
+            android:hint="@string/hint_user_email"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Username"/>
+            android:hint="@string/hint_user_username"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Password"/>
+            android:hint="@string/hint_user_password"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -88,7 +88,7 @@
         android:id="@+id/submit_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="REGISTER"
+        android:text="@string/button_register"
         android:layout_gravity="center_horizontal|bottom"/>
 
 </LinearLayout>

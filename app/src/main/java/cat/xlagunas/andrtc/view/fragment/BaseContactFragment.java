@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
@@ -26,9 +26,9 @@ import xlagunas.cat.andrtc.domain.Friend;
 /**
  * Created by xlagunas on 19/03/16.
  */
-public class BaseContactFragment extends BaseFragment {
+public abstract class BaseContactFragment extends BaseFragment {
 
-    @Bind(R.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
     FriendAdapter adapter;
@@ -39,15 +39,43 @@ public class BaseContactFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(receiver, new IntentFilter("UPDATE_USERS"));
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundle = intent.getBundleExtra("information");
+                String eventType = intent.getStringExtra("type");
+
+                if ("requested".equalsIgnoreCase(eventType)){
+                    onFriendshipRequested(bundle);
+                } else if ("accepted".equalsIgnoreCase(eventType)) {
+                    onFriendshipUpdated(bundle);
+                } else {
+                    invalidateAdapterData();
+                }
+
+                abortBroadcast();
+            }
+        };
+
+        registerUpdateReceivers();
+    }
+
+    protected abstract void invalidateAdapterData();
+
+    private void registerUpdateReceivers() {
+        IntentFilter intentFilter = new IntentFilter("CONTACTS_UPDATE");
+        intentFilter.setPriority(500);
+        getActivity().registerReceiver(receiver, intentFilter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(receiver);
+        unregisterUpdateReceivers();
+    }
+
+    private void unregisterUpdateReceivers() {
+        getActivity().unregisterReceiver(receiver);
     }
 
     @Nullable
@@ -64,7 +92,7 @@ public class BaseContactFragment extends BaseFragment {
         initializeAdapter();
     }
 
-    protected void setOnFriendClickListener(OnFriendClickListener listener){
+    protected void setOnFriendClickListener(OnFriendClickListener listener) {
         this.listener = listener;
     }
 
@@ -84,8 +112,12 @@ public class BaseContactFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
     }
 
-    protected void clearAdapter(){
+    protected void clearAdapter() {
         adapter.clear();
         adapter.notifyDataSetChanged();
     }
+
+    protected abstract void onFriendshipRequested(Bundle data);
+
+    protected abstract void onFriendshipUpdated(Bundle data);
 }

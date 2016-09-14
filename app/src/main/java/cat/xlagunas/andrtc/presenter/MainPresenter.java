@@ -6,6 +6,10 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.ServiceFacade;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.view.LoadDataView;
+import cat.xlagunas.andrtc.view.LogOutDataView;
+import rx.Observer;
+import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import xlagunas.cat.andrtc.domain.interactor.LogOutUseCase;
 
 /**
  * Created by xlagunas on 12/03/16.
@@ -13,22 +17,20 @@ import cat.xlagunas.andrtc.view.LoadDataView;
 public class MainPresenter implements Presenter {
 
     private final ServiceFacade serviceFacade;
-    private final UserCache userCache;
-    private LoadDataView view;
+    private final LogOutUseCase logOutUseCase;
+    private LogOutDataView view;
 
     @Inject
-    public MainPresenter(ServiceFacade service, UserCache cache){
+    public MainPresenter(ServiceFacade service, LogOutUseCase useCase){
         this.serviceFacade = service;
-        this.userCache = cache;
+        this.logOutUseCase = useCase;
     }
 
     public void initPresenter(){
-        if (!userCache.isGCMRegistered()){
-            serviceFacade.startService();
-        }
+        serviceFacade.startService();
     }
 
-    public void setView(LoadDataView view){
+    public void setView(LogOutDataView view){
         this.view = view;
     }
 
@@ -48,6 +50,11 @@ public class MainPresenter implements Presenter {
     }
 
     public void logout() {
-        userCache.removeCache();
+        logOutUseCase.execute(new DefaultSubscriber(){
+            @Override
+            public void onCompleted() {
+                view.onLogOut();
+            }
+        });
     }
 }

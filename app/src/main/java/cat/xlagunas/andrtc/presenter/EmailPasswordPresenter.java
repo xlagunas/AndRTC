@@ -17,60 +17,43 @@ public class EmailPasswordPresenter {
 
     private String email;
     private String password;
-    private String passwordConfirmation;
 
     @Inject
-    EmailPasswordPresenter(User user, FieldValidator validator){
+    EmailPasswordPresenter(User user, FieldValidator validator) {
         this.user = user;
         this.fieldValidator = validator;
     }
 
-    public void setView(EmailPasswordDataView view){
+    public void setView(EmailPasswordDataView view) {
         this.view = view;
     }
 
-    public boolean isEmailValid(String email){
+    public boolean isEmailValid(String email) {
         this.email = email;
         return fieldValidator.isValidEmail(email);
     }
 
-    public boolean isPasswordValid(String password){
+    public boolean isPasswordValid(String password) {
         this.password = password;
-        if (fieldValidator.isValidPassword(password)){
-            view.enableConfirmationPassword();
-            return true;
-        } else {
-            view.disableConfirmationPassword();
-            return false;
-        }
-    }
-
-    public boolean validatePasswordConfirmation(String passwordConfirmation){
-        this.passwordConfirmation = passwordConfirmation;
-
-        return password.equals(passwordConfirmation);
+        return fieldValidator.isValidPassword(password);
     }
 
     public void onResume() {
-        if (user.getUsername() != null && user.getPassword() != null){
+        if (user.getUsername() != null && user.getPassword() != null) {
             view.setEmail(user.getUsername());
             view.setPassword(user.getPassword());
-            view.setPasswordConfirmation(user.getPassword());
             view.enableNextStep(true);
         } else {
-            view.disableConfirmationPassword();
             view.enableNextStep(false);
         }
 
     }
 
-    public void validateChecks(){
-        view.enableNextStep(email != null && isEmailValid(email) && password != null && isPasswordValid(password)
-                && passwordConfirmation != null && validatePasswordConfirmation(passwordConfirmation));
-
+    public void validateChecks() {
+        view.enableNextStep(email != null && isEmailValid(email) && password != null && isPasswordValid(password));
     }
 
-    public void onNextRequested(){
+    public void onNextRequested() {
         user.setEmail(email);
         user.setUsername(email);
         user.setPassword(password);

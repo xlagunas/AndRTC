@@ -96,17 +96,24 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Observable logoutUser() {
+        return userCache.getUser().doOnNext(userCache.removeCache());
+    }
+
+    @Override
     public Observable<Friend> listContacts(User user) {
 
-        return userCache.getUser()
-                .flatMapIterable(persistedUser -> persistedUser.getFriends())
+        return listAllContacts()
                 .filter(friend -> friend.getFriendState() != Friend.REQUESTED);
+    }
+    @Override
+    public Observable<Friend> listAllContacts(){
+        return userCache.getUser().flatMapIterable(persistedUser -> persistedUser.getFriends());
     }
 
     @Override
     public Observable<Friend> listRequestedContacts() {
-        return userCache.getUser()
-                .flatMapIterable(user -> user.getFriends())
+        return listAllContacts()
                 .filter(friend -> friend.getFriendState() == Friend.REQUESTED);
     }
 

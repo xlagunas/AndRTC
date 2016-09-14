@@ -11,16 +11,10 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface UserRepository {
 
-    /**
-     * AbstractUser search filter
-     * @param @link{User} who is authenticated to request data
-     * @param filterName String to filter
-     * @return All users whose username matches the filter
-     */
      Observable<Friend> searchUsers(User user, String filterName);
 
     /**
-     * Return the list of all the contacts
+     * Return the list of all the contacts except the non Requested
      * @return a list of users
      */
     Observable<Friend> listContacts(User user);
@@ -30,6 +24,8 @@ public interface UserRepository {
      * @return a list of users
      */
     Observable<Friend> listRequestedContacts();
+
+    Observable<Friend> listAllContacts();
 
     /**
      * Return the user if logged
@@ -61,4 +57,5 @@ public interface UserRepository {
 
     Observable<User> registerGoogleUser(User user);
 
-    }
+    Observable<Void> logoutUser();
+}

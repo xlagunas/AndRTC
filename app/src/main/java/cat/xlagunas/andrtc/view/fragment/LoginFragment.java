@@ -14,14 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
@@ -31,34 +31,36 @@ import xlagunas.cat.andrtc.domain.User;
 
 public class LoginFragment extends BaseFragment implements LoginDataView {
 
-    @Bind(R.id.username)
+    @BindView(R.id.username)
     EditText username;
 
-    @Bind(R.id.password)
+    @BindView(R.id.password)
     EditText password;
 
-    @Bind(R.id.login)
+    @BindView(R.id.login)
     Button loginButton;
 
-    @Bind(R.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
-    @Bind(R.id.root_layout)
+    @BindView(R.id.root_layout)
     LinearLayout linearLayout;
 
-    @Bind(R.id.sign_in)
+    @BindView(R.id.sign_in)
     TextView signIn;
 
-    @Bind(R.id.facebook_login_button)
+    @BindView(R.id.facebook_login_button)
     Button facebookLoginButton;
 
-    @Bind(R.id.google_login_button)
+    @BindView(R.id.google_login_button)
     SignInButton googleLoginButton;
 
     @Inject
     LoginPresenter loginPresenter;
 
     FragmentInterface fragmentInterface;
+
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,11 +73,11 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         super.onAttach(context);
         try {
             fragmentInterface = (FragmentInterface) context;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException("Activity must implement FragmentInterface");
         }
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -84,22 +86,28 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         }
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         this.loginPresenter.resume();
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         this.loginPresenter.pause();
     }
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         this.loginPresenter.destroy();
     }
@@ -122,12 +130,12 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     }
 
     @OnClick(R.id.login)
-    public void doLogin(){
+    public void doLogin() {
         loginPresenter.doLogin(username.getText().toString(), password.getText().toString());
     }
 
     @OnClick(R.id.sign_in)
-    public void signIn(){
+    public void signIn() {
         fragmentInterface.onSignInRequested();
     }
 
@@ -144,10 +152,12 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     }
 
     @Override
-    public void showRetry() {}
+    public void showRetry() {
+    }
 
     @Override
-    public void hideRetry() {}
+    public void hideRetry() {
+    }
 
     @Override
     public void showError(String message) {
@@ -159,7 +169,6 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
         return this.getActivity().getApplicationContext();
     }
 
-
     @Override
     public void onUserRecovered(User user) {
         CustomApplication.getApp(getActivity()).createUserComponent(user);
@@ -167,22 +176,23 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     }
 
     @OnClick(R.id.facebook_login_button)
-    void onFacebookLoginClick(){
+    void onFacebookLoginClick() {
         loginPresenter.doFacebookLogin();
     }
 
     @OnClick(R.id.google_login_button)
-    void onGoogleLoginClick(){
+    void onGoogleLoginClick() {
         loginPresenter.doGoogleLogin();
-    }
-
-    public interface FragmentInterface {
-        void onSignInRequested();
-        void onSuccessfullyLogged();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public interface FragmentInterface {
+        void onSignInRequested();
+
+        void onSuccessfullyLogged();
     }
 }

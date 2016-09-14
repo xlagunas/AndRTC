@@ -10,8 +10,6 @@ import cat.xlagunas.andrtc.view.CallRequestDataView;
  */
 public abstract class CallRequestPresenter implements Presenter {
 
-    private boolean isCaller;
-
     protected String friendId;
     protected String callId;
     protected Timer timer;
@@ -20,7 +18,6 @@ public abstract class CallRequestPresenter implements Presenter {
     private final static int MAX_DIALING_TIME = 10000;
 
     public void init(boolean isCaller){
-        this.isCaller = isCaller;
         if (isCaller){
             view.hideAcceptCallButton();
         }

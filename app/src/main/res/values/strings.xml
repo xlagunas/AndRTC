@@ -2,5 +2,36 @@
     <string name="app_name">Viv</string>
     <string name="search_title">Search by full name or username</string>
     <string name="facebook_app_id">729615833842955</string>
+    <string name="menu_logout">Logout</string>
+    <string name="friend_pending">Pending request</string>
+
+    <string name="hint_user_name">Name</string>
+    <string name="hint_user_email">Email address</string>
+    <string name="hint_user_username">Username</string>
+    <string name="hint_user_password">Password</string>
+    <string name="hint_user_surname">Surname</string>
+    <string name="hint_user_confirm_password">Confirm password</string>
+    <string name="hint_user_last_name">Lastname</string>
+    <string name="hint_user_full_name">John J. Appleseed</string>
+
+    <string name="button_call_reject">REJECT</string>
+    <string name="button_call_accept">ACCEPT</string>
+    <string name="button_register_finish">FINISH!</string>
+    <string name="button_register">REGISTER</string>
+    <string name="button_login">login</string>
+    <string name="button_next">next</string>
+
+    <string name="register_select_media_text">or select media</string>
+
+    <string name="login_new_user_text">New user?</string>
+    <string name="friend_item_name">%1$s %2$s %3$s</string>
+    <string name="notification_accepted_text">%1$s (%2$s) has accepted your friendship request</string>
+    <string name="notification_requested_text">%1$s (%2$s) wants to be friends with you</string>
+    <string name="info_contact_requested">(%1$s) wants to be friends with you, Accept or Decline the proposal on Add contacts page</string>
+    <string name="info_contact_accepted">You\'ve got a new contact!. (%1$s) has accepted your friendship</string>
+    <string name="notification_requested_title">New friendship request</string>
+    <string name="notification_updated_title">You have a new contact</string>
+    <string name="registration_full_name_error">Please insert your full name</string>
+
 </resources>
 

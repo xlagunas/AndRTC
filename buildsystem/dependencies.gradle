@@ -6,31 +6,32 @@ allprojects {
 
 ext {
     //Android
-    androidBuildToolsVersion = "23.0.2"
+    androidBuildToolsVersion = "24.0.2"
     androidMinSdkVersion = 15
-    androidTargetSdkVersion = 23
-    androidCompileSdkVersion = 23
+    androidTargetSdkVersion = 24
+    androidCompileSdkVersion = 24
 
     //Libraries
 
-    designLibraryVersion = '23.2.1'
-
-    daggerVersion = '2.0.2'
-    butterKnifeVersion = '7.0.1'
-    recyclerViewVersion = '21.0.3'
-    rxJavaVersion = '1.0.14'
-    rxAndroidVersion = '1.0.1'
+    supportLibraryVersion = '24.2.1'
+    daggerVersion = '2.7'
+    butterKnifeVersion = '8.4.0'
+    rxJavaVersion = '1.1.9'
+    rxAndroidVersion = '1.2.1'
     javaxAnnotationVersion = '1.0'
     gsonVersion = '2.3'
-    androidAnnotationsVersion = '21.0.3'
     jodaTime = '2.9.2'
-    retrofit = '2.0.0'
-    retrofitGson = '2.0.0'
-    retrofitInterceptor = '3.0.1'
-    okHttpVersion = '3.0.1'
-    okiIo = '1.6.0'
-    retrofitRxAdapter = '2.0.0'
-
+    retrofit = '2.1.0'
+    retrofitGson = '2.1.0'
+    retrofitRxAdapter = '2.1.0'
+    okHttpVersion = '3.4.1'
+    okiIo = '1.10.0'
+    googleServicesVersion = '9.4.0'
+    circleImageViewVersion = '2.0.0'
+    glideVersion = '3.7.0'
+    facebookSdkVersion = '[4,5)'
+    socketIo = '0.7.0'
+    webRTC = "v0.1-beta"
 
     //Testing
     robolectricVersion = '3.0'
@@ -45,18 +46,25 @@ ext {
     leakCanaryVersion = '1.3.1'
 
     presentationDependencies = [
+            materialSupport:    "com.android.support:design:${supportLibraryVersion}",
+            cardViewSupport:    "com.android.support:cardview-v7:${supportLibraryVersion}",
+            appCompatSupport:   "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            recyclerSupport:    "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            supportV4:          "com.android.support:support-v4:${supportLibraryVersion}",
+            percentSupport:     "com.android.support:percent:${supportLibraryVersion}",
+            recyclerView:       "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            gcmServices:        "com.google.android.gms:play-services-gcm:${googleServicesVersion}",
+            gcmAuth:            "com.google.android.gms:play-services-auth:${googleServicesVersion}",
             daggerCompiler:     "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger:             "com.google.dagger:dagger:${daggerVersion}",
             butterKnife:        "com.jakewharton:butterknife:${butterKnifeVersion}",
-            recyclerView:       "com.android.support:recyclerview-v7:${recyclerViewVersion}",
+            butterKnifeCompiler:"com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
             rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
             javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
-            materialSupport:    "com.android.support:design:${designLibraryVersion}",
-            cardViewSupport:    "com.android.support:cardview-v7:${designLibraryVersion}",
-            appCompatSupport:   "com.android.support:appcompat-v7:${designLibraryVersion}",
-            recyclerSupport:    "com.android.support:recyclerview-v7:${designLibraryVersion}",
-            supportV4:          "com.android.support:support-v4:${designLibraryVersion}"
+            circleImageView:    "de.hdodenhof:circleimageview:${circleImageViewVersion}",
+            glide:              "com.github.bumptech.glide:glide:${glideVersion}",
+            facebookSdk:        "com.facebook.android:facebook-android-sdk:${facebookSdkVersion}"
 
     ]
 
@@ -79,6 +87,7 @@ ext {
             junit:              "junit:junit:${jUnitVersion}",
             mockito:            "org.mockito:mockito-core:${mockitoVersion}",
     ]
+
     dataDependencies = [
             daggerCompiler:     "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger:             "com.google.dagger:dagger:${daggerVersion}",
@@ -86,14 +95,21 @@ ext {
             rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
             javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
-            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
             jodaTime:           "joda-time:joda-time:${jodaTime}",
             retrofit:           "com.squareup.retrofit2:retrofit:${retrofit}",
             retrofitGson:       "com.squareup.retrofit2:converter-gson:${retrofitGson}",
-            retrofitInterceptor:"com.squareup.okhttp3:logging-interceptor:${retrofitInterceptor}",
+            retrofitInterceptor:"com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             okio:               "com.squareup.okio:okio:${okiIo}",
             okHttp:             "com.squareup.okhttp3:okhttp:${okHttpVersion}",
-            retrofitRxAdapter:  "com.squareup.retrofit2:adapter-rxjava:${retrofitRxAdapter}"
+            gcmServices:        "com.google.android.gms:play-services-gcm:${googleServicesVersion}",
+            gcmAuth:            "com.google.android.gms:play-services-auth:${googleServicesVersion}",
+            retrofitRxAdapter:  "com.squareup.retrofit2:adapter-rxjava:${retrofitRxAdapter}",
+            facebookSdk:        "com.facebook.android:facebook-android-sdk:${facebookSdkVersion}",
+            circleImageView:    "de.hdodenhof:circleimageview:${circleImageViewVersion}",
+            glide:              "com.github.bumptech.glide:glide:${glideVersion}",
+            socketIO:           "io.socket:socket.io-client:${socketIo}",
+            okhttpWs:          "com.squareup.okhttp3:okhttp-ws:${okHttpVersion}",
+            webRTC:             "com.github.xlagunas:WebRTC:${webRTC}"
 
     ]
 
@@ -103,6 +119,7 @@ ext {
             assertj:            "org.assertj:assertj-core:${assertJVersion}",
             mockito:            "org.mockito:mockito-core:${mockitoVersion}",
             robolectric:        "org.robolectric:robolectric:${robolectricVersion}",
+            socketIO:           "io.socket:socket.io-client:${socketIo}"
     ]
 
     developmentDependencies = [

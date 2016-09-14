@@ -2,9 +2,8 @@ package cat.xlagunas.andrtc.view.viewholder;
 
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
@@ -13,10 +12,10 @@ import xlagunas.cat.andrtc.domain.Friend;
  * Created by xlagunas on 19/03/16.
  */
 public class RequestedFriendViewHolder extends FriendViewHolder {
-    @Bind(R.id.contact_accept_friendship)
+    @BindView(R.id.contact_accept_friendship)
     ImageButton acceptContact;
 
-    @Bind(R.id.contact_reject_friendship)
+    @BindView(R.id.contact_reject_friendship)
     ImageButton rejectContact;
 
     public RequestedFriendViewHolder(View itemView) {
