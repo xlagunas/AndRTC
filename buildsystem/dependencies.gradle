@@ -23,7 +23,6 @@ ext {
     jodaTime = '2.9.2'
     retrofit = '2.1.0'
     retrofitGson = '2.1.0'
-    retrofitInterceptor = '3.4.1'
     retrofitRxAdapter = '2.1.0'
     okHttpVersion = '3.4.1'
     okiIo = '1.10.0'
@@ -99,7 +98,7 @@ ext {
             jodaTime:           "joda-time:joda-time:${jodaTime}",
             retrofit:           "com.squareup.retrofit2:retrofit:${retrofit}",
             retrofitGson:       "com.squareup.retrofit2:converter-gson:${retrofitGson}",
-            retrofitInterceptor:"com.squareup.okhttp3:logging-interceptor:${retrofitInterceptor}",
+            retrofitInterceptor:"com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             okio:               "com.squareup.okio:okio:${okiIo}",
             okHttp:             "com.squareup.okhttp3:okhttp:${okHttpVersion}",
             gcmServices:        "com.google.android.gms:play-services-gcm:${googleServicesVersion}",
@@ -109,6 +108,7 @@ ext {
             circleImageView:    "de.hdodenhof:circleimageview:${circleImageViewVersion}",
             glide:              "com.github.bumptech.glide:glide:${glideVersion}",
             socketIO:           "io.socket:socket.io-client:${socketIo}",
+            okhttpWs:          "com.squareup.okhttp3:okhttp-ws:${okHttpVersion}",
             webRTC:             "com.github.xlagunas:WebRTC:${webRTC}"
 
     ]

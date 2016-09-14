@@ -81,6 +81,8 @@ dependencies {
     compile (dataDependencies.socketIO) {
         exclude group: 'org.json', module: 'json'
     }
+    //socketIO dependency on Okhttp-ws
+    compile dataDependencies.okhttpWs
     compile dataDependencies.webRTC
 
 
