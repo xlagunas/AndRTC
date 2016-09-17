@@ -7,5 +7,10 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface RegisterDataView {
 
+    void enableRegisterButton();
+
+    void disableRegisterButton();
+
     void onUserRegistered(User user);
+
 }

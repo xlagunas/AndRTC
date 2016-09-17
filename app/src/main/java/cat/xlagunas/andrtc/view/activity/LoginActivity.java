@@ -50,7 +50,7 @@ public class LoginActivity extends SocialLoginActivity implements HasComponent<A
 
     @Override
     public void onSignInRequested() {
-        startActivity(new Intent(this, RegisterActivity.class));
+        startActivityForResult(new Intent(this, RegisterActivity.class), RegisterActivity.RESULT_CODE);
     }
 
     @Override
@@ -71,4 +71,11 @@ public class LoginActivity extends SocialLoginActivity implements HasComponent<A
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RegisterActivity.RESULT_CODE && resultCode == RESULT_OK){
+            startMainActivity();
+        }
+    }
 }
