@@ -1,7 +1,11 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.google.auto.factory.AutoFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -12,26 +16,17 @@ import xlagunas.cat.andrtc.domain.Friend;
 /**
  * Created by xlagunas on 17/03/16.
  */
+@AutoFactory(implementing = FriendViewHolderFactory.class)
 public class AddFriendViewHolder extends FriendViewHolder {
 
     @BindView(R.id.contact_add_friendship)
     ImageView addFriendship;
 
-    public AddFriendViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
+    public AddFriendViewHolder(ViewGroup parent) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_friend_add, parent, false));
     }
 
-    public static void bind(final AddFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
-        FriendViewHolder.bind(holder, friend);
-
-        if (listener != null) {
-            holder.addFriendship.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onFriendRequested(friend);
-                }
-            });
-        }
+    public void bind(Friend friend) {
+        super.bind(friend);
     }
 }

@@ -29,13 +29,14 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    protected static void bind(final FriendViewHolder holder, final Friend friend) {
-        holder.username.setText(friend.getUsername());
-        holder.fullName.setText(holder.itemView.getContext().getString(R.string.friend_item_name, friend.getName(), friend.getSurname(), friend.getLastSurname()));
-        //TODO ADD THUMBNAIL
-        Glide.with(holder.itemView.getContext())
+    public void bind(final Friend friend) {
+        this.username.setText(friend.getUsername());
+        this.fullName.setText(this.itemView.getContext()
+                .getString(R.string.friend_item_name, friend.getName(), friend.getSurname(), friend.getLastSurname()));
+
+        Glide.with(this.itemView.getContext())
                 .load(Uri.parse(friend.getThumbnail()))
                 .placeholder(R.drawable.common_ic_googleplayservices)
-                .into(holder.thumbnail);
+                .into(this.thumbnail);
     }
 }

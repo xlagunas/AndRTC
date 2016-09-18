@@ -113,6 +113,7 @@ dependencies {
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
     compile presentationDependencies.facebookSdk
+    compile presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary
 
     provided presentationDependencies.javaxAnnotation
@@ -122,6 +123,7 @@ dependencies {
     androidTestCompile presentationTestDependencies.dexmakerMockito
     androidTestCompile presentationTestDependencies.espresso
     androidTestCompile presentationTestDependencies.testingSupportLib
+    androidTestCompile presentationTestDependencies.javawriter
 
 }
 

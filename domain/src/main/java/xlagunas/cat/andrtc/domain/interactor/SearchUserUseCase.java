@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
@@ -39,9 +40,20 @@ public class SearchUserUseCase extends UseCase {
 
         Observable<Friend> observable = filter.isEmpty()
                 ? repository.listRequestedContacts()
-                : repository.listAllContacts().mergeWith(repository.searchUsers(user, filter));
+                : repository.listAllContacts().filter(applyFilter())
+                .mergeWith(repository.searchUsers(user, filter));
 
         return  observable
                 .distinct().toSortedList();
     }
+
+    private Func1<Friend, Boolean> applyFilter() {
+        return new Func1<Friend, Boolean>() {
+            @Override
+            public Boolean call(Friend friend) {
+                return friend.contactMatchesSearchKeywords(filter);
+            }
+        };
+    }
+
 }

@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
@@ -31,10 +33,12 @@ public abstract class BaseContactFragment extends BaseFragment {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    FriendAdapter adapter;
     OnFriendClickListener listener;
 
     protected BroadcastReceiver receiver;
+
+    @Inject
+    FriendAdapter adapter;
 
     @Override
     public void onResume() {
@@ -92,17 +96,9 @@ public abstract class BaseContactFragment extends BaseFragment {
         initializeAdapter();
     }
 
-    protected void setOnFriendClickListener(OnFriendClickListener listener) {
-        this.listener = listener;
-    }
-
     private void initializeAdapter() {
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayout);
-        adapter = new FriendAdapter(new ArrayList<Friend>());
-        if (listener != null) {
-            adapter.setOnClickListener(listener);
-        }
         recyclerView.setAdapter(adapter);
     }
 
