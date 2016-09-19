@@ -12,7 +12,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.interactor.RequestNewFriendshipUseCase;
 import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
@@ -23,7 +22,6 @@ public class AddContactsPresenter implements Presenter {
 
     private static final String TAG = AddContactsPresenter.class.getSimpleName();
     private final SearchUserUseCase searchUserUseCase;
-    private final RequestNewFriendshipUseCase newFriendshipUseCase;
 
     private Subscription invalidateCacheSubscription;
 
@@ -33,10 +31,8 @@ public class AddContactsPresenter implements Presenter {
 
     @Inject
     public AddContactsPresenter(SearchUserUseCase userUseCase,
-                                RequestNewFriendshipUseCase newFriendshipUseCase,
                                 UserRepository userRepository) {
         this.searchUserUseCase = userUseCase;
-        this.newFriendshipUseCase = newFriendshipUseCase;
 
         this.userRepository = userRepository;
     }
@@ -70,7 +66,6 @@ public class AddContactsPresenter implements Presenter {
     public void destroy() {
         view = null;
         searchUserUseCase.unsubscribe();
-        newFriendshipUseCase.unsubscribe();
         invalidateCacheSubscription.unsubscribe();
 
     }

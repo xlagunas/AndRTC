@@ -62,34 +62,22 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     }
 
     @Override
-    public void addFriends(List<Friend> friends) {
-        super.onAddedFriends(friends);
-//        adapter.setOnClickListener(new OnFriendClickListener() {
-//            @Override
-//            public void onItemClicked(int position, Friend item) {
-//                startActivity(CallRequestActivity.makeCallerIntent(getContext(), item.getId()));
-//            }
-//
-//            @Override
-//            public void onFriendAccepted(Friend friend) {
-//
-//            }
-//
-//            @Override
-//            public void onFriendRequested(Friend friend) {
-//
-//            }
-//
-//            @Override
-//            public void onFriendRejected(Friend friend) {
-//
-//            }
-//        });
-//
+    public void addFriends(List<Friend> friend) {
+        onAddedFriends(friend);
     }
 
     @Override
     public void showList() {
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    protected void onAddedFriends(List<Friend> friends) {
+        adapter.clear();
+        adapter.addAll(friends);
+        adapter.notifyDataSetChanged();
+    }
+
+    public static CurrentContactFragment makeInstance(){
+        return new CurrentContactFragment();
     }
 }

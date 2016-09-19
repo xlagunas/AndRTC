@@ -9,6 +9,7 @@ import com.google.auto.factory.AutoFactory;
 
 import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
 
@@ -23,5 +24,11 @@ public class AcceptedFriendViewHolder extends FriendViewHolder {
 
     public AcceptedFriendViewHolder(ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_friend_accepted, parent, false));
+        itemView.setOnClickListener(view->startCallerActivity());
+    }
+
+    private void startCallerActivity(){
+        Friend friend = getFriendAdapter().getItem(getAdapterPosition());
+        itemView.getContext().startActivity(CallRequestActivity.makeCallerIntent(itemView.getContext(), friend.getId()));
     }
 }

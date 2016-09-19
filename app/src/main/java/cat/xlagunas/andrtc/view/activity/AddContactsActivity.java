@@ -32,7 +32,9 @@ public class AddContactsActivity extends BaseActivity implements HasComponent<Us
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addFragment(R.id.fragment_container, new AddContactFragment());
+        if (savedInstanceState == null) {
+            addFragment(R.id.fragment_container, AddContactFragment.makeInstance());
+        }
     }
 
 

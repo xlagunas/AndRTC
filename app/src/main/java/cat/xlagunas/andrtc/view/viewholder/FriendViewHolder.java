@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -36,7 +37,11 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
 
         Glide.with(this.itemView.getContext())
                 .load(Uri.parse(friend.getThumbnail()))
-                .placeholder(R.drawable.common_ic_googleplayservices)
+                .placeholder(R.drawable.user_profile)
                 .into(this.thumbnail);
+    }
+
+    protected FriendAdapter getFriendAdapter() {
+        return (FriendAdapter) ((RecyclerView) itemView.getParent()).getAdapter();
     }
 }

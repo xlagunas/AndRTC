@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -11,7 +9,6 @@ import com.google.auto.factory.Provided;
 
 import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
@@ -57,22 +54,6 @@ public class RequestedFriendViewHolder extends FriendViewHolder {
         updateFriendshipUseCase.setPreviousState(initialStatus);
         updateFriendshipUseCase.setNextState(finalStatus);
 
-        updateFriendshipUseCase.execute(new DefaultSubscriber<User>() {
-            @Override
-            public void onCompleted() {
-                super.onCompleted();
-                getFriendAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "Error updating relationship", e);
-            }
-        });
+        updateFriendshipUseCase.execute(new DefaultSubscriber<User>());
     }
-
-    private FriendAdapter getFriendAdapter() {
-        return (FriendAdapter) ((RecyclerView) itemView.getParent()).getAdapter();
-    }
-
 }

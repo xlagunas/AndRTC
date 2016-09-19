@@ -41,6 +41,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         fab.setVisibility(View.VISIBLE);
 
@@ -49,7 +50,9 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         presenter.initPresenter();
         presenter.setView(this);
 
-        addFragment(R.id.fragment_container, new CurrentContactFragment());
+        if (savedInstanceState == null) {
+            addFragment(R.id.fragment_container, new CurrentContactFragment());
+        }
     }
 
     @OnClick(R.id.fab)

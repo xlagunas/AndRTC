@@ -194,5 +194,9 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
         }
     };
 
+    public static AddContactFragment makeInstance(){
+        return new AddContactFragment();
+    }
+
 
 }

@@ -1,7 +1,5 @@
 package xlagunas.cat.andrtc.domain.repository;
 
-import java.io.File;
-
 import rx.Observable;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.User;
@@ -11,16 +9,18 @@ import xlagunas.cat.andrtc.domain.User;
  */
 public interface UserRepository {
 
-     Observable<Friend> searchUsers(User user, String filterName);
+    Observable<Friend> searchUsers(User user, String filterName);
 
     /**
      * Return the list of all the contacts except the non Requested
+     *
      * @return a list of users
      */
     Observable<Friend> listContacts(User user);
 
     /**
      * Return the list of all the requested contacts
+     *
      * @return a list of users
      */
     Observable<Friend> listRequestedContacts();
@@ -29,6 +29,7 @@ public interface UserRepository {
 
     /**
      * Return the user if logged
+     *
      * @param username string containing username
      * @param password string containing password
      * @return the logged user
@@ -61,4 +62,4 @@ public interface UserRepository {
 
     Observable<String> observeDataInvalidation();
 
-    }
+}

@@ -33,8 +33,6 @@ public abstract class BaseContactFragment extends BaseFragment {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    OnFriendClickListener listener;
-
     protected BroadcastReceiver receiver;
 
     @Inject
@@ -87,6 +85,7 @@ public abstract class BaseContactFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.generic_recycler_view, container, false);
         ButterKnife.bind(this, view);
+        setRetainInstance(false);
         return view;
     }
 
@@ -97,7 +96,7 @@ public abstract class BaseContactFragment extends BaseFragment {
     }
 
     private void initializeAdapter() {
-        RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayout);
         recyclerView.setAdapter(adapter);
     }
