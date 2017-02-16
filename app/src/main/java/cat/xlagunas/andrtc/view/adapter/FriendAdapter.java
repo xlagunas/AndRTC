@@ -1,18 +1,16 @@
 package cat.xlagunas.andrtc.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
-import cat.xlagunas.andrtc.view.viewholder.AcceptedFriendViewHolder;
+import javax.inject.Inject;
+
 import cat.xlagunas.andrtc.view.viewholder.FriendViewHolder;
-import cat.xlagunas.andrtc.view.viewholder.AddFriendViewHolder;
-import cat.xlagunas.andrtc.view.viewholder.PendingFriendViewHolder;
-import cat.xlagunas.andrtc.view.viewholder.RequestedFriendViewHolder;
+import cat.xlagunas.andrtc.view.viewholder.FriendViewHolderFactory;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -20,56 +18,23 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
+    private Map<Integer, FriendViewHolderFactory> viewHolderFactories;
     private List<Friend> elements;
-    private OnFriendClickListener listener;
-    private LayoutInflater inflater;
 
-    public FriendAdapter(List<Friend> elements) {
-        this.elements = elements;
-    }
-
-    public void setOnClickListener(OnFriendClickListener listener){
-        this.listener = listener;
+    @Inject
+    public FriendAdapter(Map<Integer, FriendViewHolderFactory> friendViewHolderFactory) {
+        elements = new ArrayList<>();
+        this.viewHolderFactories = friendViewHolderFactory;
     }
 
     @Override
     public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        if (inflater == null) {
-            inflater = LayoutInflater.from(parent.getContext());
-        }
-
-        switch (viewType) {
-            case 0:
-                return new AddFriendViewHolder(inflater.inflate(R.layout.item_friend_add, parent, false));
-            case Friend.REQUESTED:
-                return new RequestedFriendViewHolder(inflater.inflate(R.layout.item_friend_requested, parent, false));
-            case Friend.ACCEPTED:
-                return new AcceptedFriendViewHolder(inflater.inflate(R.layout.item_friend_accepted, parent, false));
-            case Friend.PENDING:
-                return new PendingFriendViewHolder(inflater.inflate(R.layout.item_friend_pending, parent, false));
-        }
-        return null;
+        return viewHolderFactories.get(viewType).createViewHolder(parent);
     }
 
     @Override
     public void onBindViewHolder(FriendViewHolder holder, int position) {
-        Friend friend = elements.get(position);
-        switch (getItemViewType(position)){
-            case 0:
-                AddFriendViewHolder.bind((AddFriendViewHolder) holder, friend, listener);
-                break;
-            case Friend.REQUESTED:
-                RequestedFriendViewHolder.bind((RequestedFriendViewHolder) holder, friend, listener);
-                break;
-            case Friend.ACCEPTED:
-                AcceptedFriendViewHolder.bind((AcceptedFriendViewHolder) holder, friend, listener);
-                break;
-            case Friend.PENDING:
-                PendingFriendViewHolder.bind(holder, friend);
-                break;
-
-        }
+        holder.bind(getItem(position));
     }
 
     @Override
@@ -82,19 +47,23 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendViewHolder> {
         return elements.get(position).getFriendState();
     }
 
-    public void clear(){
+    public void clear() {
         elements.clear();
     }
 
-    public void addAll(List<Friend> friends){
+    public void addAll(List<Friend> friends) {
         elements.addAll(friends);
     }
 
-    public void add(Friend friend){
+    public void add(Friend friend) {
         elements.add(friend);
     }
 
-    public void remove(Friend friend){
+    public void remove(Friend friend) {
         elements.remove(friend);
+    }
+
+    public Friend getItem(int position) {
+        return elements.get(position);
     }
 }

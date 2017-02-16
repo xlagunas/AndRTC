@@ -1,37 +1,45 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.google.auto.factory.AutoFactory;
+import com.google.auto.factory.Provided;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
+import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.Friend;
+import xlagunas.cat.andrtc.domain.interactor.RequestNewFriendshipUseCase;
 
 /**
  * Created by xlagunas on 17/03/16.
  */
+@AutoFactory(implementing = FriendViewHolderFactory.class)
 public class AddFriendViewHolder extends FriendViewHolder {
 
     @BindView(R.id.contact_add_friendship)
     ImageView addFriendship;
 
-    public AddFriendViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
+    private final RequestNewFriendshipUseCase requestNewFriendshipUseCase;
+
+    public AddFriendViewHolder(ViewGroup parent, @Provided RequestNewFriendshipUseCase requestNewFriendshipUseCase) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_friend_add, parent, false));
+        this.requestNewFriendshipUseCase = requestNewFriendshipUseCase;
+        itemView.setOnClickListener(v -> requesteNewFriendship());
     }
 
-    public static void bind(final AddFriendViewHolder holder, final Friend friend, final OnFriendClickListener listener) {
-        FriendViewHolder.bind(holder, friend);
+    private void requesteNewFriendship() {
+        Friend friend = getFriendAdapter().getItem(getAdapterPosition());
+        requestNewFriendshipUseCase.setNewContactId(friend.getId());
+        requestNewFriendshipUseCase.execute(new DefaultSubscriber<>());
+    }
 
-        if (listener != null) {
-            holder.addFriendship.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onFriendRequested(friend);
-                }
-            });
-        }
+    public void bind(Friend friend) {
+        super.bind(friend);
     }
 }

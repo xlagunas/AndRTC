@@ -2,6 +2,8 @@ package cat.xlagunas.andrtc.view.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.List;
@@ -12,14 +14,14 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.ShowContactsPresenter;
 import cat.xlagunas.andrtc.view.ListDataView;
-import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
-import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 19/03/16.
  */
 public class CurrentContactFragment extends BaseContactFragment implements ListDataView {
+
+    private static final int MAX_COLUMN_COUNT = 2;
 
     @Inject
     ShowContactsPresenter presenter;
@@ -64,33 +66,27 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     }
 
     @Override
-    public void addFriends(List<Friend> friends) {
-        super.onAddedFriends(friends);
-        adapter.setOnClickListener(new OnFriendClickListener() {
-            @Override
-            public void onItemClicked(int position, Friend item) {
-                startActivity(CallRequestActivity.makeCallerIntent(getContext(), item.getId()));
-            }
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getContext(), MAX_COLUMN_COUNT);
+    }
 
-            @Override
-            public void onFriendAccepted(Friend friend) {
-
-            }
-
-            @Override
-            public void onFriendRequested(Friend friend) {
-
-            }
-
-            @Override
-            public void onFriendRejected(Friend friend) {
-
-            }
-        });
+    @Override
+    public void addFriends(List<Friend> friend) {
+        onAddedFriends(friend);
     }
 
     @Override
     public void showList() {
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    protected void onAddedFriends(List<Friend> friends) {
+        adapter.clear();
+        adapter.addAll(friends);
+        adapter.notifyDataSetChanged();
+    }
+
+    public static CurrentContactFragment makeInstance(){
+        return new CurrentContactFragment();
     }
 }

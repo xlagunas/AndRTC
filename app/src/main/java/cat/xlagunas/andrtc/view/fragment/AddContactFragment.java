@@ -50,23 +50,6 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
-        setOnFriendClickListener(new NOOPFriendClickListener() {
-
-            @Override
-            public void onFriendRequested(Friend friend) {
-                presenter.requestFriendship(friend);
-            }
-
-            @Override
-            public void onFriendAccepted(Friend friend) {
-                presenter.acceptFriendship(friend);
-            }
-
-            @Override
-            public void onFriendRejected(Friend friend) {
-                presenter.rejectFriendship(friend);
-            }
-        });
 
         return view;
     }
@@ -210,6 +193,10 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
             return false;
         }
     };
+
+    public static AddContactFragment makeInstance(){
+        return new AddContactFragment();
+    }
 
 
 }

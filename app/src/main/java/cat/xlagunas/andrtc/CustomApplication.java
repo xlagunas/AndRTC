@@ -17,7 +17,7 @@ import xlagunas.cat.andrtc.domain.User;
 /**
  * Created by xlagunas on 29/02/16.
  */
-public class CustomApplication extends Application{
+public class CustomApplication extends Application {
 
     ApplicationComponent applicationComponent;
     UserComponent userComponent;
@@ -26,7 +26,6 @@ public class CustomApplication extends Application{
     public void onCreate() {
         super.onCreate();
         setupGraph();
-        FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
     }

@@ -1,36 +1,40 @@
 package cat.xlagunas.andrtc.presenter;
 
+import android.util.Log;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.SearchListView;
-import rx.Observer;
 import rx.Subscriber;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.interactor.RequestNewFriendshipUseCase;
 import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
-import xlagunas.cat.andrtc.domain.interactor.UpdateFriendshipUseCase;
+import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 15/03/16.
  */
 public class AddContactsPresenter implements Presenter {
 
+    private static final String TAG = AddContactsPresenter.class.getSimpleName();
     private final SearchUserUseCase searchUserUseCase;
-    private final RequestNewFriendshipUseCase newFriendshipUseCase;
-    private final UpdateFriendshipUseCase updateFriendshipUseCase;
+
+    private Subscription invalidateCacheSubscription;
 
     private SearchListView view;
 
+    private final UserRepository userRepository;
+
     @Inject
     public AddContactsPresenter(SearchUserUseCase userUseCase,
-                                RequestNewFriendshipUseCase newFriendshipUseCase,
-                                UpdateFriendshipUseCase updateFriendshipUseCase) {
+                                UserRepository userRepository) {
         this.searchUserUseCase = userUseCase;
-        this.newFriendshipUseCase = newFriendshipUseCase;
-        this.updateFriendshipUseCase = updateFriendshipUseCase;
+
+        this.userRepository = userRepository;
     }
 
     public SearchListView getView() {
@@ -44,6 +48,13 @@ public class AddContactsPresenter implements Presenter {
     @Override
     public void resume() {
         search("");
+        invalidateCacheSubscription = userRepository.observeDataInvalidation()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(text -> {
+                    Log.d(TAG, "Received msg:" +text);
+                    updateContacts();
+                });
     }
 
     @Override
@@ -55,16 +66,16 @@ public class AddContactsPresenter implements Presenter {
     public void destroy() {
         view = null;
         searchUserUseCase.unsubscribe();
-        newFriendshipUseCase.unsubscribe();
+        invalidateCacheSubscription.unsubscribe();
 
     }
 
-    public void search(String keyword){
+    public void search(String keyword) {
         searchUserUseCase.setFilter(keyword);
         executeSearch();
     }
 
-    private void executeSearch(){
+    private void executeSearch() {
         searchUserUseCase.execute(new Subscriber<List<Friend>>() {
 
             @Override
@@ -87,54 +98,6 @@ public class AddContactsPresenter implements Presenter {
                 view.addFriends(friends);
             }
 
-
-        });
-    }
-
-
-    public void requestFriendship(Friend friend) {
-        newFriendshipUseCase.setNewContactId(friend.getId());
-        newFriendshipUseCase.execute(new Observer() {
-            @Override
-            public void onCompleted() {
-                view.showConfirmation();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.showConfirmationError(e);
-            }
-
-            @Override
-            public void onNext(Object o) {
-
-            }
-        });
-    }
-
-    public void acceptFriendship(Friend friend) {
-        updateFriendship(friend, Friend.PENDING_RELATIONSHIP, Friend.ACCEPTED_RELATIONSHIP);
-    }
-
-    public void rejectFriendship(Friend friend) {
-        updateFriendship(friend, Friend.PENDING_RELATIONSHIP, Friend.REJECTED_RELATIONSHIP);
-    }
-
-    private void updateFriendship(final Friend friend, final String initialStatus, final String finalStatus) {
-        updateFriendshipUseCase.setContactId(friend.getId());
-        updateFriendshipUseCase.setPreviousState(initialStatus);
-        updateFriendshipUseCase.setNextState(finalStatus);
-
-        updateFriendshipUseCase.execute(new DefaultSubscriber(){
-            @Override
-            public void onNext(Object o) {
-                view.notifyContactUpdate(friend, finalStatus);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.notifiyUpdateError(friend, e);
-            }
         });
     }
 

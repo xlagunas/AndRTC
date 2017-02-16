@@ -1,6 +1,5 @@
 package cat.xlagunas.andrtc.gcm;
 
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,9 +13,11 @@ import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
+import rx.Completable;
+import rx.Observer;
+import rx.Subscriber;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
-
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -33,6 +34,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Inject
     UpdateProfileUseCase useCase;
+
     @Inject
     UserCache userCache;
 
@@ -56,40 +58,16 @@ public class MyGcmListenerService extends GcmListenerService {
 
         switch (messageType) {
             case FRIENDSHIP_REQUESTED_TYPE:
-                useCase.execute(new DefaultSubscriber() {
-                    @Override
-                    public void onCompleted() {
-                        generateAndSendBroadcastMessage("requested", information);
-                    }
-                });
+                executeUseCase("requested", information);
                 break;
             case FRIENDSHIP_ACCEPTED_TYPE:
-                useCase.execute(new DefaultSubscriber() {
-                    @Override
-                    public void onCompleted() {
-                        generateAndSendBroadcastMessage("accepted", information);
-                    }
-                });
+                executeUseCase("accepted", information);
                 break;
             case FRIENDSHIP_REJECTED_TYPE:
-                useCase.execute(new DefaultSubscriber() {
-                    @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        Log.d(TAG, "someone rejected relationship, roster updated");
-                        generateAndSendBroadcastMessage("rejected", information);
-                    }
-                });
+                executeUseCase("rejected", information);
                 break;
             case FRIENDSHIP_DELETED_TYPE:
-                useCase.execute(new DefaultSubscriber() {
-                    @Override
-                    public void onCompleted() {
-                        super.onCompleted();
-                        Log.d(TAG, "Someone deleted relationship, roster updated");
-                        generateAndSendBroadcastMessage("deleted", information);
-                    }
-                });
+                executeUseCase("deleted", information);
                 break;
             case CALL_RECEIVED_TYPE:
                 Log.d(TAG, "Call message notification sent");
@@ -107,6 +85,16 @@ public class MyGcmListenerService extends GcmListenerService {
                 break;
         }
 
+    }
+
+    private void executeUseCase(String messageType, Bundle information){
+        useCase.execute(new DefaultSubscriber() {
+            @Override
+            public void onCompleted() {
+                generateAndSendBroadcastMessage(messageType, information);
+                Log.d(TAG, "Push notification received, from type: "+messageType);
+            }
+        });
     }
 
     private void generateAndSendBroadcastMessage(String messageType, Bundle information) {

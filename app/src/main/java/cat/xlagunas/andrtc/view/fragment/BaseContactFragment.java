@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +34,11 @@ public abstract class BaseContactFragment extends BaseFragment {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    FriendAdapter adapter;
-    OnFriendClickListener listener;
-
     protected BroadcastReceiver receiver;
+
+    @Inject
+    FriendAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     public void onResume() {
@@ -83,6 +87,7 @@ public abstract class BaseContactFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.generic_recycler_view, container, false);
         ButterKnife.bind(this, view);
+        setRetainInstance(false);
         return view;
     }
 
@@ -92,17 +97,12 @@ public abstract class BaseContactFragment extends BaseFragment {
         initializeAdapter();
     }
 
-    protected void setOnFriendClickListener(OnFriendClickListener listener) {
-        this.listener = listener;
+    public RecyclerView.LayoutManager getLayoutManager(){
+        return new LinearLayoutManager(getContext());
     }
 
     private void initializeAdapter() {
-        RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayout);
-        adapter = new FriendAdapter(new ArrayList<Friend>());
-        if (listener != null) {
-            adapter.setOnClickListener(listener);
-        }
+        recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.setAdapter(adapter);
     }
 

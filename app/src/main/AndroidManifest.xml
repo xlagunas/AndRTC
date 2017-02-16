@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="cat.xlagunas.andrtc">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -12,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <user-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 
     <uses-feature android:name="android.hardware.camera" android:required="true" />
@@ -19,9 +21,10 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${appName}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:label"
         android:name="cat.xlagunas.andrtc.CustomApplication">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
@@ -30,11 +33,13 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            tools:replace="android:theme"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.LoginActivity"/>
 
-        <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity"/>
+        <activity android:name="cat.xlagunas.andrtc.view.activity.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name="cat.xlagunas.andrtc.view.activity.ConferenceActivity"
             android:theme="@style/AppTheme.NoActionBar"

@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -29,13 +30,19 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    protected static void bind(final FriendViewHolder holder, final Friend friend) {
-        holder.username.setText(friend.getUsername());
-        holder.fullName.setText(holder.itemView.getContext().getString(R.string.friend_item_name, friend.getName(), friend.getSurname(), friend.getLastSurname()));
-        //TODO ADD THUMBNAIL
-        Glide.with(holder.itemView.getContext())
+    public void bind(final Friend friend) {
+        this.username.setText(friend.getUsername());
+        this.fullName.setText(this.itemView.getContext()
+                .getString(R.string.friend_item_name, friend.getName(), friend.getSurname(), friend.getLastSurname()));
+
+        Glide.with(this.itemView.getContext())
                 .load(Uri.parse(friend.getThumbnail()))
-                .placeholder(R.drawable.common_ic_googleplayservices)
-                .into(holder.thumbnail);
+                .placeholder(R.drawable.user_profile)
+                .dontAnimate()
+                .into(this.thumbnail);
+    }
+
+    protected FriendAdapter getFriendAdapter() {
+        return (FriendAdapter) ((RecyclerView) itemView.getParent()).getAdapter();
     }
 }

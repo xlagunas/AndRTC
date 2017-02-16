@@ -20,7 +20,9 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
+import rx.subjects.PublishSubject;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
@@ -36,11 +38,18 @@ public class UserRepositoryImpl implements UserRepository {
     private UserCache userCache;
     private UserEntityMapper mapper;
 
+    private PublishSubject<String> invalidateCacheSubscriber;
+
+    public Observable<String> observeDataInvalidation(){
+        return invalidateCacheSubscriber;
+    }
+
     @Inject
     public UserRepositoryImpl(RestApi restApi, UserEntityMapper mapper, UserCache userCache) {
         this.restApi = restApi;
         this.mapper = mapper;
         this.userCache = userCache;
+        invalidateCacheSubscriber = PublishSubject.create();
     }
 
     @Override
@@ -121,7 +130,6 @@ public class UserRepositoryImpl implements UserRepository {
     public Observable requestNewFriendship(User user, String id) {
         return restApi.requestFriendship(Credentials.basic(user.getUsername(), user.getPassword()), id)
                 .doOnNext(saveToCacheAction)
-                .doOnNext(invalidateCache)
                 .map(userEntity -> Observable.empty());
     }
 
@@ -177,6 +185,8 @@ public class UserRepositoryImpl implements UserRepository {
         if (userEntity != null) {
             userCache.putUser(userEntity);
         }
+
+        invalidateCacheSubscriber.onNext("INVALIDATED");
     };
 
     private final Action1 updateTokenAction = userEntity -> {
