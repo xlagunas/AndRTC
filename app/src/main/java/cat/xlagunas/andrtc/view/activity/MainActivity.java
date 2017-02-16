@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
         presenter.setView(this);
 
         if (savedInstanceState == null) {
-            addFragment(R.id.fragment_container, new CurrentContactFragment());
+            addFragment(R.id.fragment_container, CurrentContactFragment.makeInstance());
         }
     }
 

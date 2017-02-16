@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public abstract class BaseContactFragment extends BaseFragment {
 
     @Inject
     FriendAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     public void onResume() {
@@ -95,9 +97,12 @@ public abstract class BaseContactFragment extends BaseFragment {
         initializeAdapter();
     }
 
+    public RecyclerView.LayoutManager getLayoutManager(){
+        return new LinearLayoutManager(getContext());
+    }
+
     private void initializeAdapter() {
-        RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayout);
+        recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.setAdapter(adapter);
     }
 

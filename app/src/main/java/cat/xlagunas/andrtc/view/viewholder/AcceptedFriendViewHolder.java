@@ -1,5 +1,7 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +25,22 @@ public class AcceptedFriendViewHolder extends FriendViewHolder {
     ImageButton callImageView;
 
     public AcceptedFriendViewHolder(ViewGroup parent) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_friend_accepted, parent, false));
+        super(LayoutInflater.from(parent.getContext()).inflate(getLayoutResource((RecyclerView) parent), parent, false));
         itemView.setOnClickListener(view->startCallerActivity());
     }
 
     private void startCallerActivity(){
         Friend friend = getFriendAdapter().getItem(getAdapterPosition());
         itemView.getContext().startActivity(CallRequestActivity.makeCallerIntent(itemView.getContext(), friend.getId()));
+    }
+
+    private static int getLayoutResource(RecyclerView parent) {
+        int layoutResource;
+        if (parent.getLayoutManager() instanceof GridLayoutManager){
+            layoutResource = R.layout.item_friend_accepted_grid;
+        } else {
+            layoutResource = R.layout.item_friend_accepted;
+        }
+        return layoutResource;
     }
 }

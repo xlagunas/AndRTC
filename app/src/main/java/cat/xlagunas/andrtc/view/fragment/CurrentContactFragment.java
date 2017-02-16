@@ -2,6 +2,8 @@ package cat.xlagunas.andrtc.view.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import xlagunas.cat.andrtc.domain.Friend;
  * Created by xlagunas on 19/03/16.
  */
 public class CurrentContactFragment extends BaseContactFragment implements ListDataView {
+
+    private static final int MAX_COLUMN_COUNT = 2;
 
     @Inject
     ShowContactsPresenter presenter;
@@ -59,6 +63,11 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
     @Override
     public void showProgress() {
         //TODO //EMPTY
+    }
+
+    @Override
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return new GridLayoutManager(getContext(), MAX_COLUMN_COUNT);
     }
 
     @Override

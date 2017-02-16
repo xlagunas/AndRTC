@@ -38,6 +38,7 @@ public abstract class FriendViewHolder extends RecyclerView.ViewHolder {
         Glide.with(this.itemView.getContext())
                 .load(Uri.parse(friend.getThumbnail()))
                 .placeholder(R.drawable.user_profile)
+                .dontAnimate()
                 .into(this.thumbnail);
     }
 

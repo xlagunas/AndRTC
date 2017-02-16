@@ -54,8 +54,11 @@ android {
 
     productFlavors {
         prod {
+            manifestPlaceholders appName: "@string/app_name_prod";
         }
         dev {
+            manifestPlaceholders appName: "@string/app_name_dev";
+            applicationIdSuffix ".dev"
         }
     }
 
