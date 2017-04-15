@@ -5,9 +5,7 @@ import android.content.Context;
 
 import javax.inject.Singleton;
 
-import cat.xlagunas.andrtc.ServiceFacade;
 import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
-import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
 import dagger.Module;
 import dagger.Provides;
 import cat.xlagunas.andrtc.UIThread;
@@ -27,25 +25,25 @@ public class ApplicationModule {
 
     private Application application;
 
-    public ApplicationModule(Application app){
+    public ApplicationModule(Application app) {
         this.application = app;
     }
 
     @Provides
     @Singleton
-    public Context getAppContext(){
+    public Context getAppContext() {
         return application;
     }
 
     @Provides
     @Singleton
-    UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl){
+    UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl) {
         return userRepositoryImpl;
     }
 
     @Provides
     @Singleton
-    PostExecutionThread providePostExecutionThread(UIThread thread){
+    PostExecutionThread providePostExecutionThread(UIThread thread) {
         return thread;
     }
 
@@ -57,13 +55,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ServiceFacade provideServerFacade(RegistrationServiceFacade service){
-        return service;
-    }
-
-    @Provides
-    @Singleton
-    FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl){
+    FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl) {
         return fileRepositoryImpl;
     }
 }

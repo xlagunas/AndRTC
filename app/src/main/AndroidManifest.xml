@@ -3,17 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cat.xlagunas.andrtc">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="cat.xlagunas.andrtc.permission.C2D_MESSAGE" />
-    <!--END OF PUSH NOTIFICATION SECTION -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <user-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 
     <uses-feature android:name="android.hardware.camera" android:required="true" />
@@ -30,8 +24,7 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
         <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name"
             tools:replace="android:theme"/>
@@ -69,33 +62,19 @@
             </intent-filter>
         </receiver>
 
-        <!-- GOOGLE PUSH NOTIFICATIONS -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="cat.xlagunas.andrtc" />
-            </intent-filter>
-        </receiver>
         <service
             android:name=".gcm.MyGcmListenerService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
             android:name=".gcm.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
-        </service>
-        <service
-            android:name=".gcm.RegistrationIntentService"
-            android:exported="false">
         </service>
 
     </application>

@@ -58,6 +58,8 @@ android {
         abortOnError true
         // if true, only report errors
         ignoreWarnings false
+
+        disable 'GradleCompatible'
     }
 }
 

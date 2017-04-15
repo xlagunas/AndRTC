@@ -53,16 +53,13 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<File> generateProfilePictureFile() {
-        return Observable.create(new Observable.OnSubscribe<File>() {
-            @Override
-            public void call(Subscriber<? super File> subscriber) {
-                try {
-                    File imageFile = fileManager.createImageFile(context);
-                    subscriber.onNext(imageFile);
-                    subscriber.onCompleted();
-                } catch (IOException e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create(subscriber -> {
+            try {
+                File imageFile = fileManager.createImageFile(context);
+                subscriber.onNext(imageFile);
+                subscriber.onCompleted();
+            } catch (IOException e) {
+                subscriber.onError(e);
             }
         });
     }

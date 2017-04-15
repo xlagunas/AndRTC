@@ -16,18 +16,15 @@ import xlagunas.cat.andrtc.domain.interactor.LogOutUseCase;
  */
 public class MainPresenter implements Presenter {
 
-    private final ServiceFacade serviceFacade;
     private final LogOutUseCase logOutUseCase;
     private LogOutDataView view;
 
     @Inject
-    public MainPresenter(ServiceFacade service, LogOutUseCase useCase){
-        this.serviceFacade = service;
+    public MainPresenter(LogOutUseCase useCase){
         this.logOutUseCase = useCase;
     }
 
     public void initPresenter(){
-        serviceFacade.startService();
     }
 
     public void setView(LogOutDataView view){

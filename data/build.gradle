@@ -31,11 +31,6 @@ android {
         exclude 'META-INF/LICENSE'
     }
 
-//    TURN THIS ON TO NOT MOCK ANDROID LIBRARY OBJECTS
-//    testOptions {
-//        unitTests.returnDefaultValues = true
-//    }
-
     productFlavors {
         prod {}
         dev {}
@@ -82,5 +77,3 @@ dependencies {
     testCompile testDependencies.socketIO
 
 }
-
-apply plugin: 'com.google.gms.google-services'
