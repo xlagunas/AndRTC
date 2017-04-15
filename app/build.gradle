@@ -14,11 +14,6 @@ android {
         versionName "1.1.7"
         vectorDrawables.useSupportLibrary = true
 
-//        javaCompileOptions {
-//            annotationProcessorOptions {
-//                includeCompileClasspath true
-//            }
-//        }
     }
 
     compileOptions {
@@ -87,6 +82,7 @@ dependencies {
 
     annotationProcessor presentationDependencies.daggerCompiler
     annotationProcessor presentationDependencies.butterKnifeCompiler
+    annotationProcessor presentationDependencies.autoFactory
 
     compile presentationDependencies.dagger
     compile presentationDependencies.butterKnife
@@ -105,7 +101,7 @@ dependencies {
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
     compile presentationDependencies.facebookSdk
-    compile presentationDependencies.autoFactory
+    provided presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary
 
     provided presentationDependencies.javaxAnnotation
