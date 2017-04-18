@@ -3,8 +3,6 @@ package cat.xlagunas.andrtc;
 import android.app.Application;
 import android.content.Context;
 
-import com.facebook.appevents.AppEventsLogger;
-
 import cat.xlagunas.andrtc.di.components.ApplicationComponent;
 import cat.xlagunas.andrtc.di.components.DaggerApplicationComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
@@ -27,9 +25,8 @@ public class CustomApplication extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-        setupGraph();
-        AppEventsLogger.activateApp(this);
 
+        setupGraph();
     }
 
     private void setupGraph() {

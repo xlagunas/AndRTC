@@ -1,8 +1,6 @@
 package cat.xlagunas.andrtc.di.modules;
 
 import cat.xlagunas.andrtc.data.repository.SocialRepositoryImpl;
-import cat.xlagunas.andrtc.data.social.FacebookManager;
-import cat.xlagunas.andrtc.data.social.FacebookManagerImpl;
 import cat.xlagunas.andrtc.data.social.GoogleManager;
 import cat.xlagunas.andrtc.data.social.GoogleManagerImpl;
 import cat.xlagunas.andrtc.di.ActivityScope;
@@ -16,12 +14,6 @@ import xlagunas.cat.andrtc.domain.repository.SocialRepository;
 
 @Module
 public class SocialModule {
-
-    @Provides
-    @ActivityScope
-    FacebookManager provideFacebookManager(FacebookManagerImpl facebookManager) {
-        return facebookManager;
-    }
 
     @Provides
     @ActivityScope

@@ -58,8 +58,6 @@ android {
         abortOnError true
         // if true, only report errors
         ignoreWarnings false
-
-        disable 'GradleCompatible'
     }
 }
 
@@ -102,7 +100,6 @@ dependencies {
     compile presentationDependencies.circleImageView
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
-    compile presentationDependencies.facebookSdk
     compile presentationDependencies.timber
     provided presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary

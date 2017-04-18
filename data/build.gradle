@@ -59,13 +59,11 @@ dependencies {
     compile dataDependencies.okHttp
     compile dataDependencies.retrofitRxAdapter
     compile dataDependencies.glide
-    compile dataDependencies.facebookSdk
     compile dataDependencies.gcmServices
     compile dataDependencies.gcmAuth
     compile (dataDependencies.socketIO) {
         exclude group: 'org.json', module: 'json'
     }
-    //socketIO dependency on Okhttp-ws
     compile dataDependencies.okhttpWs
     compile dataDependencies.webRTC
     compile dataDependencies.timber

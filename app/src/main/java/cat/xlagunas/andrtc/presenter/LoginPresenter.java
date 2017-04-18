@@ -6,7 +6,6 @@ import cat.xlagunas.andrtc.di.ActivityScope;
 import cat.xlagunas.andrtc.view.LoginDataView;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.FacebookLoginUseCase;
 import xlagunas.cat.andrtc.domain.interactor.GoogleLoginUseCase;
 import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
 
@@ -17,14 +16,12 @@ import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
 public class LoginPresenter implements Presenter {
 
     private final LoginUseCase loginUseCase;
-    private final FacebookLoginUseCase facebookLoginUseCase;
     private final GoogleLoginUseCase googleLoginUseCase;
     private LoginDataView view;
 
     @Inject
-    LoginPresenter(LoginUseCase loginUseCase, FacebookLoginUseCase facebookLoginUseCase, GoogleLoginUseCase googleLoginUseCase) {
+    LoginPresenter(LoginUseCase loginUseCase, GoogleLoginUseCase googleLoginUseCase) {
         this.loginUseCase = loginUseCase;
-        this.facebookLoginUseCase = facebookLoginUseCase;
         this.googleLoginUseCase = googleLoginUseCase;
     }
 
@@ -48,7 +45,6 @@ public class LoginPresenter implements Presenter {
     @Override
     public void destroy() {
         loginUseCase.unsubscribe();
-        facebookLoginUseCase.unsubscribe();
         googleLoginUseCase.unsubscribe();
         this.view = null;
     }
@@ -58,10 +54,6 @@ public class LoginPresenter implements Presenter {
         loginUseCase.execute(getLoginSubscriber());
 
         view.showLoading();
-    }
-
-    public void doFacebookLogin() {
-        facebookLoginUseCase.execute(getLoginSubscriber());
     }
 
     public void doGoogleLogin() {

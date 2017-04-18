@@ -1,8 +1,6 @@
 package cat.xlagunas.andrtc.data.mapper;
 
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.SignInAccount;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -31,11 +29,11 @@ import xlagunas.cat.andrtc.domain.User;
 public class UserEntityMapper {
 
     @Inject
-    public UserEntityMapper(){
+    public UserEntityMapper() {
 
     }
 
-    public User transformUser(UserEntity entity){
+    public User transformUser(UserEntity entity) {
         User user = (User) mapAbstractUser(entity);
         user.setFriends(transformFriends(entity));
         return user;
@@ -57,25 +55,19 @@ public class UserEntityMapper {
         return entity;
     }
 
-    public UserEntity transformFacebookUser(LoginResult result){
-        UserEntity entity = new UserEntity();
-
-        return entity;
-    }
-
     public String decodeBasicAuthPassword(String username, String hashedPassword) {
         //rip the "Basic " string in front of the password
         String secret = hashedPassword.substring(6);
         String str = ByteString.decodeBase64(secret).utf8();
 
-        return str.substring(username.length()+1);
+        return str.substring(username.length() + 1);
     }
 
-    public String encodeBasicAuthPassword(String username, String password){
+    public String encodeBasicAuthPassword(String username, String password) {
         return Credentials.basic(username, password);
     }
 
-    public List<Friend> transformFriends(UserEntity entity){
+    public List<Friend> transformFriends(UserEntity entity) {
         List<Friend> friends = new ArrayList<>();
         if (entity.getAccepted() != null) {
             for (FriendEntity userEntity : entity.getAccepted()) {
@@ -112,7 +104,7 @@ public class UserEntityMapper {
         return friends;
     }
 
-    private User mapAbstractUser(UserEntity entity){
+    private User mapAbstractUser(UserEntity entity) {
         User user = new User();
         user.setId(entity.getId());
         user.setUsername(entity.getUsername());
@@ -122,12 +114,12 @@ public class UserEntityMapper {
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
         user.setFacebookId(entity.getFacebookId());
-        user.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER+entity.getThumbnail());
+        user.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER + entity.getThumbnail());
 
         return user;
     }
 
-    public  Friend mapFriendEntity(FriendEntity entity) {
+    public Friend mapFriendEntity(FriendEntity entity) {
         Friend friend = new Friend();
         friend.setId(entity.getId());
         friend.setUsername(entity.getUsername());
@@ -135,7 +127,7 @@ public class UserEntityMapper {
         friend.setLastSurname(entity.getLastSurname());
         friend.setSurname(entity.getSurname());
         friend.setEmail(entity.getEmail());
-        friend.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER+entity.getThumbnail());
+        friend.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER + entity.getThumbnail());
 
         return friend;
     }
@@ -172,7 +164,7 @@ public class UserEntityMapper {
         return Observable.just(friendEntities);
     }
 
-    public Observable<UserEntity> parseGoogleData(GoogleSignInAccount account){
+    public Observable<UserEntity> parseGoogleData(GoogleSignInAccount account) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(account.getEmail());
         userEntity.setEmail(account.getEmail());

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -39,8 +40,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cat.xlagunas.andrtc.BuildConfig;
 import cat.xlagunas.andrtc.R;
 import timber.log.Timber;
+
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 
 public class VivProfileImageFragment extends Fragment {
 
@@ -304,7 +308,7 @@ public class VivProfileImageFragment extends Fragment {
     }
 
     private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
         } else {
             startChooserIntent();
