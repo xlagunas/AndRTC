@@ -27,38 +27,38 @@ public class ConferenceModule {
     private final EglBase rootEglContext;
     private final String roomId;
 
-    public ConferenceModule(EglBase rootContext, String roomId){
+    public ConferenceModule(EglBase rootContext, String roomId) {
         this.rootEglContext = rootContext;
         this.roomId = roomId;
     }
 
     @Provides
     @ConferenceScope
-    public EglBase getEglContext(){
+    public EglBase getEglContext() {
         return rootEglContext;
     }
 
     @Provides
     @ConferenceScope
-    public String getRoomId(){
+    public String getRoomId() {
         return roomId;
     }
 
     @Provides
     @ConferenceScope
-    public Transport getTransport(SocketIOTransport transport){
+    public Transport getTransport(SocketIOTransport transport) {
         return transport;
     }
 
     @Provides
     @ConferenceScope
-    public WebRTCManager getManager(WebRTCManagerImpl webRTCManager){
+    public WebRTCManager getManager(WebRTCManagerImpl webRTCManager) {
         return webRTCManager;
     }
 
     @Provides
     @ConferenceScope
-    public Executor getExecutor(){
+    public Executor getExecutor() {
         return Executors.newSingleThreadExecutor();
     }
 
@@ -70,7 +70,7 @@ public class ConferenceModule {
 
     @Provides
     @ConferenceScope
-    public AudioManager getAudioManager(Context context){
+    public AudioManager getAudioManager(Context context) {
         return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 

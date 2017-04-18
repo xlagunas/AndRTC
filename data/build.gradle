@@ -68,6 +68,7 @@ dependencies {
     //socketIO dependency on Okhttp-ws
     compile dataDependencies.okhttpWs
     compile dataDependencies.webRTC
+    compile dataDependencies.timber
 
 
     testCompile testDependencies.junit

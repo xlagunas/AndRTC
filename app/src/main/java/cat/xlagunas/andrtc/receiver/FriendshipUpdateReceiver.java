@@ -23,9 +23,9 @@ public class FriendshipUpdateReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String type = intent.getStringExtra("type");
 
-        if ("requested".equalsIgnoreCase(type)){
+        if ("requested".equalsIgnoreCase(type)) {
             sendFriendshipRequestNotification(context, intent.getBundleExtra("information"));
-        } else if ("accepted".equalsIgnoreCase(type)){
+        } else if ("accepted".equalsIgnoreCase(type)) {
             sendFriendshipAcceptedNotification(context, intent.getBundleExtra("information"));
         }
     }

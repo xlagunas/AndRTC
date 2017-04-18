@@ -29,6 +29,7 @@ ext {
     googleServicesVersion = '10.2.1'
     circleImageViewVersion = '2.0.0'
     glideVersion = '3.7.0'
+    timber = '4.5.1'
     facebookSdkVersion = '[4,18)'
     socketIo = '0.7.0'
     webRTC = "v0.1-beta"
@@ -69,6 +70,7 @@ ext {
             glide              : "com.github.bumptech.glide:glide:${glideVersion}",
             facebookSdk        : "com.facebook.android:facebook-android-sdk:${facebookSdkVersion}",
             autoFactory        : "com.google.auto.factory:auto-factory:${autoFactory}",
+            timber             : "com.jakewharton.timber:timber:${timber}"
 
     ]
 
@@ -116,8 +118,8 @@ ext {
             glide              : "com.github.bumptech.glide:glide:${glideVersion}",
             socketIO           : "io.socket:socket.io-client:${socketIo}",
             okhttpWs           : "com.squareup.okhttp3:okhttp-ws:${okHttpVersion}",
-            webRTC             : "com.github.xlagunas:WebRTC:${webRTC}"
-
+            webRTC             : "com.github.xlagunas:WebRTC:${webRTC}",
+            timber             : "com.jakewharton.timber:timber:${timber}"
     ]
 
 

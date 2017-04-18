@@ -1,14 +1,14 @@
 package xlagunas.cat.andrtc.domain.interactor;
 
+
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
+import xlagunas.cat.andrtc.domain.repository.FileRepository;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
@@ -20,23 +20,21 @@ public class RegisterGCMTokenUseCase extends UseCase {
     private final PostExecutionThread postExecutionThread;
     private final User user;
     private final UserRepository userRepository;
-
-    private String gcmToken;
-
-    public void setToken(String token){
-        this.gcmToken = token;
-    }
+    private final FileRepository fileRepository;
 
     @Inject
-    RegisterGCMTokenUseCase(PostExecutionThread postExecutionThread, User user, UserRepository userRepository) {
+    RegisterGCMTokenUseCase(PostExecutionThread postExecutionThread, User user, UserRepository userRepository, FileRepository fileRepository) {
         super(postExecutionThread);
         this.postExecutionThread = postExecutionThread;
         this.user = user;
         this.userRepository = userRepository;
+        this.fileRepository = fileRepository;
     }
+
     @Override
-    protected Observable buildUseCaseObservable() {
-        return userRepository.registerGCMToken(user, gcmToken);
+    protected Observable<Boolean> buildUseCaseObservable() {
+        return fileRepository.getStoredToken()
+                .flatMap(token -> userRepository.registerGCMToken(user, token));
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.CallRequestDataView;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -73,7 +73,7 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
     @Override
     public void setOnError(Throwable e) {
         Snackbar.make(getView(), "Error: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
-        Log.e(TAG, "Error", e);
+        Timber.e(e, "Error");
     }
 
     @Override
@@ -89,12 +89,12 @@ public abstract class CallRequestBaseFragment extends BaseFragment implements Ca
     }
 
     public void startConference(String roomId) {
-        Log.d(TAG, "Starting conference with Id: " + roomId);
+        Timber.d("Starting conference with Id: " + roomId);
         listener.onConferenceConfigured(roomId);
     }
 
     public void cancelConference() {
-        Log.d(TAG, "Canceling conference");
+        Timber.d("Canceling conference");
         listener.onCancelConference();
     }
 

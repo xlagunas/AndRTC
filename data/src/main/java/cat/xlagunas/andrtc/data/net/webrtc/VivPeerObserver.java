@@ -1,11 +1,11 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
-import android.util.Log;
-
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.VideoTrack;
+
+import timber.log.Timber;
 
 public class VivPeerObserver extends PeerObserver {
 
@@ -44,7 +44,7 @@ public class VivPeerObserver extends PeerObserver {
 
             }
         } else {
-            Log.wtf(TAG, "Call onAddStream on a null peerconnection");
+            Timber.wtf(TAG, "Call onAddStream on a null peerconnection");
         }
     }
 
@@ -67,11 +67,11 @@ public class VivPeerObserver extends PeerObserver {
     public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
         super.onIceConnectionChange(iceConnectionState);
         if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED) {
-            Log.d(TAG, "Connection with user " + userId + " has been finished, removing it");
+            Timber.d( "Connection with user " + userId + " has been finished, removing it");
             peerData.getRemoteVideoTrack().dispose();
             peerData.setQueuedRemoteCandidates(null);
             peerData.getPeerConnection().close();
-            Log.d(TAG, "proceeding to delete stream");
+            Timber.d( "proceeding to delete stream");
             listener.onDisconnected(userId);
         } else if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
             listener.onConnected(userId);

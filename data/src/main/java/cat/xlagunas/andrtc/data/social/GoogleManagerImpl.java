@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 28/8/16.
@@ -89,7 +90,7 @@ public class GoogleManagerImpl implements GoogleManager, GoogleApiClient.OnConne
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, connectionResult.getErrorMessage());
+        Timber.d( connectionResult.getErrorMessage());
     }
 
     interface LoginCallback {

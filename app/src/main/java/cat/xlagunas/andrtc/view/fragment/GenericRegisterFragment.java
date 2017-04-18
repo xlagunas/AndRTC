@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cat.xlagunas.andrtc.R;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 4/04/16.
@@ -32,14 +32,15 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     ViewGroup contentLayout;
     protected Unbinder unBinder;
 
-    public abstract @LayoutRes int getLayout();
+    public abstract @LayoutRes
+    int getLayout();
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try{
+        try {
             listener = (OnFragmentChangeRequest) context;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException(e);
         }
     }
@@ -47,7 +48,7 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (listener != null){
+        if (listener != null) {
             listener = null;
         }
     }
@@ -83,24 +84,25 @@ public abstract class GenericRegisterFragment extends BaseFragment {
     }
 
     @OnClick(R.id.button_next)
-    public void onNextClicked(){
-        Log.d(TAG, "Next clicked");
-        if (listener != null){
+    public void onNextClicked() {
+        Timber.d("Next clicked");
+        if (listener != null) {
             listener.onNext();
         }
     }
 
-    protected void setError(TextInputLayout textInputLayout, String message ){
+    protected void setError(TextInputLayout textInputLayout, String message) {
         textInputLayout.setErrorEnabled(true);
         textInputLayout.setError(message);
     }
 
-    public View getNextButton(){
+    public View getNextButton() {
         return nextButton;
     }
 
-    public interface OnFragmentChangeRequest{
+    public interface OnFragmentChangeRequest {
         void onNext();
+
         void onBack();
     }
 }

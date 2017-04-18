@@ -17,22 +17,22 @@ public abstract class CallRequestPresenter implements Presenter {
     protected CallRequestDataView view;
     private final static int MAX_DIALING_TIME = 10000;
 
-    public void init(boolean isCaller){
-        if (isCaller){
+    public void init(boolean isCaller) {
+        if (isCaller) {
             view.hideAcceptCallButton();
         }
     }
 
-    public void setFriendId(String id){
+    public void setFriendId(String id) {
         this.friendId = id;
     }
 
 
-    public void setView(CallRequestDataView view){
+    public void setView(CallRequestDataView view) {
         this.view = view;
     }
 
-    protected void startTimer(){
+    protected void startTimer() {
         timer = new Timer("Cancel timer");
         timer.schedule(new TimerTask() {
             @Override
@@ -43,12 +43,12 @@ public abstract class CallRequestPresenter implements Presenter {
         }, MAX_DIALING_TIME);
     }
 
-    public void goToConference(){
+    public void goToConference() {
         timer.cancel();
         view.startConference(callId);
     }
 
-    public void cancel(){
+    public void cancel() {
         timer.cancel();
         view.cancelConference();
     }

@@ -103,6 +103,7 @@ dependencies {
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
     compile presentationDependencies.facebookSdk
+    compile presentationDependencies.timber
     provided presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary
 

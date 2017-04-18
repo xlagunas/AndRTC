@@ -5,13 +5,15 @@ import android.content.Context;
 
 import javax.inject.Singleton;
 
-import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
-import dagger.Module;
-import dagger.Provides;
+import cat.xlagunas.andrtc.ServiceFacade;
 import cat.xlagunas.andrtc.UIThread;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.data.cache.UserCacheImpl;
+import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
 import cat.xlagunas.andrtc.data.repository.UserRepositoryImpl;
+import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
+import dagger.Module;
+import dagger.Provides;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
 import xlagunas.cat.andrtc.domain.repository.FileRepository;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
@@ -57,5 +59,11 @@ public class ApplicationModule {
     @Singleton
     FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl) {
         return fileRepositoryImpl;
+    }
+
+    @Provides
+    @Singleton
+    ServiceFacade provideServerFacade(RegistrationServiceFacade service) {
+        return service;
     }
 }

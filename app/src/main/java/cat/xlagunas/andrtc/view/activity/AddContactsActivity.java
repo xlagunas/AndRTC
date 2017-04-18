@@ -43,7 +43,7 @@ public class AddContactsActivity extends BaseActivity implements HasComponent<Us
         return CustomApplication.getApp(this).getUserComponent();
     }
 
-    public static Intent buildAddContactsIntent(Context context){
+    public static Intent buildAddContactsIntent(Context context) {
         Intent intent = new Intent(context, AddContactsActivity.class);
 
         return intent;

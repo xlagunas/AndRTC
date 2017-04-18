@@ -14,21 +14,27 @@ package cat.xlagunas.andrtc.gcm; /**
  * limitations under the License.
  */
 
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import android.app.IntentService;
+import android.content.Intent;
 
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
-import cat.xlagunas.andrtc.data.cache.UserCache;
+import rx.Subscriber;
 import timber.log.Timber;
+import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
-public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
+
+public class RegistrationIntentService extends IntentService {
+
+    private static final String TAG = "RegIntentService";
 
     @Inject
-    UserCache userCache;
+    RegisterGCMTokenUseCase useCase;
 
+    public RegistrationIntentService() {
+        super(TAG);
+    }
 
     @Override
     public void onCreate() {
@@ -37,11 +43,24 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
     }
 
     @Override
-    public void onTokenRefresh() {
-        String token = FirebaseInstanceId.getInstance().getToken();
-        Timber.d("Token: " + token);
-        userCache.setGCMToken(token);
-        userCache.setGCMRegistrationStatus(false);
+    protected void onHandleIntent(Intent intent) {
+        useCase.execute(new Subscriber() {
+            @Override
+            public void onCompleted() {
+                Timber.d("GCM sending process finished");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e, "Error sending GCM token");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Timber.d("GCM registration status: " + o.toString());
+            }
+        });
     }
+
 
 }

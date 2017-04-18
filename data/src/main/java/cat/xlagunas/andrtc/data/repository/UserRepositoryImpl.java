@@ -189,12 +189,8 @@ public class UserRepositoryImpl implements UserRepository {
         invalidateCacheSubscriber.onNext("INVALIDATED");
     };
 
-    private final Action1 updateTokenAction = userEntity -> {
-        userCache.setGCMRegistrationStatus(true);
-    };
+    private final Action1 updateTokenAction = userEntity -> userCache.setGCMRegistrationStatus(true);
 
-    private final Action1 invalidateCache = object -> {
-        userCache.invalidateCache();
-    };
+    private final Action1 invalidateCache = object -> userCache.invalidateCache();
 
 }

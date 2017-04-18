@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.presenter;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.ActivityScope;

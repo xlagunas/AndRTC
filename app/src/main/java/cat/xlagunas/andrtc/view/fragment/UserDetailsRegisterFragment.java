@@ -12,7 +12,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.Button;
@@ -28,6 +27,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.UserDetailsRegisterPresenter;
 import cat.xlagunas.andrtc.view.UserDetailsRegisterView;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 4/04/16.
@@ -142,10 +142,10 @@ public class UserDetailsRegisterFragment extends GenericRegisterFragment impleme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "Image successfully obtained");
+            Timber.d("Image successfully obtained");
             presenter.onPictureTaken();
         } else if (requestCode == REQUEST_LOAD_GALLERY_IMAGE && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "Image successfully obtained");
+            Timber.d("Image successfully obtained");
             presenter.onPictureSelectedFromGallery(data.getData());
         }
     }

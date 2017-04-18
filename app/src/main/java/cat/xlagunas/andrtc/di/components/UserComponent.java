@@ -5,6 +5,7 @@ import cat.xlagunas.andrtc.di.modules.ConferenceModule;
 import cat.xlagunas.andrtc.di.modules.UserModule;
 import cat.xlagunas.andrtc.gcm.MyGcmListenerService;
 import cat.xlagunas.andrtc.gcm.MyInstanceIDListenerService;
+import cat.xlagunas.andrtc.gcm.RegistrationIntentService;
 import cat.xlagunas.andrtc.view.activity.AddContactsActivity;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import cat.xlagunas.andrtc.view.activity.RegisterActivity;
@@ -49,6 +50,7 @@ public interface UserComponent {
 
     void inject(MyGcmListenerService service);
 
-    ConferenceComponent plus(ConferenceModule module);
+    void inject(RegistrationIntentService registerTokenService);
 
+    ConferenceComponent plus(ConferenceModule module);
 }

@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.presenter;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.IceCandidate;
@@ -25,6 +23,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.WebRTCAudioManager;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCCallbacks;
 import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManager;
 import cat.xlagunas.andrtc.view.ConferenceDataView;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 3/8/16.
@@ -64,7 +63,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
 
     @Override
     public void pause() {
-        Log.d(TAG, "Destroying all instances in presenter");
+        Timber.d("Destroying all instances in presenter");
         Iterator<PeerData> iterator = peerConnectionMap.values().iterator();
         while (iterator.hasNext()) {
             PeerData peerData = iterator.next();
@@ -117,7 +116,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
             SessionDescription sdpDescription = new SessionDescription(SessionDescription.Type.ANSWER, receivedAnswer.getString("sdp"));
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing answer received from user: " + senderId, e);
+            Timber.e(e, "Error parsing answer received from user: " + senderId);
         }
     }
 
@@ -132,7 +131,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
             peerConnection.setRemoteDescription(peerData.getObserver(), sdpDescription);
             peerConnection.createAnswer(peerData.getObserver(), webRTCManager.getCallConstraints(true, true));
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing offer received from user: " + senderId, e);
+            Timber.e(e, "Error parsing offer received from user: " + senderId);
         }
 
     }
@@ -147,7 +146,7 @@ public class ConferencePresenter implements Presenter, WebRTCCallbacks, VivSdpOb
             }
             queuedRemoteCandidates.add(iceCandidate);
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing IceCandidate");
+            Timber.e("Error parsing IceCandidate");
         }
     }
 

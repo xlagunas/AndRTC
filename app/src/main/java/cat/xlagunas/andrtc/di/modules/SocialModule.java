@@ -1,10 +1,5 @@
 package cat.xlagunas.andrtc.di.modules;
 
-import com.facebook.CallbackManager;
-
-
-import javax.inject.Singleton;
-
 import cat.xlagunas.andrtc.data.repository.SocialRepositoryImpl;
 import cat.xlagunas.andrtc.data.social.FacebookManager;
 import cat.xlagunas.andrtc.data.social.FacebookManagerImpl;
@@ -30,7 +25,7 @@ public class SocialModule {
 
     @Provides
     @ActivityScope
-    SocialRepository provideSocialRepository(SocialRepositoryImpl socialRepositoryImpl){
+    SocialRepository provideSocialRepository(SocialRepositoryImpl socialRepositoryImpl) {
         return socialRepositoryImpl;
     }
 

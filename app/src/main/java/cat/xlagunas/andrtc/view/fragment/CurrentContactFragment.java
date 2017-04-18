@@ -86,7 +86,7 @@ public class CurrentContactFragment extends BaseContactFragment implements ListD
         adapter.notifyDataSetChanged();
     }
 
-    public static CurrentContactFragment makeInstance(){
+    public static CurrentContactFragment makeInstance() {
         return new CurrentContactFragment();
     }
 }

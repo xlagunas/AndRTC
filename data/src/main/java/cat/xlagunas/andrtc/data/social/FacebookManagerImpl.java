@@ -3,7 +3,6 @@ package cat.xlagunas.andrtc.data.social;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -28,6 +27,7 @@ import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 20/8/16.
@@ -56,7 +56,7 @@ public class FacebookManagerImpl implements FacebookManager {
                     LoginManager.getInstance().registerCallback(callbackManager, loginResultFacebookCallback);
                     LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends", "email"));
                 } else {
-                    Log.d(TAG, "Successfully logged in user");
+                    Timber.d( "Successfully logged in user");
                     objectAsyncEmitter.onNext(AccessToken.getCurrentAccessToken());
                     objectAsyncEmitter.onCompleted();
                 }
@@ -123,7 +123,7 @@ public class FacebookManagerImpl implements FacebookManager {
     }
 
     @Override
-    public Action0 logOut(){
+    public Action0 logOut() {
         return () -> LoginManager.getInstance().logOut();
     }
 

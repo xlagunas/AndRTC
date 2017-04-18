@@ -10,4 +10,6 @@ import rx.Observable;
 public interface FileRepository {
 
     Observable<File> generateImageFile();
+
+    Observable<String> getStoredToken();
 }

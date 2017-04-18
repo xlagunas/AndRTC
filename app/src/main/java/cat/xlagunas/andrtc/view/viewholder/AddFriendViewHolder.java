@@ -1,7 +1,6 @@
 package cat.xlagunas.andrtc.view.viewholder;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -9,9 +8,7 @@ import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.interactor.RequestNewFriendshipUseCase;

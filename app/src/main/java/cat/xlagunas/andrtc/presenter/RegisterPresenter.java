@@ -1,11 +1,10 @@
 package cat.xlagunas.andrtc.presenter;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.interactor.RegisterUseCase;
@@ -99,7 +98,7 @@ public class RegisterPresenter implements Presenter {
         registerUseCase.execute(new DefaultSubscriber<User>() {
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "Error registering user:", e);
+                Timber.e(e, "Error registering user:");
             }
 
             @Override

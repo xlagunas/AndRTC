@@ -25,6 +25,10 @@ public interface UserCache {
 
     void setGCMRegistrationStatus(boolean status);
 
+    void setGCMToken(String token);
+
+    String getGCMToken();
+
     void invalidateCache();
 
     Observable<File> generateProfilePictureFile();

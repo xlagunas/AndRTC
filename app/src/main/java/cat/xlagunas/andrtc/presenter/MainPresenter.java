@@ -3,11 +3,7 @@ package cat.xlagunas.andrtc.presenter;
 
 import javax.inject.Inject;
 
-import cat.xlagunas.andrtc.ServiceFacade;
-import cat.xlagunas.andrtc.data.cache.UserCache;
-import cat.xlagunas.andrtc.view.LoadDataView;
 import cat.xlagunas.andrtc.view.LogOutDataView;
-import rx.Observer;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.LogOutUseCase;
 
@@ -17,17 +13,19 @@ import xlagunas.cat.andrtc.domain.interactor.LogOutUseCase;
 public class MainPresenter implements Presenter {
 
     private final LogOutUseCase logOutUseCase;
+
     private LogOutDataView view;
 
     @Inject
-    public MainPresenter(LogOutUseCase useCase){
+    public MainPresenter(LogOutUseCase useCase) {
         this.logOutUseCase = useCase;
     }
 
-    public void initPresenter(){
+    public void initPresenter() {
+
     }
 
-    public void setView(LogOutDataView view){
+    public void setView(LogOutDataView view) {
         this.view = view;
     }
 
@@ -47,7 +45,7 @@ public class MainPresenter implements Presenter {
     }
 
     public void logout() {
-        logOutUseCase.execute(new DefaultSubscriber(){
+        logOutUseCase.execute(new DefaultSubscriber() {
             @Override
             public void onCompleted() {
                 view.onLogOut();

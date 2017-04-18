@@ -1,7 +1,6 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
@@ -22,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 25/7/16.
@@ -93,11 +94,11 @@ public class WebRTCManagerImpl implements WebRTCManager {
 
     @Override
     public void assignRendererToSurface(VideoTrack videoTrack, SurfaceViewRenderer renderer) {
-        if (renderer != null && videoTrack != null){
+        if (renderer != null && videoTrack != null) {
             renderer.init(eglBase.getEglBaseContext(), null);
             videoTrack.addRenderer(new VideoRenderer(renderer));
         } else {
-            Log.e(TAG, "Can't assign renderer to videoTrack, either one is null");
+            Timber.e("Can't assign renderer to videoTrack, either one is null");
         }
     }
 
@@ -154,7 +155,7 @@ public class WebRTCManagerImpl implements WebRTCManager {
     @Override
     public void drainRemoteCandidates(PeerConnection peerConnection, LinkedList<IceCandidate> queuedRemoteCandidates) {
         if (queuedRemoteCandidates != null) {
-            Log.d(TAG, "Add " + queuedRemoteCandidates.size() + " remote candidates");
+            Timber.d("Add " + queuedRemoteCandidates.size() + " remote candidates");
             for (IceCandidate candidate : queuedRemoteCandidates) {
                 peerConnection.addIceCandidate(candidate);
             }

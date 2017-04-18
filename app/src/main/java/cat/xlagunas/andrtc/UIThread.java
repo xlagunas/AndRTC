@@ -17,10 +17,11 @@ import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
  * To avoid dependencies on Android sdk on the domain layer this is needed
  */
 @Singleton
-public class UIThread implements PostExecutionThread{
+public class UIThread implements PostExecutionThread {
 
     @Inject
-    public UIThread(){}
+    public UIThread() {
+    }
 
 
     @Override
