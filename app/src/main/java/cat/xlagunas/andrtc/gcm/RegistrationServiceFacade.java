@@ -15,7 +15,7 @@ public class RegistrationServiceFacade implements ServiceFacade {
     private Context context;
 
     @Inject
-    public RegistrationServiceFacade(Context context){
+    public RegistrationServiceFacade(Context context) {
         this.context = context;
     }
 

@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.presenter;
 
-import android.util.Log;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,6 +9,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.Friend;
 import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
@@ -52,7 +51,7 @@ public class AddContactsPresenter implements Presenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(text -> {
-                    Log.d(TAG, "Received msg:" +text);
+                    Timber.d("Received msg:" + text);
                     updateContacts();
                 });
     }

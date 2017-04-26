@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.R;
+import cat.xlagunas.andrtc.ServiceFacade;
 import cat.xlagunas.andrtc.di.HasComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.MainPresenter;
@@ -26,10 +27,11 @@ import cat.xlagunas.andrtc.view.fragment.CurrentContactFragment;
  */
 public class MainActivity extends BaseActivity implements HasComponent<UserComponent>, LogOutDataView {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     @Inject
     MainPresenter presenter;
+
+    @Inject
+    ServiceFacade serviceFacade;
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
@@ -47,7 +49,7 @@ public class MainActivity extends BaseActivity implements HasComponent<UserCompo
 
         getActivityComponent().inject(this);
         setSupportActionBar(toolbar);
-        presenter.initPresenter();
+        serviceFacade.startService();
         presenter.setView(this);
 
         if (savedInstanceState == null) {

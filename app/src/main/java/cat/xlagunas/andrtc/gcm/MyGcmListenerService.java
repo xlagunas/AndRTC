@@ -3,9 +3,9 @@ package cat.xlagunas.andrtc.gcm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import javax.inject.Inject;
 
@@ -13,13 +13,11 @@ import cat.xlagunas.andrtc.CustomApplication;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
-import rx.Completable;
-import rx.Observer;
-import rx.Subscriber;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.DefaultSubscriber;
 import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
 
-public class MyGcmListenerService extends GcmListenerService {
+public class MyGcmListenerService extends FirebaseMessagingService {
 
     private static final int FRIENDSHIP_REQUESTED_TYPE = 1;
     private static final int FRIENDSHIP_ACCEPTED_TYPE = 2;
@@ -49,12 +47,13 @@ public class MyGcmListenerService extends GcmListenerService {
     }
 
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        int messageType = Integer.parseInt(data.getString("type"));
+    public void onMessageReceived(RemoteMessage message) {
 
-        Log.d(TAG, "From: " + from + "type: " + messageType);
+        int messageType = Integer.parseInt(message.getData().get("type"));
 
-        final Bundle information = data;
+        Timber.d("From: " + message.getFrom() + "type: " + messageType);
+
+        Bundle information = convertToBundle(message);
 
         switch (messageType) {
             case FRIENDSHIP_REQUESTED_TYPE:
@@ -70,16 +69,16 @@ public class MyGcmListenerService extends GcmListenerService {
                 executeUseCase("deleted", information);
                 break;
             case CALL_RECEIVED_TYPE:
-                Log.d(TAG, "Call message notification sent");
+                Timber.d("Call message notification sent");
                 startActivity(CallRequestActivity
                         .makeCalleeIntent(MyGcmListenerService.this,
-                                data.getString("callerId"),
-                                data.getString("roomId")));
+                                message.getData().get("callerId"),
+                                message.getData().get("roomId")));
                 break;
             case CALL_ACCEPTED_TYPE:
-                Log.d(TAG, "Requestee accepted the call");
+                Timber.d("Requestee accepted the call");
                 Intent intent = new Intent(BROADCAST_CALL_ACCEPTED);
-                intent.putExtra("roomId", data.getString("roomId"));
+                intent.putExtra("roomId", message.getData().get("roomId"));
                 LocalBroadcastManager.getInstance(MyGcmListenerService.this)
                         .sendBroadcast(intent);
                 break;
@@ -87,12 +86,21 @@ public class MyGcmListenerService extends GcmListenerService {
 
     }
 
-    private void executeUseCase(String messageType, Bundle information){
+    private Bundle convertToBundle(RemoteMessage message) {
+        //TODO FIX TO MANTAIN COMPATIBILITY FROM GCM
+        Bundle bundle = new Bundle();
+        for (String key : message.getData().keySet()) {
+            bundle.putString(key, message.getData().get(key));
+        }
+        return bundle;
+    }
+
+    private void executeUseCase(String messageType, Bundle information) {
         useCase.execute(new DefaultSubscriber() {
             @Override
             public void onCompleted() {
                 generateAndSendBroadcastMessage(messageType, information);
-                Log.d(TAG, "Push notification received, from type: "+messageType);
+                Timber.d("Push notification received, from type: " + messageType);
             }
         });
     }

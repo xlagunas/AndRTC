@@ -9,6 +9,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.WebRTCManagerImpl;
  */
 public interface ConferenceDataView extends WebRTCManagerImpl.ConferenceListener {
     void updateLayout();
+
     void startCameraStream();
 
     void removeRenderer(SurfaceViewRenderer remoteRenderer);

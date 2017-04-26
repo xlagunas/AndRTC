@@ -1,7 +1,5 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -21,9 +19,9 @@ import cat.xlagunas.andrtc.data.net.webrtc.messages.JoinRoomMsg;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.LoginMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.OfferMessage;
 import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
-import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -61,46 +59,46 @@ public class SocketIOTransport implements Transport {
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 socket.emit("login", gson.toJson(new LoginMessage(user.getUsername(), user.getPassword())));
-                Log.d(TAG, "Emitted login event");
+                Timber.d( "Emitted login event");
             });
 
-            socket.on("login",arg -> onLoginConfirmationReceived());
+            socket.on("login", arg -> onLoginConfirmationReceived());
 
             socket.on("call:addUser", userObject -> {
-                Log.d(TAG, "call:addUser");
+                Timber.d( "call:addUser");
                 JSONObject remoteUser = (JSONObject) userObject[0];
 
                 try {
                     String userId = remoteUser.getString("_id");
                     socket.emit("call:userDetails", gson.toJson(new UserDetailsMessage(userId, roomId)));
-                    Log.d(TAG, "creating listener for: " + userId + ":answer");
+                    Timber.d( "creating listener for: " + userId + ":answer");
                     socket.on(userId + ":answer", answer -> onAnswerReceived(userId, (JSONObject) answer[0]));
-                    Log.d(TAG, "creating listener for: " + userId + ":iceCandidate");
+                    Timber.d( "creating listener for: " + userId + ":iceCandidate");
                     socket.on(userId + ":iceCandidate", iceCandidate -> onIceCandidateReceived(userId, (JSONObject) iceCandidate[0]));
                     callbacks.createNewPeerConnection(userId, true);
                 } catch (JSONException e) {
-                    Log.e(TAG, "Error on call:addUser", e);
+                    Timber.e(e,"Error on call:addUser");
                 }
             });
 
             socket.on("call:userDetails", args -> {
-                Log.d(TAG, "call:userDetails");
+                Timber.d( "call:userDetails");
                 JSONObject remoteUserDetails = (JSONObject) args[0];
                 try {
                     String userId = remoteUserDetails.getString("_id");
-                    Log.d(TAG, "creating listener for: " + userId + ":offer");
+                    Timber.d( "creating listener for: " + userId + ":offer");
                     socket.on(userId + ":offer", offer -> onOfferReceived(userId, (JSONObject) offer[0]));
-                    Log.d(TAG, "creating listener for: " + userId + ":iceCandidate");
+                    Timber.d( "creating listener for: " + userId + ":iceCandidate");
                     socket.on(userId + ":iceCandidate", iceCandidate -> onIceCandidateReceived(userId, (JSONObject) iceCandidate[0]));
                     callbacks.createNewPeerConnection(userId, false);
                 } catch (JSONException e) {
-                    Log.e(TAG, "Error parsing call:userDetails", e);
+                    Timber.e(e, "Error parsing call:userDetails");
                 }
 
             });
 
             socket.on(Socket.EVENT_DISCONNECT, args -> {
-                Log.d(TAG, "received disconnect event");
+                Timber.d( "received disconnect event");
             });
 
             socket.connect();
@@ -127,21 +125,21 @@ public class SocketIOTransport implements Transport {
 
     @Override
     public void sendOffer(String userId, SessionDescription localDescription) {
-        Log.d(TAG, "Sending offer message");
+        Timber.d( "Sending offer message");
         OfferMessage message = new OfferMessage(userId, roomId, localDescription);
         socket.emit("webrtc:offer", gson.toJson(message));
     }
 
     @Override
     public void sendAnswer(String userId, SessionDescription localDescription) {
-        Log.d(TAG, "Sending answer message");
+        Timber.d( "Sending answer message");
         AnswerMessage message = new AnswerMessage(userId, roomId, localDescription);
         socket.emit("webrtc:answer", gson.toJson(message));
     }
 
     @Override
     public void sendIceCandidate(String userId, IceCandidate iceCandidate) {
-        Log.d(TAG, "Sending Ice candidate");
+        Timber.d( "Sending Ice candidate");
         IceCandidateMessage message = new IceCandidateMessage(userId, roomId, iceCandidate);
         socket.emit("webrtc:iceCandidate", gson.toJson(message));
     }
@@ -152,19 +150,20 @@ public class SocketIOTransport implements Transport {
     }
 
     private void onIceCandidateReceived(String userId, JSONObject iceCandidate) {
-        Log.d(TAG, "Received an iceCandidate");
+        Timber.d( "Received an iceCandidate");
         callbacks.onIceCandidateReceived(userId, iceCandidate);
     }
 
     private void onOfferReceived(String userId, JSONObject offer) {
-        Log.d(TAG, "Received an offer from user" + userId);
+        Timber.d( "Received an offer from user" + userId);
         callbacks.onOfferReceived(userId, offer);
     }
 
     private void onAnswerReceived(String userId, JSONObject answer) {
-        Log.d(TAG, "Received an answer from user" + userId);
+        Timber.d( "Received an answer from user" + userId);
         callbacks.onAnswerReceived(userId, answer);
     }
+
     private void onLoginConfirmationReceived() {
         socket.emit("call:register", gson.toJson(new JoinRoomMsg(roomId)));
     }

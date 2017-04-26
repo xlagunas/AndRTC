@@ -6,5 +6,6 @@ package cat.xlagunas.andrtc.view;
 public interface EmailPasswordDataView extends BaseRegisterDataView {
 
     void setEmail(String email);
+
     void setPassword(String password);
 }

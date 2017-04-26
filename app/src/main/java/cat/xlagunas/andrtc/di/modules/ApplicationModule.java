@@ -6,14 +6,14 @@ import android.content.Context;
 import javax.inject.Singleton;
 
 import cat.xlagunas.andrtc.ServiceFacade;
-import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
-import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
-import dagger.Module;
-import dagger.Provides;
 import cat.xlagunas.andrtc.UIThread;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.data.cache.UserCacheImpl;
+import cat.xlagunas.andrtc.data.repository.FileRepositoryImpl;
 import cat.xlagunas.andrtc.data.repository.UserRepositoryImpl;
+import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
+import dagger.Module;
+import dagger.Provides;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
 import xlagunas.cat.andrtc.domain.repository.FileRepository;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
@@ -27,25 +27,25 @@ public class ApplicationModule {
 
     private Application application;
 
-    public ApplicationModule(Application app){
+    public ApplicationModule(Application app) {
         this.application = app;
     }
 
     @Provides
     @Singleton
-    public Context getAppContext(){
+    public Context getAppContext() {
         return application;
     }
 
     @Provides
     @Singleton
-    UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl){
+    UserRepository provideUserRepository(UserRepositoryImpl userRepositoryImpl) {
         return userRepositoryImpl;
     }
 
     @Provides
     @Singleton
-    PostExecutionThread providePostExecutionThread(UIThread thread){
+    PostExecutionThread providePostExecutionThread(UIThread thread) {
         return thread;
     }
 
@@ -57,13 +57,13 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ServiceFacade provideServerFacade(RegistrationServiceFacade service){
-        return service;
+    FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl) {
+        return fileRepositoryImpl;
     }
 
     @Provides
     @Singleton
-    FileRepository provideFileRepository(FileRepositoryImpl fileRepositoryImpl){
-        return fileRepositoryImpl;
+    ServiceFacade provideServerFacade(RegistrationServiceFacade service) {
+        return service;
     }
 }

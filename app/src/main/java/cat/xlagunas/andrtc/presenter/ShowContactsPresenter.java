@@ -18,7 +18,7 @@ public class ShowContactsPresenter implements Presenter {
     ListDataView view;
 
     @Inject
-    public ShowContactsPresenter(ContactsUseCase useCase){
+    public ShowContactsPresenter(ContactsUseCase useCase) {
         this.useCase = useCase;
     }
 
@@ -43,7 +43,7 @@ public class ShowContactsPresenter implements Presenter {
     }
 
     public void init() {
-        useCase.execute(new DefaultSubscriber<List<Friend>>(){
+        useCase.execute(new DefaultSubscriber<List<Friend>>() {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);

@@ -13,7 +13,7 @@ ext {
 
     //Libraries
 
-    supportLibraryVersion = '25.1.1'
+    supportLibraryVersion = '25.3.1'
     daggerVersion = '2.9'
     butterKnifeVersion = '8.5.1'
     rxJavaVersion = '1.1.9'
@@ -26,9 +26,10 @@ ext {
     retrofitRxAdapter = '2.1.0'
     okHttpVersion = '3.4.1'
     okiIo = '1.10.0'
-    googleServicesVersion = '9.4.0'
+    googleServicesVersion = '10.2.1'
     circleImageViewVersion = '2.0.0'
     glideVersion = '3.7.0'
+    timber = '4.5.1'
     facebookSdkVersion = '[4,18)'
     socketIo = '0.7.0'
     webRTC = "v0.1-beta"
@@ -56,8 +57,8 @@ ext {
             supportV4          : "com.android.support:support-v4:${supportLibraryVersion}",
             percentSupport     : "com.android.support:percent:${supportLibraryVersion}",
             recyclerView       : "com.android.support:recyclerview-v7:${supportLibraryVersion}",
-            gcmServices        : "com.google.android.gms:play-services-gcm:${googleServicesVersion}",
-            gcmAuth            : "com.google.android.gms:play-services-auth:${googleServicesVersion}",
+            gcmServices        : "com.google.firebase:firebase-messaging:${googleServicesVersion}",
+            gcmAuth            : "com.google.firebase:firebase-auth:${googleServicesVersion}",
             daggerCompiler     : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger             : "com.google.dagger:dagger:${daggerVersion}",
             butterKnife        : "com.jakewharton:butterknife:${butterKnifeVersion}",
@@ -69,6 +70,7 @@ ext {
             glide              : "com.github.bumptech.glide:glide:${glideVersion}",
             facebookSdk        : "com.facebook.android:facebook-android-sdk:${facebookSdkVersion}",
             autoFactory        : "com.google.auto.factory:auto-factory:${autoFactory}",
+            timber             : "com.jakewharton.timber:timber:${timber}"
 
     ]
 
@@ -116,8 +118,8 @@ ext {
             glide              : "com.github.bumptech.glide:glide:${glideVersion}",
             socketIO           : "io.socket:socket.io-client:${socketIo}",
             okhttpWs           : "com.squareup.okhttp3:okhttp-ws:${okHttpVersion}",
-            webRTC             : "com.github.xlagunas:WebRTC:${webRTC}"
-
+            webRTC             : "com.github.xlagunas:WebRTC:${webRTC}",
+            timber             : "com.jakewharton.timber:timber:${timber}"
     ]
 
 

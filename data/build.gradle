@@ -1,15 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-    }
-}
-
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     publishNonDefault true
@@ -42,11 +31,6 @@ android {
         exclude 'META-INF/LICENSE'
     }
 
-//    TURN THIS ON TO NOT MOCK ANDROID LIBRARY OBJECTS
-//    testOptions {
-//        unitTests.returnDefaultValues = true
-//    }
-
     productFlavors {
         prod {}
         dev {}
@@ -60,7 +44,7 @@ dependencies {
 
     compile project(':domain')
 
-    apt dataDependencies.daggerCompiler
+    annotationProcessor dataDependencies.daggerCompiler
 
     provided dataDependencies.javaxAnnotation
     compile dataDependencies.dagger
@@ -75,15 +59,14 @@ dependencies {
     compile dataDependencies.okHttp
     compile dataDependencies.retrofitRxAdapter
     compile dataDependencies.glide
-    compile dataDependencies.facebookSdk
     compile dataDependencies.gcmServices
     compile dataDependencies.gcmAuth
     compile (dataDependencies.socketIO) {
         exclude group: 'org.json', module: 'json'
     }
-    //socketIO dependency on Okhttp-ws
     compile dataDependencies.okhttpWs
     compile dataDependencies.webRTC
+    compile dataDependencies.timber
 
 
     testCompile testDependencies.junit
@@ -93,5 +76,3 @@ dependencies {
     testCompile testDependencies.socketIO
 
 }
-
-apply plugin: 'com.google.gms.google-services'

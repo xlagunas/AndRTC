@@ -18,7 +18,7 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
     private final SearchFriendUseCase searchFriendUseCase;
 
     @Inject
-    public CalleeRequestPresenter(SearchFriendUseCase searchFriendUseCase, AcceptCallRequestUseCase acceptCallRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase){
+    public CalleeRequestPresenter(SearchFriendUseCase searchFriendUseCase, AcceptCallRequestUseCase acceptCallRequestUseCase, CancelCallRequestUseCase cancelCallRequestUseCase) {
         this.acceptCallRequestUseCase = acceptCallRequestUseCase;
         this.cancelCallRequestUseCase = cancelCallRequestUseCase;
         this.searchFriendUseCase = searchFriendUseCase;
@@ -38,7 +38,7 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
     public void init(boolean isCaller) {
         super.init(isCaller);
         searchFriendUseCase.setId(friendId);
-        searchFriendUseCase.execute(new DefaultSubscriber<Friend>(){
+        searchFriendUseCase.execute(new DefaultSubscriber<Friend>() {
             @Override
             public void onNext(Friend friend) {
                 super.onNext(friend);
@@ -48,10 +48,9 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
     }
 
 
-
-    public void accept(){
+    public void accept() {
         acceptCallRequestUseCase.setRoomId(callId);
-        acceptCallRequestUseCase.execute(new DefaultSubscriber<Void>(){
+        acceptCallRequestUseCase.execute(new DefaultSubscriber<Void>() {
             @Override
             public void onCompleted() {
                 super.onCompleted();
@@ -59,6 +58,7 @@ public class CalleeRequestPresenter extends CallRequestPresenter {
             }
         });
     }
+
     @Override
     public void cancel() {
         timer.cancel();

@@ -8,7 +8,9 @@ import android.net.Uri;
 public interface ImagePickerDataView {
 
     void onImageFileGenerated(Uri file);
+
     void onError(String message);
+
     void addPictureToGallery(Uri file);
 
     void updateImage(Uri imageFile);

@@ -25,34 +25,36 @@ public class UserDetailsRegisterPresenter implements Presenter {
     private UserDetailsRegisterView view;
 
     @Inject
-    public UserDetailsRegisterPresenter(User user, FieldValidator validator, ImagePickerUseCase useCase){
+    public UserDetailsRegisterPresenter(User user, FieldValidator validator, ImagePickerUseCase useCase) {
         this.useCase = useCase;
         this.user = user;
         this.validator = validator;
     }
 
-    public void setView(UserDetailsRegisterView view){
+    public void setView(UserDetailsRegisterView view) {
         this.view = view;
     }
 
     @Override
     public void resume() {
-        if (user.getThumbnail() != null && !"".equals(user.getThumbnail())){
+        if (user.getThumbnail() != null && !"".equals(user.getThumbnail())) {
             view.updateImage(Uri.parse(user.getThumbnail()));
         }
 
-        if (user.getName() != null && !"".equals(user.getName())){
+        if (user.getName() != null && !"".equals(user.getName())) {
             view.updateFullName(String.format("%s %s %s", user.getName(), user.getSurname(), user.getLastSurname()));
         }
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 
-    public void requestCameraPicture(){
+    public void requestCameraPicture() {
         useCase.execute(new Observer<File>() {
             @Override
             public void onCompleted() {
@@ -84,7 +86,7 @@ public class UserDetailsRegisterPresenter implements Presenter {
         user.setThumbnail(imageUri.toString());
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         useCase.unsubscribe();
         view = null;
     }
@@ -92,7 +94,7 @@ public class UserDetailsRegisterPresenter implements Presenter {
     public boolean validateUsername(String fullName) {
         boolean isValid = validator.isValidFullName(fullName);
         view.enableNextStep(isValid);
-        if (isValid){
+        if (isValid) {
             parseFullName(fullName);
         }
         return isValid;
@@ -101,14 +103,14 @@ public class UserDetailsRegisterPresenter implements Presenter {
     private void parseFullName(String username) {
         String[] nameArray = username.split(" ");
         if (nameArray.length >= 3) {
-            user.setLastSurname(nameArray[nameArray.length-1]);
-            user.setSurname(nameArray[nameArray.length-2]);
+            user.setLastSurname(nameArray[nameArray.length - 1]);
+            user.setSurname(nameArray[nameArray.length - 2]);
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i=0;i<nameArray.length - 2;i++){
-                stringBuilder.append(nameArray[i]+" ");
+            for (int i = 0; i < nameArray.length - 2; i++) {
+                stringBuilder.append(nameArray[i] + " ");
             }
             user.setName(stringBuilder.toString());
-        } else if (nameArray.length==2){
+        } else if (nameArray.length == 2) {
             user.setName(nameArray[0]);
             user.setSurname(nameArray[1]);
             user.setLastSurname("");

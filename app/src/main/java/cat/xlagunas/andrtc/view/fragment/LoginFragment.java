@@ -49,9 +49,6 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     @BindView(R.id.sign_in)
     TextView signIn;
 
-    @BindView(R.id.facebook_login_button)
-    Button facebookLoginButton;
-
     @BindView(R.id.google_login_button)
     SignInButton googleLoginButton;
 
@@ -173,11 +170,6 @@ public class LoginFragment extends BaseFragment implements LoginDataView {
     public void onUserRecovered(User user) {
         CustomApplication.getApp(getActivity()).createUserComponent(user);
         fragmentInterface.onSuccessfullyLogged();
-    }
-
-    @OnClick(R.id.facebook_login_button)
-    void onFacebookLoginClick() {
-        loginPresenter.doFacebookLogin();
     }
 
     @OnClick(R.id.google_login_button)

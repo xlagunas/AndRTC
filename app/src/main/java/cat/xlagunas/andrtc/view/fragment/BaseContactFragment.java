@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.adapter.FriendAdapter;
-import cat.xlagunas.andrtc.view.util.OnFriendClickListener;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -49,7 +45,7 @@ public abstract class BaseContactFragment extends BaseFragment {
                 Bundle bundle = intent.getBundleExtra("information");
                 String eventType = intent.getStringExtra("type");
 
-                if ("requested".equalsIgnoreCase(eventType)){
+                if ("requested".equalsIgnoreCase(eventType)) {
                     onFriendshipRequested(bundle);
                 } else if ("accepted".equalsIgnoreCase(eventType)) {
                     onFriendshipUpdated(bundle);
@@ -97,7 +93,7 @@ public abstract class BaseContactFragment extends BaseFragment {
         initializeAdapter();
     }
 
-    public RecyclerView.LayoutManager getLayoutManager(){
+    public RecyclerView.LayoutManager getLayoutManager() {
         return new LinearLayoutManager(getContext());
     }
 

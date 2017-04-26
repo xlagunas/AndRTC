@@ -3,10 +3,7 @@ package xlagunas.cat.andrtc.domain.interactor;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
-import xlagunas.cat.andrtc.domain.User;
 import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
-import xlagunas.cat.andrtc.domain.repository.SocialRepository;
 import xlagunas.cat.andrtc.domain.repository.UserRepository;
 
 /**
@@ -16,19 +13,16 @@ import xlagunas.cat.andrtc.domain.repository.UserRepository;
 public class LogOutUseCase extends UseCase {
 
     private final UserRepository repository;
-    private final SocialRepository socialRepository;
 
     @Inject
-    public LogOutUseCase(PostExecutionThread postExecutionThread, UserRepository repository, SocialRepository socialRepository) {
+    public LogOutUseCase(PostExecutionThread postExecutionThread, UserRepository repository) {
         super(postExecutionThread);
         this.repository = repository;
-        this.socialRepository = socialRepository;
     }
 
 
     @Override
     protected Observable buildUseCaseObservable() {
-        return repository.logoutUser()
-                .doOnCompleted(socialRepository.logoutFacebook());
+        return repository.logoutUser();
     }
 }

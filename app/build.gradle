@@ -1,16 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-    }
-}
-
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'testfairy'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -25,6 +13,7 @@ android {
         versionCode 7
         versionName "1.1.7"
         vectorDrawables.useSupportLibrary = true
+
     }
 
     compileOptions {
@@ -54,10 +43,10 @@ android {
 
     productFlavors {
         prod {
-            manifestPlaceholders appName: "@string/app_name_prod";
+            manifestPlaceholders appName: "@string/app_name_prod"
         }
         dev {
-            manifestPlaceholders appName: "@string/app_name_dev";
+            manifestPlaceholders appName: "@string/app_name_dev"
             applicationIdSuffix ".dev"
         }
     }
@@ -79,25 +68,21 @@ configurations {
     devReleaseCompile
 }
 
-testfairyConfig {
-    apiKey "006eb235b09d94de6ff30f00e6cf3dd77571a402"
-}
-
-
 dependencies {
     def presentationDependencies = rootProject.ext.presentationDependencies
     def presentationTestDependencies = rootProject.ext.presentationTestDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
 
-    compile project(':domain')
     prodDebugCompile project(path: ':data', configuration: 'prodDebug')
     devDebugCompile project(path: ':data', configuration: 'devDebug')
     prodReleaseCompile project(path: ':data', configuration: 'prodRelease')
     devReleaseCompile project(path: ':data', configuration: 'devRelease')
+    compile project(':domain')
     compile project(':data')
 
-    apt presentationDependencies.daggerCompiler
-    apt presentationDependencies.butterKnifeCompiler
+    annotationProcessor presentationDependencies.daggerCompiler
+    annotationProcessor presentationDependencies.butterKnifeCompiler
+    annotationProcessor presentationDependencies.autoFactory
 
     compile presentationDependencies.dagger
     compile presentationDependencies.butterKnife
@@ -115,8 +100,8 @@ dependencies {
     compile presentationDependencies.circleImageView
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
-    compile presentationDependencies.facebookSdk
-    compile presentationDependencies.autoFactory
+    compile presentationDependencies.timber
+    provided presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary
 
     provided presentationDependencies.javaxAnnotation

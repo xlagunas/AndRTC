@@ -8,12 +8,11 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.cache.serializer.JsonSerializer;
 import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
-import cat.xlagunas.andrtc.data.UserEntity;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 import xlagunas.cat.andrtc.domain.User;
 
@@ -26,7 +25,8 @@ public class UserCacheImpl implements UserCache {
 
     private static final String SETTINGS_FILE_NAME = "cat.xlagunas.andrtc.SETTINGS";
     private final static String CACHE_VALIDATION = "cache_validation";
-    private final static String CACHE_TOKEN_GCM = "cache_gcm";
+    private final static String CACHE_TOKEN = "cache_gcm";
+    private final static String CACHE_TOKEN_VALUE = "cache_gcm_token";
     private final static String CACHE_USER = "cache_user";
 
     private final Context context;
@@ -53,16 +53,13 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<File> generateProfilePictureFile() {
-        return Observable.create(new Observable.OnSubscribe<File>() {
-            @Override
-            public void call(Subscriber<? super File> subscriber) {
-                try {
-                    File imageFile = fileManager.createImageFile(context);
-                    subscriber.onNext(imageFile);
-                    subscriber.onCompleted();
-                } catch (IOException e) {
-                    subscriber.onError(e);
-                }
+        return Observable.create(subscriber -> {
+            try {
+                File imageFile = fileManager.createImageFile(context);
+                subscriber.onNext(imageFile);
+                subscriber.onCompleted();
+            } catch (IOException e) {
+                subscriber.onError(e);
             }
         });
     }
@@ -98,11 +95,21 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public boolean isGCMRegistered() {
-        return fileManager.readFromPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_GCM);
+        return fileManager.readFromPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN);
     }
 
     @Override
     public void setGCMRegistrationStatus(boolean status) {
-        fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_GCM, status);
+        fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN, status);
+    }
+
+    @Override
+    public void setGCMToken(String token) {
+        fileManager.writeToPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_VALUE, token);
+    }
+
+    @Override
+    public String getGCMToken() {
+        return fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_TOKEN_VALUE);
     }
 }

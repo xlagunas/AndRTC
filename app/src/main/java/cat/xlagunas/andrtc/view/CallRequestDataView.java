@@ -7,7 +7,9 @@ import xlagunas.cat.andrtc.domain.Friend;
  */
 public interface CallRequestDataView {
     void hideAcceptCallButton();
+
     void startConference(String confId);
+
     void cancelConference();
 
     void setOnError(Throwable e);

@@ -7,7 +7,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.AddContactsPresenter;
 import cat.xlagunas.andrtc.view.SearchListView;
-import cat.xlagunas.andrtc.view.util.NOOPFriendClickListener;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.Friend;
 
 /**
@@ -115,7 +114,7 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
     protected void onFriendshipRequested(Bundle bundle) {
         Snackbar.make(getView(),
                 getString(R.string.info_contact_requested,
-                bundle.getString("username")), Snackbar.LENGTH_SHORT)
+                        bundle.getString("username")), Snackbar.LENGTH_SHORT)
                 .show();
         invalidateAdapterData();
     }
@@ -130,7 +129,7 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void showConfirmationError(Throwable e) {
-        Log.e(TAG, "Error adding new friendship", e);
+        Timber.e(e, "Error adding new friendship");
     }
 
     @Override
@@ -146,7 +145,7 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
 
     @Override
     public void notifiyUpdateError(Friend friend, Throwable e) {
-        Log.e(TAG, "Error updating notification error: " + e);
+        Timber.e(e, "Error updating notification error:");
         adapter.notifyDataSetChanged();
     }
 
@@ -194,7 +193,7 @@ public class AddContactFragment extends BaseContactFragment implements SearchLis
         }
     };
 
-    public static AddContactFragment makeInstance(){
+    public static AddContactFragment makeInstance() {
         return new AddContactFragment();
     }
 

@@ -6,9 +6,12 @@ package cat.xlagunas.andrtc.view;
 public interface UsernamePasswordDataView extends BaseRegisterDataView {
 
     void enableConfirmationPassword();
+
     void disableConfirmationPassword();
 
     void setUsername(String username);
+
     void setPassword(String password);
+
     void setPasswordConfirmation(String passwordConfirmation);
 }

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -22,7 +23,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,20 +31,20 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cat.xlagunas.andrtc.BuildConfig;
 import cat.xlagunas.andrtc.R;
+import timber.log.Timber;
+
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 
 public class VivProfileImageFragment extends Fragment {
 
@@ -115,7 +115,7 @@ public class VivProfileImageFragment extends Fragment {
         if (intentList.size() > 0) {
             chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
                     "Select your source");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[] {}));
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
         }
 
         return chooserIntent;
@@ -123,7 +123,7 @@ public class VivProfileImageFragment extends Fragment {
 
     private static Uri getImageFromResult(Context context, int resultCode,
                                           Intent imageReturnedIntent) {
-        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
+        Timber.d("getImageFromResult, resultCode: " + resultCode);
         File imageFile = getTempFile(context);
         if (resultCode == Activity.RESULT_OK) {
             Uri selectedImage;
@@ -135,7 +135,7 @@ public class VivProfileImageFragment extends Fragment {
             } else {            /** ALBUM **/
                 selectedImage = getRealMediaUri(context, imageReturnedIntent);
             }
-            Log.d(TAG, "selectedImage: " + selectedImage);
+            Timber.d("selectedImage: " + selectedImage);
 
             return selectedImage;
         }
@@ -170,7 +170,7 @@ public class VivProfileImageFragment extends Fragment {
             Intent targetedIntent = new Intent(intent);
             targetedIntent.setPackage(packageName);
             list.add(targetedIntent);
-            Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
+            Timber.d("Intent: " + intent.getAction() + " package: " + packageName);
         }
         return list;
     }
@@ -189,7 +189,7 @@ public class VivProfileImageFragment extends Fragment {
         Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
 
-        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
+        Timber.d(options.inSampleSize + " sample method bitmap ... " +
                 actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
 
         return actuallyUsableBitmap;
@@ -200,11 +200,11 @@ public class VivProfileImageFragment extends Fragment {
      **/
     private static Bitmap getImageResized(Context context, Uri selectedImage) {
         Bitmap bm = null;
-        int[] sampleSizes = new int[] {5, 3, 2, 1};
+        int[] sampleSizes = new int[]{5, 3, 2, 1};
         int i = 0;
         do {
             bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
-            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
+            Timber.d("resizer: new bitmap width = " + bm.getWidth());
             i++;
         } while (bm.getWidth() < minWidthQuality && i < sampleSizes.length);
         return bm;
@@ -217,7 +217,7 @@ public class VivProfileImageFragment extends Fragment {
         } else {
             rotation = getRotationFromGallery(context, imageUri);
         }
-        Log.d(TAG, "Image rotation: " + rotation);
+        Timber.d("Image rotation: " + rotation);
         return rotation;
     }
 
@@ -297,7 +297,7 @@ public class VivProfileImageFragment extends Fragment {
                 if (uri != null) {
                     addImageLayout.setVisibility(View.GONE);
                     Glide.with(getActivity()).load(uri.getPath()).into(profileImage);
-                    if (listener!=null){
+                    if (listener != null) {
                         listener.onImageSelected(uri);
                     }
                 }
@@ -308,8 +308,8 @@ public class VivProfileImageFragment extends Fragment {
     }
 
     private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
+        if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
         } else {
             startChooserIntent();
         }

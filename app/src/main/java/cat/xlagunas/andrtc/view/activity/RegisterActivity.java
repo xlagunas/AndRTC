@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ import cat.xlagunas.andrtc.presenter.RegisterPresenter;
 import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.fragment.VivProfileImageFragment;
 import cat.xlagunas.andrtc.view.util.TextValidator;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -183,7 +183,7 @@ public class RegisterActivity extends BaseActivity implements HasComponent<UserC
     }
 
     private void getImage(Uri uri) {
-        Log.d(TAG, "Uri: " + uri.getPath());
+        Timber.d("Uri: " + uri.getPath());
         presenter.setProfile(uri.getPath());
         presenter.validateData();
     }

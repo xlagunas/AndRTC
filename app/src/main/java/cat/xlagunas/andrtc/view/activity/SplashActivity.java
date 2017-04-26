@@ -5,15 +5,14 @@ import android.os.Bundle;
 
 import java.util.concurrent.TimeUnit;
 
-
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
+import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import cat.xlagunas.andrtc.R;
 import xlagunas.cat.andrtc.domain.User;
 
 /**

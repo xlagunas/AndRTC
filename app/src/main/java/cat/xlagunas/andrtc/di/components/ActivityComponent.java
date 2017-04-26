@@ -18,7 +18,10 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {ActivityModule.class, SocialModule.class})
 public interface ActivityComponent {
     void inject(LoginActivity activity);
+
     void inject(LoginFragment fragment);
+
     void inject(SplashActivity activity);
+
     void inject(MainActivity activity);
 }

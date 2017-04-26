@@ -16,18 +16,12 @@ package cat.xlagunas.andrtc.gcm; /**
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.CustomApplication;
-import cat.xlagunas.andrtc.R;
-import cat.xlagunas.andrtc.ServiceFacade;
-import cat.xlagunas.andrtc.data.cache.UserCache;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import rx.Subscriber;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
 
@@ -37,9 +31,6 @@ public class RegistrationIntentService extends IntentService {
 
     @Inject
     RegisterGCMTokenUseCase useCase;
-
-    @Inject
-    UserCache userCache;
 
     public RegistrationIntentService() {
         super(TAG);
@@ -53,57 +44,23 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (!userCache.isGCMRegistered()) {
-            try {
-
-                InstanceID instanceID = InstanceID.getInstance(this);
-                String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
-                Log.i(TAG, "GCM Registration Token: " + token);
-
-                sendRegistrationToServer(token);
-
-            } catch (Exception e) {
-                Log.d(TAG, "Failed to complete token refresh", e);
+        useCase.execute(new Subscriber() {
+            @Override
+            public void onCompleted() {
+                Timber.d("GCM sending process finished");
             }
-        }
 
-    }
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e, "Error sending GCM token");
+            }
 
-    /**
-     * Persist registration to third-party servers.
-     *
-     * Modify this method to associate the user's GCM registration token with any server-side account
-     * maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(String token) {
-        // Add custom implementation, as needed.
-        Log.d(TAG, "Token: " + token);
-        useCase.setToken(token);
-        useCase.execute(new TokenSubscriber());
+            @Override
+            public void onNext(Object o) {
+                Timber.d("GCM registration status: " + o.toString());
+            }
+        });
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        useCase.unsubscribe();
-    }
-
-    static class TokenSubscriber extends DefaultSubscriber {
-        @Override
-        public void onCompleted() {
-            super.onCompleted();
-            Log.d(TAG, "Successfully registered");
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-            Log.d(TAG, "Error registering token", e);
-        }
-    }
 }

@@ -2,13 +2,6 @@ package cat.xlagunas.andrtc.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
-
-import com.facebook.CallbackManager;
-import com.facebook.internal.CallbackManagerImpl;
-
-import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.HasComponent;
@@ -74,7 +67,7 @@ public class LoginActivity extends SocialLoginActivity implements HasComponent<A
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RegisterActivity.RESULT_CODE && resultCode == RESULT_OK){
+        if (requestCode == RegisterActivity.RESULT_CODE && resultCode == RESULT_OK) {
             startMainActivity();
         }
     }

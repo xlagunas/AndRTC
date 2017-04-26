@@ -12,7 +12,6 @@ import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -40,6 +39,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.modules.ConferenceModule;
 import cat.xlagunas.andrtc.presenter.ConferencePresenter;
 import cat.xlagunas.andrtc.view.ConferenceDataView;
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 3/8/16.
@@ -245,7 +245,7 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
                     params.getPercentLayoutInfo().widthPercent = 1f / totalChilds;
                     params.getPercentLayoutInfo().heightPercent = 1f;
                     params.getPercentLayoutInfo().leftMarginPercent = i * 0.5f;
-                    Log.d(TAG, "Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
+                    Timber.d("Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
                     remoteRenderers.getChildAt(i).requestLayout();
                 }
                 if (totalChilds == 1) {
@@ -265,7 +265,7 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
                     params.getPercentLayoutInfo().leftMarginPercent = (i % 2 == 0) ? 0f : 0.5f;
                     //pull down half the screen for the streams number 3 and 4
                     params.getPercentLayoutInfo().topMarginPercent = (i >= 2) ? 0.5f : 0f;
-                    Log.d(TAG, "Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
+                    Timber.d("Total width from child: " + i + " " + params.getPercentLayoutInfo().widthPercent);
                     remoteRenderers.getChildAt(i).requestLayout();
                 }
                 if (totalChilds == 3) {
@@ -307,12 +307,12 @@ public class ConferenceActivity extends BaseActivity implements ConferenceDataVi
                 for (int i = remoteRenderers.getChildCount() - 1; i >= 0; i--) {
                     View view = remoteRenderers.getChildAt(i);
                     if (remoteRenderer == view) {
-                        Log.d(TAG, "Deleting stream");
+                        Timber.d("Deleting stream");
                         remoteRenderers.removeView(remoteRenderers.getChildAt(i));
                         updateVideo();
                         return;
                     }
-                    Log.d(TAG, "Stream not found");
+                    Timber.d("Stream not found");
                 }
             }
         });

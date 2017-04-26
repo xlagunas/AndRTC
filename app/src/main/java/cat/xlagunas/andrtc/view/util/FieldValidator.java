@@ -15,23 +15,23 @@ import cat.xlagunas.andrtc.di.UserScope;
 public class FieldValidator {
 
     @Inject
-    public FieldValidator(){
+    public FieldValidator() {
 
     }
 
-    public boolean isValidTextField(String textValue){
+    public boolean isValidTextField(String textValue) {
         return !TextUtils.isEmpty(textValue);
     }
 
-    public boolean isValidFullName(String textValue){
+    public boolean isValidFullName(String textValue) {
         return !TextUtils.isEmpty(textValue) && textValue.trim().contains(" ");
     }
 
-    public boolean isValidPassword(String textValue){
+    public boolean isValidPassword(String textValue) {
         return !TextUtils.isEmpty(textValue) && textValue.length() >= 6;
     }
 
-    public boolean isValidUsername(String textValue){
+    public boolean isValidUsername(String textValue) {
         return !TextUtils.isEmpty(textValue) && textValue.length() >= 6;
     }
 

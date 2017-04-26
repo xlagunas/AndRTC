@@ -3,15 +3,12 @@ package cat.xlagunas.andrtc;
 import android.app.Application;
 import android.content.Context;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
 import cat.xlagunas.andrtc.di.components.ApplicationComponent;
 import cat.xlagunas.andrtc.di.components.DaggerApplicationComponent;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.di.modules.ApplicationModule;
 import cat.xlagunas.andrtc.di.modules.UserModule;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
+import timber.log.Timber;
 import xlagunas.cat.andrtc.domain.User;
 
 /**
@@ -25,9 +22,11 @@ public class CustomApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        setupGraph();
-        AppEventsLogger.activateApp(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
+        setupGraph();
     }
 
     private void setupGraph() {
@@ -40,7 +39,7 @@ public class CustomApplication extends Application {
         return (CustomApplication) context.getApplicationContext();
     }
 
-    public ApplicationComponent getApplicationComponent(){
+    public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
     }
 
@@ -49,14 +48,8 @@ public class CustomApplication extends Application {
     }
 
     public UserComponent getUserComponent() {
-        if (userComponent == null){
-            getApplicationComponent().getUserCache().getUser().subscribe(new DefaultSubscriber<User>(){
-                @Override
-                public void onNext(User user) {
-                    super.onNext(user);
-                    createUserComponent(user);
-                }
-            });
+        if (userComponent == null) {
+            getApplicationComponent().getUserCache().getUser().subscribe(this::createUserComponent, e -> createUserComponent(new User()));
         }
         return userComponent;
     }

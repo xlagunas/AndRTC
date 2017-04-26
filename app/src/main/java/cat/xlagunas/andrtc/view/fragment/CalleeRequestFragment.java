@@ -2,8 +2,6 @@ package cat.xlagunas.andrtc.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -12,7 +10,6 @@ import butterknife.OnClick;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.CalleeRequestPresenter;
-import cat.xlagunas.andrtc.view.activity.ConferenceActivity;
 
 /**
  * Created by xlagunas on 25/7/16.

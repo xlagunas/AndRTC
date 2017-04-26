@@ -1,10 +1,10 @@
 package cat.xlagunas.andrtc.data.net.webrtc;
 
-import android.util.Log;
-
 import org.webrtc.PeerConnection;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
+
+import timber.log.Timber;
 
 /**
  * Created by xlagunas on 11/8/16.
@@ -25,24 +25,24 @@ public class VivSdpObserver implements SdpObserver {
 
     @Override
     public void onCreateSuccess(SessionDescription sessionDescription) {
-        Log.d(TAG, "Successfully created LocalDescription");
+        Timber.d( "Successfully created LocalDescription");
         peerConnection.setLocalDescription(this, sessionDescription);
     }
 
     @Override
     public void onSetSuccess() {
-        Log.d(TAG, "oncreateSuccess");
+        Timber.d( "oncreateSuccess");
         if (shouldGenerateOffer) {
             if (peerConnection.getRemoteDescription() == null) {
                 sdpEvents.onOfferGenerated(userId, peerConnection.getLocalDescription());
             } else {
-                Log.d(TAG, "Draining the ice candidates being a initiator");
+                Timber.d( "Draining the ice candidates being a initiator");
 //                sdpEvents.onFinishedGatheringIceCandidates(userId);
             }
         } else {
             if (peerConnection.getLocalDescription() != null) {
                 sdpEvents.onAnswerGenerated(userId, peerConnection.getLocalDescription());
-                Log.d(TAG, "Draining the ice candidates being a answerer");
+                Timber.d( "Draining the ice candidates being a answerer");
 //                sdpEvents.onFinishedGatheringIceCandidates(userId);
             }
         }
@@ -50,12 +50,12 @@ public class VivSdpObserver implements SdpObserver {
 
     @Override
     public void onCreateFailure(String s) {
-        Log.e(TAG, "Error creating offer/answer: " +s);
+        Timber.e( "Error creating offer/answer: " + s);
     }
 
     @Override
     public void onSetFailure(String s) {
-       Log.e(TAG, "Error setting offer/answer: "+s);
+        Timber.e( "Error setting offer/answer: " + s);
     }
 
     public void setCurrentConnection(PeerConnection currentConnection) {
@@ -64,7 +64,9 @@ public class VivSdpObserver implements SdpObserver {
 
     public interface SdpEvents {
         void onOfferGenerated(String userId, SessionDescription localSessionDescription);
+
         void onAnswerGenerated(String userId, SessionDescription localSessionDescription);
+
         void onFinishedGatheringIceCandidates(String userId);
     }
 }
