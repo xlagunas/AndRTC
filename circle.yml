@@ -25,7 +25,6 @@ test:
             timeout: 360
         - ./gradlew lint --console=plain
         - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/outputs/apk/ $CIRCLE_ARTIFACTS
-        - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/outputs/reports/* $CIRCLE_TEST_REPORTS
 
 #        - emulator -avd circleci-android25 -no-audio -no-window:
 #            background: true
