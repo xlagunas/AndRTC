@@ -74,9 +74,11 @@ dependencies {
     def developmentDependencies = rootProject.ext.developmentDependencies
 
     prodDebugCompile project(path: ':data', configuration: 'prodDebug')
-    devDebugCompile project(path: ':data', configuration: 'devDebug')
     prodReleaseCompile project(path: ':data', configuration: 'prodRelease')
+
+    devDebugCompile project(path: ':data', configuration: 'devDebug')
     devReleaseCompile project(path: ':data', configuration: 'devRelease')
+
     compile project(':domain')
     compile project(':data')
 
