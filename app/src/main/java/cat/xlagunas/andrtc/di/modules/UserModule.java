@@ -10,8 +10,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntKey;
 import dagger.multibindings.IntoMap;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 2/03/16.

@@ -5,9 +5,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.ListDataView;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.interactor.ContactsUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.interactor.ContactsUseCase;
 
 /**
  * Created by xlagunas on 19/03/16.

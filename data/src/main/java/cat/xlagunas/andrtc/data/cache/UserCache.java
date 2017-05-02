@@ -5,8 +5,7 @@ import java.io.File;
 import cat.xlagunas.andrtc.data.UserEntity;
 import rx.Observable;
 import rx.functions.Action1;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.

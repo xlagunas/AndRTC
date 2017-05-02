@@ -19,8 +19,8 @@ import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
 import rx.Observable;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 26/02/16.

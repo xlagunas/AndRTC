@@ -9,7 +9,7 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.di.modules.ApplicationModule;
 import cat.xlagunas.andrtc.di.modules.UserModule;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 29/02/16.

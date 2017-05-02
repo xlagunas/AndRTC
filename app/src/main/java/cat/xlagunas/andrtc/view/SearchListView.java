@@ -2,7 +2,7 @@ package cat.xlagunas.andrtc.view;
 
 import java.util.List;
 
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 15/03/16.

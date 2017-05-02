@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.CallRequestDataView;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 25/7/16.

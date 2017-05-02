@@ -5,8 +5,8 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import cat.xlagunas.andrtc.data.social.GoogleManager;
 import rx.Observable;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.repository.SocialRepository;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.repository.SocialRepository;
 
 /**
  * Created by xlagunas on 20/8/16.

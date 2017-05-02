@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.UsernamePasswordDataView;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 13/7/16.

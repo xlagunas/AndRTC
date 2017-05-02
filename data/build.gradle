@@ -68,11 +68,13 @@ dependencies {
     compile dataDependencies.webRTC
     compile dataDependencies.timber
 
+    testProvided testDependencies.junit
+    testProvided testDependencies.assertj
+    testProvided testDependencies.mockito
+    testProvided testDependencies.robolectric
+    testProvided testDependencies.socketIO
 
-    testCompile testDependencies.junit
-    testCompile testDependencies.assertj
-    testCompile testDependencies.mockito
-    testCompile testDependencies.robolectric
-    testCompile testDependencies.socketIO
-
+    androidTestProvided 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestProvided 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    androidTestProvided 'com.android.support.test:runner:0.5'
 }

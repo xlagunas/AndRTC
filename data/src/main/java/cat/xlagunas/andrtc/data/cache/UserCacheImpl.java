@@ -13,7 +13,7 @@ import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import rx.Observable;
 import rx.functions.Action1;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.

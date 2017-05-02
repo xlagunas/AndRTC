@@ -4,10 +4,10 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.di.ActivityScope;
 import cat.xlagunas.andrtc.view.LoginDataView;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.GoogleLoginUseCase;
-import xlagunas.cat.andrtc.domain.interactor.LoginUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.interactor.GoogleLoginUseCase;
+import cat.xlagunas.andrtc.domain.interactor.LoginUseCase;
 
 /**
  * Created by xlagunas on 1/03/16.

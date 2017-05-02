@@ -4,8 +4,8 @@ package cat.xlagunas.andrtc.presenter;
 import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.LogOutDataView;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.interactor.LogOutUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.interactor.LogOutUseCase;
 
 /**
  * Created by xlagunas on 12/03/16.

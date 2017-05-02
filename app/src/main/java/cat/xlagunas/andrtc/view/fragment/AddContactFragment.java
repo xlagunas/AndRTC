@@ -24,7 +24,7 @@ import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.AddContactsPresenter;
 import cat.xlagunas.andrtc.view.SearchListView;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 19/03/16.

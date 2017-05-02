@@ -14,9 +14,9 @@ import cat.xlagunas.andrtc.data.repository.UserRepositoryImpl;
 import cat.xlagunas.andrtc.gcm.RegistrationServiceFacade;
 import dagger.Module;
 import dagger.Provides;
-import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
-import xlagunas.cat.andrtc.domain.repository.FileRepository;
-import xlagunas.cat.andrtc.domain.repository.UserRepository;
+import cat.xlagunas.andrtc.domain.executor.PostExecutionThread;
+import cat.xlagunas.andrtc.domain.repository.FileRepository;
+import cat.xlagunas.andrtc.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 29/02/16.

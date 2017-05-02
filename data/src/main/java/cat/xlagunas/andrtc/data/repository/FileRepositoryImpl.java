@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 
 import cat.xlagunas.andrtc.data.cache.UserCache;
 import rx.Observable;
-import xlagunas.cat.andrtc.domain.repository.FileRepository;
+import cat.xlagunas.andrtc.domain.repository.FileRepository;
 
 /**
  * Created by xlagunas on 13/7/16.

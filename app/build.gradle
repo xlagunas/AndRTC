@@ -8,12 +8,14 @@ android {
 
     defaultConfig {
         applicationId "cat.xlagunas.andrtc"
-        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
-        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 7
         versionName "1.1.7"
-        vectorDrawables.useSupportLibrary = true
 
+        minSdkVersion globalConfiguration.androidMinSdkVersion
+        targetSdkVersion globalConfiguration.androidTargetSdkVersion
+
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner globalConfiguration.testInstrumentationRunner
     }
 
     compileOptions {
@@ -66,6 +68,9 @@ configurations {
     devDebugCompile
     prodReleaseCompile
     devReleaseCompile
+
+    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
+
 }
 
 dependencies {
@@ -107,13 +112,11 @@ dependencies {
 
     provided presentationDependencies.javaxAnnotation
 
-    androidTestCompile presentationTestDependencies.mockito
-    androidTestCompile presentationTestDependencies.dexmaker
-    androidTestCompile presentationTestDependencies.dexmakerMockito
-    androidTestCompile presentationTestDependencies.espresso
-    androidTestCompile presentationTestDependencies.testingSupportLib
-    androidTestCompile presentationTestDependencies.javawriter
+    testCompile presentationTestDependencies.mockito
 
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    androidTestCompile 'com.android.support.test:runner:0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

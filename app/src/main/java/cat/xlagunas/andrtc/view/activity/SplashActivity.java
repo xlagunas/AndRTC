@@ -13,7 +13,7 @@ import cat.xlagunas.andrtc.data.cache.UserCache;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.

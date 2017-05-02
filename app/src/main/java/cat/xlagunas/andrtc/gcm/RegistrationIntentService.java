@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.CustomApplication;
 import rx.Subscriber;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.interactor.RegisterGCMTokenUseCase;
+import cat.xlagunas.andrtc.domain.interactor.RegisterGCMTokenUseCase;
 
 
 public class RegistrationIntentService extends IntentService {

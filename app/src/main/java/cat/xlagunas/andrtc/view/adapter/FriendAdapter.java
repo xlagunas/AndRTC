@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import cat.xlagunas.andrtc.view.viewholder.FriendViewHolder;
 import cat.xlagunas.andrtc.view.viewholder.FriendViewHolderFactory;
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 17/03/16.
