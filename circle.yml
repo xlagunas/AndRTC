@@ -7,6 +7,8 @@ machine:
     version: oraclejdk8
 
 dependencies:
+  pre:
+    - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-22
   cache_directories:
     - ~/.android
   override:
@@ -14,11 +16,13 @@ dependencies:
 
 general:
     artifacts:
-        - /home/ubuntu/andRtc/app/build/outputs/apk/
+        - /home/ubuntu/AndRTC/app/build/outputs/apk/
 test:
     override:
         # start the emulator
-      - emulator -avd circleci-android22 -no-audio -no-window:
+      - echo no | android create avd -n custom-android22-googleapis -t "android-22" --abi google_apis/armeabi-v7a
+      - android list avd
+      - emulator -avd custom-android22-googleapis -no-audio -no-window:
           background: true
           parallel: true
       # wait for it to have booted
