@@ -16,9 +16,9 @@ dependencies:
     # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
     - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
     # Android 24 ARM Google APIs system Image
-    - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-24"
+    - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-addon-google_apis-google-25"
     # Create the android 24 AVD
-    - echo no | android create avd -n circleci-android24-googleapis -t 'android-24' --abi google_apis/armeabi-v7a
+    - echo no | android create avd -n circleci-android25-googleapis -t 'android-25' --abi google_apis/armeabi-v7a
     - |
       # software rendering is broken in revision 10, we'll use revision 08
       wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
@@ -39,7 +39,7 @@ test:
     - sleep 30
     - adb shell input keyevent 82
     # run tests  against the emulator.
-    - ./gradlew connectedAndroidTest -PdisablePreDex
+    - ./gradlew connectedProdDebugAndroidTest -PdisablePreDex
     # copy the build outputs to artifacts
     - cp -r app/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory.
