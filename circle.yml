@@ -15,6 +15,8 @@ dependencies:
     pre:
         - echo y | android update sdk --no-ui --all --filter "tools"
         - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.1"
+        - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-25
+
 
     override:
         - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.1,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-support
@@ -22,12 +24,14 @@ dependencies:
 
 test:
     override:
+        - echo no | android create avd -n custom-android25-googleapis -t "android-25" --abi google_apis/armeabi-v7a
+
         - (./gradlew assembleProdRelease -PdisablePreDex):
             timeout: 360
         - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/outputs/apk/ $CIRCLE_ARTIFACTS
         - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/reports/ $CIRCLE_TEST_REPORTS
 
-        - emulator -avd circleci-android24 -no-window:
+        - emulator -avd custom-android25-googleapis -no-window:
             background: true
             parallel: true
         # wait for it to have booted
