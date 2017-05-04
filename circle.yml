@@ -1,46 +1,39 @@
 machine:
   environment:
-    TERM: "dumb"
-    ADB_INSTALL_TIMEOUT: "10"
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    ANDROID_HOME: /usr/local/android-sdk-linux
+  java:
+    version: oraclejdk8
 
 dependencies:
-  pre:
-    - echo y | android update sdk --no-ui --all --filter "android-25"
-      # Android SDK Platform 25 Build Tools
-    - echo y | android update sdk --no-ui --all --filter "tools"
-    # Android SDK Platform Tools 24.0.2
-    - echo y | android update sdk --no-ui --all --filter "platform-tools"
-    # Android SDK Build-tools, revision 24.0.2
-    - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.1"
-    # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
-    - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
-    # Android 24 ARM Google APIs system Image
-    - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-addon-google_apis-google-25"
-    # Create the android 24 AVD
-    - echo no | android create avd -n circleci-android25-googleapis -t 'android-25' --abi google_apis/armeabi-v7a
-    - |
-      # software rendering is broken in revision 10, we'll use revision 08
-      wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
-      unzip armeabi-v7a-24_r08.zip
-      # overwrite some of the new files with older files
-      mv armeabi-v7a/* /usr/local/android-sdk-linux/system-images/android-24/google_apis/armeabi-v7a
-      rm armeabi-v7a-24_r08.zip
-
-test:
+  cache_directories:
+    - ~/.android
   override:
-    # start the emulator
-    - emulator -avd circleci-android24-googleapis -no-window -gpu off:
-        background: true
-        parallel: true
-    # wait for it to have booted
-    - circle-android wait-for-boot
-    # unlock the emulator screen
-    - sleep 30
-    - adb shell input keyevent 82
-    # run tests  against the emulator.
-    - ./gradlew connectedProdDebugAndroidTest -PdisablePreDex
-    # copy the build outputs to artifacts
-    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-    # copy the test results to the test results directory.
-    - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - ./gradlew dependencies -x lint
+
+general:
+    artifacts:
+        - /home/ubuntu/andRtc/app/build/outputs/apk/
+test:
+    override:
+        # start the emulator
+      - emulator -avd circleci-android22 -no-audio -no-window:
+          background: true
+          parallel: true
+      # wait for it to have booted
+      - circle-android wait-for-boot
+      # run tests  against the emulator.
+      - ./gradlew connectedProdDebugAndroidTest
+      # copy the test results to the test results directory.
+      - cp -r app/build/reports/ $CIRCLE_TEST_REPORTS
+
+#deployment:
+#  production: # just a label; label names are completely up to you
+#    branch: master
+#    commands:
+#        - ./gradlew assembleRelease
+#        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+#  beta:
+#    branch: develop
+#    commands:
+#        - ./gradlew assembleDebug
+#        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
