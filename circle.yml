@@ -15,7 +15,7 @@ dependencies:
     pre:
         - echo y | android update sdk --no-ui --all --filter "tools"
         - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.1"
-        - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-25
+        - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-24
 
 
     override:
@@ -24,7 +24,7 @@ dependencies:
 
 test:
     override:
-        - echo no | android create avd -n custom-android25-googleapis -t "android-25" --abi google_apis/armeabi-v7a
+        - echo no | android create avd -n custom-android24-googleapis -t "android-24" --abi google_apis/armeabi-v7a
 
         - (./gradlew assembleProdRelease -PdisablePreDex):
             timeout: 360
