@@ -28,8 +28,7 @@ test:
       # wait for it to have booted
       - circle-android wait-for-boot
       # run tests  against the emulator.
-      - ./gradlew buildProd connectedProdDebugAndroidTest -PdisablePreDex:
-          timeout: 900
+      - ./gradlew connectedProdDebugAndroidTest -PdisablePreDex:
       # copy the test results to the test results directory.
       - cp -r app/build/reports/ $CIRCLE_TEST_REPORTS
 
