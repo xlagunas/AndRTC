@@ -8,7 +8,7 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-22
+    - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-24
   cache_directories:
     - ~/.android
   override:
@@ -20,9 +20,9 @@ general:
 test:
     override:
         # start the emulator
-      - echo no | android create avd -n custom-android22-googleapis -t "android-22" --abi google_apis/armeabi-v7a
+      - echo no | android create avd -n custom-android24-googleapis -t "android-24" --abi google_apis/armeabi-v7a
       #- android list avd
-      - emulator -avd custom-android22-googleapis -no-audio -no-window:
+      - emulator -avd custom-android24-googleapis -no-audio -no-window:
           background: true
           parallel: true
       # wait for it to have booted
