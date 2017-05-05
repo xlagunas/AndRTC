@@ -14,7 +14,7 @@ dependencies:
   override:
       - bundle install: # note the colon here
           timeout: 900
-    - ./gradlew dependencies -x lint
+      - ./gradlew dependencies -x lint
 
 general:
     artifacts:
