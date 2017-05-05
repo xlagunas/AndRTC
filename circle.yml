@@ -12,9 +12,7 @@ dependencies:
   cache_directories:
     - ~/.android
   override:
-      - bundle install: # note the colon here
-          timeout: 900
-      - ./gradlew dependencies -x lint
+    - ./gradlew dependencies -x lint
 
 general:
     artifacts:
@@ -30,7 +28,8 @@ test:
       # wait for it to have booted
       - circle-android wait-for-boot
       # run tests  against the emulator.
-      - ./gradlew connectedProdDebugAndroidTest
+      - ./gradlew connectedProdDebugAndroidTest:
+          timeout: 900
       # copy the test results to the test results directory.
       - cp -r app/build/reports/ $CIRCLE_TEST_REPORTS
 
