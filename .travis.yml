@@ -46,4 +46,4 @@ before_script:
   - android-wait-for-emulator
 
 script:
-  - ./gradlew clean check connectedCheck -x -PdisablePreDex
+  - ./gradlew clean check connectedCheck -PdisablePreDex
