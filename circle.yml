@@ -22,7 +22,7 @@ test:
         # start the emulator
       - echo no | android create avd -n custom-android24-googleapis -t "android-24" --abi google_apis/armeabi-v7a
       #- android list avd
-      - emulator -avd custom-android24-googleapis -no-audio -no-window:
+      - emulator -avd custom-android24-googleapis -no-audio -no-window -memory 256:
           background: true
           parallel: true
       # wait for it to have booted
