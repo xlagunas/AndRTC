@@ -90,7 +90,7 @@ before_script:
 
 script:
   # Run all device checks
-  - ./gradlew connectedProdDebugAndroidTest
+  - travis_wait 20 ./gradlew connectedProdDebugAndroidTest
 
 after_script:
   # Show tests and lint results
