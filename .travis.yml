@@ -75,7 +75,7 @@ install:
   # Show version and download Gradle Wrapper if it's not already cached
   - ./gradlew --version
   # Clean project and download missing dependencies and components
-  - ./gradlew clean build
+  - ./gradlew clean assembleProdDebug
   # Check components status
   - sdkmanager --list || true
 
