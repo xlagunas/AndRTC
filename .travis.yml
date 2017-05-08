@@ -94,5 +94,5 @@ script:
 
 after_script:
   # Show tests and lint results
-  - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/*
+  - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/flavors/PROD/index.html
   - cat ${TRAVIS_BUILD_DIR}/*/build/reports/lint-results.xml
