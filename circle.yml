@@ -1,30 +1,49 @@
-machine:
-  environment:
-    ANDROID_HOME: /usr/local/android-sdk-linux
-    ADB_INSTALL_TIMEOUT: "10"
-#    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms1024m -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-#    _JAVA_OPTIONS: "-Xms1024m -Xmx2048m"
-  java:
-    version: oraclejdk8
+dependencies:
+    pre:
+      - echo y | android update sdk --no-ui --all --filter "android-24"
+      # Android SDK Platform 25 Build Tools
+      - echo y | android update sdk --no-ui --all --filter "tools"
+      # Android SDK Platform Tools 25.0.3
+      - echo y | android update sdk --no-ui --all --filter "platform-tools"
+      # Android SDK Build-tools, revision 25.0.2
+      - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.1"
+      # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
+      - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+      # Android 24 ARM Google APIs system Image
+      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-24"
+      # Create the android 24 AVD
+      - echo no | android create avd -n circleci-android24-googleapis -t 'android-24' --abi google_apis/armeabi-v7a
+      # software rendering is broken in revision 10, we'll use revision 08
+      - wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
+      - unzip armeabi-v7a-24_r08.zip
+      # overwrite some of the new files with older files
+      - mv armeabi-v7a/* /usr/local/android-sdk-linux/system-images/android-24/google_apis/armeabi-v7a
+      - rm armeabi-v7a-24_r08.zip
 
-##dependencies:
-##  pre:
-##    - echo y | android update sdk -a -u -t sys-img-armeabi-v7a-google_apis-24
-##  cache_directories:
-##    - ~/.android
-##
-general:
-    artifacts:
-        - /home/ubuntu/AndRTC/app/build/outputs/apk/
+    override:
+      - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+
+    cache_directories:
+      - ~/.gradle
+      - /usr/local/android-sdk-linux/tools
+      - /usr/local/android-sdk-linux/platforms/android-24
+      - /usr/local/android-sdk-linux/build-tools/25.0.2
+      - /usr/local/android-sdk-linux/extras/android/m2repository
+
 test:
     override:
-##      - echo no | android create avd -n custom-android24-googleapis -t "android-24" --abi google_apis/armeabi-v7a
-##      - emulator -avd custom-android24-googleapis -no-audio -no-window -memory 256:
-##          background: true
-##          parallel: true
-
-##      - circle-android wait-for-boot
-      # run tests  against the emulator.
-      - ./gradlew testProdDebug:
-      # copy the test results to the test results directory.
-      - cp -r app/build/reports/ $CIRCLE_TEST_REPORTS
+    # set up emulator
+      - emulator -avd circleci-android24-googleapis -no-window -gpu off:
+          background: true
+          parallel: true
+    # wait for emulator to boot
+      - circle-android wait-for-boot
+    # unlock the emulator
+      - sleep 30
+      - adb shell input keyevent 82
+    # run tests against the emulator and generate report and limit gradle's memory usage
+      - ./gradlew clean connectedProdDebugAndroidTest
+    # copy the build outputs to artifacts
+      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+    # copy the test results to the test results directory
+      - cp -r app/build/reports/jacoco/* $CIRCLE_TEST_REPORTS
