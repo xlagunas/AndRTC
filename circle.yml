@@ -2,7 +2,7 @@ machine:
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
     ADB_INSTALL_TIMEOUT: "10"
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms256m -Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms512m -Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
   java:
     version: oraclejdk8
 dependencies:
