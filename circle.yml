@@ -39,7 +39,7 @@ dependencies:
 
 test:
     override:
-      - ./gradlew clean build
+      - ./gradlew clean build -x lint
     # set up emulator
       - emulator -avd circleci-android24-googleapis -no-window -gpu off:
           background: true
