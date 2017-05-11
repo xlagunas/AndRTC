@@ -39,6 +39,7 @@ dependencies:
 
 test:
     override:
+      - ./gradlew clean build
     # set up emulator
       - emulator -avd circleci-android24-googleapis -no-window -gpu off:
           background: true
@@ -49,7 +50,7 @@ test:
       - sleep 30
       - adb shell input keyevent 82
     # run tests against the emulator and generate report and limit gradle's memory usage
-      - ./gradlew clean build connectedAndroidTest
+      - ./gradlew connectedProdDebugAndroidTest
     # copy the build outputs to artifacts
       - cp -r app/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory
