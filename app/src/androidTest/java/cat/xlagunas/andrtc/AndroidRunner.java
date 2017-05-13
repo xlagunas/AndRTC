@@ -25,7 +25,9 @@ public final class AndroidRunner extends AndroidJUnitRunner {
         String name = AndroidRunner.class.getSimpleName();
         // Unlock the device so that the tests can input keystrokes.
         KeyguardManager keyguard = (KeyguardManager) app.getSystemService(KEYGUARD_SERVICE);
-        keyguard.newKeyguardLock(name).disableKeyguard();
+        if (keyguard.isDeviceLocked()) {
+            keyguard.newKeyguardLock(name).disableKeyguard();
+        }
         // Wake up the screen.
         PowerManager power = (PowerManager) app.getSystemService(POWER_SERVICE);
         wakeLock = power.newWakeLock(FULL_WAKE_LOCK | ACQUIRE_CAUSES_WAKEUP | ON_AFTER_RELEASE, name);
