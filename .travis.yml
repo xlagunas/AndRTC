@@ -26,7 +26,6 @@ env:
   global:
     - DIR=constraint-layout-start # Project directory
     - API=25 # Android API level 25 by default
-    - EMULATOR_API=25 #Android emulator version
     - TAG=google_apis # Google APIs by default, alternatively use default
     - ABI=armeabi-v7a # ARM ABI v7a by default
     - QEMU_AUDIO_DRV=none # Disable emulator audio to avoid warning
@@ -36,7 +35,7 @@ env:
     - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
 before_install:
-  - export EMULATOR="system-images;android-${EMULATOR_API};${TAG};${ABI}" # Used to install/create emulator
+  - export EMULATOR="system-images;android-${API};${TAG};${ABI}" # Used to install/create emulator
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid warning
 
 install:
