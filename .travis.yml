@@ -129,9 +129,9 @@
     - adb shell input keyevent 82 &
 
   script:
-    - ./gradlew clean check :app:connectedProdDebugAndroidTest -PdisablePreDex
+    - ./gradlew clean :app:connectedProdDebugAndroidTest -PdisablePreDex
 
   after_script:
     # Show tests and lint results
     - cat ${TRAVIS_BUILD_DIR}/*/build/outputs/androidTest-results/connected/flavors/PROD/index.html
-    - cat ${TRAVIS_BUILD_DIR}/app/build/reports/lint-results.xml
+    - cat ${TRAVIS_BUILD_DIR}/*/build/reports/lint-results.xml
