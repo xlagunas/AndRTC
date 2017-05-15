@@ -61,6 +61,8 @@ android {
         abortOnError true
         // if true, only report errors
         ignoreWarnings false
+        
+        warning 'InvalidPackage'
     }
 }
 
