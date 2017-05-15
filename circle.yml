@@ -39,7 +39,6 @@ dependencies:
 
 test:
     override:
-      - ./gradlew :app:connectedProdDebugAndroidTest -PdisablePreDex
     # set up emulator
       - emulator -avd circleci-android24-googleapis -no-window -gpu off:
           background: true
@@ -50,8 +49,7 @@ test:
       - sleep 30
       - adb shell input keyevent 82
     # run tests against the emulator and generate report and limit gradle's memory usage
-      - ./gradlew connectedProdDebugAndroidTest
-    # copy the build outputs to artifacts
+      - ./gradlew :app:connectedProdDebugAndroidTest -PdisablePreDex    # copy the build outputs to artifacts
       - cp -r app/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory
       - cp -r */build/reports/* $CIRCLE_TEST_REPORTS
