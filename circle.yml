@@ -17,9 +17,9 @@ dependencies:
       # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
       - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
       # Android 24 ARM Google APIs system Image
-      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-23"
+      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-22"
       # Create the android 24 AVD
-      - echo no | android create avd -n circleci-android23-googleapis -t 'android-23' --abi google_apis/armeabi-v7a
+      - echo no | android create avd -n circleci-android22-googleapis -t 'android-22' --abi google_apis/armeabi-v7a
       # software rendering is broken in revision 10, we'll use revision 08
 #      - wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
 #      - unzip armeabi-v7a-24_r08.zip
@@ -40,7 +40,7 @@ dependencies:
 test:
     override:
     # set up emulator
-      - emulator -avd circleci-android23-googleapis -no-window -gpu off:
+      - emulator -avd circleci-android22-googleapis -no-window -gpu off:
           background: true
           parallel: true
     # wait for emulator to boot
