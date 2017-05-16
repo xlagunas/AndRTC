@@ -7,7 +7,7 @@ machine:
     version: oraclejdk8
 dependencies:
     pre:
-      - echo y | android update sdk --no-ui --all --filter "android-24"
+      - echo y | android update sdk --no-ui --all --filter "android-25"
       # Android SDK Platform 25 Build Tools
       - echo y | android update sdk --no-ui --all --filter "tools"
       # Android SDK Platform Tools 25.0.3
@@ -17,15 +17,15 @@ dependencies:
       # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
       - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
       # Android 24 ARM Google APIs system Image
-      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-24"
+      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-25"
       # Create the android 24 AVD
-      - echo no | android create avd -n circleci-android24-googleapis -t 'android-24' --abi google_apis/armeabi-v7a
+      - echo no | android create avd -n circleci-android25-googleapis -t 'android-25' --abi google_apis/armeabi-v7a
       # software rendering is broken in revision 10, we'll use revision 08
-      - wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
-      - unzip armeabi-v7a-24_r08.zip
-      # overwrite some of the new files with older files
-      - mv armeabi-v7a/* /usr/local/android-sdk-linux/system-images/android-24/google_apis/armeabi-v7a
-      - rm armeabi-v7a-24_r08.zip
+#      - wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
+#      - unzip armeabi-v7a-24_r08.zip
+#      # overwrite some of the new files with older files
+#      - mv armeabi-v7a/* /usr/local/android-sdk-linux/system-images/android-24/google_apis/armeabi-v7a
+#      - rm armeabi-v7a-24_r08.zip
 
     override:
       - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
@@ -33,14 +33,14 @@ dependencies:
     cache_directories:
       - ~/.gradle
       - /usr/local/android-sdk-linux/tools
-      - /usr/local/android-sdk-linux/platforms/android-24
-      - /usr/local/android-sdk-linux/build-tools/25.0.1
+      - /usr/local/android-sdk-linux/platforms/android-25
+      - /usr/local/android-sdk-linux/build-tools/25.0.3
       - /usr/local/android-sdk-linux/extras/android/m2repository
 
 test:
     override:
     # set up emulator
-      - emulator -avd circleci-android24-googleapis -no-window -gpu off:
+      - emulator -avd circleci-android25-googleapis -no-window -gpu off:
           background: true
           parallel: true
     # wait for emulator to boot
