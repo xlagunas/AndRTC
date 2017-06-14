@@ -1,6 +1,9 @@
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -13,7 +16,7 @@ ext {
 
     //Libraries
 
-    supportLibraryVersion = '25.3.1'
+    supportLibraryVersion = '25.4.0'
     daggerVersion = '2.9'
     butterKnifeVersion = '8.5.1'
     rxJavaVersion = '1.1.9'
@@ -26,7 +29,7 @@ ext {
     retrofitRxAdapter = '2.1.0'
     okHttpVersion = '3.4.1'
     okiIo = '1.10.0'
-    googleServicesVersion = '10.2.1'
+    googleServicesVersion = '11.0.0'
     circleImageViewVersion = '2.0.0'
     glideVersion = '3.7.0'
     timber = '4.5.1'
