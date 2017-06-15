@@ -9,10 +9,10 @@ import com.google.auto.factory.Provided;
 
 import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.UpdateFriendshipUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.interactor.UpdateFriendshipUseCase;
 
 /**
  * Created by xlagunas on 19/03/16.

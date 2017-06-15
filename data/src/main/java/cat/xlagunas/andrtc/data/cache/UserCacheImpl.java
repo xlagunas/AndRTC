@@ -3,7 +3,6 @@ package cat.xlagunas.andrtc.data.cache;
 import android.content.Context;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,7 +13,7 @@ import cat.xlagunas.andrtc.data.exception.UserNotFoundException;
 import cat.xlagunas.andrtc.data.mapper.UserEntityMapper;
 import rx.Observable;
 import rx.functions.Action1;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 8/03/16.
@@ -53,15 +52,7 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<File> generateProfilePictureFile() {
-        return Observable.create(subscriber -> {
-            try {
-                File imageFile = fileManager.createImageFile(context);
-                subscriber.onNext(imageFile);
-                subscriber.onCompleted();
-            } catch (IOException e) {
-                subscriber.onError(e);
-            }
-        });
+        return Observable.fromCallable(() -> fileManager.createImageFile(context));
     }
 
     @Override
@@ -76,21 +67,20 @@ public class UserCacheImpl implements UserCache {
 
     @Override
     public Observable<User> getUser() {
-        return Observable.fromCallable(() -> {
-            String serializedUser = fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER);
-            if (serializedUser != null) {
-                UserEntity entity = serializer.deserialize(serializedUser);
-                entity.setPassword(userEntityMapper.decodeBasicAuthPassword(entity.getUsername(), entity.getPassword()));
-                return userEntityMapper.transformUser(entity);
-            } else
-                throw new UserNotFoundException("User not stored");
-        });
+        return Observable.fromCallable(() -> fileManager.getStringFromPreferences(context, SETTINGS_FILE_NAME, CACHE_USER))
+                .map(this::deserializeUser)
+                .onErrorResumeNext(error -> Observable.error(new UserNotFoundException("User not persisted")));
+    }
+
+    private User deserializeUser(String serializedUser) {
+        UserEntity entity = serializer.deserialize(serializedUser);
+        entity.setPassword(userEntityMapper.decodeBasicAuthPassword(entity.getUsername(), entity.getPassword()));
+        return userEntityMapper.transformUser(entity);
     }
 
     @Override
     public Action1 removeCache() {
         return action1 -> fileManager.clearPreferences(context, SETTINGS_FILE_NAME);
-
     }
 
     @Override

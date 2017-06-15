@@ -1,33 +1,56 @@
-#
-# Build configuration for Circle CI
-#
-
-general:
-    artifacts:
-        - /home/ubuntu/your-app-name/app/build/outputs/apk/
-
 machine:
-    environment:
-        ANDROID_HOME: /usr/local/android-sdk-linux
-
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+    ADB_INSTALL_TIMEOUT: "10"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms512m -Xmx2g -XX:+HeapDumpOnOutOfMemoryError"'
+  java:
+    version: oraclejdk8
 dependencies:
     pre:
-        - echo y | android update sdk --no-ui --all --filter "tools"
-        - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.1"
+      - echo y | android update sdk --no-ui --all --filter "android-25"
+      # Android SDK Platform 25 Build Tools
+      - echo y | android update sdk --no-ui --all --filter "tools"
+      # Android SDK Platform Tools 25.0.3
+      - echo y | android update sdk --no-ui --all --filter "platform-tools"
+      # Android SDK Build-tools, revision 25.0.2
+      - echo y | android update sdk --no-ui --all --filter "build-tools-25.0.3"
+      # Android Support Repository, revision 35 / Local Maven repository for Support Libraries
+      - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+      # Android 24 ARM Google APIs system Image
+      - echo y | android update sdk --no-ui --all --filter "sys-img-armeabi-v7a-google_apis-22"
+      # Create the android 24 AVD
+      - echo no | android create avd -n circleci-android22-googleapis -t 'android-22' --abi google_apis/armeabi-v7a
+      # software rendering is broken in revision 10, we'll use revision 08
+#      - wget "https://dl-ssl.google.com/android/repository/sys-img/google_apis/armeabi-v7a-24_r08.zip"
+#      - unzip armeabi-v7a-24_r08.zip
+#      # overwrite some of the new files with older files
+#      - mv armeabi-v7a/* /usr/local/android-sdk-linux/system-images/android-24/google_apis/armeabi-v7a
+#      - rm armeabi-v7a-24_r08.zip
 
     override:
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-26.0.1,android-25,extra-google-m2repository,extra-google-google_play_services,extra-android-support
-        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+      - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+
+    cache_directories:
+      - ~/.gradle
+      - /usr/local/android-sdk-linux/tools
+      - /usr/local/android-sdk-linux/platforms/android-25
+      - /usr/local/android-sdk-linux/build-tools/25.0.3
+      - /usr/local/android-sdk-linux/extras/android/m2repository
 
 test:
     override:
-        - (./gradlew assemble -PdisablePreDex):
-            timeout: 360
-        - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/outputs/apk/ $CIRCLE_ARTIFACTS
-        - emulator -avd circleci-android25 -no-audio -no-window:
-            background: true
-            parallel: true
-        # wait for it to have booted
-        - circle-android wait-for-boot
-        # run tests  against the emulator.
-        - ./gradlew connectedAndroidTest
+    # set up emulator
+      - emulator -avd circleci-android22-googleapis -no-window -gpu off:
+          background: true
+          parallel: true
+    # wait for emulator to boot
+      - circle-android wait-for-boot
+    # unlock the emulator
+      - sleep 30
+      - adb shell input keyevent 82
+    # run tests against the emulator and generate report and limit gradle's memory usage
+      - ./gradlew :app:connectedProdDebugAndroidTest -PdisablePreDex:    # copy the build outputs to artifacts
+          timeout: 1200
+      - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+    # copy the test results to the test results directory
+      - cp -r */build/reports/* $CIRCLE_TEST_REPORTS

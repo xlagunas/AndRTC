@@ -20,12 +20,11 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.repository.UserRepository;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 26/02/16.

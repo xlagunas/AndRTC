@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
-import xlagunas.cat.andrtc.domain.executor.PostExecutionThread;
+import cat.xlagunas.andrtc.domain.executor.PostExecutionThread;
 
 /**
  * Created by xlagunas on 26/02/16.

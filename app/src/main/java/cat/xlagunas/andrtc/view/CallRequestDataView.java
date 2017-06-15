@@ -1,6 +1,6 @@
 package cat.xlagunas.andrtc.view;
 
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 25/7/16.

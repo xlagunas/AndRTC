@@ -14,8 +14,8 @@ import cat.xlagunas.andrtc.data.cache.UserCache;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.interactor.UpdateProfileUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.interactor.UpdateProfileUseCase;
 
 public class MyGcmListenerService extends FirebaseMessagingService {
 

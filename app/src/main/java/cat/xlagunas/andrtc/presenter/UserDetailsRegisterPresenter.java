@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.view.UserDetailsRegisterView;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
 import rx.Observer;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.ImagePickerUseCase;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.interactor.ImagePickerUseCase;
 
 /**
  * Created by xlagunas on 13/7/16.

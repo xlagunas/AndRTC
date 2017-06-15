@@ -19,8 +19,8 @@ import cat.xlagunas.andrtc.data.UserEntity;
 import okhttp3.Credentials;
 import okio.ByteString;
 import rx.Observable;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 26/02/16.
@@ -114,7 +114,6 @@ public class UserEntityMapper {
         user.setEmail(entity.getEmail());
         user.setPassword(entity.getPassword());
         user.setFacebookId(entity.getFacebookId());
-        user.setThumbnail(entity.getThumbnail().startsWith("http") ? entity.getThumbnail() : ServerConstants.IMAGE_SERVER + entity.getThumbnail());
 
         return user;
     }
@@ -155,7 +154,7 @@ public class UserEntityMapper {
             try {
                 JSONObject friend = jsonFriendList.getJSONObject(i);
                 FriendEntity friendEntity = new FriendEntity();
-                //TODO transform friend and add to array
+
                 friendEntities.add(friendEntity);
             } catch (JSONException e) {
                 return Observable.error(e);

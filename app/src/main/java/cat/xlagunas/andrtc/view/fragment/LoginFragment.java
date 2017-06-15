@@ -27,7 +27,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.ActivityComponent;
 import cat.xlagunas.andrtc.presenter.LoginPresenter;
 import cat.xlagunas.andrtc.view.LoginDataView;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 public class LoginFragment extends BaseFragment implements LoginDataView {
 

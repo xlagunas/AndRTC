@@ -2,11 +2,11 @@ package cat.xlagunas.andrtc.presenter;
 
 import javax.inject.Inject;
 
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.interactor.CallRequestUseCase;
-import xlagunas.cat.andrtc.domain.interactor.CancelCallRequestUseCase;
-import xlagunas.cat.andrtc.domain.interactor.SearchFriendUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.interactor.CallRequestUseCase;
+import cat.xlagunas.andrtc.domain.interactor.CancelCallRequestUseCase;
+import cat.xlagunas.andrtc.domain.interactor.SearchFriendUseCase;
 
 /**
  * Created by xlagunas on 25/7/16.

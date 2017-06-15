@@ -10,9 +10,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.Friend;
-import xlagunas.cat.andrtc.domain.interactor.SearchUserUseCase;
-import xlagunas.cat.andrtc.domain.repository.UserRepository;
+import cat.xlagunas.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.interactor.SearchUserUseCase;
+import cat.xlagunas.andrtc.domain.repository.UserRepository;
 
 /**
  * Created by xlagunas on 15/03/16.

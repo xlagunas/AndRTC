@@ -5,9 +5,9 @@ import javax.inject.Inject;
 import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.util.FieldValidator;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.DefaultSubscriber;
-import xlagunas.cat.andrtc.domain.User;
-import xlagunas.cat.andrtc.domain.interactor.RegisterUseCase;
+import cat.xlagunas.andrtc.domain.DefaultSubscriber;
+import cat.xlagunas.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.interactor.RegisterUseCase;
 
 /**
  * Created by xlagunas on 9/03/16.

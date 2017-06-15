@@ -11,7 +11,7 @@ import com.google.auto.factory.AutoFactory;
 import butterknife.BindView;
 import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.view.activity.CallRequestActivity;
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 22/03/16.

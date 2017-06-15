@@ -1,19 +1,22 @@
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
 ext {
     //Android
-    androidBuildToolsVersion = "25.0.1"
+    androidBuildToolsVersion = "25.0.3"
     androidMinSdkVersion = 15
     androidTargetSdkVersion = 25
     androidCompileSdkVersion = 25
 
     //Libraries
 
-    supportLibraryVersion = '25.3.1'
+    supportLibraryVersion = '25.4.0'
     daggerVersion = '2.9'
     butterKnifeVersion = '8.5.1'
     rxJavaVersion = '1.1.9'
@@ -26,7 +29,7 @@ ext {
     retrofitRxAdapter = '2.1.0'
     okHttpVersion = '3.4.1'
     okiIo = '1.10.0'
-    googleServicesVersion = '10.2.1'
+    googleServicesVersion = '11.0.0'
     circleImageViewVersion = '2.0.0'
     glideVersion = '3.7.0'
     timber = '4.5.1'
@@ -41,8 +44,10 @@ ext {
     assertJVersion = '1.7.1'
     mockitoVersion = '1.9.5'
     dexmakerVersion = '1.0'
-    espressoVersion = '2.0'
+    espressoVersion = '2.2.2'
     testingSupportLibVersion = '0.1'
+    runnerVersion = '0.5'
+    automatorVersion = '2.1.2'
     //Needed by autofactory to override conflicts with test dependencies
     javawriter = "2.5.1"
 
@@ -75,14 +80,16 @@ ext {
     ]
 
     presentationTestDependencies = [
-            mockito          : "org.mockito:mockito-core:${mockitoVersion}",
-            dexmaker         : "com.google.dexmaker:dexmaker:${dexmakerVersion}",
-            dexmakerMockito  : "com.google.dexmaker:dexmaker-mockito:${dexmakerVersion}",
-            espresso         : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
-            testingSupportLib: "com.android.support.test:testing-support-lib:${testingSupportLibVersion}",
-            javawriter       : "com.squareup:javawriter:${javawriter}",
-            junit            : "junit:junit:${jUnitVersion}"
-
+            mockito             : "org.mockito:mockito-core:${mockitoVersion}",
+            dexmaker            : "com.google.dexmaker:dexmaker:${dexmakerVersion}",
+            dexmakerMockito     : "com.google.dexmaker:dexmaker-mockito:${dexmakerVersion}",
+            espresso            : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            testingSupportLib   : "com.android.support.test:testing-support-lib:${testingSupportLibVersion}",
+            androidRunner       : "com.android.support.test:runner:${runnerVersion}",
+            androidJUnitRules   : "com.android.support.test:rules:${runnerVersion}",
+            androidSupportAnnot : "com.android.support:support-annotations:${supportLibraryVersion}",
+            javawriter          : "com.squareup:javawriter:${javawriter}",
+            junit               : "junit:junit:${jUnitVersion}"
     ]
 
     domainDependencies = [

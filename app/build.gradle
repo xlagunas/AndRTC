@@ -8,12 +8,14 @@ android {
 
     defaultConfig {
         applicationId "cat.xlagunas.andrtc"
-        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
-        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 7
         versionName "1.1.7"
-        vectorDrawables.useSupportLibrary = true
 
+        minSdkVersion globalConfiguration.androidMinSdkVersion
+        targetSdkVersion globalConfiguration.androidTargetSdkVersion
+
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner globalConfiguration.testInstrumentationRunner
     }
 
     compileOptions {
@@ -41,23 +43,31 @@ android {
         }
     }
 
+    flavorDimensions "andRTC"
+
+
     productFlavors {
         prod {
             manifestPlaceholders appName: "@string/app_name_prod"
+            dimension "andRTC"
         }
         dev {
             manifestPlaceholders appName: "@string/app_name_dev"
             applicationIdSuffix ".dev"
+            dimension "andRTC"
         }
     }
 
     lintOptions {
+        checkReleaseBuilds false
         // set to true to turn off analysis progress reporting by lint
         quiet false
         // if true, stop the gradle build if errors are found
         abortOnError true
         // if true, only report errors
         ignoreWarnings false
+        
+        warning 'InvalidPackage'
     }
 }
 
@@ -66,6 +76,9 @@ configurations {
     devDebugCompile
     prodReleaseCompile
     devReleaseCompile
+
+    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
+
 }
 
 dependencies {
@@ -73,12 +86,8 @@ dependencies {
     def presentationTestDependencies = rootProject.ext.presentationTestDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
 
-    prodDebugCompile project(path: ':data', configuration: 'prodDebug')
-    devDebugCompile project(path: ':data', configuration: 'devDebug')
-    prodReleaseCompile project(path: ':data', configuration: 'prodRelease')
-    devReleaseCompile project(path: ':data', configuration: 'devRelease')
-    compile project(':domain')
-    compile project(':data')
+    implementation project (':data')
+    implementation project(':domain')
 
     annotationProcessor presentationDependencies.daggerCompiler
     annotationProcessor presentationDependencies.butterKnifeCompiler
@@ -101,18 +110,15 @@ dependencies {
     compile presentationDependencies.glide
     compile presentationDependencies.percentSupport
     compile presentationDependencies.timber
-    provided presentationDependencies.autoFactory
     compile developmentDependencies.leakCanary
 
     provided presentationDependencies.javaxAnnotation
 
-    androidTestCompile presentationTestDependencies.mockito
-    androidTestCompile presentationTestDependencies.dexmaker
-    androidTestCompile presentationTestDependencies.dexmakerMockito
-    androidTestCompile presentationTestDependencies.espresso
-    androidTestCompile presentationTestDependencies.testingSupportLib
-    androidTestCompile presentationTestDependencies.javawriter
+    testCompile presentationTestDependencies.mockito
 
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    androidTestCompile 'com.android.support.test:runner:0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -6,7 +6,7 @@ import cat.xlagunas.andrtc.data.social.GoogleManagerImpl;
 import cat.xlagunas.andrtc.di.ActivityScope;
 import dagger.Module;
 import dagger.Provides;
-import xlagunas.cat.andrtc.domain.repository.SocialRepository;
+import cat.xlagunas.andrtc.domain.repository.SocialRepository;
 
 /**
  * Created by xlagunas on 20/8/16.

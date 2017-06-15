@@ -14,7 +14,7 @@ import cat.xlagunas.andrtc.R;
 import cat.xlagunas.andrtc.di.components.UserComponent;
 import cat.xlagunas.andrtc.presenter.ShowContactsPresenter;
 import cat.xlagunas.andrtc.view.ListDataView;
-import xlagunas.cat.andrtc.domain.Friend;
+import cat.xlagunas.andrtc.domain.Friend;
 
 /**
  * Created by xlagunas on 19/03/16.

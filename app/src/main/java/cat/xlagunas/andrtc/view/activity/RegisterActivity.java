@@ -22,7 +22,7 @@ import cat.xlagunas.andrtc.view.RegisterDataView;
 import cat.xlagunas.andrtc.view.fragment.VivProfileImageFragment;
 import cat.xlagunas.andrtc.view.util.TextValidator;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 4/04/16.

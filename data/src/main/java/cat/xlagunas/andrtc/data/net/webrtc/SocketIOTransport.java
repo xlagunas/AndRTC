@@ -22,7 +22,7 @@ import cat.xlagunas.andrtc.data.net.webrtc.messages.UserDetailsMessage;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import timber.log.Timber;
-import xlagunas.cat.andrtc.domain.User;
+import cat.xlagunas.andrtc.domain.User;
 
 /**
  * Created by xlagunas on 22/07/16.
