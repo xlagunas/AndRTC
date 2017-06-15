@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by xlagunas on 27/4/17.
  */
-
+@RunWith(JUnit4.class)
 public class UserCacheImplTest {
 
     @Mock
