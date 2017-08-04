@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/contact_fullname"
+        tools:text="Xavier Lagunas Calpe"
+        android:layout_marginLeft="72dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contact_thumbnail"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@android:color/darker_gray"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_alignTop="@id/contact_fullname"
+        />
+
+    <TextView
+        android:id="@+id/contact_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="xlagunas"
+        android:layout_below="@id/contact_fullname"
+        android:layout_marginLeft="72dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="14sp"
+        />
+
+</merge>
+

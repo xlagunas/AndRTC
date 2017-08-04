@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "718867955713",
+    "project_id": "andrtc-1246"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718867955713:android:d540dd25652da165",
+        "android_client_info": {
+          "package_name": "cat.xlagunas.andrtc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718867955713-08lfunhq784pv556ugk5u9g3qacoquhm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cat.xlagunas.andrtc",
+            "certificate_hash": "EA2AC2F6B521877EDD41C807C82C54590C6DACF0"
+          }
+        },
+        {
+          "client_id": "718867955713-a4cdr3dgk0v1ieagvdjmvb7b2p4d0iri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWfN5wJD1eMl7YSje-Wlb0eZhboa3T3Wk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718867955713:android:defc78381d3ace53",
+        "android_client_info": {
+          "package_name": "cat.xlagunas.andrtc.data"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718867955713-ajht1fnkt8tggchjb40glnl7j9mhgsdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cat.xlagunas.andrtc.data",
+            "certificate_hash": "EA2AC2F6B521877EDD41C807C82C54590C6DACF0"
+          }
+        },
+        {
+          "client_id": "718867955713-a4cdr3dgk0v1ieagvdjmvb7b2p4d0iri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWfN5wJD1eMl7YSje-Wlb0eZhboa3T3Wk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
