@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Viv</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="hint_user_name">First name</string>
+    <string name="hint_user_last_name">Last name</string>
+    <string name="hint_user_email">Email address</string>
+    <string name="hint_user_username">Username</string>
+    <string name="hint_user_password">Password</string>
+</resources>
