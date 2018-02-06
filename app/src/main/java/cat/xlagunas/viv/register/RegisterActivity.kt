@@ -1,23 +1,57 @@
 package cat.xlagunas.viv.register
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
-
-import kotlinx.android.synthetic.main.activity_register.*
+import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
-        setSupportActionBar(toolbar)
+    private lateinit var registerViewModel: RegisterViewModel
+    private lateinit var actionButton: FloatingActionButton
+    private lateinit var binding: ActivityRegisterBinding
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        registerViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(RegisterViewModel::class.java)
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
+        binding.user = RegisterUserBinder()
+
+        registerViewModel.findUser().observe(this, Observer<User> {
+            Log.d("RegisterActivity", "user logged" + it?.username)
+        })
+        actionButton = findViewById(R.id.fab)
+        actionButton.setOnClickListener {
+            registerViewModel
+                    .register(RegisterUserConverter().toUser(binding.user!!))
+                    .doOnSubscribe { actionButton.isEnabled = false }
+                    .subscribe({
+                        showToast()
+                        actionButton.isEnabled = true
+                        finish()
+                    }, { error ->
+                        Log.e("RegisterActivity", "Network error", error)
+                        actionButton.isEnabled = true
+                        showErrorToast()
+                    })
         }
+
     }
 
+    private fun showToast() {
+        Snackbar.make(binding.root, "User registered ", Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun showErrorToast() {
+        Snackbar.make(binding.root, "Error registering user", Snackbar.LENGTH_LONG).show()
+    }
 }

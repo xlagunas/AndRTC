@@ -4,14 +4,15 @@ import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.data.common.net.UserDto
 import cat.xlagunas.domain.commons.User
 
-class UserConverter() {
+class UserConverter {
     fun toUser(userEntity: UserEntity): User =
             User(id = userEntity.id,
                     username = userEntity.username,
                     firstName = userEntity.firstName,
                     lastName = userEntity.lastName,
                     email = userEntity.email,
-                    imageUrl = userEntity.imageUrl ?: "STRING_REFERENCE_FOR_DEFAULT_IMAGE_IN_USER_CONVERTER")
+                    imageUrl = userEntity.imageUrl ?: "STRING_REFERENCE_FOR_DEFAULT_IMAGE_IN_USER_CONVERTER",
+                    password = null)
 
     fun toUserEntity(user: User): UserEntity =
             UserEntity(id = user.id,
@@ -36,5 +37,6 @@ class UserConverter() {
                     firstName = user.firstName,
                     lastName = user.lastName,
                     email = user.email,
-                    profilePic = user.imageUrl)
+                    profilePic = user.imageUrl,
+                    password = user.password)
 }

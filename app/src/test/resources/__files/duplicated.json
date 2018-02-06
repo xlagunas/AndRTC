@@ -1,0 +1,10 @@
+{
+  "timestamp": "1517663232553",
+  "status": "409",
+  "error": "Conflict",
+  "exception": "cat.xlagunas.andrtc.exception.ExistingUserException",
+  "message": "Data integrity violation",
+  "path": "/user/"
+}
+
+

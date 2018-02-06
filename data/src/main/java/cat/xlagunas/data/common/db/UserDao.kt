@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 @Dao
@@ -13,7 +14,7 @@ interface UserDao {
     val user: Maybe<UserEntity>
 
     @Query("SELECT * FROM user")
-    fun loadAll(): List<UserEntity>
+    fun loadAll(): Flowable<UserEntity>
 
     @Query("SELECT * FROM user WHERE id IN (:userIds)")
     fun loadAllByUserId(vararg userIds: Int): List<UserEntity>

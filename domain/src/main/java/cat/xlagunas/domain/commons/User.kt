@@ -5,11 +5,13 @@ data class User(val id: Long?,
                 val firstName: String,
                 val lastName: String,
                 val email: String,
-                val imageUrl: String) {
+                val imageUrl: String,
+                val password: String?) {
 
     constructor(username: String,
                 firstName: String,
                 lastName: String,
                 email: String,
-                imageUrl: String) : this(null, username, firstName, lastName, email, imageUrl)
+                imageUrl: String,
+                password: String?) : this(null, username, firstName, lastName, email, imageUrl, password)
 }

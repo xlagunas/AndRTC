@@ -10,7 +10,6 @@ import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.register.RegisterRepository
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,23 +46,28 @@ class RegisterRepositoryImplTest {
 
     @Test
     fun whenSuccessfullyRegistered_thenUserPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com")
+        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", null)
         `when`(registerApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
         registerRepository.registerUser(user)
-                .test().assertComplete()
+                .test()
+                .assertComplete()
 
-        assertThat(userDao.loadAll()).hasSize(1)
+        userDao.loadAll()
+                .test()
+                .assertValueCount(1)
     }
 
     @Test
     fun whenErrorRegisteringUser_thenUserNotPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com")
+        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", null)
         `when`(registerApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
 
         registerRepository.registerUser(user)
                 .test().assertError(IOException::class.java)
 
-        assertThat(userDao.loadAll()).isEmpty()
+        userDao.loadAll().test()
+                .assertValueCount(0)
+                .assertComplete()
     }
 
 }
