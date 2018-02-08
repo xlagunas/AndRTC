@@ -7,11 +7,11 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
+import timber.log.Timber
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.user = RegisterUserBinder()
 
         registerViewModel.findUser().observe(this, Observer<User> {
-            Log.d("RegisterActivity", "user logged" + it?.username)
+            Timber.d("User logged in %s", it?.username)
         })
         actionButton = findViewById(R.id.fab)
         actionButton.setOnClickListener {
@@ -37,9 +37,8 @@ class RegisterActivity : AppCompatActivity() {
                     .subscribe({
                         showToast()
                         actionButton.isEnabled = true
-                        finish()
                     }, { error ->
-                        Log.e("RegisterActivity", "Network error", error)
+                        Timber.e(error, "Network error")
                         actionButton.isEnabled = true
                         showErrorToast()
                     })

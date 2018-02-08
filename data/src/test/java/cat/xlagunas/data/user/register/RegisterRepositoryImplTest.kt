@@ -41,25 +41,23 @@ class RegisterRepositoryImplTest {
         val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java).allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        registerRepository = RegisterRepositoryImpl(registerApi, userDao, userConverter, RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()))
+        registerRepository = RegisterRepositoryImpl(registerApi, userDao, userConverter, RxSchedulers(Schedulers.single(), Schedulers.single(), Schedulers.single()))
     }
 
     @Test
     fun whenSuccessfullyRegistered_thenUserPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", null)
-        `when`(registerApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
-        registerRepository.registerUser(user)
-                .test()
-                .assertComplete()
+        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
+        `when`(registerApi.registerUser(userConverter.toUserDto(user)))
+                .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
 
-        userDao.loadAll()
-                .test()
-                .assertValueCount(1)
+        registerRepository.registerUser(user).blockingGet()
+
+        userDao.loadAll().test().assertValueCount(1)
     }
 
     @Test
     fun whenErrorRegisteringUser_thenUserNotPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", null)
+        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
         `when`(registerApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
 
         registerRepository.registerUser(user)

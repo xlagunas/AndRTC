@@ -3,6 +3,7 @@ package cat.xlagunas.viv.register
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.user.register.RegisterRepository
 import io.reactivex.Completable
@@ -13,5 +14,6 @@ class RegisterViewModel @Inject constructor(private val userRepository: Register
     fun register(user: User): Completable = userRepository.registerUser(user)
 
     fun findUser(): LiveData<User> = LiveDataReactiveStreams.fromPublisher(userRepository.findUser())
+
 
 }

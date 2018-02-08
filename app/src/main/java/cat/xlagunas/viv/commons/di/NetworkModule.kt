@@ -28,7 +28,7 @@ class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .client(client)
-                .baseUrl("http://10.0.2.2:9999")
+                .baseUrl("http://192.168.0.14:8080")
                 .build()
     }
 

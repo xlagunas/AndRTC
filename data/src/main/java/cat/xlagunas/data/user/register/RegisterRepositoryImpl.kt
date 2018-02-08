@@ -18,7 +18,6 @@ class RegisterRepositoryImpl(private val registerApi: RegisterApi,
                 .map(userConverter::toUser)
     }
 
-
     override fun registerUser(user: User): Completable {
         val userDto = userConverter.toUserDto(user)
         val userEntity = userConverter.toUserEntity(user)
@@ -27,6 +26,5 @@ class RegisterRepositoryImpl(private val registerApi: RegisterApi,
                 .andThen(Completable.fromAction { userDao.insert(userEntity) })
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
-
     }
 }
