@@ -54,7 +54,6 @@ class RegisterActivityTest {
             okHttpClient.newCall(request).execute()
 
         }
-
     }
 
     @Before

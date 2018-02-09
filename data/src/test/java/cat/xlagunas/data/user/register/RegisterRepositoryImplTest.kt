@@ -1,5 +1,6 @@
 package cat.xlagunas.data.user.register
 
+import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.persistence.room.Room
 import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter
@@ -20,6 +21,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.io.IOException
+import org.junit.Rule
+
+
 
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class)
@@ -31,6 +35,9 @@ class RegisterRepositoryImplTest {
 
     private lateinit var userConverter: UserConverter
 
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Mock
     private lateinit var registerApi: RegisterApi
 
@@ -41,7 +48,7 @@ class RegisterRepositoryImplTest {
         val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java).allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        registerRepository = RegisterRepositoryImpl(registerApi, userDao, userConverter, RxSchedulers(Schedulers.single(), Schedulers.single(), Schedulers.single()))
+        registerRepository = RegisterRepositoryImpl(registerApi, userDao, userConverter, RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()))
     }
 
     @Test
@@ -50,7 +57,7 @@ class RegisterRepositoryImplTest {
         `when`(registerApi.registerUser(userConverter.toUserDto(user)))
                 .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
 
-        registerRepository.registerUser(user).blockingGet()
+        registerRepository.registerUser(user).test()
 
         userDao.loadAll().test().assertValueCount(1)
     }
@@ -65,7 +72,6 @@ class RegisterRepositoryImplTest {
 
         userDao.loadAll().test()
                 .assertValueCount(0)
-                .assertComplete()
     }
 
 }
