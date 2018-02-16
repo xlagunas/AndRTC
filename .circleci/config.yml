@@ -29,6 +29,8 @@ jobs:
       - store_test_results:
           path: app/build/test-results
   android_test:
+    docker:
+      - image: circleci/android:api-26-alpha
     steps:
       - run: echo "Hello step 2"
 workflows:
