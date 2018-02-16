@@ -30,12 +30,13 @@ jobs:
           path: app/build/test-results
   android_test:
     steps:
-      -run: echo "Hello step 2"
+      - run: echo "Hello step 2"
 workflows:
   version: 2
   compile_and_test:
     jobs:
       - build
       - android_test:
-        requires:
-         - build
+          requires:
+            - build
+
