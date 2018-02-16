@@ -40,7 +40,7 @@ jobs:
           name: Generate Test APK
           command: ./gradlew :app:assembleDebugAndroidTest
       - store_artifacts:
-          paths: app/build/outputs/apk
+          path: app/build/outputs/apk
 workflows:
   version: 2
   compile_and_test:
