@@ -36,6 +36,7 @@ class RegisterActivity : AppCompatActivity() {
                     .subscribe({
                         showToast()
                         actionButton.isEnabled = true
+                        finish()
                     }, { error ->
                         Timber.e(error, "Network error")
                         actionButton.isEnabled = true

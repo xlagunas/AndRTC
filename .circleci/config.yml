@@ -28,3 +28,15 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
+  android_test:
+    steps:
+      -run: echo "Hello step 2"
+workflows:
+  version: 2
+  compile_and_test:
+  jobs:
+    - build
+    - test:
+      requires:
+        - build
+

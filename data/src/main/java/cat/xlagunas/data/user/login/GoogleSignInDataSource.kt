@@ -64,7 +64,7 @@ class GoogleSignInDataSource @Inject constructor(private val activityMonitor: Ac
         }
     }
 
-    fun handleSigninResult(completedTask: Task<GoogleSignInAccount>): Flowable<User> {
+    fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): Flowable<User> {
         return try {
             val account = completedTask.getResult(ApiException::class.java)
             val user = User(account.email!!, account.givenName!!, account.familyName!!, account.email!!, account.photoUrl.toString(), UUID.randomUUID().toString())
