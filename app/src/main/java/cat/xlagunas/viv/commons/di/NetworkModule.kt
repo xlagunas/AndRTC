@@ -7,6 +7,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -28,14 +29,19 @@ class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .client(client)
-                .baseUrl("http://192.168.0.14:8080")
+//                .baseUrl("http://192.168.0.155:8080")
+                .baseUrl("http://10.254.161.47:8080")
                 .build()
     }
 
     @Provides
     @Singleton
     fun provideOkiHttpClient(application: Application): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BASIC
+
         return OkHttpClient.Builder()
+                .addInterceptor(interceptor)
                 .addInterceptor(ChuckInterceptor(application))
                 .build()
     }
