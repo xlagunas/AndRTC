@@ -30,9 +30,13 @@ jobs:
       - store_test_results:
           path: app/build/test-results
   android_test:
+    working_directory: ~/code
     docker:
       - image: circleci/android:api-26-alpha
     steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Generate Debug APK
           command: ./gradlew :app:assembleDebug
