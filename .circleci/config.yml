@@ -34,9 +34,8 @@ jobs:
 workflows:
   version: 2
   compile_and_test:
-  jobs:
-    - build
-    - test:
-      requires:
-        - build
-
+    jobs:
+      - build
+      - test:
+        requires:
+         - build
