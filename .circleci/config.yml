@@ -36,6 +36,6 @@ workflows:
   compile_and_test:
     jobs:
       - build
-      - test:
+      - android_test:
         requires:
          - build
