@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-perf'
+
 
 
 android {
@@ -19,6 +22,21 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('../buildsystem/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
 
@@ -42,7 +60,9 @@ dependencies {
 
     kapt 'com.google.dagger:dagger-compiler:2.14.1'
     kapt 'com.google.dagger:dagger-android-processor:2.13'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
+    implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:26.1.0'
 
@@ -57,11 +77,16 @@ dependencies {
     implementation 'android.arch.lifecycle:reactivestreams:1.1.0'
     implementation 'android.arch.persistence.room:runtime:1.0.0'
 
+    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.firebase:firebase-perf:11.8.0'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation 'com.jakewharton.timber:timber:4.6.0'
-
 
     testImplementation 'junit:junit:4.12'
 
@@ -82,4 +107,6 @@ dependencies {
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
 
 }
+
+apply plugin: 'com.google.gms.google-services'
 

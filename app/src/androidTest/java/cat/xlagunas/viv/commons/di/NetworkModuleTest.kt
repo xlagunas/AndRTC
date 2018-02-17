@@ -40,7 +40,6 @@ class NetworkModuleTest {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
         return OkHttpClient.Builder()
-//                .addInterceptor(ChuckInterceptor(application))
                 .addInterceptor(interceptor)
                 .retryOnConnectionFailure(true)
                 .build()
