@@ -11,9 +11,6 @@ jobs:
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      -  run:
-#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-#         command: sudo chmod +x ./gradlew
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -52,7 +49,17 @@ jobs:
           path: app/build/outputs/apk
 workflows:
   version: 2
+  run_tests:
+    jobs:
+      - build
   compile_and_test:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - kotlin
     jobs:
       - build
       - android_test:
