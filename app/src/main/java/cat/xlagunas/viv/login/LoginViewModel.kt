@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(private val googleSignInDataSource: Laz
     }
 
     fun handleLoginResult(task: Task<GoogleSignInAccount>) {
-        disposable = googleSignInDataSource.get().handleSigninResult(task)
+        disposable = googleSignInDataSource.get().handleSignInResult(task)
                 .flatMapCompletable { registerRepository.registerUser(it) }
                 .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) })
     }
