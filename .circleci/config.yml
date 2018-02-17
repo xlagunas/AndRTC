@@ -44,6 +44,9 @@ jobs:
       - run:
           name: Generate Test APK
           command: ./gradlew :app:assembleDebugAndroidTest
+      - run:
+          name: Run firebase android tests
+          command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
 workflows:

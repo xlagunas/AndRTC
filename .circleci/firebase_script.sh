@@ -1,0 +1,9 @@
+#!/bin/bash
+sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run \
+      --type instrumentation \
+      --app ${CIRCLE_ARTIFACTS}app/build/outputs/apk/debug/app-debug.apk \
+      --test ${CIRCLE_ARTIFACTS}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+      --device model=Nexus6,version=21,locale=en,orientation=portrait  \
+      --device model=Nexus7,version=19,locale=fr,orientation=landscape
