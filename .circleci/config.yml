@@ -59,7 +59,7 @@ workflows:
           filters:
             branches:
               only:
-                - ci_kotlin
+                - kotlin
     jobs:
       - build
       - android_test:
