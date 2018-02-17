@@ -1,7 +1,7 @@
 #!/bin/bash
-sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-sudo /opt/google-cloud-sdk/bin/gcloud firebase test android run \
+sudo gcloud --quiet components update
+sudo gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+sudo gcloud firebase test android run \
       --type instrumentation \
       --app ${CIRCLE_ARTIFACTS}app/build/outputs/apk/debug/app-debug.apk \
       --test ${CIRCLE_ARTIFACTS}/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
