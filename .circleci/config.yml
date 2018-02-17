@@ -55,11 +55,11 @@ workflows:
   compile_and_test:
     triggers:
       - schedule:
-          cron: "16 0 * * *"
+          cron: "21 0 * * *"
           filters:
             branches:
               only:
-                - kotlin_ci
+                - ci_kotlin
                 - integrate_tests_circle_ci
     jobs:
       - build
