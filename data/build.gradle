@@ -52,6 +52,8 @@ dependencies {
     implementation 'android.arch.persistence.room:runtime:1.0.0'
     implementation 'android.arch.persistence.room:rxjava2:1.0.0'
 
+    api 'com.google.android.gms:play-services-auth:11.8.0'
+
     debugApi 'com.readystatesoftware.chuck:library:1.1.0'
     releaseApi 'com.readystatesoftware.chuck:library-no-op:1.1.0'
 
@@ -61,10 +63,8 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.9.0'
     testImplementation "android.arch.core:core-testing:1.1.0"
     testImplementation "android.arch.persistence.room:testing:1.0.0"
-
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-
 }
+
 repositories {
     mavenCentral()
 }

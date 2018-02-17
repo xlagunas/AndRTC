@@ -20,9 +20,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        registerViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(RegisterViewModel::class.java)
         super.onCreate(savedInstanceState)
+        registerViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(RegisterViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
         binding.user = RegisterUserBinder()
 
@@ -37,6 +36,7 @@ class RegisterActivity : AppCompatActivity() {
                     .subscribe({
                         showToast()
                         actionButton.isEnabled = true
+                        finish()
                     }, { error ->
                         Timber.e(error, "Network error")
                         actionButton.isEnabled = true
