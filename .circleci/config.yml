@@ -55,7 +55,7 @@ workflows:
   compile_and_test:
     triggers:
       - schedule:
-          cron: "21 0 * * *"
+          cron: "28 23 * * *"
           filters:
             branches:
               only:
