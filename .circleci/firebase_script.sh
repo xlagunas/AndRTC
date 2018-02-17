@@ -1,5 +1,4 @@
 #!/bin/bash
-sudo gcloud --quiet components update
 sudo gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
 sudo gcloud firebase test android run \
       --type instrumentation \
