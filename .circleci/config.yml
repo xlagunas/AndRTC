@@ -55,11 +55,11 @@ workflows:
   compile_and_test:
     triggers:
       - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - integrate_tests_circle_ci
+          cron: "0 5 * * *"
+          #filters:
+            #branches:
+              #only:
+                #- integrate_tests_circle_ci
     jobs:
       - build
       - android_test:
