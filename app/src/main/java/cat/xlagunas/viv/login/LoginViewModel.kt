@@ -5,20 +5,24 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import cat.xlagunas.data.user.login.GoogleSignInDataSource
-import cat.xlagunas.domain.user.register.RegisterRepository
+import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
+import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import dagger.Lazy
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LoginViewModel @Inject constructor(private val googleSignInDataSource: Lazy<GoogleSignInDataSource>, private val registerRepository: RegisterRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+        private val googleSignInDataSource: Lazy<GoogleSignInDataSource>,
+        private val authenticationRepository: AuthenticationRepository) : ViewModel() {
 
     private val liveData: MutableLiveData<LoginState> = MutableLiveData()
-    private var disposable: Disposable? = null
+    private val disposable = CompositeDisposable()
 
 
     fun registerGoogle(): LifecycleObserver = googleSignInDataSource.get()
@@ -28,9 +32,15 @@ class LoginViewModel @Inject constructor(private val googleSignInDataSource: Laz
     }
 
     fun handleLoginResult(task: Task<GoogleSignInAccount>) {
-        disposable = googleSignInDataSource.get().handleSignInResult(task)
-                .flatMapCompletable { registerRepository.registerUser(it) }
-                .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) })
+        disposable.add(googleSignInDataSource.get().handleSignInResult(task)
+                .flatMapCompletable { authenticationRepository.registerUser(it) }
+                .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) }))
+    }
+
+    fun login(username: String, password: String) {
+        disposable.add(
+                authenticationRepository.login(AuthenticationCredentials(username, password))
+                        .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) }))
     }
 
     private fun handleErrorState(throwable: Throwable) {
@@ -54,7 +64,7 @@ class LoginViewModel @Inject constructor(private val googleSignInDataSource: Laz
 
     override fun onCleared() {
         super.onCleared()
-        disposable?.dispose()
+        disposable.dispose()
     }
 
 }

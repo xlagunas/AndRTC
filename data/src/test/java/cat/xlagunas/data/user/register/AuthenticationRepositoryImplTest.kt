@@ -6,9 +6,13 @@ import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.VivDatabase
+import cat.xlagunas.data.common.preferences.AuthTokenManagerImpl
+import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
+import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.domain.commons.User
+import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.user.register.RegisterRepository
+import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
@@ -27,9 +31,9 @@ import org.junit.Rule
 
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class)
-class RegisterRepositoryImplTest {
+class AuthenticationRepositoryImplTest {
 
-    private lateinit var registerRepository: RegisterRepository
+    private lateinit var authenticationRepository: AuthenticationRepository
 
     private lateinit var userDao: UserDao
 
@@ -39,7 +43,10 @@ class RegisterRepositoryImplTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var registerApi: RegisterApi
+    private lateinit var authenticationApi: AuthenticationApi
+
+    @Mock
+    private lateinit var authTokenManager: AuthTokenManager
 
 
     @Before
@@ -48,16 +55,16 @@ class RegisterRepositoryImplTest {
         val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java).allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        registerRepository = RegisterRepositoryImpl(registerApi, userDao, userConverter, RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()))
+        authenticationRepository = AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()), authTokenManager)
     }
 
     @Test
     fun whenSuccessfullyRegistered_thenUserPersisted() {
         val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
-        `when`(registerApi.registerUser(userConverter.toUserDto(user)))
+        `when`(authenticationApi.registerUser(userConverter.toUserDto(user)))
                 .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
 
-        registerRepository.registerUser(user).test()
+        authenticationRepository.registerUser(user).test()
 
         userDao.loadAll().test().assertValueCount(1)
     }
@@ -65,9 +72,9 @@ class RegisterRepositoryImplTest {
     @Test
     fun whenErrorRegisteringUser_thenUserNotPersisted() {
         val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
-        `when`(registerApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
+        `when`(authenticationApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
 
-        registerRepository.registerUser(user)
+        authenticationRepository.registerUser(user)
                 .test().assertError(IOException::class.java)
 
         userDao.loadAll().test()

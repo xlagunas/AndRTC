@@ -7,6 +7,7 @@ import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.preferences.AuthTokenManagerImpl
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.data.common.provider.ActivityMonitor
+import cat.xlagunas.domain.preferences.AuthTokenManager
 import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,7 +28,7 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideAuthToken(sharedPreferences: SharedPreferences) = AuthTokenManagerImpl(sharedPreferences)
+    fun provideAuthToken(sharedPreferences: SharedPreferences) : AuthTokenManager = AuthTokenManagerImpl(sharedPreferences)
 
 
     @Provides

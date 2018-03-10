@@ -129,12 +129,11 @@ class RegisterActivityTest {
 
     }
 
-    private val BUFFER_SIZE = 4 * 1024
     @Throws(IOException::class)
     private fun inputStreamToString(inputStream: InputStream, charsetName: String): String {
         val builder = StringBuilder()
         val reader = InputStreamReader(inputStream, charsetName)
-        val buffer = CharArray(BUFFER_SIZE)
+        val buffer = CharArray(1024 * 4)
         var length = reader.read(buffer)
         while (length != -1) {
             builder.append(buffer, 0, length)

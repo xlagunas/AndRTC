@@ -2,10 +2,11 @@ package cat.xlagunas.viv.register
 
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
-import cat.xlagunas.data.user.register.RegisterApi
-import cat.xlagunas.data.user.register.RegisterRepositoryImpl
+import cat.xlagunas.data.user.authentication.AuthenticationApi
+import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
+import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.user.register.RegisterRepository
+import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -14,12 +15,12 @@ import retrofit2.Retrofit
 class RegisterModule {
 
     @Provides
-    fun provideRegisterApi(retrofit: Retrofit): RegisterApi {
-        return retrofit.create(RegisterApi::class.java)
+    fun provideRegisterApi(retrofit: Retrofit): AuthenticationApi {
+        return retrofit.create(AuthenticationApi::class.java)
     }
 
     @Provides
-    fun provideRegisterRepository(registerApi: RegisterApi, userDao: UserDao, userConverter: UserConverter, rxSchedulers: RxSchedulers): RegisterRepository {
-        return RegisterRepositoryImpl(registerApi, userDao, userConverter, rxSchedulers)
+    fun provideRegisterRepository(authenticationApi: AuthenticationApi, userDao: UserDao, userConverter: UserConverter, rxSchedulers: RxSchedulers, authTokenManager: AuthTokenManager): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, rxSchedulers, authTokenManager)
     }
 }
