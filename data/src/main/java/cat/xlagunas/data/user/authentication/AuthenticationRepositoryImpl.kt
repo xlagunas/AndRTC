@@ -9,6 +9,7 @@ import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import timber.log.Timber
 
 class AuthenticationRepositoryImpl(
         private val authenticationApi: AuthenticationApi,
@@ -37,5 +38,6 @@ class AuthenticationRepositoryImpl(
                 .flatMapCompletable { Completable.fromCallable { authTokenManager.insertAuthToken(it.token) } }
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
+                .doOnComplete { Timber.i("Successfully logged in user") }
     }
 }

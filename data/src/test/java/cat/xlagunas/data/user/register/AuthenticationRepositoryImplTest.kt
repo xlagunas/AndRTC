@@ -6,27 +6,29 @@ import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.VivDatabase
-import cat.xlagunas.data.common.preferences.AuthTokenManagerImpl
-import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
+import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
+import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.io.IOException
-import org.junit.Rule
-
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -79,6 +81,29 @@ class AuthenticationRepositoryImplTest {
 
         userDao.loadAll().test()
                 .assertValueCount(0)
+    }
+
+    @Test
+    fun givenSuccessfulAuthentication_thenTokenPersisted() {
+        val authToken = "thisIsTheAuthTokenKeyReturnedByTheServer"
+        val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
+        `when`(authenticationApi.loginUser(authenticationCredentials)).thenReturn(Single.just(AuthTokenDto(authToken)))
+
+        authenticationRepository.login(authenticationCredentials)
+                .test().assertComplete()
+
+        verify(authTokenManager).insertAuthToken(authToken)
+    }
+
+    @Test
+    fun givenInvalidAuthentication_thenTokenNotPersisted() {
+        val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
+
+        `when`(authenticationApi.loginUser(authenticationCredentials)).thenReturn(Single.error(IOException("Error!!")))
+
+        authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
+
+        verify(authTokenManager, never()).insertAuthToken(ArgumentMatchers.anyString())
     }
 
 }
