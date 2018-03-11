@@ -5,20 +5,23 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import cat.xlagunas.data.user.login.GoogleSignInDataSource
-import cat.xlagunas.domain.user.register.RegisterRepository
+import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
+import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import dagger.Lazy
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class LoginViewModel @Inject constructor(private val googleSignInDataSource: Lazy<GoogleSignInDataSource>, private val registerRepository: RegisterRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+        private val googleSignInDataSource: Lazy<GoogleSignInDataSource>,
+        private val authenticationRepository: AuthenticationRepository) : ViewModel() {
 
     private val liveData: MutableLiveData<LoginState> = MutableLiveData()
-    private var disposable: Disposable? = null
+    private val disposable = CompositeDisposable()
 
 
     fun registerGoogle(): LifecycleObserver = googleSignInDataSource.get()
@@ -28,18 +31,30 @@ class LoginViewModel @Inject constructor(private val googleSignInDataSource: Laz
     }
 
     fun handleLoginResult(task: Task<GoogleSignInAccount>) {
-        disposable = googleSignInDataSource.get().handleSignInResult(task)
-                .flatMapCompletable { registerRepository.registerUser(it) }
-                .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) })
+        disposable.add(googleSignInDataSource.get().handleSignInResult(task)
+                .flatMapCompletable { authenticationRepository.registerUser(it) }
+                .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
+    }
+
+    fun login(username: String, password: String) {
+        disposable.add(
+                authenticationRepository.login(AuthenticationCredentials(username, password))
+                        .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
+    }
+
+    private fun onSuccessfullyLogged() {
+        liveData.postValue(SuccessLoginState)
     }
 
     private fun handleErrorState(throwable: Throwable) {
         Timber.e(throwable, "Error registering user")
         if (throwable is HttpException) {
             when (throwable.code()) {
-                409 -> LoginState(false)
+                409 -> liveData.postValue(InvalidLoginState("User already registered"))
+                401 -> liveData.postValue(InvalidLoginState("Authentication error"))
             }
-        }
+        } else liveData.postValue(InvalidLoginState(throwable.message ?: "Something went wrong"))
+
 
     }
 
@@ -47,18 +62,10 @@ class LoginViewModel @Inject constructor(private val googleSignInDataSource: Laz
         return liveData
     }
 
-    private fun emitNextLoginState(state: Boolean) {
-        liveData.postValue(LoginState(state))
-    }
-
-
     override fun onCleared() {
         super.onCleared()
-        disposable?.dispose()
+        disposable.dispose()
     }
 
 }
-
-
-data class LoginState(val isSuccess: Boolean)
 

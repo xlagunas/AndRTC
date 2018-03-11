@@ -3,13 +3,12 @@ package cat.xlagunas.viv.register
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import cat.xlagunas.domain.commons.User
-import cat.xlagunas.domain.user.register.RegisterRepository
+import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class RegisterViewModel @Inject constructor(private val userRepository: RegisterRepository) : ViewModel() {
+class RegisterViewModel @Inject constructor(private val userRepository: AuthenticationRepository) : ViewModel() {
 
     fun register(user: User): Completable = userRepository.registerUser(user)
 

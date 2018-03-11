@@ -19,7 +19,9 @@ import java.util.*
 import javax.inject.Inject
 
 
-class GoogleSignInDataSource @Inject constructor(private val activityMonitor: ActivityMonitor, private val schedulers: RxSchedulers) : LifecycleObserver {
+class GoogleSignInDataSource @Inject constructor(
+        private val activityMonitor: ActivityMonitor,
+        private val schedulers: RxSchedulers) : LifecycleObserver {
 
     companion object {
         const val RC_SIGN_IN = 4004
