@@ -13,7 +13,6 @@ import dagger.Lazy
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -34,22 +33,28 @@ class LoginViewModel @Inject constructor(
     fun handleLoginResult(task: Task<GoogleSignInAccount>) {
         disposable.add(googleSignInDataSource.get().handleSignInResult(task)
                 .flatMapCompletable { authenticationRepository.registerUser(it) }
-                .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) }))
+                .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
     }
 
     fun login(username: String, password: String) {
         disposable.add(
                 authenticationRepository.login(AuthenticationCredentials(username, password))
-                        .subscribe({ emitNextLoginState(true) }, { emitNextLoginState(false) }))
+                        .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
+    }
+
+    private fun onSuccessfullyLogged() {
+        liveData.postValue(SuccessLoginState)
     }
 
     private fun handleErrorState(throwable: Throwable) {
         Timber.e(throwable, "Error registering user")
         if (throwable is HttpException) {
             when (throwable.code()) {
-                409 -> LoginState(false)
+                409 -> liveData.postValue(InvalidLoginState("User already registered"))
+                401 -> liveData.postValue(InvalidLoginState("Authentication error"))
             }
-        }
+        } else liveData.postValue(InvalidLoginState(throwable.message ?: "Something went wrong"))
+
 
     }
 
@@ -57,18 +62,10 @@ class LoginViewModel @Inject constructor(
         return liveData
     }
 
-    private fun emitNextLoginState(state: Boolean) {
-        liveData.postValue(LoginState(state))
-    }
-
-
     override fun onCleared() {
         super.onCleared()
         disposable.dispose()
     }
 
 }
-
-
-data class LoginState(val isSuccess: Boolean)
 
