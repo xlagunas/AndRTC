@@ -38,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         loginViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory)
                 .get(LoginViewModel::class.java)

@@ -1,0 +1,9 @@
+<resources>
+    <style name="AppTheme.SplashTheme">
+        <item name="android:windowSplashscreenContent">@drawable/background_splash</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+</resources>

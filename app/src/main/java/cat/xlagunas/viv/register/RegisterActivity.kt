@@ -20,6 +20,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
         registerViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(RegisterViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
