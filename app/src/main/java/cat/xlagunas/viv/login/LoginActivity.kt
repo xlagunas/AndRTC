@@ -1,5 +1,6 @@
 package cat.xlagunas.viv.login
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -21,6 +22,10 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 
 class LoginActivity : AppCompatActivity() {
+
+    companion object {
+        val LOGIN_RESULT = 1000
+    }
 
     @BindView(R.id.sign_in_button)
     lateinit var signInButton: SignInButton
@@ -72,7 +77,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
-            is SuccessLoginState -> finish()
+            is SuccessLoginState -> {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
             is InvalidLoginState -> Snackbar.make(findViewById(android.R.id.content), loginState.errorMessage, Toast.LENGTH_SHORT).show()
             is ValidationError -> {
 

@@ -8,7 +8,8 @@ import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.Maybe
+import retrofit2.HttpException
 import timber.log.Timber
 
 class AuthenticationRepositoryImpl(
@@ -18,9 +19,19 @@ class AuthenticationRepositoryImpl(
         private val schedulers: RxSchedulers,
         private val authTokenManager: AuthTokenManager) : AuthenticationRepository {
 
-    override fun findUser(): Flowable<User> {
-        return userDao.loadAll()
+    override fun findUser(): Maybe<User> {
+        return userDao.user
+                .switchIfEmpty(authenticationApi.getUser().map { userConverter.toUserEntity(it) }.toMaybe())
+                .onErrorResumeNext { t: Throwable ->
+                    if (t is HttpException && t.code() == 401) {
+                        Maybe.empty()
+                    } else {
+                        Maybe.error(t)
+                    }
+                }
                 .map(userConverter::toUser)
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
     }
 
     override fun registerUser(user: User): Completable {
@@ -35,9 +46,11 @@ class AuthenticationRepositoryImpl(
 
     override fun login(authenticationCredentials: AuthenticationCredentials): Completable {
         return authenticationApi.loginUser(authenticationCredentials)
-                .flatMapCompletable { Completable.fromCallable { authTokenManager.insertAuthToken(it.token) } }
+                .doOnSuccess { authTokenManager.insertAuthToken(it.token) }
+                .flatMap { authenticationApi.getUser() }
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
-                .doOnComplete { Timber.i("Successfully logged in user") }
+                .doOnSuccess { Timber.i("Successfully logged in user") }
+                .toCompletable()
     }
 }

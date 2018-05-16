@@ -2,8 +2,8 @@ package cat.xlagunas.viv.commons.di
 
 import android.app.Application
 import android.arch.lifecycle.ViewModelProvider
-import cat.xlagunas.viv.BuildConfig
 import cat.xlagunas.data.common.provider.ActivityMonitor
+import cat.xlagunas.viv.BuildConfig
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ open class VivApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
         applicationComponent = DaggerApplicationComponent.builder()
@@ -29,4 +29,5 @@ open class VivApplication : Application() {
 
         registerActivityLifecycleCallbacks(activityMonitor)
     }
+
 }
