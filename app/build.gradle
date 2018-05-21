@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'androidx.navigation.safeargs'
 
 
 android {
@@ -57,13 +58,16 @@ dependencies {
     implementation project(':data')
     implementation project(':domain')
 
-    kapt 'com.google.dagger:dagger-compiler:2.14.1'
-    kapt 'com.google.dagger:dagger-android-processor:2.13'
+    kapt 'com.google.dagger:dagger-compiler:2.16'
+    kapt 'com.google.dagger:dagger-android-processor:2.16'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:28.0.0-alpha1'
+
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha01'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha01'
 
     implementation 'com.android.support:appcompat-v7:28.0.0-alpha1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -73,8 +77,6 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
     implementation 'android.arch.persistence.room:runtime:1.1.0'
-
-    implementation 'androidx.core:core-ktx:0.3'
 
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-analytics:15.0.2'
