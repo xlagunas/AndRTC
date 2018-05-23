@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/contactFragment">
+
+    <activity
+        android:id="@+id/registerActivity"
+        android:name="cat.xlagunas.viv.register.RegisterActivity"
+        android:label="RegisterActivity"/>
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="cat.xlagunas.viv.contact.ContactFragment"
+        android:label="activity_contact"
+        tools:layout="@layout/fragment_contact">
+        <action
+            android:id="@+id/action_login"
+            app:destination="@id/loginFragment"
+            app:popUpToInclusive="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="cat.xlagunas.viv.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_user_logged"
+            app:destination="@id/contactFragment"
+            app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_loginFragment_to_registerActivity"
+            app:destination="@id/registerActivity"/>
+    </fragment>
+</navigation>

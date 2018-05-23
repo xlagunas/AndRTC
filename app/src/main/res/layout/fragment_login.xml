@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="cat.xlagunas.viv.login.LoginActivity"
-    tools:showIn="@layout/activity_login">
+    tools:context="cat.xlagunas.viv.login.LoginFragment"
+    tools:showIn="@layout/fragment_login">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/password_text_input"

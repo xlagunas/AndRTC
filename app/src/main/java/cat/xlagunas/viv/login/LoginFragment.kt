@@ -1,15 +1,18 @@
 package cat.xlagunas.viv.login
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.data.common.extensions.text
@@ -18,13 +21,12 @@ import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
-import kotlinx.android.synthetic.main.activity_login.*
 
 
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
 
     companion object {
-        val LOGIN_RESULT = 1000
+        const val LOGIN_RESULT = 1000
     }
 
     @BindView(R.id.sign_in_button)
@@ -43,21 +45,24 @@ class LoginActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        loginViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory)
+        loginViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory)
                 .get(LoginViewModel::class.java)
-        setContentView(R.layout.activity_login)
-        setSupportActionBar(toolbar)
-        ButterKnife.bind(this)
 
         lifecycle.addObserver(loginViewModel.registerGoogle())
 
-        signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
-
         loginViewModel.onLoginStateChange()
                 .observe(this, Observer(this::handleLoginResult))
+    }
 
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ButterKnife.bind(this, view)
+        signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
         loginButton.setOnClickListener {
             loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text())
         }
@@ -78,12 +83,10 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
             is SuccessLoginState -> {
-                setResult(Activity.RESULT_OK)
-                finish()
+                findNavController().navigate(R.id.action_user_logged)
             }
-            is InvalidLoginState -> Snackbar.make(findViewById(android.R.id.content), loginState.errorMessage, Toast.LENGTH_SHORT).show()
+            is InvalidLoginState -> Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
             is ValidationError -> {
-
                 usernameInputLayout.error = "Username can't be empty"
                 passwordInputLayout.error = "Password can't be empty"
             }

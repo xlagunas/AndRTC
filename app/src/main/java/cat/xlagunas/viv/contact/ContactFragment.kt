@@ -8,67 +8,62 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import butterknife.BindView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import butterknife.ButterKnife
 import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
-import cat.xlagunas.viv.login.LoginActivity
+import cat.xlagunas.viv.login.LoginFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 
-class ContactActivity : AppCompatActivity() {
-
-    @BindView(R.id.toolbar)
-    lateinit var toolbar: Toolbar
+class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.displayState.observe(this, Observer<DisplayState> {
             when (it) {
-                is NotRegistered -> startActivityForResult(Intent(this, LoginActivity::class.java), LoginActivity.LOGIN_RESULT)
+                is NotRegistered -> findNavController().navigate(R.id.action_login)
                 is Display -> setUpActivity(it)
-                is Error -> Snackbar.make(findViewById(android.R.id.content), it.message, Snackbar.LENGTH_LONG).show()
+                is Error -> Snackbar.make(activity!!.findViewById(android.R.id.content), it.message, Snackbar.LENGTH_LONG).show()
                 is Loading -> {
                 }
             }
         })
         contactViewModel.getUserInfo()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_contact, container, false)
 
     }
 
     private fun setUpActivity(it: Display) {
-        setTheme(R.style.AppTheme_NoActionBar)
-        setContentView(R.layout.activity_contact)
-        ButterKnife.bind(this)
-        setSupportActionBar(toolbar)
-        toolbar.title = String.format("Welcome %s", it.user.firstName)
+        ButterKnife.bind(this, view!!)
+        activity!!.toolbar.title = String.format("Welcome %s", it.user.firstName)
         checkPermission()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            LoginActivity.LOGIN_RESULT -> if (resultCode == Activity.RESULT_OK) {
+            LoginFragment.LOGIN_RESULT -> if (resultCode == Activity.RESULT_OK) {
                 contactViewModel.getUserInfo()
             }
         }
     }
 
-    private fun checkPermission(){
-        if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(Manifest.permission.READ_CONTACTS),
-                        1000)
+    private fun checkPermission() {
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 1000)
         } else {
             contactViewModel.phoneContactDataSource()
         }

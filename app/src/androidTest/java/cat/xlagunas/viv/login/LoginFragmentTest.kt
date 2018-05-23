@@ -23,11 +23,11 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class LoginActivityTest : WireMockTest() {
+class LoginFragmentTest : WireMockTest() {
 
     @get:Rule
     @JvmField
-    val activityRule = ActivityTestRule(LoginActivity::class.java, true)
+    val activityRule = ActivityTestRule(LoginFragment::class.java, true)
 
 
     @Test
