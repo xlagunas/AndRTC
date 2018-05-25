@@ -10,14 +10,18 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.viv.contact.search.SearchViewModel
 import cat.xlagunas.viv.login.LoginFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -25,11 +29,16 @@ import timber.log.Timber
 
 class ContactFragment : Fragment() {
 
+    @BindView(R.id.search)
+    lateinit var searchView: SearchView
+
     private lateinit var contactViewModel: ContactViewModel
+    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
+        searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
         contactViewModel.displayState.observe(this, Observer<DisplayState> {
             when (it) {
                 is NotRegistered -> findNavController().navigate(R.id.action_login)
@@ -50,7 +59,19 @@ class ContactFragment : Fragment() {
     private fun setUpActivity(it: Display) {
         ButterKnife.bind(this, view!!)
         activity!!.toolbar.title = String.format("Welcome %s", it.user.firstName)
+
         checkPermission()
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.isNotEmpty().let {
+                    searchViewModel.findContact(query!!).observe(this@ContactFragment, Observer { Timber.d("Search returned ${it?.size} elements") })
+                    return true
+                }
+            }
+
+            override fun onQueryTextChange(newText: String?) = false
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

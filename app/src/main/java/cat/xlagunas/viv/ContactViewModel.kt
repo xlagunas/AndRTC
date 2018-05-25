@@ -1,7 +1,6 @@
 package cat.xlagunas.viv
 
 import android.arch.lifecycle.MutableLiveData
-import android.provider.ContactsContract
 import cat.xlagunas.data.contact.list.PhoneContactsDataSource
 import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
@@ -16,7 +15,6 @@ import javax.inject.Inject
 class ContactViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository,
                                            private val authTokenManager: AuthTokenManager,
                                            private val phoneContactsDataSource: PhoneContactsDataSource) : DisposableViewModel() {
-
 
     val displayState = MutableLiveData<DisplayState>()
 

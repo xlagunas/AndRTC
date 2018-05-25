@@ -3,11 +3,12 @@ package cat.xlagunas.viv.commons.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.preferences.AuthTokenManagerImpl
-import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.data.common.provider.ActivityMonitor
 import cat.xlagunas.domain.preferences.AuthTokenManager
+import cat.xlagunas.domain.schedulers.RxSchedulers
 import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +29,7 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideAuthToken(sharedPreferences: SharedPreferences) : AuthTokenManager = AuthTokenManagerImpl(sharedPreferences)
+    fun provideAuthToken(sharedPreferences: SharedPreferences): AuthTokenManager = AuthTokenManagerImpl(sharedPreferences)
 
 
     @Provides
@@ -38,6 +39,10 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideUserMapping() = UserConverter()
+
+    @Provides
+    @Singleton
+    fun provideFriendMapping() = FriendConverter()
 
     @Provides
     @Singleton
