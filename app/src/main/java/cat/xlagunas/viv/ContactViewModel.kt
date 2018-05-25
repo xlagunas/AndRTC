@@ -33,13 +33,6 @@ class ContactViewModel @Inject constructor(private val authenticationRepository:
     fun phoneContactDataSource() {
         disposable.addAll(phoneContactsDataSource
                 .queryUsers()
-                .mapToList {
-                    PhoneContactsDataSource.ContactDetails(
-                            it.getLong(it.getColumnIndex(ContactsContract.Data._ID)),
-                            it.getString(it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)),
-                            it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
-                    )
-                }
                 .subscribe({ Timber.d("Total size: %s", it.size) }, Timber::e))
     }
 

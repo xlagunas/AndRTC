@@ -28,7 +28,8 @@
             app:destination="@id/contactFragment"
             app:popUpToInclusive="false"/>
         <action
-            android:id="@+id/action_loginFragment_to_registerActivity"
-            app:destination="@id/registerActivity"/>
+            android:id="@+id/action_register"
+            app:destination="@id/registerActivity"
+            app:popUpTo="@+id/contactFragment"/>
     </fragment>
 </navigation>

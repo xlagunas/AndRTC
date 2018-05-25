@@ -2,6 +2,7 @@ package cat.xlagunas.data.user.authentication
 
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
+import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
@@ -21,7 +22,7 @@ class AuthenticationRepositoryImpl(
 
     override fun findUser(): Maybe<User> {
         return userDao.user
-                .switchIfEmpty(authenticationApi.getUser().map { userConverter.toUserEntity(it) }.toMaybe())
+                .switchIfEmpty(findRemoteUser())
                 .onErrorResumeNext { t: Throwable ->
                     if (t is HttpException && t.code() == 401) {
                         Maybe.empty()
@@ -33,6 +34,10 @@ class AuthenticationRepositoryImpl(
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
     }
+
+    private fun findRemoteUser(): Maybe<UserEntity> =
+            authenticationApi.getUser().map { userConverter.toUserEntity(it) }.toMaybe()
+
 
     override fun registerUser(user: User): Completable {
         val userDto = userConverter.toUserDto(user)
@@ -48,6 +53,8 @@ class AuthenticationRepositoryImpl(
         return authenticationApi.loginUser(authenticationCredentials)
                 .doOnSuccess { authTokenManager.insertAuthToken(it.token) }
                 .flatMap { authenticationApi.getUser() }
+                .map { userConverter.toUserEntity(it) }
+                .map(userDao::insert)
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
                 .doOnSuccess { Timber.i("Successfully logged in user") }

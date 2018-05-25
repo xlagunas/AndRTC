@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -41,6 +42,9 @@ class LoginFragment : Fragment() {
     @BindView(R.id.login_button)
     lateinit var loginButton: Button
 
+    @BindView(R.id.register)
+    lateinit var registerButton: Button
+
     private lateinit var loginViewModel: LoginViewModel
 
 
@@ -63,9 +67,9 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
         signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
-        loginButton.setOnClickListener {
-            loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text())
-        }
+        loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text())}
+        registerButton.setOnClickListener { findNavController().navigate(R.id.action_register) }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
