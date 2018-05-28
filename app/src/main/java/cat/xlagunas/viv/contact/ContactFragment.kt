@@ -10,10 +10,13 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -31,6 +34,9 @@ class ContactFragment : Fragment() {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
+
+    @BindView(R.id.recycler_view)
+    lateinit var recyclerView: RecyclerView
 
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var searchViewModel: SearchViewModel
@@ -65,13 +71,19 @@ class ContactFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.isNotEmpty().let {
-                    searchViewModel.findContact(query!!).observe(this@ContactFragment, Observer { Timber.d("Search returned ${it?.size} elements") })
+                    searchViewModel.findContact(query!!)
+                            .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
                     return true
                 }
             }
 
             override fun onQueryTextChange(newText: String?) = false
         })
+    }
+
+    private fun renderFriends(items: List<Friend>?) {
+        recyclerView.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL, false)
+        recyclerView.adapter = ContactAdapter(items!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

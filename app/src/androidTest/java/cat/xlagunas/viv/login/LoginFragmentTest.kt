@@ -14,6 +14,7 @@ import android.support.test.runner.AndroidJUnit4
 import android.widget.EditText
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.WireMockTest
+import cat.xlagunas.viv.landing.MainActivity
 import com.github.tomakehurst.wiremock.client.WireMock
 import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.allOf
@@ -27,7 +28,7 @@ class LoginFragmentTest : WireMockTest() {
 
     @get:Rule
     @JvmField
-    val activityRule = ActivityTestRule(LoginFragment::class.java, true)
+    val activityRule = ActivityTestRule(MainActivity::class.java, true)
 
 
     @Test
