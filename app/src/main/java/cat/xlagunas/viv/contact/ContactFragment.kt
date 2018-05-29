@@ -1,15 +1,14 @@
 package cat.xlagunas.viv.contact
 
 import android.Manifest
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -25,7 +24,6 @@ import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.contact.search.SearchViewModel
-import cat.xlagunas.viv.login.LoginFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -40,31 +38,41 @@ class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var searchViewModel: SearchViewModel
+    private val contactAdapter = ContactAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
-        contactViewModel.displayState.observe(this, Observer<DisplayState> {
-            when (it) {
-                is NotRegistered -> findNavController().navigate(R.id.action_login)
-                is Display -> setUpActivity(it)
-                is Error -> Snackbar.make(activity!!.findViewById(android.R.id.content), it.message, Snackbar.LENGTH_LONG).show()
-                is Loading -> {
-                }
-            }
-        })
+        contactViewModel.displayState.observe(this, handleDisplayState())
         contactViewModel.getUserInfo()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_contact, container, false)
+    }
 
+    private fun handleDisplayState(): Observer<DisplayState> {
+        return Observer {
+            when (it) {
+                is NotRegistered -> findNavController().navigate(R.id.action_login)
+                is Display -> setUpActivity(it)
+                is Error -> Snackbar.make(activity!!.findViewById(android.R.id.content), it.message, Snackbar.LENGTH_LONG).show()
+                is Loading -> Timber.d("ContactFragment on Loading state")
+            }
+        }
     }
 
     private fun setUpActivity(it: Display) {
         ButterKnife.bind(this, view!!)
+
         activity!!.toolbar.title = String.format("Welcome %s", it.user.firstName)
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL, false)
+            adapter = contactAdapter
+            addItemDecoration(DividerItemDecoration(this@ContactFragment.activity!!, LinearLayout.VERTICAL))
+        }
 
         checkPermission()
 
@@ -82,16 +90,7 @@ class ContactFragment : Fragment() {
     }
 
     private fun renderFriends(items: List<Friend>?) {
-        recyclerView.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL, false)
-        recyclerView.adapter = ContactAdapter(items!!)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            LoginFragment.LOGIN_RESULT -> if (resultCode == Activity.RESULT_OK) {
-                contactViewModel.getUserInfo()
-            }
-        }
+        contactAdapter.updateAdapter(items!!)
     }
 
     private fun checkPermission() {

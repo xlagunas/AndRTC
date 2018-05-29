@@ -13,8 +13,10 @@ import cat.xlagunas.viv.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class ContactAdapter(private val items: List<Friend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+
+    private var items = emptyList<Friend>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(R.layout.row_contact, parent, false)
@@ -25,6 +27,12 @@ class ContactAdapter(private val items: List<Friend>) : RecyclerView.Adapter<Rec
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as FriendViewHolder).bind(items[position])
+    }
+
+
+    fun updateAdapter(elements: List<Friend>) {
+        items = elements
+        notifyDataSetChanged()
     }
 }
 
@@ -52,9 +60,9 @@ class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         Glide.with(itemView)
                 .load(friend.image)
-                .apply(RequestOptions.circleCropTransform())
                 .apply(RequestOptions.noAnimation())
                 .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
+                .apply(RequestOptions.circleCropTransform())
                 .into(profileImage)
     }
 
