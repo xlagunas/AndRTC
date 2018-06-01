@@ -6,6 +6,7 @@ import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.VivDatabase
+import cat.xlagunas.data.common.net.UserDto
 import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
@@ -32,7 +33,7 @@ import java.io.IOException
 
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
+@Config(constants = BuildConfig::class, sdk = intArrayOf(26))
 class AuthenticationRepositoryImplTest {
 
     private lateinit var authenticationRepository: AuthenticationRepository
@@ -88,6 +89,7 @@ class AuthenticationRepositoryImplTest {
         val authToken = "thisIsTheAuthTokenKeyReturnedByTheServer"
         val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
         `when`(authenticationApi.loginUser(authenticationCredentials)).thenReturn(Single.just(AuthTokenDto(authToken)))
+        `when`(authenticationApi.getUser()).thenReturn(Single.just(mockedUserDto()))
 
         authenticationRepository.login(authenticationCredentials)
                 .test().assertComplete()
@@ -105,5 +107,8 @@ class AuthenticationRepositoryImplTest {
 
         verify(authTokenManager, never()).insertAuthToken(ArgumentMatchers.anyString())
     }
+
+    private fun mockedUserDto() =
+            UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
 
 }
