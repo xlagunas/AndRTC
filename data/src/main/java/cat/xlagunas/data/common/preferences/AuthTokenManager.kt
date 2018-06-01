@@ -1,7 +1,7 @@
 package cat.xlagunas.data.common.preferences
 
 import android.content.SharedPreferences
-import androidx.content.edit
+import androidx.core.content.edit
 import cat.xlagunas.domain.preferences.AuthTokenManager
 
 class AuthTokenManagerImpl(private val sharedPreferences: SharedPreferences) : AuthTokenManager {

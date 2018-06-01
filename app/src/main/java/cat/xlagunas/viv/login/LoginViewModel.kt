@@ -33,6 +33,7 @@ class LoginViewModel @Inject constructor(
     fun handleLoginResult(task: Task<GoogleSignInAccount>) {
         disposable.add(googleSignInDataSource.get().handleSignInResult(task)
                 .flatMapCompletable { authenticationRepository.registerUser(it) }
+                .doOnComplete { Timber.d("Successfully registered in database") }
                 .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
     }
 

@@ -8,4 +8,6 @@
     <string name="hint_user_password">Password</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_contact">ContactActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -9,13 +9,14 @@ import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.widget.EditText
+import androidx.navigation.findNavController
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.commons.FragmentTestRule
 import cat.xlagunas.viv.commons.WireMockTest
+import cat.xlagunas.viv.landing.MainActivity
 import com.github.tomakehurst.wiremock.client.WireMock
-import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Rule
 import org.junit.Test
@@ -23,15 +24,19 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class LoginActivityTest : WireMockTest() {
+class LoginFragmentTest : WireMockTest() {
 
     @get:Rule
     @JvmField
-    val activityRule = ActivityTestRule(LoginActivity::class.java, true)
+    val activityRule = FragmentTestRule(MainActivity::class.java, LoginFragment::
+    class.java)
 
 
     @Test
     fun givenValidCredentials_whenUserLogsIn_thenLoginActivityFinishes() {
+
+        val activity = activityRule.launchActivity(Intent())
+
         wiremock.stubFor(WireMock.post(WireMock.urlEqualTo("/auth/"))
                 .willReturn(
                         WireMock.aResponse()
@@ -39,13 +44,13 @@ class LoginActivityTest : WireMockTest() {
                                 .withStatus(200)
                                 .withHeader("Content-Type", "application/json")))
 
-        activityRule.launchActivity(Intent())
 
         onEditTextWithinTilWithId(R.id.username_input_layout).perform(typeText("aRandomValidUsername"), closeSoftKeyboard())
         onEditTextWithinTilWithId(R.id.password_text_input).perform(typeText("aRandomValidPassword"), closeSoftKeyboard())
         onView(ViewMatchers.withId(R.id.login_button)).perform(click())
 
-        assertTrue(activityRule.activity.isFinishing)
+        //TODO Poor man's assertion to check proper navigation was triggered
+        assert(activity.findNavController(R.id.my_nav_host_fragment).currentDestination.id == R.id.contactFragment)
 
     }
 
@@ -72,4 +77,5 @@ class LoginActivityTest : WireMockTest() {
         //the TextInputLayout, use that instead - i.e, onView(withId(R.id.my_edit_text));
         return onView(allOf(isDescendantOfA(withId(textInputLayoutId)), isAssignableFrom(EditText::class.java)))
     }
+
 }

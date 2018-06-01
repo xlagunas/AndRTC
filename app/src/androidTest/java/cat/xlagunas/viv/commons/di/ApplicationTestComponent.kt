@@ -1,6 +1,7 @@
 package cat.xlagunas.viv.commons.di
 
 import android.app.Application
+import cat.xlagunas.viv.contact.ContactModule
 import cat.xlagunas.viv.register.RegisterModule
 import dagger.BindsInstance
 import dagger.Component
@@ -13,7 +14,8 @@ import javax.inject.Singleton
     ViewModelModule::class,
     NetworkModuleTest::class,
     DatabaseModule::class,
-    RegisterModule::class])
+    RegisterModule::class,
+    ContactModule::class])
 @Singleton
 interface ApplicationTestComponent : ApplicationComponent {
     fun client(): OkHttpClient
