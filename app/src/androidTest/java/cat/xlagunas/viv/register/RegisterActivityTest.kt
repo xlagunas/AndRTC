@@ -26,12 +26,19 @@ class RegisterActivityTest : WireMockTest() {
     @Test
     fun givenRegisteredUser_WhenRegistering_ThenSuccess() {
 
-        wiremock.stubFor(any(urlEqualTo("/user/"))
+        wiremock.stubFor(put(urlEqualTo("/user/"))
                 .willReturn(
                         aResponse().withBody("{}")
                                 .withStatus(201)
                                 .withHeader("Content-Type", "application/json")
                                 .withHeader("Connection", "close")))
+
+        wiremock.stubFor(get(urlEqualTo("/user/"))
+                .willReturn(aResponse()
+                        .withBody(asset("register/get_user.json"))
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")))
+
 
         activityRule.launchActivity(Intent())
 
