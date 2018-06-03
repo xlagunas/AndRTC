@@ -1,15 +1,18 @@
-package cat.xlagunas.data.common.preferences
+package cat.xlagunas.data.user.authentication
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.domain.preferences.AuthTokenManager
+import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
+import javax.inject.Inject
 
-class AuthTokenManagerImpl(private val sharedPreferences: SharedPreferences) : AuthTokenManager {
+class AuthTokenPreferenceDataStore @Inject constructor(
+        private val sharedPreferences: SharedPreferences) : AuthTokenDataStore {
 
     companion object {
         @JvmStatic
         private val TOKEN = "token_preferences"
     }
+
 
     override fun authToken(): String? = sharedPreferences.getString(TOKEN, null)
 

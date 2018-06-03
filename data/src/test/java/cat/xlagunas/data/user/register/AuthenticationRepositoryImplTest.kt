@@ -11,8 +11,8 @@ import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
 import cat.xlagunas.domain.commons.User
-import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
@@ -33,7 +33,7 @@ import java.io.IOException
 
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, sdk = intArrayOf(26))
+@Config(constants = BuildConfig::class, sdk = [26])
 class AuthenticationRepositoryImplTest {
 
     private lateinit var authenticationRepository: AuthenticationRepository
@@ -49,8 +49,7 @@ class AuthenticationRepositoryImplTest {
     private lateinit var authenticationApi: AuthenticationApi
 
     @Mock
-    private lateinit var authTokenManager: AuthTokenManager
-
+    private lateinit var authTokenDataStore: AuthTokenDataStore
 
     @Before
     fun setUp() {
@@ -58,7 +57,11 @@ class AuthenticationRepositoryImplTest {
         val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java).allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        authenticationRepository = AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()), authTokenManager)
+        authenticationRepository = AuthenticationRepositoryImpl(authenticationApi,
+                userDao,
+                userConverter,
+                RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
+                authTokenDataStore)
     }
 
     @Test
@@ -94,7 +97,7 @@ class AuthenticationRepositoryImplTest {
         authenticationRepository.login(authenticationCredentials)
                 .test().assertComplete()
 
-        verify(authTokenManager).insertAuthToken(authToken)
+        verify(authTokenDataStore).insertAuthToken(authToken)
     }
 
     @Test
@@ -105,7 +108,7 @@ class AuthenticationRepositoryImplTest {
 
         authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
 
-        verify(authTokenManager, never()).insertAuthToken(ArgumentMatchers.anyString())
+        verify(authTokenDataStore, never()).insertAuthToken(ArgumentMatchers.anyString())
     }
 
     private fun mockedUserDto() =

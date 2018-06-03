@@ -2,7 +2,6 @@ package cat.xlagunas.viv
 
 import android.arch.lifecycle.MutableLiveData
 import cat.xlagunas.data.contact.list.PhoneContactsDataSource
-import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
 import cat.xlagunas.viv.contact.Display
@@ -13,13 +12,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ContactViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository,
-                                           private val authTokenManager: AuthTokenManager,
                                            private val phoneContactsDataSource: PhoneContactsDataSource) : DisposableViewModel() {
 
     val displayState = MutableLiveData<DisplayState>()
 
     fun getUserInfo() {
-        authTokenManager.isAuthTokenAvailable()
+        authenticationRepository.isAuthTokenAvailable()
         disposable.addAll(authenticationRepository.findUser()
                 .subscribe(
                         { displayState.postValue(Display(it)) },

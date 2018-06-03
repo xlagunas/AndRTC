@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.converter.UserConverter
-import cat.xlagunas.data.common.preferences.AuthTokenManagerImpl
 import cat.xlagunas.data.common.provider.ActivityMonitor
-import cat.xlagunas.domain.preferences.AuthTokenManager
+import cat.xlagunas.data.user.authentication.AuthTokenPreferenceDataStore
 import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,11 +29,6 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideAuthToken(sharedPreferences: SharedPreferences): AuthTokenManager = AuthTokenManagerImpl(sharedPreferences)
-
-
-    @Provides
-    @Singleton
     fun provideRxSchedulers() = RxSchedulers(Schedulers.io(), AndroidSchedulers.mainThread(), Schedulers.computation())
 
     @Provides
@@ -47,4 +42,9 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideActivityMonitor() = ActivityMonitor()
+
+    @Provides
+    @Singleton
+    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore = AuthTokenPreferenceDataStore(sharedPreferences)
+
 }
