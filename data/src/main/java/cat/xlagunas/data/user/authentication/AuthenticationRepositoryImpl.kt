@@ -4,8 +4,8 @@ import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.domain.commons.User
-import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
@@ -18,7 +18,7 @@ class AuthenticationRepositoryImpl(
         private val userDao: UserDao,
         private val userConverter: UserConverter,
         private val schedulers: RxSchedulers,
-        private val authTokenManager: AuthTokenManager) : AuthenticationRepository {
+        private val tokenDataStore: AuthTokenDataStore) : AuthenticationRepository {
 
     override fun findUser(): Maybe<User> {
         return userDao.user
@@ -51,13 +51,29 @@ class AuthenticationRepositoryImpl(
 
     override fun login(authenticationCredentials: AuthenticationCredentials): Completable {
         return authenticationApi.loginUser(authenticationCredentials)
-                .doOnSuccess { authTokenManager.insertAuthToken(it.token) }
+                .doOnSuccess { insertAuthToken(it.token) }
                 .flatMap { authenticationApi.getUser() }
                 .map { userConverter.toUserEntity(it) }
                 .map(userDao::insert)
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
                 .doOnSuccess { Timber.i("Successfully logged in user") }
+                .toCompletable()
+    }
+
+
+    override fun authToken(): String? = tokenDataStore.authToken()
+
+    override fun isAuthTokenAvailable(): Boolean = tokenDataStore.isAuthTokenAvailable()
+
+    override fun insertAuthToken(token: String) = tokenDataStore.insertAuthToken(token)
+
+    override fun deleteAuthToken() = tokenDataStore.deleteAuthToken()
+
+    override fun refreshToken(): Completable {
+        return authenticationApi.refreshUserToken()
+                .doOnSuccess { insertAuthToken(it.token) }
+                .doOnSuccess { Timber.i("Successfully refreshed token") }
                 .toCompletable()
     }
 }

@@ -20,4 +20,8 @@ interface AuthenticationApi {
     @POST("/auth/")
     fun loginUser(@Body authCredentials: AuthenticationCredentials): Single<AuthTokenDto>
 
+    @GET("/refresh/")
+    fun refreshUserToken(): Single<AuthTokenDto>
+
+
 }

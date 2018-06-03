@@ -10,4 +10,14 @@ interface AuthenticationRepository {
     fun findUser(): Maybe<User>
 
     fun login(authenticationCredentials: AuthenticationCredentials): Completable
+
+    fun authToken(): String?
+
+    fun isAuthTokenAvailable(): Boolean
+
+    fun insertAuthToken(token: String)
+
+    fun deleteAuthToken()
+
+    fun refreshToken(): Completable
 }

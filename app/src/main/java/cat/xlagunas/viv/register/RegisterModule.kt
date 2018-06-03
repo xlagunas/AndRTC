@@ -4,8 +4,8 @@ import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
-import cat.xlagunas.domain.preferences.AuthTokenManager
 import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
@@ -20,7 +20,7 @@ class RegisterModule {
     }
 
     @Provides
-    fun provideRegisterRepository(authenticationApi: AuthenticationApi, userDao: UserDao, userConverter: UserConverter, rxSchedulers: RxSchedulers, authTokenManager: AuthTokenManager): AuthenticationRepository {
-        return AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, rxSchedulers, authTokenManager)
+    fun provideRegisterRepository(authenticationApi: AuthenticationApi, userDao: UserDao, userConverter: UserConverter, rxSchedulers: RxSchedulers, authTokenDataStore: AuthTokenDataStore): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, rxSchedulers, authTokenDataStore)
     }
 }

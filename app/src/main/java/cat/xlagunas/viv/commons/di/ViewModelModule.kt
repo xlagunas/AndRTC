@@ -17,7 +17,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(RegisterViewModel::class)
-    abstract fun provideMainViewModel(registerViewModel: RegisterViewModel): ViewModel
+    abstract fun provideRegisterViewModel(registerViewModel: RegisterViewModel): ViewModel
 
     @Binds
     @IntoMap
