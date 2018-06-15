@@ -8,7 +8,7 @@ apply plugin: 'androidx.navigation.safeargs'
 
 
 android {
-    compileSdkVersion 'android-P'
+    compileSdkVersion 28
     defaultConfig {
         applicationId "cat.xlagunas.viv"
         minSdkVersion 21
