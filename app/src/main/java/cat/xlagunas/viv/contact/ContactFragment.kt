@@ -74,8 +74,6 @@ class ContactFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(this@ContactFragment.activity!!, LinearLayout.VERTICAL))
         }
 
-        checkPermission()
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.isNotEmpty().let {
@@ -87,31 +85,17 @@ class ContactFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?) = false
         })
+
+        registerPushToken()
+    }
+
+    private fun registerPushToken() {
+        if (!pushTokenViewModel.isPushTokenRegistered()) {
+            pushTokenViewModel.registerToken()
+        }
     }
 
     private fun renderFriends(items: List<Friend>?) {
         contactAdapter.updateAdapter(items!!)
-    }
-
-    private fun checkPermission() {
-        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 1000)
-        } else {
-            contactViewModel.phoneContactDataSource()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            1000 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    contactViewModel.phoneContactDataSource()
-                } else {
-                    Timber.w("Error we don't have permission to show contacts")
-                }
-                return
-            }
-        }
     }
 }
