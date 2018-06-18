@@ -6,7 +6,7 @@ import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "friend")
-@ForeignKey(entity = UserEntity::class, parentColumns = arrayOf("id"), childColumns = arrayOf("user_id"))
+@ForeignKey(entity = cat.xlagunas.data.common.db.UserEntity::class, parentColumns = arrayOf("id"), childColumns = arrayOf("user_id"))
 data class FriendEntity(
         @PrimaryKey
         @ColumnInfo(name = "id")

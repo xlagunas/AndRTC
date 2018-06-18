@@ -11,6 +11,7 @@ import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
 import cat.xlagunas.domain.commons.User
+import cat.xlagunas.domain.push.PushTokenProvider
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
@@ -49,6 +50,9 @@ class AuthenticationRepositoryImplTest {
     private lateinit var authenticationApi: AuthenticationApi
 
     @Mock
+    private lateinit var pushTokenProvider: PushTokenProvider
+
+    @Mock
     private lateinit var authTokenDataStore: AuthTokenDataStore
 
     @Before
@@ -61,7 +65,7 @@ class AuthenticationRepositoryImplTest {
                 userDao,
                 userConverter,
                 RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-                authTokenDataStore)
+                authTokenDataStore, pushTokenProvider)
     }
 
     @Test

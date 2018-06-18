@@ -20,4 +20,10 @@ interface AuthenticationRepository {
     fun deleteAuthToken()
 
     fun refreshToken(): Completable
+
+    fun registerPushToken(): Completable
+
+    fun isPushTokenRegistered(): Boolean
+
+    fun markPushTokenAsRegistered()
 }

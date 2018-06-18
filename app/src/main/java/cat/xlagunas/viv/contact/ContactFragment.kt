@@ -1,13 +1,10 @@
 package cat.xlagunas.viv.contact
 
-import android.Manifest
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,6 +21,7 @@ import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.contact.search.SearchViewModel
+import cat.xlagunas.viv.push.PushTokenViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -38,12 +36,14 @@ class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var searchViewModel: SearchViewModel
+    private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
+        pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
         contactViewModel.displayState.observe(this, handleDisplayState())
         contactViewModel.getUserInfo()
     }
