@@ -2,8 +2,10 @@ package cat.xlagunas.data.user.authentication
 
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
-import cat.xlagunas.data.common.db.UserEntity
+import cat.xlagunas.data.push.PushTokenDto
+import cat.xlagunas.data.push.TokenNotFoundException
 import cat.xlagunas.domain.commons.User
+import cat.xlagunas.domain.push.PushTokenProvider
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
@@ -18,7 +20,8 @@ class AuthenticationRepositoryImpl(
         private val userDao: UserDao,
         private val userConverter: UserConverter,
         private val schedulers: RxSchedulers,
-        private val tokenDataStore: AuthTokenDataStore) : AuthenticationRepository {
+        private val tokenDataStore: AuthTokenDataStore,
+        private val pushTokenProvider: PushTokenProvider) : AuthenticationRepository {
 
     override fun findUser(): Maybe<User> {
         return userDao.user
@@ -35,7 +38,7 @@ class AuthenticationRepositoryImpl(
                 .subscribeOn(schedulers.io)
     }
 
-    private fun findRemoteUser(): Maybe<UserEntity> =
+    private fun findRemoteUser(): Maybe<cat.xlagunas.data.common.db.UserEntity> =
             authenticationApi.getUser().map { userConverter.toUserEntity(it) }.toMaybe()
 
 
@@ -76,4 +79,26 @@ class AuthenticationRepositoryImpl(
                 .doOnSuccess { Timber.i("Successfully refreshed token") }
                 .toCompletable()
     }
+
+    override fun isPushTokenRegistered() = pushTokenProvider.isTokenRegistered()
+
+    override fun markPushTokenAsRegistered() = pushTokenProvider.markTokenAsRegistered()
+
+    override fun registerPushToken(): Completable {
+        val token = pushTokenProvider.getPushToken()
+        return if (token != null) {
+            authenticationApi.addPushToken(PushTokenDto(token))
+                    .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
+                    .doOnSubscribe { Timber.d("Starting token registration") }
+                    .doOnComplete { Timber.d("Push token $token successfully registered") }
+                    .observeOn(schedulers.mainThread)
+                    .subscribeOn(schedulers.io)
+        } else {
+            val ex = TokenNotFoundException()
+            Completable
+                    .error(ex)
+                    .doOnError { Timber.e(ex, "Token not found") }
+        }
+    }
 }
+

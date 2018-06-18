@@ -1,13 +1,10 @@
 package cat.xlagunas.viv.contact
 
-import android.Manifest
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,6 +21,7 @@ import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.contact.search.SearchViewModel
+import cat.xlagunas.viv.push.PushTokenViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -38,12 +36,14 @@ class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var searchViewModel: SearchViewModel
+    private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
+        pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
         contactViewModel.displayState.observe(this, handleDisplayState())
         contactViewModel.getUserInfo()
     }
@@ -74,8 +74,6 @@ class ContactFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(this@ContactFragment.activity!!, LinearLayout.VERTICAL))
         }
 
-        checkPermission()
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.isNotEmpty().let {
@@ -87,31 +85,17 @@ class ContactFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?) = false
         })
+
+        registerPushToken()
+    }
+
+    private fun registerPushToken() {
+        if (!pushTokenViewModel.isPushTokenRegistered()) {
+            pushTokenViewModel.registerToken()
+        }
     }
 
     private fun renderFriends(items: List<Friend>?) {
         contactAdapter.updateAdapter(items!!)
-    }
-
-    private fun checkPermission() {
-        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 1000)
-        } else {
-            contactViewModel.phoneContactDataSource()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            1000 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    contactViewModel.phoneContactDataSource()
-                } else {
-                    Timber.w("Error we don't have permission to show contacts")
-                }
-                return
-            }
-        }
     }
 }

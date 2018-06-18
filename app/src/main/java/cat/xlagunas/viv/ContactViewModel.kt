@@ -14,7 +14,9 @@ import javax.inject.Inject
 class ContactViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository,
                                            private val phoneContactsDataSource: PhoneContactsDataSource) : DisposableViewModel() {
 
-    val displayState = MutableLiveData<DisplayState>()
+    val displayState by lazy {
+        MutableLiveData<DisplayState>()
+    }
 
     fun getUserInfo() {
         authenticationRepository.isAuthTokenAvailable()

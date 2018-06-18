@@ -31,6 +31,7 @@ class NetworkModule {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .client(client)
                 .baseUrl("http://192.168.0.156:8080")
+//                .baseUrl("http://10.239.162.46:8080")
                 .build()
     }
 

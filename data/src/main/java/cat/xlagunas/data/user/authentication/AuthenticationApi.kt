@@ -1,6 +1,7 @@
 package cat.xlagunas.data.user.authentication
 
 import cat.xlagunas.data.common.net.UserDto
+import cat.xlagunas.data.push.PushTokenDto
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -23,5 +24,7 @@ interface AuthenticationApi {
     @GET("/refresh/")
     fun refreshUserToken(): Single<AuthTokenDto>
 
+    @PUT("/token/")
+    fun addPushToken(@Body token: PushTokenDto): Completable
 
 }
