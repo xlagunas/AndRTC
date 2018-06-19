@@ -3,6 +3,7 @@ package cat.xlagunas.data.contact.list
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.net.FriendDto
 import cat.xlagunas.domain.commons.Friend
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -16,5 +17,9 @@ class RemoteContactsDataSource
                 .flattenAsObservable { items: List<FriendDto> -> items }
                 .map(friendConverter::toFriend)
                 .toList()
+    }
+
+    fun requestFriendship(contactId: Long): Completable {
+        return contactsApi.addContact(contactId)
     }
 }

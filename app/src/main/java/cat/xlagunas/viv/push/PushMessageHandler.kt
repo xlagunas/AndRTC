@@ -2,24 +2,11 @@ package cat.xlagunas.viv.push
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.lang.Exception
+import timber.log.Timber
 
-class PushMessageHandler: FirebaseMessagingService() {
+class PushMessageHandler : FirebaseMessagingService() {
 
-    override fun onMessageReceived(p0: RemoteMessage?) {
-        super.onMessageReceived(p0)
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Timber.d("Message received from push. Message type: ${remoteMessage.messageType}")
     }
-
-    override fun onMessageSent(p0: String?) {
-        super.onMessageSent(p0)
-    }
-
-    override fun onDeletedMessages() {
-        super.onDeletedMessages()
-    }
-
-    override fun onSendError(p0: String?, p1: Exception?) {
-        super.onSendError(p0, p1)
-    }
-
 }
