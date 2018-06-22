@@ -14,4 +14,7 @@ interface ContactsApi {
 
     @PUT("/contact/{contactId}/")
     fun addContact(@Path("contactId") contactId: Long): Completable
+
+    @GET("/list/{filter}")
+    fun listContacts(@Path("filter") filter: String? = "") : Single<List<FriendDto>>
 }

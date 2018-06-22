@@ -2,8 +2,7 @@ package cat.xlagunas.viv.contact
 
 import cat.xlagunas.data.contact.list.ContactRepositoryImpl
 import cat.xlagunas.data.contact.list.ContactsApi
-import cat.xlagunas.domain.contact.list.ContactRepository
-import dagger.MapKey
+import cat.xlagunas.domain.contact.ContactRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

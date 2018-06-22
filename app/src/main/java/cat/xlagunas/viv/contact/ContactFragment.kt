@@ -39,11 +39,14 @@ class ContactFragment : Fragment() {
     private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
+    private lateinit var friendshipViewModel: FriendshipViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
         pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
+        friendshipViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(FriendshipViewModel::class.java)
         contactViewModel.displayState.observe(this, handleDisplayState())
         contactViewModel.getUserInfo()
     }
@@ -85,6 +88,8 @@ class ContactFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?) = false
         })
+
+        friendshipViewModel.getContacts.observe(this, Observer(this@ContactFragment::renderFriends))
 
         registerPushToken()
     }

@@ -31,7 +31,7 @@ class FragmentTestRule<A : AppCompatActivity, F : Fragment>(activityClass: Class
         activity.runOnUiThread {
             val manager = activity.supportFragmentManager
             val transaction = manager.beginTransaction()
-            transaction.replace(R.id.my_nav_host_fragment, fragment)
+            transaction.replace(R.id.my_nav_host_fragment, fragment!!)
             transaction.commit()
         }
     }

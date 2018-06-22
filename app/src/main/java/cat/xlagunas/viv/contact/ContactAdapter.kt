@@ -19,7 +19,6 @@ import com.bumptech.glide.request.RequestOptions
 
 class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-
     private var items = emptyList<Friend>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -75,7 +74,7 @@ class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileImage)
 
-        addFriend.setOnClickListener { friendshipViewModel.addContact(friend.friendId) }
+        addFriend.setOnClickListener { friendshipViewModel.addContact(friend) }
     }
 
 }
