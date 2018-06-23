@@ -1,5 +1,6 @@
 package cat.xlagunas.viv.contact
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.ViewModel
 import cat.xlagunas.domain.commons.Friend
@@ -18,5 +19,9 @@ class FriendshipViewModel
 
     val getContacts by lazy {
         LiveDataReactiveStreams.fromPublisher(contactRepository.getContacts())
+    }
+
+    fun findContact(searchTerm: String): LiveData<List<Friend>> {
+        return LiveDataReactiveStreams.fromPublisher(contactRepository.searchContact(searchTerm).toFlowable())
     }
 }

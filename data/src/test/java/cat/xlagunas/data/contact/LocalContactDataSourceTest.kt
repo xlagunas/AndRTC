@@ -8,7 +8,6 @@ import cat.xlagunas.data.common.db.FriendDao
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.data.common.db.VivDatabase
-import cat.xlagunas.data.contact.list.LocalContactDataSource
 import cat.xlagunas.domain.commons.Friend
 import org.junit.After
 import org.junit.Before

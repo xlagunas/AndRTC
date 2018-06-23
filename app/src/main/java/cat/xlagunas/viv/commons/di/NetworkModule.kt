@@ -30,8 +30,8 @@ class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .client(client)
-                .baseUrl("https://andrtc.xlagunas.cat")
-//                .baseUrl("http://192.168.0.156:8080")
+//                .baseUrl("https://andrtc.xlagunas.cat")
+                .baseUrl("http://192.168.0.156:8080")
 //                .baseUrl("http://10.239.162.46:8080")
                 .build()
     }

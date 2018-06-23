@@ -61,7 +61,7 @@ class AuthenticationRepositoryImpl(
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
                 .doOnSuccess { Timber.i("Successfully logged in user") }
-                .toCompletable()
+                .ignoreElement()
     }
 
 
@@ -77,7 +77,7 @@ class AuthenticationRepositoryImpl(
         return authenticationApi.refreshUserToken()
                 .doOnSuccess { insertAuthToken(it.token) }
                 .doOnSuccess { Timber.i("Successfully refreshed token") }
-                .toCompletable()
+                .ignoreElement()
     }
 
     override fun isPushTokenRegistered() = pushTokenProvider.isTokenRegistered()

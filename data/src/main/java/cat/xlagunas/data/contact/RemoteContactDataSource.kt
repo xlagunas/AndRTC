@@ -1,4 +1,4 @@
-package cat.xlagunas.data.contact.list
+package cat.xlagunas.data.contact
 
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.net.FriendDto

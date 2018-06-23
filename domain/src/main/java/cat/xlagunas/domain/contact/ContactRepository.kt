@@ -12,4 +12,6 @@ interface ContactRepository {
     fun requestFriendship(friendEntity: Friend): Completable
 
     fun getContacts(): Flowable<List<Friend>>
+
+    fun getPhoneContacts(): Flowable<List<ContactDetails>>
 }

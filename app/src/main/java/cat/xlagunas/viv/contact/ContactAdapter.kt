@@ -23,13 +23,13 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(R.layout.row_contact, parent, false)
-        return FriendViewHolder(holder)
+        return SearchFriendViewHolder(holder)
     }
 
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as FriendViewHolder).bind(items[position])
+        (holder as SearchFriendViewHolder).bind(items[position])
     }
 
 
@@ -40,7 +40,7 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 }
 
 
-class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class SearchFriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     @BindView(R.id.contact_thumbnail)
     lateinit var profileImage: ImageView

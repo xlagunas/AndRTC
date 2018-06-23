@@ -1,4 +1,4 @@
-package cat.xlagunas.data.contact.list
+package cat.xlagunas.data.contact
 
 import cat.xlagunas.data.common.net.FriendDto
 import io.reactivex.Completable
@@ -15,6 +15,6 @@ interface ContactsApi {
     @PUT("/contact/{contactId}/")
     fun addContact(@Path("contactId") contactId: Long): Completable
 
-    @GET("/list/{filter}")
-    fun listContacts(@Path("filter") filter: String? = "") : Single<List<FriendDto>>
+    @GET("/contact/list")
+    fun listContacts() : Single<List<FriendDto>>
 }

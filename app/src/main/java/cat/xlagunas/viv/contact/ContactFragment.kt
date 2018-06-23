@@ -20,7 +20,6 @@ import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
-import cat.xlagunas.viv.contact.search.SearchViewModel
 import cat.xlagunas.viv.push.PushTokenViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -35,7 +34,6 @@ class ContactFragment : Fragment() {
     lateinit var recyclerView: RecyclerView
 
     private lateinit var contactViewModel: ContactViewModel
-    private lateinit var searchViewModel: SearchViewModel
     private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
@@ -44,7 +42,6 @@ class ContactFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
-        searchViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(SearchViewModel::class.java)
         pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
         friendshipViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(FriendshipViewModel::class.java)
         contactViewModel.displayState.observe(this, handleDisplayState())
@@ -80,7 +77,7 @@ class ContactFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.isNotEmpty().let {
-                    searchViewModel.findContact(query!!)
+                    friendshipViewModel.findContact(query!!)
                             .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
                     return true
                 }

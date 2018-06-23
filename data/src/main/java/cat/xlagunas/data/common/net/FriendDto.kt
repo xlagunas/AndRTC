@@ -11,4 +11,4 @@ data class FriendDto(
         @SerializedName("status")
         val relationship: Relationship)
 
-enum class Relationship { NONE }
+enum class Relationship { NONE, REQUESTED }

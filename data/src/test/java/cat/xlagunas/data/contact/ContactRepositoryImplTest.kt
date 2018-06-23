@@ -1,8 +1,5 @@
 package cat.xlagunas.data.contact
 
-import cat.xlagunas.data.contact.list.ContactRepositoryImpl
-import cat.xlagunas.data.contact.list.LocalContactDataSource
-import cat.xlagunas.data.contact.list.RemoteContactDataSource
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.schedulers.RxSchedulers

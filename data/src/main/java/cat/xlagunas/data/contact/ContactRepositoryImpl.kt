@@ -1,7 +1,9 @@
-package cat.xlagunas.data.contact.list
+package cat.xlagunas.data.contact
 
 import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.domain.contact.ContactDetails
 import cat.xlagunas.domain.contact.ContactRepository
+import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -13,6 +15,7 @@ class ContactRepositoryImpl
 @Inject constructor(
         private val localContactDataSource: LocalContactDataSource,
         private val remoteContactDataSource: RemoteContactDataSource,
+        private val phoneContactDataSource: PhoneContactsDataSource,
         private val schedulers: RxSchedulers) : ContactRepository {
 
     override fun requestFriendship(friend: Friend): Completable =
@@ -36,6 +39,12 @@ class ContactRepositoryImpl
         }
 
         return localContactDataSource.getContacts().observeOn(schedulers.mainThread).subscribeOn(schedulers.io)
+    }
+
+    override fun getPhoneContacts(): Flowable<List<ContactDetails>> {
+        return phoneContactDataSource.getUserPhoneContacts()
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
     }
 
     //TODO created a cacheProvider that deals with the validity of data

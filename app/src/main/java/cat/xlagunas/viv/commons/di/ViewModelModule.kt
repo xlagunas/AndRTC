@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import cat.xlagunas.viv.ContactViewModel
 import cat.xlagunas.viv.commons.ViewModelFactory
 import cat.xlagunas.viv.contact.FriendshipViewModel
-import cat.xlagunas.viv.contact.search.SearchViewModel
 import cat.xlagunas.viv.login.LoginViewModel
 import cat.xlagunas.viv.push.PushTokenViewModel
 import cat.xlagunas.viv.register.RegisterViewModel
@@ -30,11 +29,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ContactViewModel::class)
     abstract fun provideContactViewModel(contactViewModel: ContactViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    abstract fun provideSearchViewModel(searchViewModel: SearchViewModel): ViewModel
 
     @Binds
     @IntoMap
