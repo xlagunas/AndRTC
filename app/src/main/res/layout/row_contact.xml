@@ -44,7 +44,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@color/colorPrimary"
-        android:textColor="@color/chuck_colorAccent"
+        android:textColor="@color/colorAccent"
         android:text="ADD"/>
 
 </RelativeLayout>

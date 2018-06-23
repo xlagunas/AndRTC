@@ -22,12 +22,15 @@ class ContactRepositoryImplTest {
     @Mock
     lateinit var remoteContactDataSource: RemoteContactDataSource
 
+    @Mock
+    lateinit var phoneContactsDataSource: PhoneContactsDataSourceImpl
+
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         val schedulers = RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
-        contactRepository = ContactRepositoryImpl(localContactDataSource, remoteContactDataSource, schedulers)
+        contactRepository = ContactRepositoryImpl(localContactDataSource, remoteContactDataSource, phoneContactsDataSource, schedulers)
     }
 
     @Test

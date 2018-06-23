@@ -44,8 +44,7 @@ class ContactFragment : Fragment() {
         contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
         pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
         friendshipViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(FriendshipViewModel::class.java)
-        contactViewModel.displayState.observe(this, handleDisplayState())
-        contactViewModel.getUserInfo()
+        contactViewModel.getUserInfo.observe(this, handleDisplayState())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,10 +62,10 @@ class ContactFragment : Fragment() {
         }
     }
 
-    private fun setUpActivity(it: Display) {
+    private fun setUpActivity(display: Display) {
         ButterKnife.bind(this, view!!)
 
-        activity!!.toolbar.title = String.format("Welcome %s", it.user.firstName)
+        activity!!.toolbar.title = String.format("Welcome %s", display.user.firstName)
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL, false)
