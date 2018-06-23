@@ -10,7 +10,7 @@ constructor(private val authenticationRepository: AuthenticationRepository) : Di
 
     fun registerToken() {
         disposable.add(authenticationRepository.registerPushToken()
-                .subscribe({ Timber.d("Push token successfully registered") }, { Timber.e(it, "Error requesting token") })
+                .subscribe({}, { Timber.e(it, "Error requesting token") })
         )
     }
 

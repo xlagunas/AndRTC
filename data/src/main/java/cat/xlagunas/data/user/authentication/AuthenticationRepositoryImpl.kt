@@ -81,6 +81,7 @@ class AuthenticationRepositoryImpl(
     private fun requestTokenRegistration(token: String): Completable {
         return authenticationApi.addPushToken(PushTokenDto(token))
                 .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
+                .doOnComplete { Timber.d("Push token successfully registered") }
                 .doOnSubscribe { Timber.d("Starting token registration") }
     }
 
