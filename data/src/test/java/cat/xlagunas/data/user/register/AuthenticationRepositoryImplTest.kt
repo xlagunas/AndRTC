@@ -7,6 +7,7 @@ import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.VivDatabase
 import cat.xlagunas.data.common.net.UserDto
+import cat.xlagunas.data.user.authentication.AuthDto
 import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
@@ -95,7 +96,7 @@ class AuthenticationRepositoryImplTest {
     fun givenSuccessfulAuthentication_thenTokenPersisted() {
         val authToken = "thisIsTheAuthTokenKeyReturnedByTheServer"
         val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
-        `when`(authenticationApi.loginUser(authenticationCredentials)).thenReturn(Single.just(AuthTokenDto(authToken)))
+        `when`(authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))).thenReturn(Single.just(AuthTokenDto(authToken)))
         `when`(authenticationApi.getUser()).thenReturn(Single.just(mockedUserDto()))
 
         authenticationRepository.login(authenticationCredentials)
@@ -108,7 +109,7 @@ class AuthenticationRepositoryImplTest {
     fun givenInvalidAuthentication_thenTokenNotPersisted() {
         val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
 
-        `when`(authenticationApi.loginUser(authenticationCredentials)).thenReturn(Single.error(IOException("Error!!")))
+        `when`(authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))).thenReturn(Single.error(IOException("Error!!")))
 
         authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
 
