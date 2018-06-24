@@ -18,15 +18,15 @@ class AuthHeaderInterceptor @Inject constructor(private val authTokenDataStore: 
 
         if (authTokenDataStore.isAuthTokenAvailable()) {
 
-            request?.header(AUTH_HEADER)?.isNullOrEmpty()
+            request?.header(AUTH_HEADER).isNullOrEmpty()
                     .let {
-                        request = chain?.request()!!
+                        request = chain.request()!!
                                 .newBuilder()
                                 .addHeader(AUTH_HEADER, authTokenDataStore.authToken()!!).build()
                     }
         }
 
-        return chain?.proceed(request)!!
+        return chain.proceed(request)!!
     }
 
 }

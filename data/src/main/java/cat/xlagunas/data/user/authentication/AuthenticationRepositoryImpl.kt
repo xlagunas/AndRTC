@@ -39,7 +39,7 @@ class AuthenticationRepositoryImpl(
     }
 
     override fun login(authenticationCredentials: AuthenticationCredentials): Completable {
-        return authenticationApi.loginUser(authenticationCredentials)
+        return authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))
                 .doOnSuccess { insertAuthToken(it.token) }
                 .flatMap { authenticationApi.getUser() }
                 .map { userConverter.toUserEntity(it) }

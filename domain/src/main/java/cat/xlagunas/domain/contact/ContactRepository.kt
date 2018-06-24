@@ -9,7 +9,7 @@ interface ContactRepository {
 
     fun searchContact(query: String): Single<List<Friend>>
 
-    fun requestFriendship(friendEntity: Friend): Completable
+    fun requestFriendship(friend: Friend): Completable
 
     fun getContacts(): Flowable<List<Friend>>
 

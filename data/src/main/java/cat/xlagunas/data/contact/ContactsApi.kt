@@ -12,7 +12,7 @@ interface ContactsApi {
     @GET("/contact/search/{filter}")
     fun searchContact(@Path("filter") query: String): Single<List<FriendDto>>
 
-    @PUT("/contact/{contactId}/")
+    @PUT("/contact/{contactId}")
     fun addContact(@Path("contactId") contactId: Long): Completable
 
     @GET("/contact/list")
