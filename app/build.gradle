@@ -130,6 +130,8 @@ dependencies {
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
+    androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha02' // use -ktx for Kotlin
+
 }
 
 apply plugin: 'com.google.gms.google-services'
