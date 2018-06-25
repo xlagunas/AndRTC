@@ -3,6 +3,7 @@ package cat.xlagunas.data.common.converter
 import cat.xlagunas.data.common.db.FriendEntity
 import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.data.common.net.FriendDto
+import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
 import java.util.function.BiFunction
 
@@ -43,6 +44,10 @@ class FriendConverter {
 
     fun toFriendEntity() =
             BiFunction { user: UserEntity, friend: Friend -> this.toFriendEntity(friend, user.id!!) }
+
+    fun updateRelationship(friend: Friend, newRelationship: Relationship): Friend {
+        return friend.copy(relationshipStatus = newRelationship.name)
+    }
 
 
 }

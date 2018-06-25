@@ -8,7 +8,9 @@ import cat.xlagunas.data.common.db.FriendDao
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.UserEntity
 import cat.xlagunas.data.common.db.VivDatabase
+import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -104,5 +106,18 @@ class LocalContactDataSourceTest {
     }
 
 
-    private fun generateFriend() = Friend(10, "aContact", "aName", "anImage", "anEmail", "REQUESTED")
+    @Test
+    fun givenNonExistingContact_whenAdded_thenRelationshipMatchesPending() {
+        val oldFriendStatus = generateFriend()
+        assert(oldFriendStatus.relationshipStatus == Relationship.NONE.name)
+
+        localContactDataSource.requestFriendship(oldFriendStatus).test()
+
+        val contact = localContactDataSource.getContacts().blockingFirst()
+
+        assertThat(contact[0].relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
+    }
+
+
+    private fun generateFriend() = Friend(10, "aContact", "aName", "anImage", "anEmail", "NONE")
 }

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginTop="20dp"
-        android:layout_toStartOf="@id/call_friend_button"
+        android:layout_toStartOf="@id/reject_friendship_button"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         tools:text="Xavier Lagunas Calpe"/>
@@ -30,20 +30,27 @@
         android:layout_below="@id/contact_fullname"
         android:layout_marginStart="72dp"
         android:layout_marginBottom="20dp"
-        android:layout_toStartOf="@id/call_friend_button"
+        android:layout_toStartOf="@id/reject_friendship_button"
         android:textSize="14sp"
         tools:text="xlagunas"/>
 
+
     <ImageButton
-        android:id="@+id/call_friend_button"
+        android:id="@+id/accept_friendship_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:backgroundTint="@android:color/transparent"
-        android:src="@drawable/ic_call"
+        android:src="@drawable/ic_confirm"
         />
 
+    <ImageButton
+        android:id="@+id/reject_friendship_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/accept_friendship_button"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_reject"
+        />
 </RelativeLayout>

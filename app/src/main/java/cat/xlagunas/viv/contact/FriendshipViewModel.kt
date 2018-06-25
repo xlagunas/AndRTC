@@ -17,11 +17,23 @@ class FriendshipViewModel
                 .subscribe({ Timber.i("FriendshipRequest successful") }, { Timber.e(it, "FriendshipRequest errpr") })
     }
 
+    fun acceptContactRequest(friend: Friend) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun rejectContactRequest(friend: Friend) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     val getContacts by lazy {
         LiveDataReactiveStreams.fromPublisher(contactRepository.getContacts())
     }
 
     fun findContact(searchTerm: String): LiveData<List<Friend>> {
         return LiveDataReactiveStreams.fromPublisher(contactRepository.searchContact(searchTerm).toFlowable())
+    }
+
+    fun callFriend(friend: Friend) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

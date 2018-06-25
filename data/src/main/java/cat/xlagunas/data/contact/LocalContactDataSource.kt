@@ -4,6 +4,7 @@ import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.db.FriendDao
 import cat.xlagunas.data.common.db.UserDao
 import cat.xlagunas.data.common.db.UserEntity
+import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDataSource
 import io.reactivex.Completable
@@ -17,7 +18,8 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
                                                  private val friendConverter: FriendConverter) : ContactDataSource {
 
     override fun requestFriendship(friend: Friend): Completable {
-        return userDao.user.map { friendConverter.toFriendEntity(friend, it.id!!) }
+
+        return userDao.user.map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.REQUESTED), it.id!!) }
                 .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
     }
 
@@ -40,4 +42,5 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
         return friendEntityFlowable.toList()
                 .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
     }
+
 }
