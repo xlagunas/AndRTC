@@ -10,4 +10,4 @@ data class FriendDto(
         @SerializedName("profilePic") val profilePic: String?,
         @SerializedName("status") val relationship: Relationship)
 
-enum class Relationship { NONE, REQUESTED }
+enum class Relationship { NONE, REQUESTED, PENDING, ACCEPTED }

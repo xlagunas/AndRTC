@@ -16,6 +16,17 @@ android {
 
     }
 
+    flavorDimensions "version"
+
+    productFlavors {
+        production {
+        }
+
+        development {
+            versionNameSuffix '.local'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

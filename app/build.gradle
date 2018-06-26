@@ -34,6 +34,19 @@ android {
         }
     }
 
+    flavorDimensions "version"
+
+    productFlavors {
+        production {
+            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
+        }
+
+        development {
+            versionNameSuffix '.local'
+            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -43,8 +56,8 @@ android {
         }
 
         debug {
-            minifyEnabled true
-            useProguard true
+            minifyEnabled false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //applicationIdSuffix '.dev'
             versionNameSuffix '.dev'
@@ -95,7 +108,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'de.hdodenhof:circleimageview:2.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
 
     implementation 'com.google.firebase:firebase-core:16.0.1'

@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.contact.viewholder.FriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.PendingFriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.*
 
 class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -19,6 +17,8 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             R.layout.row_request_contact -> RequestFriendViewHolder(holder)
             R.layout.row_pending_contact -> PendingFriendViewHolder(holder)
+            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(holder)
+            R.layout.row_contact -> CurrentFriendViewHolder(holder)
             else -> throw IllegalStateException("This should never be called")
         }
     }
@@ -39,6 +39,8 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (items[position].relationshipStatus) {
             Relationship.NONE.name -> R.layout.row_request_contact
             Relationship.REQUESTED.name -> R.layout.row_pending_contact
+            Relationship.ACCEPTED.name -> R.layout.row_contact
+            Relationship.PENDING.name -> R.layout.row_confirm_contact
             else -> throw IllegalStateException("This should never be called")
         }
     }
