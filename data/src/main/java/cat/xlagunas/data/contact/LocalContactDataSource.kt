@@ -19,7 +19,8 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
 
     override fun requestFriendship(friend: Friend): Completable {
 
-        return userDao.user.map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.REQUESTED), it.id!!) }
+        return userDao.user
+                .map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.REQUESTED), it.id!!) }
                 .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
     }
 
@@ -40,7 +41,19 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
                 BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
 
         return friendEntityFlowable.toList()
+                .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
+    }
+
+    override fun acceptContact(friend: Friend): Completable {
+        return userDao.user
+                .map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.ACCEPTED), it.id!!) }
                 .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
+    }
+
+    override fun rejectContact(friend: Friend): Completable {
+        return userDao.user
+                .map { friendConverter.toFriendEntity(friend, it.id!!) }
+                .flatMapCompletable { Completable.fromAction { friendDao.delete(it) } }
     }
 
 }

@@ -47,6 +47,17 @@ jobs:
           command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
+  generate_prod_apk:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28-alpha
+    steps:
+      - checkout
+    - restore_cache:
+              key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - run:
+        name: Generate Production APK
+        command: ./gradlew :app:assembleProductionRelease
 workflows:
   version: 2
   run_tests:

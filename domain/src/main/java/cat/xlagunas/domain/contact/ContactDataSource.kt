@@ -12,4 +12,8 @@ interface ContactDataSource {
     fun requestFriendship(friend: Friend): Completable
 
     fun getContacts(): Flowable<List<Friend>>
+
+    fun acceptContact(friend: Friend): Completable
+
+    fun rejectContact(friend: Friend): Completable
 }

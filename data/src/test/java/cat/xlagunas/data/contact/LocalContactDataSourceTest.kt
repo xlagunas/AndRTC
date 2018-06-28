@@ -73,9 +73,10 @@ class LocalContactDataSourceTest {
         val value = friendDao.getUserFriends(1)
                 .test()
                 .assertNotComplete()
-                .assertValueCount(1).values()[0]
+                .assertValueCount(1).values().first()
 
-        assert(friendConverter.toFriend(value[0]) == expectedFriend)
+        assertThat(friendConverter.toFriend(value.first()))
+                .isEqualToIgnoringGivenFields(expectedFriend, "relationshipStatus")
     }
 
     @Test
@@ -88,7 +89,10 @@ class LocalContactDataSourceTest {
         localContactDataSource.requestFriendship(expectedFriend).test()
 
         reactiveList.assertValueCount(2)
-        reactiveList.assertValueAt(1, listOf(expectedFriend))
+        val resultFriendList = reactiveList.values().last()
+        assertThat(resultFriendList)
+                .usingElementComparatorIgnoringFields("relationshipStatus")
+                .isEqualTo(listOf(expectedFriend))
     }
 
 
@@ -115,7 +119,7 @@ class LocalContactDataSourceTest {
 
         val contact = localContactDataSource.getContacts().blockingFirst()
 
-        assertThat(contact[0].relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
+        assertThat(contact.first().relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
     }
 
 

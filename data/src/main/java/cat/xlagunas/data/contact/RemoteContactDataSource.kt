@@ -21,6 +21,14 @@ class RemoteContactDataSource
                 .toList()
     }
 
+    override fun acceptContact(friend: Friend): Completable {
+        return contactsApi.acceptContact(friend.friendId)
+    }
+
+    override fun rejectContact(friend: Friend): Completable {
+        return contactsApi.rejectContact(friend.friendId)
+    }
+
     override fun requestFriendship(friend: Friend): Completable {
         return contactsApi.addContact(friend.friendId)
     }

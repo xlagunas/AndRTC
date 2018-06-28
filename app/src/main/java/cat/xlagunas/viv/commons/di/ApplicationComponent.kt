@@ -3,6 +3,7 @@ package cat.xlagunas.viv.commons.di
 import android.app.Application
 import cat.xlagunas.viv.contact.ContactModule
 import cat.xlagunas.viv.login.LoginModule
+import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.register.RegisterModule
 import dagger.BindsInstance
 import dagger.Component
@@ -24,4 +25,5 @@ interface ApplicationComponent {
     }
 
     fun inject(vivApplication: VivApplication)
+    fun inject(pushMessageHandler: PushMessageHandler)
 }

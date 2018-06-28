@@ -52,5 +52,24 @@ class ContactRepositoryImpl
         return true
     }
 
+    override fun forceUpdate(): Completable {
+        //TODO 1. INVALIDATE CACHE, 2. OBTAIN ELEMENTS 3.REFRESH CACHE WHEN WE HAVE IT
+        return getContacts().ignoreElements()
+    }
+
+    override fun addContact(friend: Friend): Completable {
+        return remoteContactDataSource.acceptContact(friend)
+                .andThen(localContactDataSource.acceptContact(friend))
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+    }
+
+    override fun rejectContact(friend: Friend): Completable {
+        return remoteContactDataSource.rejectContact(friend)
+                .andThen(localContactDataSource.rejectContact(friend))
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+    }
+
 
 }
