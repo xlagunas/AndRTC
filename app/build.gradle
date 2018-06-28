@@ -12,8 +12,8 @@ android {
         applicationId "cat.xlagunas.viv"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "0.0.1"
+        versionCode rootProject.gitCommitCount
+        versionName rootProject.gitTag
         testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
         multiDexEnabled true
     }
@@ -157,5 +157,6 @@ static def isMinifyEnabledForBuild() {
     }
     return false
 }
+
 
 apply plugin: 'com.google.gms.google-services'
