@@ -1,25 +1,27 @@
 package cat.xlagunas.viv.push
 
+import android.content.Context
+import cat.xlagunas.domain.contact.ContactRepository
+import cat.xlagunas.viv.commons.di.VivApplication
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.lang.Exception
+import timber.log.Timber
+import javax.inject.Inject
 
-class PushMessageHandler: FirebaseMessagingService() {
+class PushMessageHandler : FirebaseMessagingService() {
 
-    override fun onMessageReceived(p0: RemoteMessage?) {
-        super.onMessageReceived(p0)
+    @Inject
+    lateinit var contactRepository: ContactRepository
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        (applicationContext as VivApplication).applicationComponent.inject(this)
     }
 
-    override fun onMessageSent(p0: String?) {
-        super.onMessageSent(p0)
-    }
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Timber.d("Message received from push. Message type: ${remoteMessage.data["eventType"]}")
+        contactRepository.forceUpdate()
+                .subscribe({ Timber.d("Successfully updated contacts") }, { Timber.e(it, "Error updating contacts") })
 
-    override fun onDeletedMessages() {
-        super.onDeletedMessages()
     }
-
-    override fun onSendError(p0: String?, p1: Exception?) {
-        super.onSendError(p0, p1)
-    }
-
 }

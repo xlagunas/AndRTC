@@ -6,29 +6,16 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'androidx.navigation.safeargs'
 
-
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "cat.xlagunas.viv"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.gitCommitCount
+        versionName rootProject.gitTag
         testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
         multiDexEnabled true
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-
-        debug {
-            minifyEnabled false
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 
     signingConfigs {
@@ -38,6 +25,44 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('../buildsystem/production.keystore')
+            storePassword System.getenv("PROD_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("PROD_KEY_ALIAS")
+            keyPassword System.getenv("PROD_KEY_PASSWORD")
+        }
+    }
+
+    flavorDimensions "version"
+
+    productFlavors {
+        production {
+            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
+        }
+
+        development {
+            versionNameSuffix '.local'
+            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+//            minifyEnabled System.getenv("MINIFY_ENABLED").asBoolean() ?: false
+            minifyEnabled isMinifyEnabledForBuild()
+            useProguard isMinifyEnabledForBuild()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //applicationIdSuffix '.dev'
+            versionNameSuffix '.dev'
+        }
+
     }
 
     dataBinding {
@@ -53,6 +78,8 @@ android {
     }
 }
 
+
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':data')
@@ -66,34 +93,40 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
-    implementation 'com.android.support:design:28.0.0-alpha1'
+    implementation 'com.android.support:design:28.0.0-alpha3'
+    implementation 'com.android.support:support-media-compat:28.0.0-alpha3'
+    implementation 'com.android.support:support-v4:28.0.0-alpha3'
+    implementation 'com.android.support:appcompat-v7:28.0.0-alpha3'
 
     implementation 'android.arch.lifecycle:runtime:1.1.1'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha01'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha01'
-    implementation 'android.arch.persistence.room:runtime:1.1.0'
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha02'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha02'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
 
-    implementation 'com.android.support:appcompat-v7:28.0.0-alpha1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'de.hdodenhof:circleimageview:2.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
-    implementation 'com.google.firebase:firebase-core:16.0.0'
-    implementation 'com.google.firebase:firebase-analytics:16.0.0'
+
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-analytics:16.0.1'
     implementation 'com.google.firebase:firebase-perf:16.0.0'
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
     }
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
 
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
     testImplementation 'junit:junit:4.12'
@@ -113,6 +146,17 @@ dependencies {
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
+    androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha02' // use -ktx for Kotlin
+
 }
+
+static def isMinifyEnabledForBuild() {
+    String minifyStatus = System.getenv("MINIFY_ENABLED")
+    if (minifyStatus != null) {
+        return minifyStatus.toBoolean()
+    }
+    return false
+}
+
 
 apply plugin: 'com.google.gms.google-services'

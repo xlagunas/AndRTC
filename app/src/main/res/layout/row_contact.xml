@@ -8,9 +8,9 @@
         android:id="@+id/contact_fullname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="72dp"
+        android:layout_marginStart="72dp"
         android:layout_marginTop="20dp"
-        android:layout_toLeftOf="@id/add_friend_button"
+        android:layout_toStartOf="@id/call_friend_button"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         tools:text="Xavier Lagunas Calpe"/>
@@ -21,7 +21,6 @@
         android:layout_height="36dp"
         android:layout_alignTop="@id/contact_fullname"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:src="@android:color/darker_gray"/>
 
     <TextView
@@ -29,22 +28,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/contact_fullname"
-        android:layout_toLeftOf="@id/add_friend_button"
-        android:layout_marginLeft="72dp"
+        android:layout_marginStart="72dp"
         android:layout_marginBottom="20dp"
+        android:layout_toStartOf="@id/call_friend_button"
         android:textSize="14sp"
         tools:text="xlagunas"/>
 
-    <Button
-        android:id="@+id/add_friend_button"
+    <ImageButton
+        android:id="@+id/call_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/chuck_colorAccent"
-        android:text="ADD"/>
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/ic_call"
+        />
 
 </RelativeLayout>

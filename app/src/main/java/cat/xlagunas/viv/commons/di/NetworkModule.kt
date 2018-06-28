@@ -1,7 +1,9 @@
 package cat.xlagunas.viv.commons.di
 
 import android.app.Application
+import android.os.Build
 import cat.xlagunas.data.common.net.interceptors.AuthHeaderInterceptor
+import cat.xlagunas.viv.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
@@ -30,8 +32,7 @@ class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
                 .client(client)
-                .baseUrl("http://192.168.0.156:8080")
-//                .baseUrl("http://10.239.162.46:8080")
+                .baseUrl(BuildConfig.ENDPOINT)
                 .build()
     }
 

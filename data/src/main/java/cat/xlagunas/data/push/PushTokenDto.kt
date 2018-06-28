@@ -1,3 +1,6 @@
 package cat.xlagunas.data.push
 
-data class PushTokenDto(private val value: String, private val platform: String = "ANDROID")
+import com.google.gson.annotations.SerializedName
+
+data class PushTokenDto(@SerializedName("value") private val value: String,
+                        @SerializedName("platform") private val platform: String = "ANDROID")

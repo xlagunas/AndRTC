@@ -2,18 +2,21 @@ package cat.xlagunas.viv.login
 
 import android.content.Intent
 import android.support.annotation.IdRes
-import android.support.design.internal.SnackbarContentLayout
+import android.support.design.widget.SnackbarContentLayout
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.ViewInteraction
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
+import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.widget.EditText
 import androidx.navigation.findNavController
+import androidx.navigation.testing.TestNavigator
+import androidx.navigation.testing.TestNavigatorDestinationBuilder
+import androidx.navigation.testing.TestNavigatorProvider
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.FragmentTestRule
 import cat.xlagunas.viv.commons.WireMockTest
 import cat.xlagunas.viv.landing.MainActivity
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -26,16 +29,22 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginFragmentTest : WireMockTest() {
 
-    @get:Rule
+    /*@get:Rule
     @JvmField
     val activityRule = FragmentTestRule(MainActivity::class.java, LoginFragment::
-    class.java)
+    class.java)*/
+    @get:Rule
+    @JvmField
+    val activityRule = ActivityTestRule(MainActivity::class.java)
 
 
     @Test
     fun givenValidCredentials_whenUserLogsIn_thenLoginActivityFinishes() {
 
-        val activity = activityRule.launchActivity(Intent())
+        val testNavigator = TestNavigatorDestinationBuilder(TestNavigator(), R.id.action_login).build()
+        activityRule.launchActivity(Intent())
+
+        TestNavigatorProvider(activityRule.activity).addNavigator(testNavigator.navigator)
 
         wiremock.stubFor(WireMock.post(WireMock.urlEqualTo("/auth/"))
                 .willReturn(
@@ -50,7 +59,8 @@ class LoginFragmentTest : WireMockTest() {
         onView(ViewMatchers.withId(R.id.login_button)).perform(click())
 
         //TODO Poor man's assertion to check proper navigation was triggered
-        assert(activity.findNavController(R.id.my_nav_host_fragment).currentDestination.id == R.id.contactFragment)
+
+        assert(activityRule.activity.findNavController(R.id.my_nav_host_fragment).currentDestination.id == R.id.contactFragment)
 
     }
 
@@ -69,7 +79,6 @@ class LoginFragmentTest : WireMockTest() {
         onView(ViewMatchers.withId(R.id.login_button)).perform(click())
 
         onView(isAssignableFrom(SnackbarContentLayout::class.java)).check(matches(isDisplayed()))
-
     }
 
     private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {
