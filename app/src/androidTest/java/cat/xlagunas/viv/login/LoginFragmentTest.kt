@@ -41,11 +41,10 @@ class LoginFragmentTest : WireMockTest() {
     @Test
     fun givenValidCredentials_whenUserLogsIn_thenLoginActivityFinishes() {
 
-        val activity = activityRule.activity
         val testNavigator = TestNavigatorDestinationBuilder(TestNavigator(), R.id.action_login).build()
         activityRule.launchActivity(Intent())
 
-        TestNavigatorProvider(activity).addNavigator(testNavigator.navigator)
+        TestNavigatorProvider(activityRule.activity).addNavigator(testNavigator.navigator)
 
         wiremock.stubFor(WireMock.post(WireMock.urlEqualTo("/auth/"))
                 .willReturn(
@@ -61,7 +60,7 @@ class LoginFragmentTest : WireMockTest() {
 
         //TODO Poor man's assertion to check proper navigation was triggered
 
-        assert(activity.findNavController(R.id.my_nav_host_fragment).currentDestination.id == R.id.contactFragment)
+        assert(activityRule.activity.findNavController(R.id.my_nav_host_fragment).currentDestination.id == R.id.contactFragment)
 
     }
 

@@ -38,26 +38,32 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Generate Debug APK
-          command: ./gradlew :app:assembleDebug
+          command: ./gradlew :app:assembleDevelopmentDebug
       - run:
           name: Generate Test APK
-          command: ./gradlew :app:assembleDebugAndroidTest
+          command: ./gradlew :app:assembleDevelopmentDebugAndroidTest
       - run:
           name: Run firebase android tests
           command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
-  generate_prod_apk:
+  release_apk:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28-alpha
     steps:
       - checkout
-    - restore_cache:
-              key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-    - run:
-        name: Generate Production APK
-        command: ./gradlew :app:assembleProductionRelease
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Generate Production APK
+          command: ./gradlew :app:assembleProductionRelease
+      - store_artifacts:
+          path: app/build/outputs/apk
+
+      - store_artifacts:
+          path: app/build/outputs/mapping
+
 workflows:
   version: 2
   run_tests:
@@ -77,3 +83,6 @@ workflows:
           requires:
             - build
 
+  generate_prod_apk:
+    jobs:
+      - release_apk

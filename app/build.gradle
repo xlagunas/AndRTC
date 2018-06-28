@@ -6,7 +6,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'androidx.navigation.safeargs'
 
-
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -56,14 +55,15 @@ android {
         }
 
         debug {
-            minifyEnabled false
-            useProguard false
+//            minifyEnabled System.getenv("MINIFY_ENABLED").asBoolean() ?: false
+            minifyEnabled isMinifyEnabledForBuild()
+            useProguard isMinifyEnabledForBuild()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //applicationIdSuffix '.dev'
             versionNameSuffix '.dev'
         }
-    }
 
+    }
 
     dataBinding {
         enabled = true
@@ -77,6 +77,8 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
 }
+
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -146,6 +148,14 @@ dependencies {
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha02' // use -ktx for Kotlin
 
+}
+
+static def isMinifyEnabledForBuild() {
+    String minifyStatus = System.getenv("MINIFY_ENABLED")
+    if (minifyStatus != null) {
+        return minifyStatus.toBoolean()
+    }
+    return false
 }
 
 apply plugin: 'com.google.gms.google-services'
