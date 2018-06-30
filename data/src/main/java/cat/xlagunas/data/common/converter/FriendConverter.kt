@@ -14,7 +14,7 @@ class FriendConverter {
                 friendId = friendDto.id,
                 username = friendDto.username,
                 email = friendDto.email,
-                image = friendDto.profilePic ?: "defaultImage",
+                image = friendDto.profilePic,
                 name = friendDto.name,
                 relationshipStatus = friendDto.relationship.name)
     }
@@ -37,7 +37,7 @@ class FriendConverter {
             FriendEntity(friendId = friend.friendId,
                     username = friend.username,
                     name = friend.name,
-                    imageUrl = friend.image,
+                    imageUrl = friend.image ?: "",
                     email = friend.email,
                     relationShipStatus = friend.relationshipStatus,
                     userId = currentUserId)

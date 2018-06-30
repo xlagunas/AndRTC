@@ -51,6 +51,9 @@ captures/
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
+# Fabric Properties
+app/fabric.properties
+
 # Freeline
 freeline.py
 freeline/
