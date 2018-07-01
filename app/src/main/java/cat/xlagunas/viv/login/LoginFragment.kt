@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
             is SuccessLoginState -> {
-                findNavController().navigate(R.id.action_user_logged)
+                findNavController().popBackStack()
             }
             is InvalidLoginState -> Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
             is ValidationError -> {

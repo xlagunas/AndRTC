@@ -52,6 +52,7 @@ android {
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            manifestPlaceholders = ["appName": '@string/app_name']
         }
 
         debug {
@@ -59,8 +60,9 @@ android {
             minifyEnabled isMinifyEnabledForBuild()
             useProguard isMinifyEnabledForBuild()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //applicationIdSuffix '.dev'
+            applicationIdSuffix '.dev'
             versionNameSuffix '.dev'
+            manifestPlaceholders = ["appName": '@string/app_name_dev']
         }
 
     }

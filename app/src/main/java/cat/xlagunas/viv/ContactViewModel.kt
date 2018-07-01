@@ -1,6 +1,5 @@
 package cat.xlagunas.viv
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
@@ -11,10 +10,18 @@ import javax.inject.Inject
 
 class ContactViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository) : DisposableViewModel() {
 
-    val getUserInfo: LiveData<DisplayState> by lazy {
-        val liveData = MutableLiveData<DisplayState>()
-        disposable.add(authenticationRepository.findUser().subscribe({ user -> liveData.postValue(Display(user)) }, { Error(it.localizedMessage) }, { liveData.postValue(NotRegistered) }))
-        liveData
+    private val userLiveData = MutableLiveData<DisplayState>()
+
+    val getUserInfo: MutableLiveData<DisplayState> by lazy {
+        disposable.add(authenticationRepository.findUser()
+                .subscribe({ userLiveData.postValue(Display(it)) },
+                        { Error(it.localizedMessage) },
+                        { userLiveData.postValue(NotRegistered) }))
+        userLiveData
+    }
+
+    init {
+        authenticationRepository.getUser().subscribe { getUserInfo.value = Display(it) }
     }
 
 }

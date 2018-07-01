@@ -6,9 +6,11 @@ jobs:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: -Xmx3200m
+      MINIFY_ENABLED: true
     steps:
       - checkout
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - run: echo $FABRIC_API_SECRET | base64 --decode --ignore-garbage > ${HOME}/code/app/fabric.properties
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
@@ -30,10 +32,13 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28-alpha
+    environment:
+      MINIFY_ENABLED: false
     steps:
       - checkout
       - run: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - run: echo $FABRIC_API_SECRET | base64 --decode --ignore-garbage > ${HOME}/code/app/fabric.properties
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
@@ -51,9 +56,12 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28-alpha
+    environment:
+      MINIFY_ENABLED: true
     steps:
       - checkout
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - run: echo $FABRIC_API_SECRET | base64 --decode --ignore-garbage > ${HOME}/code/app/fabric.properties
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
@@ -77,6 +85,7 @@ workflows:
   run_tests:
     jobs:
       - build
+
   compile_and_test:
     triggers:
       - schedule:
@@ -93,4 +102,11 @@ workflows:
 
   generate_prod_apk:
     jobs:
-      - release_apk
+      - release_apk:
+          filters:
+            branches:
+              only:
+                - kotlin
+                - develop
+                - master
+

@@ -4,8 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.ViewModelProvider
 import cat.xlagunas.data.common.provider.ActivityMonitor
 import cat.xlagunas.viv.BuildConfig
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
+
 
 open class VivApplication : Application() {
 
@@ -19,6 +22,7 @@ open class VivApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Fabric.with(this, Crashlytics())
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }

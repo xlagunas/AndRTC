@@ -10,6 +10,7 @@ import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import timber.log.Timber
 
@@ -23,6 +24,13 @@ class AuthenticationRepositoryImpl(
 
     override fun findUser(): Maybe<User> {
         return userDao.user
+                .map(userConverter::toUser)
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+    }
+
+    override fun getUser(): Flowable<User> {
+        return userDao.getUserHot()
                 .map(userConverter::toUser)
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
