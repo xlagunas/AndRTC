@@ -85,6 +85,7 @@ workflows:
   run_tests:
     jobs:
       - build
+
   compile_and_test:
     triggers:
       - schedule:
@@ -101,4 +102,11 @@ workflows:
 
   generate_prod_apk:
     jobs:
-      - release_apk
+      - release_apk:
+          filters:
+            branches:
+              only:
+                - kotlin
+                - develop
+                - master
+
