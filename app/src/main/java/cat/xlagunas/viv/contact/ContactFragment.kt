@@ -1,8 +1,6 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,8 +15,6 @@ import android.widget.LinearLayout
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
-import cat.xlagunas.domain.commons.User
-import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.push.PushTokenViewModel
@@ -35,14 +31,12 @@ class ContactFragment : Fragment() {
     private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
-    private lateinit var friendshipViewModel: FriendshipViewModel
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var contactViewModel: ContactViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
-        friendshipViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(FriendshipViewModel::class.java)
-        userViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(UserViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,22 +48,15 @@ class ContactFragment : Fragment() {
         ButterKnife.bind(this, view)
         setUpRecyclerView()
         setupSearchView()
+        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
-
-        Transformations
-                .switchMap(userViewModel.getCurrentUser(), this::observeFriends)
-                .observe(this, Observer(this::renderFriends))
-    }
-
-    private fun observeFriends(u: User): LiveData<List<Friend>> {
-        return friendshipViewModel.getContacts
     }
 
     private fun setupSearchView() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
-                    friendshipViewModel.findContact(query)
+                    contactViewModel.findContact(query)
                             .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
                     return true
                 }

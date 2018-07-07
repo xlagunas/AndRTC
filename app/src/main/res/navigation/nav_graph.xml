@@ -26,7 +26,8 @@
         <action
             android:id="@+id/action_user_logged"
             app:destination="@id/contactFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpTo="@+id/contactFragment"
+            app:popUpToInclusive="false"/>
         <action
             android:id="@+id/action_register"
             app:destination="@id/registerActivity"
