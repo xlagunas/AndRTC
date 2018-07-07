@@ -29,6 +29,13 @@ class AuthenticationRepositoryImpl(
                 .subscribeOn(schedulers.io)
     }
 
+    override fun isUserLoggedIn(): Flowable<Boolean> {
+        return userDao.getUserCount()
+                .map { count -> count > 0 }
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+    }
+
     override fun getUser(): Flowable<User> {
         return userDao.getUserHot()
                 .map(userConverter::toUser)
@@ -96,5 +103,7 @@ class AuthenticationRepositoryImpl(
     private fun getTokenFromTokenProvider(): Maybe<String> {
         return Maybe.fromCallable { pushTokenProvider.getPushToken() }
     }
+
+
 }
 

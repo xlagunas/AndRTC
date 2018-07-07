@@ -56,7 +56,6 @@ android {
         }
 
         debug {
-//            minifyEnabled System.getenv("MINIFY_ENABLED").asBoolean() ?: false
             minifyEnabled isMinifyEnabledForBuild()
             useProguard isMinifyEnabledForBuild()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -111,7 +110,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'de.hdodenhof:circleimageview:2.0.0'
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
@@ -159,6 +157,5 @@ static def isMinifyEnabledForBuild() {
     }
     return false
 }
-
 
 apply plugin: 'com.google.gms.google-services'

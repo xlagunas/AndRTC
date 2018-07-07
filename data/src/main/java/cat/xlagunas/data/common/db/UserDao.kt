@@ -10,6 +10,9 @@ import io.reactivex.Maybe
 @Dao
 interface UserDao {
 
+    @Query("SELECT COUNT(*) FROM user")
+    fun getUserCount(): Flowable<Int>
+
     @get:Query("SELECT * FROM user LIMIT 1")
     val user: Maybe<cat.xlagunas.data.common.db.UserEntity>
 

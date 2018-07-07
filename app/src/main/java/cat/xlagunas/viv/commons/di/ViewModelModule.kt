@@ -2,7 +2,7 @@ package cat.xlagunas.viv.commons.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import cat.xlagunas.viv.ContactViewModel
+import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.commons.ViewModelFactory
 import cat.xlagunas.viv.contact.FriendshipViewModel
 import cat.xlagunas.viv.login.LoginViewModel
@@ -27,8 +27,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ContactViewModel::class)
-    abstract fun provideContactViewModel(contactViewModel: ContactViewModel): ViewModel
+    @ViewModelKey(UserViewModel::class)
+    abstract fun provideContactViewModel(userViewModel: UserViewModel): ViewModel
 
     @Binds
     @IntoMap
