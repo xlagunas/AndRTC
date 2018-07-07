@@ -11,7 +11,7 @@
     <fragment
         android:id="@+id/contactFragment"
         android:name="cat.xlagunas.viv.contact.ContactFragment"
-        android:label="activity_contact"
+        android:label="fragment_contact"
         tools:layout="@layout/fragment_contact">
         <action
             android:id="@+id/action_login"
@@ -26,6 +26,7 @@
         <action
             android:id="@+id/action_user_logged"
             app:destination="@id/contactFragment"
+            app:popUpTo="@+id/contactFragment"
             app:popUpToInclusive="false"/>
         <action
             android:id="@+id/action_register"

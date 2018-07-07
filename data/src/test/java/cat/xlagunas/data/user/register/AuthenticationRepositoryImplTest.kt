@@ -119,4 +119,16 @@ class AuthenticationRepositoryImplTest {
     private fun mockedUserDto() =
             UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
 
+
+    @Test
+    fun reactive_insert() {
+        val observer = userDao.getUserCount().test()
+            observer.assertValue(0)
+
+        userDao.insert(userConverter.toUserEntity(mockedUserDto()))
+        observer.assertValueAt(1, 1)
+        userDao.delete(userConverter.toUserEntity(mockedUserDto()))
+        observer.assertValueAt(2, 0)
+    }
+
 }

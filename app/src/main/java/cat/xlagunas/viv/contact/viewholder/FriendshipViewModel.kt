@@ -1,8 +1,5 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.viv.contact.viewholder
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
-import android.util.Log
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
@@ -26,14 +23,6 @@ class FriendshipViewModel
     fun rejectContactRequest(friend: Friend) {
         disposable.add(contactRepository.rejectContact(friend)
                 .subscribe({ Timber.i("Rejected contact") }, { Timber.e(it, "RejectContact error") }))
-    }
-
-    val getContacts by lazy {
-        LiveDataReactiveStreams.fromPublisher(contactRepository.getContacts())
-    }
-
-    fun findContact(searchTerm: String): LiveData<List<Friend>> {
-        return LiveDataReactiveStreams.fromPublisher(contactRepository.searchContact(searchTerm).toFlowable())
     }
 
     fun callFriend(friend: Friend) {

@@ -29,4 +29,6 @@ interface AuthenticationRepository {
     fun isPushTokenRegistered(): Boolean
 
     fun markPushTokenAsRegistered()
+
+    fun isUserLoggedIn(): Flowable<Boolean>
 }

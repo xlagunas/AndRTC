@@ -8,7 +8,6 @@ import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.VivApplication
-import cat.xlagunas.viv.contact.FriendshipViewModel
 import cat.xlagunas.viv.landing.MainActivity
 
 class ConfirmFriendViewHolder(view: View) : FriendViewHolder(view) {
