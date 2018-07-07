@@ -1,7 +1,6 @@
 package cat.xlagunas.data.contact
 
 import cat.xlagunas.data.common.converter.FriendConverter
-import cat.xlagunas.data.common.net.FriendDto
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDataSource
 import io.reactivex.Completable
@@ -16,7 +15,7 @@ class RemoteContactDataSource
 
     override fun searchContacts(searchTerm: String): Single<List<Friend>> {
         return contactsApi.searchContact(searchTerm)
-                .flattenAsObservable { items: List<FriendDto> -> items }
+                .flattenAsFlowable { items -> items }
                 .map(friendConverter::toFriend)
                 .toList()
     }

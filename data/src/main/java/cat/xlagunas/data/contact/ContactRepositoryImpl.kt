@@ -8,6 +8,7 @@ import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.internal.functions.Functions
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +36,9 @@ class ContactRepositoryImpl
                     .flatMapCompletable { localContactDataSource.updateContacts(it) }
                     .observeOn(schedulers.mainThread)
                     .subscribeOn(schedulers.io)
-                    .subscribe { Timber.d("Successfully added up-to-date contacts into database") }
+                    .onErrorComplete(Functions.alwaysTrue())
+                    .doOnError { Timber.e(it, "Error requesting remote contacts") }
+                    .subscribe()
         }
 
         return localContactDataSource.getContacts().observeOn(schedulers.mainThread).subscribeOn(schedulers.io)
