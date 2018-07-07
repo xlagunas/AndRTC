@@ -7,13 +7,12 @@ import android.support.v7.app.AppCompatActivity
 import androidx.navigation.findNavController
 import butterknife.ButterKnife
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.commons.di.VivApplication
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
@@ -22,8 +21,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        userViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(UserViewModel::class.java)
-        userViewModel.isUserLoggedIn.observe(this, Observer { this.sendToLogin() })
+        mainViewModel = ViewModelProviders.of(this, (application as VivApplication).viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.isUserLoggedIn.observe(this, Observer { this.sendToLogin() })
     }
 
     private fun sendToLogin() {

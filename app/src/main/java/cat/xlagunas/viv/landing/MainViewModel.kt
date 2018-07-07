@@ -1,26 +1,21 @@
-package cat.xlagunas.viv
+package cat.xlagunas.viv.landing
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.SingleLiveEvent
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
+import cat.xlagunas.viv.commons.extension.toLiveData
 import javax.inject.Inject
 
-class UserViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository) : DisposableViewModel() {
+class MainViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository) : DisposableViewModel() {
 
     private val userLoggedInEvent = SingleLiveEvent<Boolean>()
 
     val isUserLoggedIn: LiveData<Boolean>
-        get() = LiveDataReactiveStreams.fromPublisher(authenticationRepository
+        get() = authenticationRepository
                 .isUserLoggedIn()
-                .filter { !it })
-
-
-    fun getCurrentUser(): LiveData<User> {
-        return LiveDataReactiveStreams.fromPublisher(authenticationRepository.getUser())
-    }
+                .filter { !it }
+                .toLiveData()
 
     init {
         disposable.add(
