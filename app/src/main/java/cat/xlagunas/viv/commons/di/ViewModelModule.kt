@@ -4,7 +4,8 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.commons.ViewModelFactory
-import cat.xlagunas.viv.contact.FriendshipViewModel
+import cat.xlagunas.viv.contact.ContactViewModel
+import cat.xlagunas.viv.contact.viewholder.FriendshipViewModel
 import cat.xlagunas.viv.login.LoginViewModel
 import cat.xlagunas.viv.push.PushTokenViewModel
 import cat.xlagunas.viv.register.RegisterViewModel
@@ -39,6 +40,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FriendshipViewModel::class)
     abstract fun provideFriendshipViewModel(friendshipViewModel: FriendshipViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ContactViewModel::class)
+    abstract fun provideContactsViewModel(contactViewModel: ContactViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

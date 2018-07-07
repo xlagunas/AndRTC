@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.findNavController
 import butterknife.ButterKnife
-import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.UserViewModel
 import cat.xlagunas.viv.commons.di.VivApplication
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -27,10 +27,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendToLogin() {
-        val navController = findNavController(R.id.my_nav_host_fragment)
-        navController.navigate(R.id.action_login)
+        findNavController(R.id.my_nav_host_fragment).navigate(R.id.action_login)
     }
-
 
     override fun onSupportNavigateUp() = findNavController(R.id.my_nav_host_fragment).navigateUp()
 
