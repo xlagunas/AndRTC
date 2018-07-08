@@ -21,7 +21,5 @@ class PushMessageHandler : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.d("Message received from push. Message type: ${remoteMessage.data["eventType"]}")
         contactRepository.forceUpdate()
-                .subscribe({ Timber.d("Successfully updated contacts") }, { Timber.e(it, "Error updating contacts") })
-
     }
 }

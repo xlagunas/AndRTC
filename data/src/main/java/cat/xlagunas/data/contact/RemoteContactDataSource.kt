@@ -33,9 +33,13 @@ class RemoteContactDataSource
     }
 
     override fun getContacts(): Flowable<List<Friend>> {
+        return getContactsAsSingle().toFlowable()
+    }
+
+    fun getContactsAsSingle(): Single<List<Friend>> {
         return contactsApi.listContacts()
                 .flattenAsFlowable { t -> t }
                 .map(friendConverter::toFriend)
-                .toList().toFlowable()
+                .toList()
     }
 }

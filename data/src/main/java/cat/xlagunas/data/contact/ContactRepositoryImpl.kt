@@ -17,6 +17,7 @@ class ContactRepositoryImpl
         private val localContactDataSource: LocalContactDataSource,
         private val remoteContactDataSource: RemoteContactDataSource,
         private val phoneContactDataSource: PhoneContactsDataSource,
+        private val cache: ContactCache,
         private val schedulers: RxSchedulers) : ContactRepository {
 
     override fun requestFriendship(friend: Friend): Completable =
@@ -31,17 +32,23 @@ class ContactRepositoryImpl
                     .subscribeOn(schedulers.io)
 
     override fun getContacts(): Flowable<List<Friend>> {
-        if (isCacheOutDated()) {
-            remoteContactDataSource.getContacts()
-                    .flatMapCompletable { localContactDataSource.updateContacts(it) }
-                    .observeOn(schedulers.mainThread)
-                    .subscribeOn(schedulers.io)
-                    .onErrorComplete(Functions.alwaysTrue())
-                    .doOnError { Timber.e(it, "Error requesting remote contacts") }
-                    .subscribe()
-        }
+        cache.isCacheValid().filter { validCache -> !validCache }.toSingle()
+                .flatMapCompletable { getRemoteContactsAndUpdate() }
+                .onErrorComplete(Functions.alwaysTrue())
+                .doOnError { Timber.e(it, "Error requesting remote contacts") }
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+                .subscribe()
 
-        return localContactDataSource.getContacts().observeOn(schedulers.mainThread).subscribeOn(schedulers.io)
+        return localContactDataSource.getContacts()
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+    }
+
+    private fun getRemoteContactsAndUpdate(): Completable {
+        return remoteContactDataSource.getContactsAsSingle()
+                .flatMapCompletable { localContactDataSource.updateContacts(it) }
+                .andThen(cache.updateCache())
     }
 
     override fun getPhoneContacts(): Flowable<List<ContactDetails>> {
@@ -50,14 +57,12 @@ class ContactRepositoryImpl
                 .subscribeOn(schedulers.io)
     }
 
-    //TODO created a cacheProvider that deals with the validity of data
-    private fun isCacheOutDated(): Boolean {
-        return true
-    }
-
-    override fun forceUpdate(): Completable {
-        //TODO 1. INVALIDATE CACHE, 2. OBTAIN ELEMENTS 3.REFRESH CACHE WHEN WE HAVE IT
-        return getContacts().ignoreElements()
+    override fun forceUpdate() {
+        cache.invalidateCache()
+                .andThen(getRemoteContactsAndUpdate())
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+                .subscribe()
     }
 
     override fun addContact(friend: Friend): Completable {
