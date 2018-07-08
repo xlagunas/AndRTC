@@ -6,7 +6,9 @@ import android.content.SharedPreferences
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.provider.ActivityMonitor
+import cat.xlagunas.data.common.time.SystemTimeProvider
 import cat.xlagunas.data.user.authentication.AuthTokenPreferenceDataStore
+import cat.xlagunas.domain.common.time.TimeProvider
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import dagger.Module
@@ -46,5 +48,9 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore = AuthTokenPreferenceDataStore(sharedPreferences)
+
+    @Provides
+    @Singleton
+    fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
 
 }
