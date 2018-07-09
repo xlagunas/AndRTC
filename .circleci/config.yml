@@ -106,7 +106,7 @@ workflows:
           filters:
             tags:
               only:
-                \d+(\.*\d+){2}(-(alpha|beta)(\d+)?)?
+                /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)/
             branches:
               only:
                 - kotlin
