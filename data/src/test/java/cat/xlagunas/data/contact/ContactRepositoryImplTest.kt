@@ -85,20 +85,6 @@ class ContactRepositoryImplTest {
         verify(cache, never()).updateCache()
     }
 
-//    @Test
-//    fun givenCacheIsValid_whenForceUpdate_thenUpdate() {
-//        `when`(cache.isCacheValid()).thenReturn(Single.just(true))
-//        `when`(cache.invalidateCache()).thenReturn(Completable.complete())
-//        `when`(remoteContactDataSource.getContactsAsSingle()).thenReturn(Single.just(emptyList()))
-//        `when`(localContactDataSource.getContacts()).thenReturn(Flowable.empty())
-//        `when`(localContactDataSource.updateContacts(ArgumentMatchers.anyList())).thenReturn(Completable.complete())
-//
-//        contactRepository.forceUpdate().test().assertNoValues().assertComplete()
-//
-//        verify(remoteContactDataSource).getContactsAsSingle()
-//        verify(cache).updateCache()
-//    }
-
     @Test
     fun findContacts() {
     }
