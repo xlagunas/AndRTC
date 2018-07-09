@@ -106,10 +106,5 @@ workflows:
           filters:
             tags:
               only:
-                /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)/
-            branches:
-              only:
-                - kotlin
-                - develop
-                - master
+                /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
 
