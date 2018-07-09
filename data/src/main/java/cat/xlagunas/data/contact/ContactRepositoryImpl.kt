@@ -1,5 +1,6 @@
 package cat.xlagunas.data.contact
 
+import android.annotation.SuppressLint
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDetails
 import cat.xlagunas.domain.contact.ContactRepository
@@ -7,6 +8,7 @@ import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,6 +18,7 @@ class ContactRepositoryImpl
         private val localContactDataSource: LocalContactDataSource,
         private val remoteContactDataSource: RemoteContactDataSource,
         private val phoneContactDataSource: PhoneContactsDataSource,
+        private val cache: ContactCache,
         private val schedulers: RxSchedulers) : ContactRepository {
 
     override fun requestFriendship(friend: Friend): Completable =
@@ -29,32 +32,35 @@ class ContactRepositoryImpl
                     .observeOn(schedulers.mainThread)
                     .subscribeOn(schedulers.io)
 
+    @SuppressLint("CheckResult")
     override fun getContacts(): Flowable<List<Friend>> {
-        if (isCacheOutDated()) {
-            remoteContactDataSource.getContacts()
-                    .flatMapCompletable { localContactDataSource.updateContacts(it) }
-                    .observeOn(schedulers.mainThread)
-                    .subscribeOn(schedulers.io)
-                    .subscribe { Timber.d("Successfully added up-to-date contacts into database") }
-        }
+        cacheNeedsRefresh()
+                .flatMapCompletable {
+                    remoteContactDataSource.getContactsAsSingle()
+                            .flatMapCompletable(this::updateContacts)
+                }
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
+                .subscribe({}, Timber::e)
 
-        return localContactDataSource.getContacts().observeOn(schedulers.mainThread).subscribeOn(schedulers.io)
+        return localContactDataSource.getContacts()
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
     }
 
     override fun getPhoneContacts(): Flowable<List<ContactDetails>> {
+
         return phoneContactDataSource.getUserPhoneContacts()
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
     }
 
-    //TODO created a cacheProvider that deals with the validity of data
-    private fun isCacheOutDated(): Boolean {
-        return true
-    }
-
     override fun forceUpdate(): Completable {
-        //TODO 1. INVALIDATE CACHE, 2. OBTAIN ELEMENTS 3.REFRESH CACHE WHEN WE HAVE IT
-        return getContacts().ignoreElements()
+        return cache.invalidateCache()
+                .andThen(remoteContactDataSource.getContactsAsSingle())
+                .flatMapCompletable(this::updateContacts)
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
     }
 
     override fun addContact(friend: Friend): Completable {
@@ -71,5 +77,14 @@ class ContactRepositoryImpl
                 .subscribeOn(schedulers.io)
     }
 
+    private fun cacheNeedsRefresh(): Maybe<Boolean> {
+        return cache.isCacheValid()
+                .filter { isCacheValid -> !isCacheValid }
+    }
+
+    private fun updateContacts(friends: List<Friend>): Completable {
+        return localContactDataSource.updateContacts(friends)
+                .andThen(cache.updateCache())
+    }
 
 }
