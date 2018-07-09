@@ -104,6 +104,9 @@ workflows:
     jobs:
       - release_apk:
           filters:
+            tags:
+              only:
+                \d+(\.*\d+){2}(-(alpha|beta)(\d+)?)?
             branches:
               only:
                 - kotlin
