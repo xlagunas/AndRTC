@@ -35,12 +35,10 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
     }
 
     fun updateContacts(contactList: List<Friend>): Completable {
-        val friendEntityFlowable = Flowable.combineLatest(
-                userDao.user.toFlowable(),
-                Flowable.fromIterable(contactList),
-                BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
 
-        return friendEntityFlowable.toList()
+        return Flowable.combineLatest(userDao.user.toFlowable(), Flowable.fromIterable(contactList),
+                BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
+                .toList()
                 .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
     }
 

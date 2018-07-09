@@ -15,7 +15,7 @@ interface ContactRepository {
 
     fun getPhoneContacts(): Flowable<List<ContactDetails>>
 
-    fun forceUpdate()
+    fun forceUpdate(): Completable
 
     fun addContact(friend: Friend): Completable
 

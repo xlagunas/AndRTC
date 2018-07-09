@@ -1,5 +1,6 @@
 package cat.xlagunas.data.contact
 
+import android.annotation.SuppressLint
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDetails
 import cat.xlagunas.domain.contact.ContactRepository
@@ -7,8 +8,8 @@ import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.internal.functions.Functions
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,38 +32,35 @@ class ContactRepositoryImpl
                     .observeOn(schedulers.mainThread)
                     .subscribeOn(schedulers.io)
 
+    @SuppressLint("CheckResult")
     override fun getContacts(): Flowable<List<Friend>> {
-        cache.isCacheValid().filter { validCache -> !validCache }.toSingle()
-                .flatMapCompletable { getRemoteContactsAndUpdate() }
-                .onErrorComplete(Functions.alwaysTrue())
-                .doOnError { Timber.e(it, "Error requesting remote contacts") }
+        cacheNeedsRefresh()
+                .flatMapCompletable {
+                    remoteContactDataSource.getContactsAsSingle()
+                            .flatMapCompletable(this::updateContacts)
+                }
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
-                .subscribe()
+                .subscribe({}, Timber::e)
 
         return localContactDataSource.getContacts()
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
     }
 
-    private fun getRemoteContactsAndUpdate(): Completable {
-        return remoteContactDataSource.getContactsAsSingle()
-                .flatMapCompletable { localContactDataSource.updateContacts(it) }
-                .andThen(cache.updateCache())
-    }
-
     override fun getPhoneContacts(): Flowable<List<ContactDetails>> {
+
         return phoneContactDataSource.getUserPhoneContacts()
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
     }
 
-    override fun forceUpdate() {
-        cache.invalidateCache()
-                .andThen(getRemoteContactsAndUpdate())
+    override fun forceUpdate(): Completable {
+        return cache.invalidateCache()
+                .andThen(remoteContactDataSource.getContactsAsSingle())
+                .flatMapCompletable(this::updateContacts)
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
-                .subscribe()
     }
 
     override fun addContact(friend: Friend): Completable {
@@ -79,5 +77,14 @@ class ContactRepositoryImpl
                 .subscribeOn(schedulers.io)
     }
 
+    private fun cacheNeedsRefresh(): Maybe<Boolean> {
+        return cache.isCacheValid()
+                .filter { isCacheValid -> !isCacheValid }
+    }
+
+    private fun updateContacts(friends: List<Friend>): Completable {
+        return localContactDataSource.updateContacts(friends)
+                .andThen(cache.updateCache())
+    }
 
 }

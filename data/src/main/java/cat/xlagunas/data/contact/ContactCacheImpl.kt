@@ -25,7 +25,7 @@ class ContactCacheImpl @Inject constructor(
 
     override fun isCacheValid(): Single<Boolean> {
         return Single.fromCallable { sharedPreferences.getLong(LAST_MODIFIED_DATE, 0) }
-                .map { (timeProvider.getTimeMillis() - it <= MAX_VALID_CACHE_MILLIS) }
+                .map { timeProvider.getTimeMillis() - it <= MAX_VALID_CACHE_MILLIS }
     }
 
     companion object {
