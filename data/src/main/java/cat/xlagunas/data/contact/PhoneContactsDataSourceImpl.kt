@@ -7,7 +7,6 @@ import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import com.squareup.sqlbrite3.SqlBrite
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Singleton

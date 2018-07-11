@@ -1,7 +1,6 @@
 package cat.xlagunas.viv.commons.di
 
 import android.app.Application
-import android.os.Build
 import cat.xlagunas.data.common.net.interceptors.AuthHeaderInterceptor
 import cat.xlagunas.viv.BuildConfig
 import com.google.gson.Gson

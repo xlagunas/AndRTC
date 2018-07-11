@@ -23,7 +23,6 @@ class ContactViewModel
 
     fun findContact(searchTerm: String): LiveData<List<Friend>> {
         return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
-
     }
 
 }

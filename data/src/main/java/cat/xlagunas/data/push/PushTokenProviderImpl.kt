@@ -7,7 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import javax.inject.Inject
 
 class PushTokenProviderImpl
-    @Inject constructor(private val sharedPreferences: SharedPreferences) : PushTokenProvider {
+@Inject constructor(private val sharedPreferences: SharedPreferences) : PushTokenProvider {
 
     companion object {
         const val PUSH_TOKEN_REGISTERED = "pushTokenRegistered"

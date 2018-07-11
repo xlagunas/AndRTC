@@ -123,7 +123,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun reactive_insert() {
         val observer = userDao.getUserCount().test()
-            observer.assertValue(0)
+        observer.assertValue(0)
 
         userDao.insert(userConverter.toUserEntity(mockedUserDto()))
         observer.assertValueAt(1, 1)

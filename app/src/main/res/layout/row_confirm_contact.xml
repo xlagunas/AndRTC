@@ -34,7 +34,6 @@
         android:textSize="14sp"
         tools:text="xlagunas"/>
 
-
     <ImageButton
         android:id="@+id/accept_friendship_button"
         android:layout_width="wrap_content"
