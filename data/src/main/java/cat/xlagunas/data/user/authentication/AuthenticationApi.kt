@@ -25,5 +25,4 @@ interface AuthenticationApi {
 
     @PUT("/token/")
     fun addPushToken(@Body token: PushTokenDto): Completable
-
 }

@@ -16,5 +16,4 @@ class PushMessageTokenHandler : FirebaseInstanceIdService() {
         super.onTokenRefresh()
         pushTokenViewModel.registerToken()
     }
-
 }

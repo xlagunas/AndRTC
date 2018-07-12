@@ -8,8 +8,9 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class ContactCacheImpl @Inject constructor(
-        private val sharedPreferences: SharedPreferences,
-        private val timeProvider: TimeProvider) : ContactCache {
+    private val sharedPreferences: SharedPreferences,
+    private val timeProvider: TimeProvider
+) : ContactCache {
 
     override fun invalidateCache(): Completable {
         return Completable.fromAction {
@@ -25,7 +26,7 @@ class ContactCacheImpl @Inject constructor(
 
     override fun isCacheValid(): Single<Boolean> {
         return Single.fromCallable { sharedPreferences.getLong(LAST_MODIFIED_DATE, 0) }
-                .map { timeProvider.getTimeMillis() - it <= MAX_VALID_CACHE_MILLIS }
+            .map { timeProvider.getTimeMillis() - it <= MAX_VALID_CACHE_MILLIS }
     }
 
     companion object {

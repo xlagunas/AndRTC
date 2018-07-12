@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".register.RegisterActivity"
+                android:label="@string/title_activity_register"
+                android:theme="@style/AppTheme.SplashTheme">
+        </activity>
 
         <service
                 android:name="cat.xlagunas.viv.push.PushMessageHandler"

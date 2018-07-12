@@ -23,8 +23,8 @@ class PushMessageHandler : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.d("Message received from push. Message type: ${remoteMessage.data["eventType"]}")
         val disposable = contactRepository
-                .forceUpdate()
-                .subscribe({}, { Timber.e(it, "Couldn't update contacts from push") })
+            .forceUpdate()
+            .subscribe({}, { Timber.e(it, "Couldn't update contacts from push") })
 
         disposables.add(disposable)
     }
@@ -34,6 +34,5 @@ class PushMessageHandler : FirebaseMessagingService() {
         if (!disposables.isDisposed) {
             disposables.dispose()
         }
-
     }
 }

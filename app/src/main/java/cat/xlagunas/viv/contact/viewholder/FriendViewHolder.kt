@@ -26,11 +26,10 @@ abstract class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         username.text = friend.username
 
         Glide.with(itemView)
-                .load(friend.image)
-                .apply(RequestOptions.noAnimation())
-                .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileImage)
+            .load(friend.image)
+            .apply(RequestOptions.noAnimation())
+            .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
+            .apply(RequestOptions.circleCropTransform())
+            .into(profileImage)
     }
-
 }

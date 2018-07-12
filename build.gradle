@@ -20,6 +20,10 @@ buildscript {
 
     }
 }
+
+plugins {
+    id "com.diffplug.gradle.spotless" version "3.13.0"
+}
 apply plugin: 'kotlin'
 
 allprojects {
@@ -41,6 +45,13 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+spotless {
+    kotlin {
+        target "**/*.kt"
+        ktlint('0.24.0')
     }
 }
 

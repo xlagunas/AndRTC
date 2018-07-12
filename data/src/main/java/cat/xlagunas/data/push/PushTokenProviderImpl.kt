@@ -18,6 +18,4 @@ class PushTokenProviderImpl
     override fun isTokenRegistered() = sharedPreferences.getBoolean(PUSH_TOKEN_REGISTERED, false)
 
     override fun markTokenAsRegistered() = sharedPreferences.edit { putBoolean(PUSH_TOKEN_REGISTERED, true) }
-
-
 }

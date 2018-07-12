@@ -21,7 +21,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class, sdk = [26])
 class LocalContactDataSourceTest {
@@ -45,8 +44,8 @@ class LocalContactDataSourceTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         vivDatabase = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
-                .allowMainThreadQueries()
-                .build()
+            .allowMainThreadQueries()
+            .build()
 
         userEntity = UserEntity(1, "username", "firstname", "lastname", "email", "url")
 
@@ -67,16 +66,16 @@ class LocalContactDataSourceTest {
         val expectedFriend = generateFriend()
 
         localContactDataSource
-                .requestFriendship(expectedFriend).test()
-                .assertComplete()
+            .requestFriendship(expectedFriend).test()
+            .assertComplete()
 
         val value = friendDao.getUserFriends(1)
-                .test()
-                .assertNotComplete()
-                .assertValueCount(1).values().first()
+            .test()
+            .assertNotComplete()
+            .assertValueCount(1).values().first()
 
         assertThat(friendConverter.toFriend(value.first()))
-                .isEqualToIgnoringGivenFields(expectedFriend, "relationshipStatus")
+            .isEqualToIgnoringGivenFields(expectedFriend, "relationshipStatus")
     }
 
     @Test
@@ -91,10 +90,9 @@ class LocalContactDataSourceTest {
         reactiveList.assertValueCount(2)
         val resultFriendList = reactiveList.values().last()
         assertThat(resultFriendList)
-                .usingElementComparatorIgnoringFields("relationshipStatus")
-                .isEqualTo(listOf(expectedFriend))
+            .usingElementComparatorIgnoringFields("relationshipStatus")
+            .isEqualTo(listOf(expectedFriend))
     }
-
 
     @Test
     fun givenExistingContactList_whenUpdated_thenListRefreshed() {
@@ -109,7 +107,6 @@ class LocalContactDataSourceTest {
         analisedObservable.assertValueCount(2).assertValueAt(1, friends.reversed())
     }
 
-
     @Test
     fun givenNonExistingContact_whenAdded_thenRelationshipMatchesPending() {
         val oldFriendStatus = generateFriend()
@@ -121,7 +118,6 @@ class LocalContactDataSourceTest {
 
         assertThat(contact.first().relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
     }
-
 
     private fun generateFriend() = Friend(10, "aContact", "aName", "anImage", "anEmail", "NONE")
 }

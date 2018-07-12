@@ -20,12 +20,12 @@ class RequestFriendViewHolder(view: View) : FriendViewHolder(view) {
     init {
         ButterKnife.bind(this, view)
         val viewModelFactory = ((view.context as MainActivity).application as VivApplication).viewModelFactory
-        friendshipViewModel = ViewModelProviders.of((view.context as MainActivity), viewModelFactory).get(FriendshipViewModel::class.java)
+        friendshipViewModel =
+            ViewModelProviders.of((view.context as MainActivity), viewModelFactory).get(FriendshipViewModel::class.java)
     }
 
     override fun bind(friend: Friend) {
         super.bind(friend)
         addFriend.setOnClickListener { friendshipViewModel.addContact(friend) }
     }
-
 }

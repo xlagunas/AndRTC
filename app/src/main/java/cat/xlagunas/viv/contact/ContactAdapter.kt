@@ -6,7 +6,11 @@ import android.view.ViewGroup
 import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.contact.viewholder.*
+import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.CurrentFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.FriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.PendingFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
 
 class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -23,12 +27,11 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as FriendViewHolder).bind(items[position])
     }
-
 
     fun updateAdapter(elements: List<Friend>) {
         items = elements
@@ -45,5 +48,3 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 }
-
-

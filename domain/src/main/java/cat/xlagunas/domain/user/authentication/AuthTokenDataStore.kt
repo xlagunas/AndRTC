@@ -9,5 +9,4 @@ interface AuthTokenDataStore {
     fun insertAuthToken(token: String)
 
     fun deleteAuthToken()
-
 }

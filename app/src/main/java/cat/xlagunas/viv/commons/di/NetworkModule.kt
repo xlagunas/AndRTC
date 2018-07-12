@@ -28,26 +28,28 @@ class NetworkModule {
     @Singleton
     fun provideRetrofit(gson: Gson, client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-                .client(client)
-                .baseUrl(BuildConfig.ENDPOINT)
-                .build()
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+            .client(client)
+            .baseUrl(BuildConfig.ENDPOINT)
+            .build()
     }
 
     @Provides
     @Singleton
-    fun provideOkiHttpClient(application: Application,
+    fun provideOkiHttpClient(
+        application: Application,
 //                             authenticator: VivAuthenticator,
-                             authInterceptor: AuthHeaderInterceptor): OkHttpClient {
+        authInterceptor: AuthHeaderInterceptor
+    ): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BASIC
 
         return OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .addInterceptor(ChuckInterceptor(application))
-                .addInterceptor(authInterceptor)
+            .addInterceptor(interceptor)
+            .addInterceptor(ChuckInterceptor(application))
+            .addInterceptor(authInterceptor)
 //                .authenticator(authenticator)
-                .build()
+            .build()
     }
 }

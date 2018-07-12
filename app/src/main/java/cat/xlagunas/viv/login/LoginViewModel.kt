@@ -68,4 +68,3 @@ class LoginViewModel @Inject constructor(
         disposable.dispose()
     }
 }
-

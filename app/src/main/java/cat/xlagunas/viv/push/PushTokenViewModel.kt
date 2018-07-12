@@ -9,7 +9,8 @@ class PushTokenViewModel @Inject
 constructor(private val authenticationRepository: AuthenticationRepository) : DisposableViewModel() {
 
     fun registerToken() {
-        disposable.add(authenticationRepository.registerPushToken()
+        disposable.add(
+            authenticationRepository.registerPushToken()
                 .subscribe({}, { Timber.e(it, "Error requesting token") })
         )
     }

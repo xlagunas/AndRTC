@@ -11,21 +11,27 @@ class FriendshipViewModel
 
     fun addContact(friend: Friend) {
         Timber.d("Requesting addContact to ${friend.friendId}")
-        disposable.add(contactRepository.requestFriendship(friend)
-                .subscribe({ Timber.i("FriendshipRequest successful") }, { Timber.e(it, "FriendshipRequest errpr") }))
+        disposable.add(
+            contactRepository.requestFriendship(friend)
+                .subscribe({ Timber.i("FriendshipRequest successful") }, { Timber.e(it, "FriendshipRequest errpr") })
+        )
     }
 
     fun acceptContactRequest(friend: Friend) {
-        disposable.add(contactRepository.addContact(friend)
-                .subscribe({ Timber.i("Added new contact") }, { Timber.e(it, "AddContact error") }))
+        disposable.add(
+            contactRepository.addContact(friend)
+                .subscribe({ Timber.i("Added new contact") }, { Timber.e(it, "AddContact error") })
+        )
     }
 
     fun rejectContactRequest(friend: Friend) {
-        disposable.add(contactRepository.rejectContact(friend)
-                .subscribe({ Timber.i("Rejected contact") }, { Timber.e(it, "RejectContact error") }))
+        disposable.add(
+            contactRepository.rejectContact(friend)
+                .subscribe({ Timber.i("Rejected contact") }, { Timber.e(it, "RejectContact error") })
+        )
     }
 
     fun callFriend(friend: Friend) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }

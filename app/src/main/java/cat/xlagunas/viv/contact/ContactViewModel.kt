@@ -10,21 +10,18 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ContactViewModel
-@Inject constructor(private val authenticationRepository: AuthenticationRepository,
-                    private val contactRepository: ContactRepository) : ViewModel() {
-
+@Inject constructor(
+    private val authenticationRepository: AuthenticationRepository,
+    private val contactRepository: ContactRepository
+) : ViewModel() {
 
     val contacts by lazy {
         authenticationRepository.getUser()
-                .doOnNext { Timber.d("Next user: ${it.username}") }
-                .switchMap { contactRepository.getContacts() }.toLiveData()
+            .doOnNext { Timber.d("Next user: ${it.username}") }
+            .switchMap { contactRepository.getContacts() }.toLiveData()
     }
-
 
     fun findContact(searchTerm: String): LiveData<List<Friend>> {
         return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
     }
-
 }
-
-
