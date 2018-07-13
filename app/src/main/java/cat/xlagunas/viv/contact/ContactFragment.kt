@@ -37,7 +37,6 @@ class ContactFragment : Fragment(), Injectable {
 
     private lateinit var contactViewModel: ContactViewModel
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         pushTokenViewModel = ViewModelProviders.of(this, viewModelFactory).get(PushTokenViewModel::class.java)

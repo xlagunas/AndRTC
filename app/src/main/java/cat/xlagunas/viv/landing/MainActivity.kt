@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.viv.R
@@ -40,18 +40,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        mainViewModel.isUserLoggedIn.observe(this, Observer { this.sendToLogin() })
-
-        getNavController().addOnNavigatedListener { _, destination ->
-            bottomNavigationView.visibility = when (destination.id) {
-                R.id.loginFragment -> View.GONE
-                else -> View.VISIBLE
-            }
-        }
-    }
-
-    private fun sendToLogin() {
-        getNavController().navigate(R.id.action_login)
+        NavigationUI.setupWithNavController(bottomNavigationView, getNavController())
     }
 
     override fun onSupportNavigateUp() = getNavController().navigateUp()
