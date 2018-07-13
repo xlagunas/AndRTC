@@ -17,11 +17,18 @@
             android:id="@+id/contactFragment"
             android:name="cat.xlagunas.viv.contact.ContactFragment"
             android:label="fragment_contact"
-            tools:layout="@layout/fragment_contact">
+            tools:layout="@layout/fragment_contact"/>
+    <fragment
+            android:id="@+id/profileFragment"
+            android:name="cat.xlagunas.viv.profile.ProfileFragment"
+            android:label="ProfileFragment">
+
         <action
                 android:id="@+id/action_login"
                 app:destination="@id/loginFragment"
-                app:popUpToInclusive="false"/>
+                app:popUpToInclusive="false"
+                app:popUpTo="@+id/profileFragment"/>
+
     </fragment>
     <fragment
             android:id="@+id/loginFragment"
@@ -30,12 +37,13 @@
             tools:layout="@layout/fragment_login">
         <action
                 android:id="@+id/action_user_logged"
-                app:destination="@id/contactFragment"
-                app:popUpTo="@+id/contactFragment"
-                app:popUpToInclusive="false"/>
+                app:destination="@id/profileFragment"
+                app:popUpTo="@+id/profileFragment"
+                app:popUpToInclusive="true"/>
         <action
                 android:id="@+id/action_register"
                 app:destination="@id/registerFragment"
                 app:popUpTo="@+id/contactFragment"/>
     </fragment>
+
 </navigation>
