@@ -7,12 +7,22 @@ import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.register.RegisterModule
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
+import dagger.android.support.AndroidSupportInjectionModule
 import org.jetbrains.annotations.NotNull
 import javax.inject.Singleton
 
-@Component(modules = [ApplicationModule::class, ViewModelModule::class, NetworkModule::class, DatabaseModule::class, RegisterModule::class, LoginModule::class, ContactModule::class])
+@Component(
+    modules = [
+        AndroidSupportInjectionModule::class,
+        ActivityBuilder::class,
+        ApplicationModule::class,
+        NetworkModule::class,
+        ViewModelModule::class,
+        DatabaseModule::class, RegisterModule::class, LoginModule::class, ContactModule::class]
+)
 @Singleton
-interface ApplicationComponent {
+interface ApplicationComponent : AndroidInjector<VivApplication> {
 
     @Component.Builder
     interface Builder {
@@ -21,9 +31,6 @@ interface ApplicationComponent {
         fun withApplication(@NotNull app: Application): Builder
 
         fun build(): ApplicationComponent
-
     }
-
-    fun inject(vivApplication: VivApplication)
-    fun inject(pushMessageHandler: PushMessageHandler)
+        fun inject(pushMessageHandler: PushMessageHandler)
 }

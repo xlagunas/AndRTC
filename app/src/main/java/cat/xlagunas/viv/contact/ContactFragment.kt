@@ -3,7 +3,6 @@ package cat.xlagunas.viv.contact
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,11 +15,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.viv.commons.ViewModelFactory
 import cat.xlagunas.viv.push.PushTokenViewModel
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-
-class ContactFragment : Fragment() {
+class ContactFragment : DaggerFragment() {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
@@ -31,12 +31,15 @@ class ContactFragment : Fragment() {
     private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private lateinit var contactViewModel: ContactViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
-        contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
+        pushTokenViewModel = ViewModelProviders.of(this, viewModelFactory).get(PushTokenViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,7 +60,7 @@ class ContactFragment : Fragment() {
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
                     contactViewModel.findContact(query)
-                            .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
+                        .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
                     return true
                 }
             }
