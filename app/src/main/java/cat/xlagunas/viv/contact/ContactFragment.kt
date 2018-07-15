@@ -1,6 +1,7 @@
 package cat.xlagunas.viv.contact
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -16,11 +17,11 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.viv.commons.di.Injectable
 import cat.xlagunas.viv.push.PushTokenViewModel
+import javax.inject.Inject
 
-
-class ContactFragment : Fragment() {
+class ContactFragment : Fragment(), Injectable {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
@@ -31,12 +32,17 @@ class ContactFragment : Fragment() {
     private lateinit var pushTokenViewModel: PushTokenViewModel
     private val contactAdapter = ContactAdapter()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var contactViewModel: ContactViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        pushTokenViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(PushTokenViewModel::class.java)
-        contactViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory).get(ContactViewModel::class.java)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        pushTokenViewModel = ViewModelProviders.of(this, viewModelFactory).get(PushTokenViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
+        registerPushToken()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,8 +54,6 @@ class ContactFragment : Fragment() {
         ButterKnife.bind(this, view)
         setUpRecyclerView()
         setupSearchView()
-        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
-        registerPushToken()
     }
 
     private fun setupSearchView() {
@@ -57,7 +61,7 @@ class ContactFragment : Fragment() {
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
                     contactViewModel.findContact(query)
-                            .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
+                        .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
                     return true
                 }
             }

@@ -1,5 +1,6 @@
 package cat.xlagunas.data.contact
 
+import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDataSource
@@ -8,6 +9,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
+@OpenForTesting
 class RemoteContactDataSource
 @Inject constructor(
         private val contactsApi: ContactsApi,

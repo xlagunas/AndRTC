@@ -1,6 +1,7 @@
 package cat.xlagunas.viv.login
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -12,23 +13,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.common.extensions.text
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.viv.commons.di.Injectable
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
+import javax.inject.Inject
 
-
-class LoginFragment : Fragment() {
-
-    companion object {
-        const val LOGIN_RESULT = 1000
-    }
+@OpenForTesting
+class LoginFragment : Fragment(), Injectable {
 
     @BindView(R.id.sign_in_button)
     lateinit var signInButton: SignInButton
@@ -45,20 +43,20 @@ class LoginFragment : Fragment() {
     @BindView(R.id.register)
     lateinit var registerButton: Button
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var loginViewModel: LoginViewModel
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        loginViewModel = ViewModelProviders.of(this, (activity!!.application as VivApplication).viewModelFactory)
-                .get(LoginViewModel::class.java)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        loginViewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
         lifecycle.addObserver(loginViewModel.registerGoogle())
 
         loginViewModel.onLoginStateChange()
-                .observe(this, Observer(this::handleLoginResult))
+            .observe(this, Observer(this::handleLoginResult))
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -67,9 +65,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
         signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
-        loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text())}
-        registerButton.setOnClickListener { findNavController().navigate(R.id.action_register) }
-
+        loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
+        registerButton.setOnClickListener { navController().navigate(R.id.action_register) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -87,7 +84,7 @@ class LoginFragment : Fragment() {
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
             is SuccessLoginState -> {
-                findNavController().popBackStack()
+                navController().popBackStack()
             }
             is InvalidLoginState -> Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
             is ValidationError -> {
@@ -97,4 +94,5 @@ class LoginFragment : Fragment() {
         }
     }
 
+    fun navController() = findNavController()
 }

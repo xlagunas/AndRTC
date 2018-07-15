@@ -4,10 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/contactFragment">
 
-    <activity
+    <fragment
         android:id="@+id/registerActivity"
-        android:name="cat.xlagunas.viv.register.RegisterActivity"
-        android:label="RegisterActivity"/>
+        android:name="cat.xlagunas.viv.register.RegisterFragment"
+        android:label="RegisterActivity">
+        <action
+                android:id="@+id/action_register_succesful"
+                app:destination="@id/loginFragment"
+                app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/contactFragment"
         android:name="cat.xlagunas.viv.contact.ContactFragment"
@@ -29,8 +34,8 @@
             app:popUpTo="@+id/contactFragment"
             app:popUpToInclusive="false"/>
         <action
-            android:id="@+id/action_register"
-            app:destination="@id/registerActivity"
-            app:popUpTo="@+id/contactFragment"/>
+                android:id="@+id/action_register"
+                app:destination="@+id/registerActivity"
+                app:popUpTo="@+id/contactFragment"/>
     </fragment>
 </navigation>
