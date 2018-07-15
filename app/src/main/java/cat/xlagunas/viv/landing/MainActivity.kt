@@ -1,27 +1,31 @@
 package cat.xlagunas.viv.landing
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import androidx.navigation.findNavController
-import butterknife.ButterKnife
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.ViewModelFactory
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        ButterKnife.bind(this)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -35,4 +39,6 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     override fun onSupportNavigateUp() = findNavController(R.id.my_nav_host_fragment).navigateUp()
+
+    override fun supportFragmentInjector() = dispatchingAndroidInjector
 }

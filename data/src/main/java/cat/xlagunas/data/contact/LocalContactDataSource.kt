@@ -1,5 +1,6 @@
 package cat.xlagunas.data.contact
 
+import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.common.converter.FriendConverter
 import cat.xlagunas.data.common.db.FriendDao
 import cat.xlagunas.data.common.db.UserDao
@@ -13,6 +14,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
+@OpenForTesting
 class LocalContactDataSource @Inject constructor(private val friendDao: FriendDao,
                                                  private val userDao: UserDao,
                                                  private val friendConverter: FriendConverter) : ContactDataSource {

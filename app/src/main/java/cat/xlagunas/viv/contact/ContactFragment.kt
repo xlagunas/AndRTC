@@ -1,8 +1,10 @@
 package cat.xlagunas.viv.contact
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,12 +17,11 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.ViewModelFactory
+import cat.xlagunas.viv.commons.di.Injectable
 import cat.xlagunas.viv.push.PushTokenViewModel
-import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class ContactFragment : DaggerFragment() {
+class ContactFragment : Fragment(), Injectable {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
@@ -32,14 +33,16 @@ class ContactFragment : DaggerFragment() {
     private val contactAdapter = ContactAdapter()
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var contactViewModel: ContactViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         pushTokenViewModel = ViewModelProviders.of(this, viewModelFactory).get(PushTokenViewModel::class.java)
         contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
+        registerPushToken()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,8 +54,6 @@ class ContactFragment : DaggerFragment() {
         ButterKnife.bind(this, view)
         setUpRecyclerView()
         setupSearchView()
-        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
-        registerPushToken()
     }
 
     private fun setupSearchView() {

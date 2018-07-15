@@ -32,5 +32,6 @@ interface ApplicationComponent : AndroidInjector<VivApplication> {
 
         fun build(): ApplicationComponent
     }
-        fun inject(pushMessageHandler: PushMessageHandler)
+
+    fun inject(pushMessageHandler: PushMessageHandler)
 }

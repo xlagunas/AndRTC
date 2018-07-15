@@ -5,6 +5,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'kotlin-allopen'
+
+allOpen {
+    // allows mocking for classes w/o directly opening them for release builds
+    annotation 'cat.xlagunas.data.OpenClass'
+}
 
 android {
     compileSdkVersion 28
@@ -123,7 +129,7 @@ dependencies {
     }
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
 
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
@@ -140,13 +146,15 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-    androidTestImplementation 'commons-io:commons-io:2.5'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha02' // use -ktx for Kotlin
+    androidTestImplementation 'android.arch.core:core-testing:1.1.1'
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.0'
 
 }
 
@@ -156,6 +164,12 @@ static def isMinifyEnabledForBuild() {
         return minifyStatus.toBoolean()
     }
     return false
+}
+
+project.tasks.whenTaskAdded {
+    if (it.name == "testReleaseUnitTest") {
+        it.enabled = false
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
