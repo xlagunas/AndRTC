@@ -66,7 +66,7 @@ class LoginFragment : Fragment(), Injectable {
         ButterKnife.bind(this, view)
         signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
         loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
-        registerButton.setOnClickListener { navController().navigate(R.id.action_register) }
+        registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -84,7 +84,7 @@ class LoginFragment : Fragment(), Injectable {
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
             is SuccessLoginState -> {
-                findNavController().navigate(R.id.action_user_logged)
+                navController().navigate(R.id.action_user_logged)
             }
             is InvalidLoginState -> Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
             is ValidationError -> {

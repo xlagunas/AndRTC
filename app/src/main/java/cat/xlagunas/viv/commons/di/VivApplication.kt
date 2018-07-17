@@ -2,20 +2,25 @@ package cat.xlagunas.viv.commons.di
 
 import android.app.Activity
 import android.app.Application
+import android.app.Service
 import android.arch.lifecycle.ViewModelProvider
 import cat.xlagunas.data.common.provider.ActivityMonitor
 import cat.xlagunas.viv.BuildConfig
 import com.crashlytics.android.Crashlytics
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
+import dagger.android.HasServiceInjector
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
-class VivApplication : Application(), HasActivityInjector {
+class VivApplication : Application(), HasActivityInjector, HasServiceInjector {
 
     @Inject
     lateinit var dispatchAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var dispatchServiceInject: DispatchingAndroidInjector<Service>
 
     @Inject
     lateinit var activityMonitor: ActivityMonitor
@@ -35,6 +40,8 @@ class VivApplication : Application(), HasActivityInjector {
         AppInjector.init(this)
         registerActivityLifecycleCallbacks(activityMonitor)
     }
+
+    override fun serviceInjector() = dispatchServiceInject
 
     override fun activityInjector() = dispatchAndroidInjector
 }

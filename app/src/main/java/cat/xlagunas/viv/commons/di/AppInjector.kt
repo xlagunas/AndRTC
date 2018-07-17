@@ -33,6 +33,7 @@ object AppInjector {
     fun init(vivApplication: VivApplication) {
         DaggerApplicationComponent.builder().withApplication(vivApplication)
             .build().inject(vivApplication)
+
         vivApplication
             .registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

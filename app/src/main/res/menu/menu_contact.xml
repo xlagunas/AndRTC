@@ -10,7 +10,7 @@
             android:title="@string/action_contacts_manage"
             />
     <item
-            android:id="@+id/profileFragment"
+            android:id="@+id/profileGraph"
             android:icon="@drawable/ic_action_edit_profile"
             android:title="@string/action_edit_profile"
             />

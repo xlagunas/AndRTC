@@ -12,17 +12,18 @@ import cat.xlagunas.viv.contact.viewholder.FriendViewHolder
 import cat.xlagunas.viv.contact.viewholder.PendingFriendViewHolder
 import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
 
-class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactAdapter constructor(private val contactListener: ContactListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = emptyList<Friend>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.row_request_contact -> RequestFriendViewHolder(holder)
-            R.layout.row_pending_contact -> PendingFriendViewHolder(holder)
-            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(holder)
-            R.layout.row_contact -> CurrentFriendViewHolder(holder)
+            R.layout.row_request_contact -> RequestFriendViewHolder(holder, contactListener)
+            R.layout.row_pending_contact -> PendingFriendViewHolder(holder, contactListener)
+            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(holder, contactListener)
+            R.layout.row_contact -> CurrentFriendViewHolder(holder, contactListener)
             else -> throw IllegalStateException("This should never be called")
         }
     }

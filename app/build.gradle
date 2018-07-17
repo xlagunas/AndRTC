@@ -49,8 +49,8 @@ android {
 
         development {
             versionNameSuffix '.local'
-            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
-//            buildConfigField "String", "ENDPOINT", '"http://10.239.162.28:8080"'
+//            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
+            buildConfigField "String", "ENDPOINT", '"http://10.239.162.38:8080"'
         }
     }
 
