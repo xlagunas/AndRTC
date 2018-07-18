@@ -49,8 +49,8 @@ android {
 
         development {
             versionNameSuffix '.local'
-//            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
-            buildConfigField "String", "ENDPOINT", '"http://10.239.162.38:8080"'
+            buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
+//            buildConfigField "String", "ENDPOINT", '"http://10.239.162.38:8080"'
         }
     }
 
@@ -153,6 +153,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha03' // use -ktx for Kotlin
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'

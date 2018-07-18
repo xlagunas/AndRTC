@@ -65,7 +65,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     override fun onContactAccepted(friend: Friend) {
-        contactViewModel.addContact(friend)
+        contactViewModel.acceptContactRequest(friend)
     }
 
     override fun onContactRejected(friend: Friend) {
@@ -73,7 +73,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     override fun onContactCalled(friend: Friend) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        contactViewModel.callFriend(friend)
     }
 
     private fun setupSearchView() {

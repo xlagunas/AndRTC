@@ -13,7 +13,7 @@ class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) : Fr
         ButterKnife.bind(this, view)
     }
 
-    @OnClick(R.id.add_friend_button)
+    @OnClick(R.id.accept_friendship_button)
     fun acceptFriendRequest() {
         contactListener.onContactAccepted(friend)
     }
