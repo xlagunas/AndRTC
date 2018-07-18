@@ -5,9 +5,9 @@
     app:startDestination="@id/contactFragment">
 
     <fragment
-        android:id="@+id/registerActivity"
-        android:name="cat.xlagunas.viv.register.RegisterFragment"
-        android:label="RegisterActivity">
+            android:id="@+id/registerFragment"
+            android:name="cat.xlagunas.viv.register.RegisterFragment"
+            android:label="fragment_activity">
         <action
                 android:id="@+id/action_register_succesful"
                 app:destination="@id/loginFragment"
@@ -35,7 +35,7 @@
             app:popUpToInclusive="false"/>
         <action
                 android:id="@+id/action_register"
-                app:destination="@+id/registerActivity"
+                app:destination="@id/registerFragment"
                 app:popUpTo="@+id/contactFragment"/>
     </fragment>
 </navigation>
