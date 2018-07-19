@@ -54,7 +54,7 @@ class RegisterFragment : Fragment(), Injectable {
                 .subscribe({
                     showToast()
                     actionButton.isEnabled = true
-                    navController().navigate(R.id.action_register_succesful)
+                    navController().navigate(R.id.action_register_successful)
                 }, { error ->
                     Timber.e(error, "Network error")
                     actionButton.isEnabled = true

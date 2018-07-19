@@ -9,7 +9,7 @@
             android:name="cat.xlagunas.viv.register.RegisterFragment"
             android:label="fragment_activity">
         <action
-                android:id="@+id/action_register_succesful"
+                android:id="@+id/action_register_successful"
                 app:destination="@id/loginFragment"
                 app:popUpToInclusive="true"/>
     </fragment>
