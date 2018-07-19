@@ -58,7 +58,7 @@ class RegisterFragmentTest {
         onView(withId(R.id.password)).perform(typeText("123456"), closeSoftKeyboard())
         onView(withId(R.id.fab)).perform(click())
 
-        verify(testFragment.navController).navigate(R.id.action_register_to_contact)
+        verify(testFragment.navController).navigate(R.id.action_register_successful)
     }
 
     @Test
