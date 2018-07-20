@@ -47,8 +47,9 @@ class ProfileFragment : Fragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         profileViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
-        profileViewModel.loggedInStatus.observe(this, Observer(this::userLoggedInStatus))
+        profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
         profileViewModel.user.observe(this, Observer(this::onUserEvent))
+        profileViewModel.getLoginStatus()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

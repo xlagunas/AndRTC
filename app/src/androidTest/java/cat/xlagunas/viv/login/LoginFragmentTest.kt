@@ -74,7 +74,7 @@ class LoginFragmentTest {
 
         onView(ViewMatchers.withId(R.id.login_button)).perform(click())
 
-        verify(testFragment.navController).navigate(R.id.action_user_logged)
+        verify(testFragment.navController).popBackStack()
     }
 
     @Test
