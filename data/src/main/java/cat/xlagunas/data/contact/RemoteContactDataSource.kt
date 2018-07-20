@@ -12,14 +12,15 @@ import javax.inject.Inject
 @OpenForTesting
 class RemoteContactDataSource
 @Inject constructor(
-        private val contactsApi: ContactsApi,
-        private val friendConverter: FriendConverter) : ContactDataSource {
+    private val contactsApi: ContactsApi,
+    private val friendConverter: FriendConverter
+) : ContactDataSource {
 
     override fun searchContacts(searchTerm: String): Single<List<Friend>> {
         return contactsApi.searchContact(searchTerm)
-                .flattenAsFlowable { items -> items }
-                .map(friendConverter::toFriend)
-                .toList()
+            .flattenAsFlowable { items -> items }
+            .map(friendConverter::toFriend)
+            .toList()
     }
 
     override fun acceptContact(friend: Friend): Completable {
@@ -40,8 +41,8 @@ class RemoteContactDataSource
 
     fun getContactsAsSingle(): Single<List<Friend>> {
         return contactsApi.listContacts()
-                .flattenAsFlowable { t -> t }
-                .map(friendConverter::toFriend)
-                .toList()
+            .flattenAsFlowable { t -> t }
+            .map(friendConverter::toFriend)
+            .toList()
     }
 }

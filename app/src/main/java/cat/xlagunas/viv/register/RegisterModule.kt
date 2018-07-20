@@ -30,13 +30,21 @@ class RegisterModule {
     }
 
     @Provides
-    fun provideRegisterRepository(authenticationApi: AuthenticationApi,
-                                  userDao: UserDao,
-                                  userConverter: UserConverter,
-                                  rxSchedulers: RxSchedulers,
-                                  authTokenDataStore: AuthTokenDataStore,
-                                  pushTokenProvider: PushTokenProvider): AuthenticationRepository {
-        return AuthenticationRepositoryImpl(authenticationApi, userDao, userConverter, rxSchedulers, authTokenDataStore, pushTokenProvider)
+    fun provideRegisterRepository(
+        authenticationApi: AuthenticationApi,
+        userDao: UserDao,
+        userConverter: UserConverter,
+        rxSchedulers: RxSchedulers,
+        authTokenDataStore: AuthTokenDataStore,
+        pushTokenProvider: PushTokenProvider
+    ): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(
+            authenticationApi,
+            userDao,
+            userConverter,
+            rxSchedulers,
+            authTokenDataStore,
+            pushTokenProvider
+        )
     }
-
 }

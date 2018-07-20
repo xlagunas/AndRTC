@@ -1,6 +1,10 @@
 package cat.xlagunas.viv.contact
 
-import cat.xlagunas.data.contact.*
+import cat.xlagunas.data.contact.ContactCache
+import cat.xlagunas.data.contact.ContactCacheImpl
+import cat.xlagunas.data.contact.ContactRepositoryImpl
+import cat.xlagunas.data.contact.ContactsApi
+import cat.xlagunas.data.contact.PhoneContactsDataSourceImpl
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import dagger.Module
@@ -32,5 +36,4 @@ class ContactModule {
     fun provideContactCache(contactCache: ContactCacheImpl): ContactCache {
         return contactCache
     }
-
 }

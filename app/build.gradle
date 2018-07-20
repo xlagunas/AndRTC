@@ -8,7 +8,6 @@ apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'kotlin-allopen'
 
 allOpen {
-    // allows mocking for classes w/o directly opening them for release builds
     annotation 'cat.xlagunas.data.OpenClass'
 }
 
@@ -31,6 +30,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
         release {
             storeFile file('../buildsystem/production.keystore')
             storePassword System.getenv("PROD_KEYSTORE_PASSWORD")
@@ -49,6 +49,7 @@ android {
         development {
             versionNameSuffix '.local'
             buildConfigField "String", "ENDPOINT", '"http://192.168.0.156:8080"'
+//            buildConfigField "String", "ENDPOINT", '"http://10.239.162.38:8080"'
         }
     }
 
@@ -110,26 +111,29 @@ dependencies {
     implementation 'android.arch.lifecycle:runtime:1.1.1'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha02'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha02'
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha04'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha04'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1'
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
 
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-analytics:16.0.1'
     implementation 'com.google.firebase:firebase-perf:16.0.0'
-    implementation 'com.google.firebase:firebase-messaging:17.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.1.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
     }
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
 
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
@@ -150,8 +154,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
-    androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha02' // use -ktx for Kotlin
+    androidTestImplementation 'android.arch.navigation:navigation-testing-ktx:1.0.0-alpha04' // use -ktx for Kotlin
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
     androidTestImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.0'

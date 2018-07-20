@@ -2,7 +2,6 @@ package cat.xlagunas.data.user.authentication
 
 import cat.xlagunas.data.common.net.UserDto
 import cat.xlagunas.data.push.PushTokenDto
-import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
@@ -26,5 +25,4 @@ interface AuthenticationApi {
 
     @PUT("/token/")
     fun addPushToken(@Body token: PushTokenDto): Completable
-
 }

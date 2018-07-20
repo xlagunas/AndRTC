@@ -6,29 +6,33 @@ import android.view.ViewGroup
 import cat.xlagunas.data.common.net.Relationship
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.contact.viewholder.*
+import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.CurrentFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.FriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.PendingFriendViewHolder
+import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
 
-class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ContactAdapter constructor(private val contactListener: ContactListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = emptyList<Friend>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.row_request_contact -> RequestFriendViewHolder(holder)
-            R.layout.row_pending_contact -> PendingFriendViewHolder(holder)
-            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(holder)
-            R.layout.row_contact -> CurrentFriendViewHolder(holder)
+            R.layout.row_request_contact -> RequestFriendViewHolder(holder, contactListener)
+            R.layout.row_pending_contact -> PendingFriendViewHolder(holder, contactListener)
+            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(holder, contactListener)
+            R.layout.row_contact -> CurrentFriendViewHolder(holder, contactListener)
             else -> throw IllegalStateException("This should never be called")
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as FriendViewHolder).bind(items[position])
     }
-
 
     fun updateAdapter(elements: List<Friend>) {
         items = elements
@@ -45,5 +49,3 @@ class ContactAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 }
-
-

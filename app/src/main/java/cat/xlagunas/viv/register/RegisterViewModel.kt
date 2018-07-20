@@ -18,10 +18,10 @@ class RegisterViewModel @Inject constructor(private val userRepository: Authenti
     fun register(user: User): Completable = userRepository.registerUser(user)
 
     fun findUser(): LiveData<User> {
-        disposable.add(userRepository.findUser()
-                .subscribe(user::postValue, Timber::e))
+        disposable.add(
+            userRepository.findUser()
+                .subscribe(user::postValue, Timber::e)
+        )
         return user
     }
-
-
 }

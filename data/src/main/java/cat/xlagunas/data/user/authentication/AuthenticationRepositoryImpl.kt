@@ -15,32 +15,33 @@ import io.reactivex.Maybe
 import timber.log.Timber
 
 class AuthenticationRepositoryImpl(
-        private val authenticationApi: AuthenticationApi,
-        private val userDao: UserDao,
-        private val userConverter: UserConverter,
-        private val schedulers: RxSchedulers,
-        private val tokenDataStore: AuthTokenDataStore,
-        private val pushTokenProvider: PushTokenProvider) : AuthenticationRepository {
+    private val authenticationApi: AuthenticationApi,
+    private val userDao: UserDao,
+    private val userConverter: UserConverter,
+    private val schedulers: RxSchedulers,
+    private val tokenDataStore: AuthTokenDataStore,
+    private val pushTokenProvider: PushTokenProvider
+) : AuthenticationRepository {
 
     override fun findUser(): Maybe<User> {
         return userDao.user
-                .map(userConverter::toUser)
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+            .map(userConverter::toUser)
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 
     override fun isUserLoggedIn(): Flowable<Boolean> {
         return userDao.getUserCount()
-                .map { count -> count > 0 }
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+            .map { count -> count > 0 }
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 
     override fun getUser(): Flowable<User> {
         return userDao.getUserHot()
-                .map(userConverter::toUser)
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+            .map(userConverter::toUser)
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 
     override fun registerUser(user: User): Completable {
@@ -48,23 +49,27 @@ class AuthenticationRepositoryImpl(
         val userEntity = userConverter.toUserEntity(user)
 
         return authenticationApi.registerUser(userDto)
-                .andThen(Completable.fromAction { userDao.insert(userEntity) })
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+            .andThen(Completable.fromAction { userDao.insert(userEntity) })
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 
     override fun login(authenticationCredentials: AuthenticationCredentials): Completable {
-        return authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))
-                .doOnSuccess { insertAuthToken(it.token) }
-                .flatMap { authenticationApi.getUser() }
-                .map { userConverter.toUserEntity(it) }
-                .map(userDao::insert)
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
-                .doOnSuccess { Timber.i("Successfully logged in user") }
-                .ignoreElement()
+        return authenticationApi.loginUser(
+            AuthDto(
+                authenticationCredentials.username,
+                authenticationCredentials.password
+            )
+        )
+            .doOnSuccess { insertAuthToken(it.token) }
+            .flatMap { authenticationApi.getUser() }
+            .map { userConverter.toUserEntity(it) }
+            .map(userDao::insert)
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
+            .doOnSuccess { Timber.i("Successfully logged in user") }
+            .ignoreElement()
     }
-
 
     override fun authToken(): String? = tokenDataStore.authToken()
 
@@ -76,9 +81,9 @@ class AuthenticationRepositoryImpl(
 
     override fun refreshToken(): Completable {
         return authenticationApi.refreshUserToken()
-                .doOnSuccess { insertAuthToken(it.token) }
-                .doOnSuccess { Timber.i("Successfully refreshed token") }
-                .ignoreElement()
+            .doOnSuccess { insertAuthToken(it.token) }
+            .doOnSuccess { Timber.i("Successfully refreshed token") }
+            .ignoreElement()
     }
 
     override fun isPushTokenRegistered() = pushTokenProvider.isTokenRegistered()
@@ -87,23 +92,20 @@ class AuthenticationRepositoryImpl(
 
     override fun registerPushToken(): Completable {
         return findUser()
-                .flatMap { getTokenFromTokenProvider() }
-                .flatMapCompletable(this::requestTokenRegistration)
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+            .flatMap { getTokenFromTokenProvider() }
+            .flatMapCompletable(this::requestTokenRegistration)
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 
     private fun requestTokenRegistration(token: String): Completable {
         return authenticationApi.addPushToken(PushTokenDto(token))
-                .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
-                .doOnComplete { Timber.d("Push token successfully registered") }
-                .doOnSubscribe { Timber.d("Starting token registration") }
+            .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
+            .doOnComplete { Timber.d("Push token successfully registered") }
+            .doOnSubscribe { Timber.d("Starting token registration") }
     }
 
     private fun getTokenFromTokenProvider(): Maybe<String> {
         return Maybe.fromCallable { pushTokenProvider.getPushToken() }
     }
-
-
 }
-

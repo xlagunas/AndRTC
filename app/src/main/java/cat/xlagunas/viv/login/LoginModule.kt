@@ -13,5 +13,5 @@ class LoginModule {
     @Provides
     @Singleton
     fun provideGoogleSignIn(activityMonitor: ActivityMonitor, rxSchedulers: RxSchedulers) =
-            GoogleSignInDataSource(activityMonitor, rxSchedulers)
+        GoogleSignInDataSource(activityMonitor, rxSchedulers)
 }

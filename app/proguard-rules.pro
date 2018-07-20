@@ -97,3 +97,7 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+#Glide Http3 integration
+-keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
+

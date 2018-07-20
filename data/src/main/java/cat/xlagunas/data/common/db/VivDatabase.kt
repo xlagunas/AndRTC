@@ -7,5 +7,5 @@ import android.arch.persistence.room.RoomDatabase
 abstract class VivDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun friendDao(): FriendDao
-    //abstract fun callDao(): CallDao
+    // abstract fun callDao(): CallDao
 }

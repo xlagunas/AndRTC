@@ -22,8 +22,13 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
     override fun requestFriendship(friend: Friend): Completable {
 
         return userDao.user
-                .map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.REQUESTED), it.id!!) }
-                .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
+            .map {
+                friendConverter.toFriendEntity(
+                    friendConverter.updateRelationship(friend, Relationship.REQUESTED),
+                    it.id!!
+                )
+            }
+            .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
     }
 
     override fun searchContacts(searchTerm: String): Single<List<Friend>> {
@@ -32,28 +37,32 @@ class LocalContactDataSource @Inject constructor(private val friendDao: FriendDa
 
     override fun getContacts(): Flowable<List<Friend>> {
         return userDao.user
-                .flatMapPublisher { friendDao.getUserFriends(it.id!!) }
-                .map { friendConverter.toFriendList(it) }
+            .flatMapPublisher { friendDao.getUserFriends(it.id!!) }
+            .map { friendConverter.toFriendList(it) }
     }
 
     fun updateContacts(contactList: List<Friend>): Completable {
 
         return Flowable.combineLatest(userDao.user.toFlowable(), Flowable.fromIterable(contactList),
-                BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
-                .toList()
-                .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
+            BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
+            .toList()
+            .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
     }
 
     override fun acceptContact(friend: Friend): Completable {
         return userDao.user
-                .map { friendConverter.toFriendEntity(friendConverter.updateRelationship(friend, Relationship.ACCEPTED), it.id!!) }
-                .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
+            .map {
+                friendConverter.toFriendEntity(
+                    friendConverter.updateRelationship(friend, Relationship.ACCEPTED),
+                    it.id!!
+                )
+            }
+            .flatMapCompletable { Completable.fromAction { friendDao.insert(it) } }
     }
 
     override fun rejectContact(friend: Friend): Completable {
         return userDao.user
-                .map { friendConverter.toFriendEntity(friend, it.id!!) }
-                .flatMapCompletable { Completable.fromAction { friendDao.delete(it) } }
+            .map { friendConverter.toFriendEntity(friend, it.id!!) }
+            .flatMapCompletable { Completable.fromAction { friendDao.delete(it) } }
     }
-
 }

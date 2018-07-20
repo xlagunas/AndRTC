@@ -5,13 +5,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
-import butterknife.ButterKnife
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.contact.ContactListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-abstract class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+abstract class FriendViewHolder(view: View, internal val contactListener: ContactListener) :
+    RecyclerView.ViewHolder(view) {
 
     @BindView(R.id.contact_thumbnail)
     lateinit var profileImage: ImageView
@@ -22,16 +23,18 @@ abstract class FriendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     @BindView(R.id.contact_username)
     lateinit var username: TextView
 
+    internal lateinit var friend: Friend
+
     open fun bind(friend: Friend) {
+        this.friend = friend
         fullName.text = friend.name
         username.text = friend.username
 
         Glide.with(itemView)
-                .load(friend.image)
-                .apply(RequestOptions.noAnimation())
-                .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileImage)
+            .load(friend.image)
+            .apply(RequestOptions.noAnimation())
+            .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
+            .apply(RequestOptions.circleCropTransform())
+            .into(profileImage)
     }
-
 }

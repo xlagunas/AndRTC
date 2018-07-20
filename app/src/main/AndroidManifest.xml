@@ -30,14 +30,6 @@
             </intent-filter>
         </service>
 
-        <service
-                android:name="cat.xlagunas.viv.push.PushMessageTokenHandler"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-
         <meta-data
                 android:name="io.fabric.ApiKey"
                 android:value="d77ab5e5cbb3f893a9f94fd2e8aeec00e21539d8"/>

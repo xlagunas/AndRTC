@@ -5,7 +5,6 @@ import android.databinding.Bindable
 import cat.xlagunas.viv.BR
 import cat.xlagunas.viv.commons.binding.bindable
 
-
 class RegisterUserBinder : BaseObservable() {
 
     @get:Bindable
@@ -21,6 +20,4 @@ class RegisterUserBinder : BaseObservable() {
 
     @get:Bindable
     var password by bindable("", BR.password)
-
 }
-

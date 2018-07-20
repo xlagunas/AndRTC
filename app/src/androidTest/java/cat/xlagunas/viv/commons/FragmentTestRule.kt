@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import cat.xlagunas.viv.R
 import org.junit.Assert
 
-class FragmentTestRule<A : AppCompatActivity, F : Fragment>(activityClass: Class<A>, private val fragmentClass: Class<F>) : ActivityTestRule<A>(activityClass, true, false) {
+class FragmentTestRule<A : AppCompatActivity, F : Fragment>(
+    activityClass: Class<A>,
+    private val fragmentClass: Class<F>
+) : ActivityTestRule<A>(activityClass, true, false) {
     var fragment: F? = null
         private set
 
@@ -17,12 +20,21 @@ class FragmentTestRule<A : AppCompatActivity, F : Fragment>(activityClass: Class
             fragment = fragmentClass.newInstance()
         } catch (e: InstantiationException) {
             Assert.fail(
-                    String.format("%s: Could not insert %s into TestActivity: %s", javaClass.simpleName,
-                            fragmentClass.simpleName, e.message))
+                String.format(
+                    "%s: Could not insert %s into TestActivity: %s", javaClass.simpleName,
+                    fragmentClass.simpleName, e.message
+                )
+            )
         } catch (e: IllegalAccessException) {
-            Assert.fail(String.format("%s: Could not insert %s into TestActivity: %s", javaClass.simpleName, fragmentClass.simpleName, e.message))
+            Assert.fail(
+                String.format(
+                    "%s: Could not insert %s into TestActivity: %s",
+                    javaClass.simpleName,
+                    fragmentClass.simpleName,
+                    e.message
+                )
+            )
         }
-
     }
 
     override fun afterActivityLaunched() {

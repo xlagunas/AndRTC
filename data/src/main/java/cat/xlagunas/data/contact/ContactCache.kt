@@ -8,5 +8,4 @@ interface ContactCache {
     fun isCacheValid(): Single<Boolean>
     fun invalidateCache(): Completable
     fun updateCache(): Completable
-
 }

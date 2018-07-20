@@ -101,7 +101,7 @@ class LoginFragmentTest {
     fun whenUserClickRegister_thenNavigateToRegister() {
         onView(ViewMatchers.withId(R.id.register)).perform(click())
 
-        verify(testFragment.navController).navigate(R.id.action_register)
+        verify(testFragment.navController).navigate(R.id.action_login_to_register)
     }
 
     private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {

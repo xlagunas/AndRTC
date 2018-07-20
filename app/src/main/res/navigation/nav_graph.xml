@@ -1,41 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/contactFragment">
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            app:startDestination="@id/contactFragment">
 
     <fragment
-            android:id="@+id/registerFragment"
-            android:name="cat.xlagunas.viv.register.RegisterFragment"
-            android:label="fragment_activity">
+            android:id="@+id/contactFragment"
+            android:name="cat.xlagunas.viv.contact.ContactFragment"
+            android:label="fragment_contact"
+            tools:layout="@layout/fragment_contact"/>
+
+    <navigation
+            android:id="@+id/profileGraph"
+            app:startDestination="@id/profileFragment">
+        <fragment
+                android:id="@+id/profileFragment"
+                android:name="cat.xlagunas.viv.profile.ProfileFragment"
+                android:label="fragment_profile">
+
+            <action
+                    android:id="@+id/action_login"
+                    app:destination="@id/loginFragment"
+                    app:popUpToInclusive="true"
+                    app:popUpTo="@id/action_global_contactFragment"/>
+
+        </fragment>
+        <fragment
+                android:id="@+id/loginFragment"
+                android:name="cat.xlagunas.viv.login.LoginFragment"
+                android:label="fragment_login"
+                tools:layout="@layout/fragment_login">
+            <action
+                    android:id="@+id/action_user_logged"
+                    app:destination="@id/profileFragment"/>
+            <action
+                    android:id="@+id/action_login_to_register"
+                    app:destination="@id/registerFragment"/>
+        </fragment>
+        <fragment
+                android:id="@+id/registerFragment"
+                android:name="cat.xlagunas.viv.register.RegisterFragment"
+                android:label="fragment_register">
+            <action
+                    android:id="@+id/action_register_successful"
+                    app:destination="@id/profileGraph"/>
+        </fragment>
         <action
-                android:id="@+id/action_register_successful"
-                app:destination="@id/loginFragment"
-                app:popUpToInclusive="true"/>
-    </fragment>
-    <fragment
-        android:id="@+id/contactFragment"
-        android:name="cat.xlagunas.viv.contact.ContactFragment"
-        android:label="fragment_contact"
-        tools:layout="@layout/fragment_contact">
-        <action
-            android:id="@+id/action_login"
-            app:destination="@id/loginFragment"
-            app:popUpToInclusive="false"/>
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="cat.xlagunas.viv.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_user_logged"
-            app:destination="@id/contactFragment"
-            app:popUpTo="@+id/contactFragment"
-            app:popUpToInclusive="false"/>
-        <action
-                android:id="@+id/action_register"
-                app:destination="@id/registerFragment"
-                app:popUpTo="@+id/contactFragment"/>
-    </fragment>
+                android:id="@+id/action_global_contactFragment"
+                app:destination="@id/contactFragment"/>
+    </navigation>
+
 </navigation>

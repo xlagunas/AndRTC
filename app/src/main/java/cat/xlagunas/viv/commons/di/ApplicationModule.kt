@@ -27,7 +27,7 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideSharedPreference(context: Context): SharedPreferences =
-            context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
     @Provides
     @Singleton
@@ -47,10 +47,10 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore = AuthTokenPreferenceDataStore(sharedPreferences)
+    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore =
+        AuthTokenPreferenceDataStore(sharedPreferences)
 
     @Provides
     @Singleton
     fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
-
 }

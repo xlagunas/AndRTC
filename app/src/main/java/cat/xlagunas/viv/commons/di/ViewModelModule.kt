@@ -7,7 +7,7 @@ import cat.xlagunas.viv.contact.ContactViewModel
 import cat.xlagunas.viv.contact.viewholder.FriendshipViewModel
 import cat.xlagunas.viv.landing.MainViewModel
 import cat.xlagunas.viv.login.LoginViewModel
-import cat.xlagunas.viv.push.PushTokenViewModel
+import cat.xlagunas.viv.profile.ProfileViewModel
 import cat.xlagunas.viv.register.RegisterViewModel
 import dagger.Binds
 import dagger.Module
@@ -33,11 +33,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PushTokenViewModel::class)
-    abstract fun providePushTokenViewModel(pushTokenViewModel: PushTokenViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(FriendshipViewModel::class)
     abstract fun provideFriendshipViewModel(friendshipViewModel: FriendshipViewModel): ViewModel
 
@@ -47,6 +42,10 @@ abstract class ViewModelModule {
     abstract fun provideContactsViewModel(contactViewModel: ContactViewModel): ViewModel
 
     @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+    @IntoMap
+    @ViewModelKey(ProfileViewModel::class)
+    abstract fun provideProfileViewModel(profileViewModel: ProfileViewModel): ViewModel
 
+    @Binds
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

@@ -18,7 +18,6 @@ class ActivityMonitor : Application.ActivityLifecycleCallbacks {
 
     private var activity: Activity? = null
 
-
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         Timber.d("onActivityCreated triggered")
         this.activity = activity
@@ -56,12 +55,9 @@ class ActivityMonitor : Application.ActivityLifecycleCallbacks {
 
     fun resumedBaseActivityHot(): Observable<Activity> {
         return resumedActivity
-                .filter(this::isActivity)
-                .cast(Activity::class.java)
+            .filter(this::isActivity)
+            .cast(Activity::class.java)
     }
 
-
     private fun isActivity(activityCandidate: Any): Boolean = activityCandidate is Activity
-
-
 }

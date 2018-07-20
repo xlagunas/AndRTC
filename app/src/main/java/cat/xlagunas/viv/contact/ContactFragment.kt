@@ -13,15 +13,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.Injectable
-import cat.xlagunas.viv.push.PushTokenViewModel
+import cat.xlagunas.viv.push.PushTokenPresenter
 import javax.inject.Inject
 
-class ContactFragment : Fragment(), Injectable {
+@OpenForTesting
+class ContactFragment : Fragment(), Injectable, ContactListener {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
@@ -29,17 +32,18 @@ class ContactFragment : Fragment(), Injectable {
     @BindView(R.id.recycler_view)
     lateinit var recyclerView: RecyclerView
 
-    private lateinit var pushTokenViewModel: PushTokenViewModel
-    private val contactAdapter = ContactAdapter()
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var pushTokenPresenter: PushTokenPresenter
+
     private lateinit var contactViewModel: ContactViewModel
+
+    private val contactAdapter by lazy { ContactAdapter(this) }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        pushTokenViewModel = ViewModelProviders.of(this, viewModelFactory).get(PushTokenViewModel::class.java)
         contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
@@ -54,6 +58,22 @@ class ContactFragment : Fragment(), Injectable {
         ButterKnife.bind(this, view)
         setUpRecyclerView()
         setupSearchView()
+    }
+
+    override fun onContactRequested(friend: Friend) {
+        contactViewModel.addContact(friend)
+    }
+
+    override fun onContactAccepted(friend: Friend) {
+        contactViewModel.acceptContactRequest(friend)
+    }
+
+    override fun onContactRejected(friend: Friend) {
+        contactViewModel.rejectContactRequest(friend)
+    }
+
+    override fun onContactCalled(friend: Friend) {
+        contactViewModel.callFriend(friend)
     }
 
     private fun setupSearchView() {
@@ -79,12 +99,14 @@ class ContactFragment : Fragment(), Injectable {
     }
 
     private fun registerPushToken() {
-        if (!pushTokenViewModel.isPushTokenRegistered()) {
-            pushTokenViewModel.registerToken()
+        if (!pushTokenPresenter.isPushTokenRegistered()) {
+            pushTokenPresenter.registerToken()
         }
     }
 
     private fun renderFriends(items: List<Friend>?) {
         contactAdapter.updateAdapter(items!!)
     }
+
+    fun navController() = findNavController()
 }

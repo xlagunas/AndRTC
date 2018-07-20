@@ -15,7 +15,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class, sdk = [26])
 class ContactCacheImplTest {
@@ -38,35 +37,50 @@ class ContactCacheImplTest {
 
     @Test
     fun givenMoreThanExactValidCacheMillisEllapsed_whenIsCacheValid_thenFalse() {
-        `when`(sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.plus(1))
+        `when`(
+            sharedPreferences.getLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                0
+            )
+        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.plus(1))
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
-                .test()
-                .assertValue(false)
-                .assertComplete()
+            .test()
+            .assertValue(false)
+            .assertComplete()
     }
 
     @Test
     fun givenExactValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
-        `when`(sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS)
+        `when`(
+            sharedPreferences.getLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                0
+            )
+        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS)
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
-                .test()
-                .assertValue(true)
-                .assertComplete()
+            .test()
+            .assertValue(true)
+            .assertComplete()
     }
 
     @Test
     fun givenLessThanValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
-        `when`(sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.minus(1))
+        `when`(
+            sharedPreferences.getLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                0
+            )
+        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.minus(1))
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
-                .test()
-                .assertValue(true)
-                .assertComplete()
+            .test()
+            .assertValue(true)
+            .assertComplete()
     }
 
     @Test
@@ -77,7 +91,7 @@ class ContactCacheImplTest {
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.updateCache()
-                .test().assertComplete()
+            .test().assertComplete()
 
         val lastModifiedDate = sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)
         assertThat(lastModifiedDate).isEqualTo(fakeCurrentTime)

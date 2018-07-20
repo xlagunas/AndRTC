@@ -26,13 +26,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.io.IOException
-
 
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class, sdk = [26])
@@ -59,21 +60,24 @@ class AuthenticationRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java).allowMainThreadQueries().build()
+        val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
+            .allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        authenticationRepository = AuthenticationRepositoryImpl(authenticationApi,
-                userDao,
-                userConverter,
-                RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-                authTokenDataStore, pushTokenProvider)
+        authenticationRepository = AuthenticationRepositoryImpl(
+            authenticationApi,
+            userDao,
+            userConverter,
+            RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
+            authTokenDataStore, pushTokenProvider
+        )
     }
 
     @Test
     fun whenSuccessfullyRegistered_thenUserPersisted() {
         val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
         `when`(authenticationApi.registerUser(userConverter.toUserDto(user)))
-                .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
+            .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
 
         authenticationRepository.registerUser(user).test()
 
@@ -86,21 +90,28 @@ class AuthenticationRepositoryImplTest {
         `when`(authenticationApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
 
         authenticationRepository.registerUser(user)
-                .test().assertError(IOException::class.java)
+            .test().assertError(IOException::class.java)
 
         userDao.loadAll().test()
-                .assertValueCount(0)
+            .assertValueCount(0)
     }
 
     @Test
     fun givenSuccessfulAuthentication_thenTokenPersisted() {
         val authToken = "thisIsTheAuthTokenKeyReturnedByTheServer"
         val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
-        `when`(authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))).thenReturn(Single.just(AuthTokenDto(authToken)))
+        `when`(
+            authenticationApi.loginUser(
+                AuthDto(
+                    authenticationCredentials.username,
+                    authenticationCredentials.password
+                )
+            )
+        ).thenReturn(Single.just(AuthTokenDto(authToken)))
         `when`(authenticationApi.getUser()).thenReturn(Single.just(mockedUserDto()))
 
         authenticationRepository.login(authenticationCredentials)
-                .test().assertComplete()
+            .test().assertComplete()
 
         verify(authTokenDataStore).insertAuthToken(authToken)
     }
@@ -109,7 +120,14 @@ class AuthenticationRepositoryImplTest {
     fun givenInvalidAuthentication_thenTokenNotPersisted() {
         val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
 
-        `when`(authenticationApi.loginUser(AuthDto(authenticationCredentials.username, authenticationCredentials.password))).thenReturn(Single.error(IOException("Error!!")))
+        `when`(
+            authenticationApi.loginUser(
+                AuthDto(
+                    authenticationCredentials.username,
+                    authenticationCredentials.password
+                )
+            )
+        ).thenReturn(Single.error(IOException("Error!!")))
 
         authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
 
@@ -117,18 +135,16 @@ class AuthenticationRepositoryImplTest {
     }
 
     private fun mockedUserDto() =
-            UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
-
+        UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
 
     @Test
     fun reactive_insert() {
         val observer = userDao.getUserCount().test()
-            observer.assertValue(0)
+        observer.assertValue(0)
 
         userDao.insert(userConverter.toUserEntity(mockedUserDto()))
         observer.assertValueAt(1, 1)
         userDao.delete(userConverter.toUserEntity(mockedUserDto()))
         observer.assertValueAt(2, 0)
     }
-
 }

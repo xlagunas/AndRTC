@@ -10,5 +10,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_contact">ContactActivity</string>
+    <string name="action_contacts_manage">Manage Contacts</string>
+    <string name="action_edit_profile">Edit user</string>
+    <string name="action_home">Home</string>
     <string name="action_settings">Settings</string>
 </resources>
