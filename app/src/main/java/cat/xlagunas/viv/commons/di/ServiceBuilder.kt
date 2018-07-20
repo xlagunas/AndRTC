@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.commons.di
 
-import cat.xlagunas.viv.push.PushMessageTokenHandler
+import cat.xlagunas.viv.push.PushMessageHandler
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -8,5 +8,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class ServiceBuilder {
 
     @ContributesAndroidInjector()
-    abstract fun bindPushMessageService(): PushMessageTokenHandler
+    abstract fun bindPushMessageHandler(): PushMessageHandler
 }

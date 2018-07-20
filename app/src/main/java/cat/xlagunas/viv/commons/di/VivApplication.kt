@@ -28,8 +28,6 @@ class VivApplication : Application(), HasActivityInjector, HasServiceInjector {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var applicationComponent: ApplicationComponent
-
     override fun onCreate() {
         super.onCreate()
         Fabric.with(this, Crashlytics())
