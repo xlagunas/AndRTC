@@ -21,25 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-                android:name=".register.RegisterActivity"
-                android:label="@string/title_activity_register"
-                android:theme="@style/AppTheme.SplashTheme">
-        </activity>
 
         <service
                 android:name="cat.xlagunas.viv.push.PushMessageHandler"
                 android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-
-        <service
-                android:name="cat.xlagunas.viv.push.PushMessageTokenHandler"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
