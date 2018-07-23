@@ -8,7 +8,6 @@ import cat.xlagunas.viv.contact.ContactListener
 
 class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) : FriendViewHolder(view, contactListener) {
 
-
     init {
         ButterKnife.bind(this, view)
     }

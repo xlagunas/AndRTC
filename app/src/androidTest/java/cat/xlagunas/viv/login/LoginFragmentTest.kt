@@ -51,7 +51,6 @@ class LoginFragmentTest {
         `when`(loginViewModel.registerGoogle()).thenReturn(mock(LifecycleObserver::class.java))
         `when`(loginViewModel.onLoginStateChange()).thenReturn(loginState)
 
-
         activityRule.activity.setFragment(testFragment)
         testFragment.viewModelFactory = ViewModelUtil.createFor(loginViewModel)
     }
@@ -105,8 +104,8 @@ class LoginFragmentTest {
     }
 
     private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {
-        //Note, if you have specified an ID for the EditText that you place inside
-        //the TextInputLayout, use that instead - i.e, onView(withId(R.id.my_edit_text));
+        // Note, if you have specified an ID for the EditText that you place inside
+        // the TextInputLayout, use that instead - i.e, onView(withId(R.id.my_edit_text));
         return onView(allOf(isDescendantOfA(withId(textInputLayoutId)), isAssignableFrom(EditText::class.java)))
     }
 
