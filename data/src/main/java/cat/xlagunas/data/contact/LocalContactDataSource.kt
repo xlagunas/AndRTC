@@ -15,9 +15,11 @@ import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 @OpenForTesting
-class LocalContactDataSource @Inject constructor(private val friendDao: FriendDao,
-                                                 private val userDao: UserDao,
-                                                 private val friendConverter: FriendConverter) : ContactDataSource {
+class LocalContactDataSource @Inject constructor(
+    private val friendDao: FriendDao,
+    private val userDao: UserDao,
+    private val friendConverter: FriendConverter
+) : ContactDataSource {
 
     override fun requestFriendship(friend: Friend): Completable {
 
