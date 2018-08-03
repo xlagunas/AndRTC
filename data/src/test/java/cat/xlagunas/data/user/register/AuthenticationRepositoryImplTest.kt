@@ -2,6 +2,7 @@ package cat.xlagunas.data.user.register
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.persistence.room.Room
+import android.content.Context
 import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
@@ -69,7 +70,8 @@ class AuthenticationRepositoryImplTest {
             userDao,
             userConverter,
             RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-            authTokenDataStore, pushTokenProvider
+            authTokenDataStore, pushTokenProvider, database, RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+
         )
     }
 
