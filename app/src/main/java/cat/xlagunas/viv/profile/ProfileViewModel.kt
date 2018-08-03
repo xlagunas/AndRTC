@@ -21,4 +21,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     val user = this.authenticationRepository.getUser().toLiveData()
+
+    fun logout() {
+        disposable += authenticationRepository.logoutUser().subscribe()
+    }
 }

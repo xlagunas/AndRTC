@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import butterknife.OnClick
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
@@ -22,7 +23,8 @@ import com.bumptech.glide.request.RequestOptions
 import javax.inject.Inject
 
 @OpenForTesting
-class ProfileFragment : Fragment(), Injectable {
+class
+ProfileFragment : Fragment(), Injectable {
 
     @BindView(R.id.profile_image)
     lateinit var thumbnail: ImageView
@@ -81,6 +83,11 @@ class ProfileFragment : Fragment(), Injectable {
         username.text = user.username
         firstName.text = user.firstName
         lastName.text = user.lastName
+    }
+
+    @OnClick(R.id.logout_button)
+    fun logout() {
+        profileViewModel.logout()
     }
 
     fun navController() = findNavController()

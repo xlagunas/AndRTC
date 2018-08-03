@@ -1,7 +1,10 @@
 package cat.xlagunas.data.user.authentication
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import cat.xlagunas.data.common.converter.UserConverter
 import cat.xlagunas.data.common.db.UserDao
+import cat.xlagunas.data.common.db.VivDatabase
 import cat.xlagunas.data.push.PushTokenDto
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.push.PushTokenProvider
@@ -13,14 +16,18 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import timber.log.Timber
+import javax.inject.Inject
 
-class AuthenticationRepositoryImpl(
+class AuthenticationRepositoryImpl
+@Inject constructor(
     private val authenticationApi: AuthenticationApi,
     private val userDao: UserDao,
     private val userConverter: UserConverter,
     private val schedulers: RxSchedulers,
     private val tokenDataStore: AuthTokenDataStore,
-    private val pushTokenProvider: PushTokenProvider
+    private val pushTokenProvider: PushTokenProvider,
+    private val vivDatabase: VivDatabase,
+    private val sharedPreferences: SharedPreferences
 ) : AuthenticationRepository {
 
     override fun findUser(): Maybe<User> {
@@ -107,5 +114,16 @@ class AuthenticationRepositoryImpl(
 
     private fun getTokenFromTokenProvider(): Maybe<String> {
         return Maybe.fromCallable { pushTokenProvider.getPushToken() }
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
+    }
+
+    override fun logoutUser(): Completable {
+        return Completable.fromAction { deleteAuthToken() }
+            .andThen(Completable.fromAction { pushTokenProvider.invalidatePushToken() })
+            .andThen(Completable.fromAction { vivDatabase.clearAllTables() })
+            .andThen(Completable.fromAction { sharedPreferences.edit { clear() } })
+            .observeOn(schedulers.mainThread)
+            .subscribeOn(schedulers.io)
     }
 }

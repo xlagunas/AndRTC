@@ -31,4 +31,6 @@ interface AuthenticationRepository {
     fun markPushTokenAsRegistered()
 
     fun isUserLoggedIn(): Flowable<Boolean>
+
+    fun logoutUser(): Completable
 }
