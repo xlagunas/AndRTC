@@ -13,6 +13,7 @@ class PushMessageHandler : FirebaseMessagingService() {
 
     @Inject
     lateinit var contactRepository: ContactRepository
+
     @Inject
     lateinit var pushTokenPresenter: PushTokenPresenter
 
