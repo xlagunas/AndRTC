@@ -1,7 +1,7 @@
 package cat.xlagunas.data.common.extensions
 
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
 
-fun TextInputLayout.text(): String {
+fun com.google.android.material.textfield.TextInputLayout.text(): String {
     return this.editText?.text?.toString().orEmpty()
 }

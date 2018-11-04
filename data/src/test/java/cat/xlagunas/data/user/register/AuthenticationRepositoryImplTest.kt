@@ -1,7 +1,7 @@
 package cat.xlagunas.data.user.register
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.persistence.room.Room
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.room.Room
 import android.content.Context
 import cat.xlagunas.data.BuildConfig
 import cat.xlagunas.data.common.converter.UserConverter

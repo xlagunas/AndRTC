@@ -1,12 +1,12 @@
 package cat.xlagunas.viv.commons
 
-import android.support.test.rule.ActivityTestRule
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.test.rule.ActivityTestRule
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import cat.xlagunas.viv.R
 import org.junit.Assert
 
-class FragmentTestRule<A : AppCompatActivity, F : Fragment>(
+class FragmentTestRule<A : AppCompatActivity, F : androidx.fragment.app.Fragment>(
     activityClass: Class<A>,
     private val fragmentClass: Class<F>
 ) : ActivityTestRule<A>(activityClass, true, false) {

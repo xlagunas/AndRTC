@@ -1,18 +1,18 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.UiController
-import android.support.test.espresso.ViewAction
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
-import android.support.v7.widget.RecyclerView
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import androidx.navigation.NavController
 import cat.xlagunas.data.common.net.Relationship
@@ -104,7 +104,7 @@ class ContactFragmentTest {
         verify(contactViewModel).callFriend(friend)
     }
 
-    private fun <VH : RecyclerView.ViewHolder> setupFriendRelationshipAndViewHolderType(
+    private fun <VH : androidx.recyclerview.widget.RecyclerView.ViewHolder> setupFriendRelationshipAndViewHolderType(
         friend: Friend,
         actionId: Int,
         holderPosition: Int

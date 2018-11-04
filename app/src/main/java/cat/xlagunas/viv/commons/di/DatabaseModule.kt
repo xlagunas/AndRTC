@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.commons.di
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import cat.xlagunas.data.common.db.FriendDao
 import cat.xlagunas.data.common.db.UserDao

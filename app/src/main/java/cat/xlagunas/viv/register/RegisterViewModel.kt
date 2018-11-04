@@ -1,7 +1,7 @@
 package cat.xlagunas.viv.register
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository

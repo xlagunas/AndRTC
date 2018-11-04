@@ -1,9 +1,9 @@
 package cat.xlagunas.data.user.login
 
 import android.app.Activity
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import cat.xlagunas.data.common.provider.ActivityMonitor
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.schedulers.RxSchedulers
@@ -67,15 +67,20 @@ class GoogleSignInDataSource @Inject constructor(
     fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): Flowable<User> {
         return try {
             val account = completedTask.getResult(ApiException::class.java)
-            val user = User(
-                account.email!!,
-                account.givenName!!,
-                account.familyName!!,
-                account.email!!,
-                account.photoUrl.toString(),
-                UUID.randomUUID().toString()
-            )
-            Flowable.just(user)
+            return if (account != null) {
+                Flowable.just(
+                    User(
+                        account.email!!,
+                        account.givenName!!,
+                        account.familyName!!,
+                        account.email!!,
+                        account.photoUrl.toString(),
+                        UUID.randomUUID().toString()
+                    )
+                )
+            } else {
+                return Flowable.empty()
+            }
         } catch (e: ApiException) {
             Flowable.just(User("This", "was", "a", "user", "who", "didn't"))
         }

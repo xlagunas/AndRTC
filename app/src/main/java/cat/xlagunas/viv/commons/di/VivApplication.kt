@@ -3,7 +3,7 @@ package cat.xlagunas.viv.commons.di
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.data.common.provider.ActivityMonitor
 import cat.xlagunas.viv.BuildConfig
 import com.crashlytics.android.Crashlytics

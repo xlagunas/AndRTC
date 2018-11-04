@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.profile
 
-import android.arch.lifecycle.SingleLiveEvent
+import androidx.lifecycle.SingleLiveEvent
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
 import cat.xlagunas.viv.commons.extension.toLiveData

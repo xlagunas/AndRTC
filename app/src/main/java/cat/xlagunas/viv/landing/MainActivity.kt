@@ -1,11 +1,11 @@
 package cat.xlagunas.viv.landing
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private lateinit var mainViewModel: MainViewModel
 
     @BindView(R.id.bottom_bar)
-    lateinit var bottomNavigationView: BottomNavigationView
+    lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)

@@ -1,8 +1,8 @@
 package cat.xlagunas.viv.test
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import cat.xlagunas.viv.R
@@ -23,13 +23,13 @@ class SingleFragmentActivity : AppCompatActivity() {
         setContentView(content)
     }
 
-    fun setFragment(fragment: Fragment) {
+    fun setFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
             .add(R.id.container, fragment, "TEST")
             .commit()
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
             .commit()

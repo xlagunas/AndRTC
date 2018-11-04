@@ -17,12 +17,9 @@ android {
     flavorDimensions "version"
 
     productFlavors {
-        production {
-            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
-        }
+        production {}
 
-        development {
-        }
+        development {}
     }
 
     buildTypes {

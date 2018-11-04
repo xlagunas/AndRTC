@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactRepository

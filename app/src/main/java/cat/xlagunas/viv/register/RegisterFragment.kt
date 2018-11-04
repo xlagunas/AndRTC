@@ -1,13 +1,13 @@
 package cat.xlagunas.viv.register
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +21,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @OpenForTesting
-class RegisterFragment : Fragment(), Injectable {
+class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
 
     private lateinit var registerViewModel: RegisterViewModel
-    private lateinit var actionButton: FloatingActionButton
+    private lateinit var actionButton: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var binding: ActivityRegisterBinding
 
     @Inject
@@ -64,11 +64,11 @@ class RegisterFragment : Fragment(), Injectable {
     }
 
     private fun showToast() {
-        Snackbar.make(binding.root, "User registered ", Snackbar.LENGTH_LONG).show()
+        com.google.android.material.snackbar.Snackbar.make(binding.root, "User registered ", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
     }
 
     private fun showErrorToast() {
-        Snackbar.make(binding.root, "Error registering user", Snackbar.LENGTH_LONG).show()
+        com.google.android.material.snackbar.Snackbar.make(binding.root, "Error registering user", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
     }
 
     fun navController() = findNavController()

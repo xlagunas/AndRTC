@@ -1,7 +1,7 @@
 package cat.xlagunas.viv.commons.extension
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import io.reactivex.Flowable
 
 fun <T> Flowable<T>.toLiveData(): LiveData<T> {

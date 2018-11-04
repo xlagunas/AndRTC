@@ -1,4 +1,4 @@
-package android.arch.lifecycle
+package androidx.lifecycle
 
 /*
  *  Copyright 2017 Google Inc.
@@ -16,7 +16,7 @@ package android.arch.lifecycle
  *  limitations under the License.
  */
 
-import android.support.annotation.MainThread
+import androidx.annotation.MainThread
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -37,8 +37,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     private val mPending = AtomicBoolean(false)
 
     @MainThread
-    override fun observe(owner: LifecycleOwner, observer: Observer<T>) {
-
+    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         if (hasActiveObservers()) {
             Timber.w("Multiple observers registered but only one will be notified of changes.")
         }

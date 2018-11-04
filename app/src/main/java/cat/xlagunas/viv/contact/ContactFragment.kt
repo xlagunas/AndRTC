@@ -1,14 +1,14 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +24,13 @@ import cat.xlagunas.viv.push.PushTokenPresenter
 import javax.inject.Inject
 
 @OpenForTesting
-class ContactFragment : Fragment(), Injectable, ContactListener {
+class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactListener {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
 
     @BindView(R.id.recycler_view)
-    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -92,9 +92,14 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     private fun setUpRecyclerView() {
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
             adapter = contactAdapter
-            addItemDecoration(DividerItemDecoration(this@ContactFragment.activity, LinearLayout.VERTICAL))
+            addItemDecoration(
+                androidx.recyclerview.widget.DividerItemDecoration(
+                    this@ContactFragment.activity,
+                    LinearLayout.VERTICAL
+                )
+            )
         }
     }
 
