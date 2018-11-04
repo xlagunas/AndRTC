@@ -1,9 +1,10 @@
 package cat.xlagunas.viv.login
 
+import android.widget.EditText
+import androidx.annotation.IdRes
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import androidx.annotation.IdRes
-import android.support.design.widget.SnackbarContentLayout
+import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
@@ -17,11 +18,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import android.widget.EditText
-import androidx.navigation.NavController
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
 import cat.xlagunas.viv.test.SingleFragmentActivity
+import com.google.android.material.snackbar.SnackbarContentLayout
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Rule
