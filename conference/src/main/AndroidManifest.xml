@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:dist="http://schemas.android.com/apk/distribution"
+          package="cat.xlagunas.viv.conference">
+
+    <dist:module
+            dist:instant="false"
+            dist:onDemand="false"
+            dist:title="@string/title_conference">
+        <dist:fusing dist:include="true"/>
+    </dist:module>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+            android:name="cat.xlagunas.viv.commons.di.VivApplication"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="${appName}"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name=".ConferenceActivity"
+                android:label="@string/title_activity_main">
+        </activity>
+    </application>
+
+</manifest>

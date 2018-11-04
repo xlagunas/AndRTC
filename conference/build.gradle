@@ -1,0 +1,49 @@
+apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+
+    flavorDimensions "version"
+
+    productFlavors {
+        production {
+            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
+        }
+
+        development {
+        }
+    }
+
+    buildTypes {
+        release {
+            manifestPlaceholders = ["appName": '@string/app_name']
+        }
+
+        debug {
+            manifestPlaceholders = ["appName": '@string/app_name_dev']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':app')
+}

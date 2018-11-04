@@ -89,6 +89,7 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    dynamicFeatures = [":conference"]
 }
 
 
@@ -166,6 +167,7 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.0'
 
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 static def isMinifyEnabledForBuild() {
