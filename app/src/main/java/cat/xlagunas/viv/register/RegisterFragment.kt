@@ -1,21 +1,19 @@
 package cat.xlagunas.viv.register
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.Injectable
+import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,6 +27,11 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        VivApplication.appComponent(context!!).inject(this)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -64,11 +67,19 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
     }
 
     private fun showToast() {
-        com.google.android.material.snackbar.Snackbar.make(binding.root, "User registered ", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
+        com.google.android.material.snackbar.Snackbar.make(
+            binding.root,
+            "User registered ",
+            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun showErrorToast() {
-        com.google.android.material.snackbar.Snackbar.make(binding.root, "Error registering user", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
+        com.google.android.material.snackbar.Snackbar.make(
+            binding.root,
+            "Error registering user",
+            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        ).show()
     }
 
     fun navController() = findNavController()

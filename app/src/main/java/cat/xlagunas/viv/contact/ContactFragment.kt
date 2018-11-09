@@ -1,18 +1,14 @@
 package cat.xlagunas.viv.contact
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -20,6 +16,7 @@ import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.Injectable
+import cat.xlagunas.viv.commons.di.VivApplication
 import cat.xlagunas.viv.push.PushTokenPresenter
 import javax.inject.Inject
 
@@ -41,6 +38,11 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
     private lateinit var contactViewModel: ContactViewModel
 
     private val contactAdapter by lazy { ContactAdapter(this) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        VivApplication.appComponent(context!!).inject(this)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

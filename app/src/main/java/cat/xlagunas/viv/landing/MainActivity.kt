@@ -10,15 +10,11 @@ import androidx.navigation.ui.NavigationUI
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.viv.R
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import cat.xlagunas.viv.commons.di.VivApplication
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -29,6 +25,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        VivApplication.appComponent(this).inject(this)
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,8 +38,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     override fun onSupportNavigateUp() = getNavController().navigateUp()
-
-    override fun supportFragmentInjector() = dispatchingAndroidInjector
 
     private fun getNavController(): NavController {
         return findNavController(R.id.my_nav_host_fragment)

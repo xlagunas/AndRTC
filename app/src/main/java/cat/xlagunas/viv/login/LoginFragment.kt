@@ -1,18 +1,15 @@
 package cat.xlagunas.viv.login
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -21,6 +18,7 @@ import cat.xlagunas.data.common.extensions.text
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.di.Injectable
+import cat.xlagunas.viv.commons.di.VivApplication
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
 import javax.inject.Inject
@@ -47,6 +45,11 @@ class LoginFragment : androidx.fragment.app.Fragment(), Injectable {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var loginViewModel: LoginViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        VivApplication.appComponent(context!!).inject(this)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -86,7 +89,11 @@ class LoginFragment : androidx.fragment.app.Fragment(), Injectable {
             is SuccessLoginState -> {
                 navController().popBackStack()
             }
-            is InvalidLoginState -> com.google.android.material.snackbar.Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
+            is InvalidLoginState -> com.google.android.material.snackbar.Snackbar.make(
+                view!!,
+                loginState.errorMessage,
+                Toast.LENGTH_SHORT
+            ).show()
             is ValidationError -> {
                 usernameInputLayout.error = "Username can't be empty"
                 passwordInputLayout.error = "Password can't be empty"
