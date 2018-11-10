@@ -8,11 +8,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.viv.R
-import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.viv.databinding.ActivityRegisterBinding
+import dagger.DaggerMonolythComponent
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,14 +22,15 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
 
     private lateinit var registerViewModel: RegisterViewModel
     private lateinit var actionButton: com.google.android.material.floatingactionbutton.FloatingActionButton
-    private lateinit var binding: ActivityRegisterBinding
+    //private lateinit var binding: ActivityRegisterBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // VivApplication.appComponent(context!!).inject(this)
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build()
+            .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -50,7 +52,8 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         actionButton = view.findViewById(R.id.fab)
-        actionButton.setOnClickListener {
+        //TODO put back once bindings work again
+        /*actionButton.setOnClickListener {
             registerViewModel
                 .register(RegisterUserConverter().toUser(binding.user!!))
                 .doOnSubscribe { actionButton.isEnabled = false }
@@ -63,23 +66,15 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
                     actionButton.isEnabled = true
                     showErrorToast()
                 })
-        }
+        }*/
     }
 
     private fun showToast() {
-        com.google.android.material.snackbar.Snackbar.make(
-            binding.root,
-            "User registered ",
-            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-        ).show()
+        //com.google.android.material.snackbar.Snackbar.make(binding.root,"User registered ",com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
     }
 
     private fun showErrorToast() {
-        com.google.android.material.snackbar.Snackbar.make(
-            binding.root,
-            "Error registering user",
-            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-        ).show()
+        //com.google.android.material.snackbar.Snackbar.make(binding.root,"Error registering user", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
     }
 
     fun navController() = findNavController()

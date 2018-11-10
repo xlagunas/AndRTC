@@ -6,21 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
-import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.viv.commons.extension.text
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
+import com.google.android.material.snackbar.Snackbar
 import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
@@ -92,9 +92,7 @@ class LoginFragment : androidx.fragment.app.Fragment(), Injectable {
                 navController().popBackStack()
             }
             is InvalidLoginState -> com.google.android.material.snackbar.Snackbar.make(
-                view!!,
-                loginState.errorMessage,
-                Toast.LENGTH_SHORT
+                view!!, loginState.errorMessage, Snackbar.LENGTH_SHORT
             ).show()
             is ValidationError -> {
                 usernameInputLayout.error = "Username can't be empty"

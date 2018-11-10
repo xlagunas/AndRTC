@@ -9,8 +9,6 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
     }
 
 
@@ -61,6 +59,8 @@ dependencies {
 //    implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:0.1.6'
     implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-coroutines:0.1.6'
     implementation 'com.github.tinder.scarlet:scarlet-websocket-okhttp:0.1.6'
+
+    implementation 'org.webrtc:google-webrtc:1.0.24616'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'

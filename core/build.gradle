@@ -6,8 +6,6 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
@@ -51,6 +49,7 @@ android {
         targetCompatibility 1.8
     }
 
+    dataBinding { enabled = true }
 }
 
 kapt {
@@ -80,6 +79,11 @@ dependencies {
     debugApi 'com.readystatesoftware.chuck:library:1.1.0'
     releaseApi 'com.readystatesoftware.chuck:library-no-op:1.1.0'
     implementation 'androidx.core:core-ktx:1.0.1'
+
+    compileOnly('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true
+    }
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
