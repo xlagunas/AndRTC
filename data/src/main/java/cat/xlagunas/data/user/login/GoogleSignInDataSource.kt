@@ -4,9 +4,8 @@ import android.app.Activity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import cat.xlagunas.data.common.provider.ActivityMonitor
-import cat.xlagunas.domain.commons.User
-import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -19,7 +18,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 class GoogleSignInDataSource @Inject constructor(
-    private val activityMonitor: ActivityMonitor,
+    private val activityMonitor: cat.xlagunas.core.data.provider.ActivityMonitor,
     private val schedulers: RxSchedulers
 ) : LifecycleObserver {
 

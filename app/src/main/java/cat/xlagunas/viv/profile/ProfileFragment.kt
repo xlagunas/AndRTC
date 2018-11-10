@@ -13,11 +13,10 @@ import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
-import cat.xlagunas.viv.commons.di.VivApplication
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import javax.inject.Inject
@@ -48,7 +47,7 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        VivApplication.appComponent(context!!).inject(this)
+        // DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build().inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

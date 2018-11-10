@@ -1,12 +1,7 @@
 package cat.xlagunas.data.contact
 
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.data.common.converter.FriendConverter
-import cat.xlagunas.data.common.db.FriendDao
-import cat.xlagunas.data.common.db.UserDao
-import cat.xlagunas.data.common.db.UserEntity
-import cat.xlagunas.data.common.net.Relationship
-import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDataSource
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -16,9 +11,9 @@ import javax.inject.Inject
 
 @OpenForTesting
 class LocalContactDataSource @Inject constructor(
-    private val friendDao: FriendDao,
-    private val userDao: UserDao,
-    private val friendConverter: FriendConverter
+    private val friendDao: cat.xlagunas.core.data.db.FriendDao,
+    private val userDao: cat.xlagunas.core.data.db.UserDao,
+    private val friendConverter: cat.xlagunas.core.data.converter.FriendConverter
 ) : ContactDataSource {
 
     override fun requestFriendship(friend: Friend): Completable {
@@ -26,7 +21,7 @@ class LocalContactDataSource @Inject constructor(
         return userDao.user
             .map {
                 friendConverter.toFriendEntity(
-                    friendConverter.updateRelationship(friend, Relationship.REQUESTED),
+                    friendConverter.updateRelationship(friend, cat.xlagunas.core.data.net.Relationship.REQUESTED),
                     it.id!!
                 )
             }
@@ -46,7 +41,7 @@ class LocalContactDataSource @Inject constructor(
     fun updateContacts(contactList: List<Friend>): Completable {
 
         return Flowable.combineLatest(userDao.user.toFlowable(), Flowable.fromIterable(contactList),
-            BiFunction { user: UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
+            BiFunction { user: cat.xlagunas.core.data.db.UserEntity, friend: Friend -> friendConverter.toFriendEntity(friend, user.id!!) })
             .toList()
             .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
     }
@@ -55,7 +50,7 @@ class LocalContactDataSource @Inject constructor(
         return userDao.user
             .map {
                 friendConverter.toFriendEntity(
-                    friendConverter.updateRelationship(friend, Relationship.ACCEPTED),
+                    friendConverter.updateRelationship(friend, cat.xlagunas.core.data.net.Relationship.ACCEPTED),
                     it.id!!
                 )
             }

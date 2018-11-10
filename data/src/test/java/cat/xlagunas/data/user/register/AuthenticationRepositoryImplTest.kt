@@ -4,17 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import android.content.Context
 import cat.xlagunas.data.BuildConfig
-import cat.xlagunas.data.common.converter.UserConverter
-import cat.xlagunas.data.common.db.UserDao
-import cat.xlagunas.data.common.db.VivDatabase
-import cat.xlagunas.data.common.net.UserDto
 import cat.xlagunas.data.user.authentication.AuthDto
 import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
 import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.push.PushTokenProvider
-import cat.xlagunas.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
@@ -42,9 +38,9 @@ class AuthenticationRepositoryImplTest {
 
     private lateinit var authenticationRepository: AuthenticationRepository
 
-    private lateinit var userDao: UserDao
+    private lateinit var userDao: cat.xlagunas.core.data.db.UserDao
 
-    private lateinit var userConverter: UserConverter
+    private lateinit var userConverter: cat.xlagunas.core.data.converter.UserConverter
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -61,10 +57,10 @@ class AuthenticationRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
+        val database = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, cat.xlagunas.core.data.db.VivDatabase::class.java)
             .allowMainThreadQueries().build()
         userDao = database.userDao()
-        userConverter = UserConverter()
+        userConverter = cat.xlagunas.core.data.converter.UserConverter()
         authenticationRepository = AuthenticationRepositoryImpl(
             authenticationApi,
             userDao,
@@ -137,7 +133,7 @@ class AuthenticationRepositoryImplTest {
     }
 
     private fun mockedUserDto() =
-        UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
+        cat.xlagunas.core.data.net.UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
 
     @Test
     fun reactive_insert() {

@@ -43,10 +43,7 @@ class ConferenceRepositoryImpTest {
         val routine = GlobalScope.async {
             message = wsMessagingApi.observeMessageStream().receive()
             assert(message.data != null)
-
         }
-
-
     }
 
     @Test

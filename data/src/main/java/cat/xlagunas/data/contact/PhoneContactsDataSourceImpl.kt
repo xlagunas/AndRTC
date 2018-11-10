@@ -9,9 +9,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class PhoneContactsDataSourceImpl @Inject constructor(private val context: Context) : PhoneContactsDataSource {
 
     override fun getUserPhoneContacts(): Flowable<List<ContactDetails>> {

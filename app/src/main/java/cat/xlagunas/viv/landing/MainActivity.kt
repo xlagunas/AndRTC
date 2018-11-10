@@ -10,7 +10,6 @@ import androidx.navigation.ui.NavigationUI
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.VivApplication
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        VivApplication.appComponent(this).inject(this)
+
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

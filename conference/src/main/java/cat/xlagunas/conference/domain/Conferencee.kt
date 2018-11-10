@@ -1,5 +1,3 @@
 package cat.xlagunas.conference.domain
 
-class Conferencee {
-
-}
+class Conferencee

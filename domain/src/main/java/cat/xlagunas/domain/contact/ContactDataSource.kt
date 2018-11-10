@@ -1,6 +1,6 @@
 package cat.xlagunas.domain.contact
 
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

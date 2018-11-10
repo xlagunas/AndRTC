@@ -16,7 +16,7 @@ import okhttp3.OkHttpClient
 
 class ConferenceRepositoryImp : ConferenceRepository {
 
-    //TODO Dagger2 inject through it
+    // TODO Dagger2 inject through it
     private val lifecycleRegistry = LifecycleRegistry()
     private lateinit var wsMessagingApi: WsMessagingApi
 
@@ -39,7 +39,7 @@ class ConferenceRepositoryImp : ConferenceRepository {
     }
 
     override fun getConnectedUsers(): Flowable<Conferencee> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun logoutRoom() {

@@ -4,16 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
-import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,7 +28,7 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        VivApplication.appComponent(context!!).inject(this)
+        // VivApplication.appComponent(context!!).inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,9 +40,11 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
-        binding.user = RegisterUserBinder()
-        return binding.root
+        // TODO Fix view bc databinding is complaining
+        // binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
+        // binding.user = RegisterUserBinder()
+        // return binding.root
+        return null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

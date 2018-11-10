@@ -14,13 +14,14 @@ import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.data.common.extensions.text
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
-import cat.xlagunas.viv.commons.di.VivApplication
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.viv.commons.extension.text
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
+import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
 @OpenForTesting
@@ -48,7 +49,8 @@ class LoginFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        VivApplication.appComponent(context!!).inject(this)
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build()
+            .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -1,7 +1,9 @@
 package cat.xlagunas.viv.contact
 
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -12,11 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import androidx.navigation.NavController
-import cat.xlagunas.data.common.net.Relationship
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
 import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
@@ -81,7 +79,7 @@ class ContactFragmentTest {
 
     @Test
     fun givenRequestedContact_whenAcceptingContact_thenAcceptCall() {
-        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", Relationship.PENDING.name)
+        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", cat.xlagunas.core.data.net.Relationship.PENDING.name)
 
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(friend, R.id.accept_friendship_button, 0)
 
@@ -90,7 +88,7 @@ class ContactFragmentTest {
 
     @Test
     fun givenRequestedContact_whenRejectedContact_thenRejectCall() {
-        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", Relationship.PENDING.name)
+        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", cat.xlagunas.core.data.net.Relationship.PENDING.name)
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(friend, R.id.reject_friendship_button, 0)
 
         verify(contactViewModel).rejectContactRequest(friend)
@@ -98,7 +96,7 @@ class ContactFragmentTest {
 
     @Test
     fun givenAcceptedContact_whenClicked_thenCall() {
-        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", Relationship.ACCEPTED.name)
+        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", cat.xlagunas.core.data.net.Relationship.ACCEPTED.name)
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(friend, R.id.call_friend_button, 0)
 
         verify(contactViewModel).callFriend(friend)
@@ -120,7 +118,7 @@ class ContactFragmentTest {
     }
 
     private fun populateContactsList(): List<Friend> {
-        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", Relationship.REQUESTED.name)
+        val friend = Friend(0, "FirstFriend", "First friend name", null, "first@gmail.com", cat.xlagunas.core.data.net.Relationship.REQUESTED.name)
         val friendList = ArrayList<Friend>(1000)
         friendList += friend
 

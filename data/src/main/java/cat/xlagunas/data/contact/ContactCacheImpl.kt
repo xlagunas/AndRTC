@@ -2,14 +2,13 @@ package cat.xlagunas.data.contact
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.domain.common.time.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class ContactCacheImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences,
-    private val timeProvider: TimeProvider
+    private val timeProvider: cat.xlagunas.core.domain.time.TimeProvider
 ) : ContactCache {
 
     override fun invalidateCache(): Completable {

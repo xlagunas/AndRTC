@@ -9,7 +9,6 @@ import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import javax.inject.Singleton
 
 @Module
 class RegisterModule {
@@ -20,7 +19,6 @@ class RegisterModule {
     }
 
     @Provides
-    @Singleton
     fun providePushTokenProvider(sharedPreferences: SharedPreferences): PushTokenProvider {
         return PushTokenProviderImpl(sharedPreferences)
     }

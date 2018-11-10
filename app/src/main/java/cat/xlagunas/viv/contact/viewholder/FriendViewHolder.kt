@@ -1,11 +1,10 @@
 package cat.xlagunas.viv.contact.viewholder
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.contact.ContactListener
 import com.bumptech.glide.Glide

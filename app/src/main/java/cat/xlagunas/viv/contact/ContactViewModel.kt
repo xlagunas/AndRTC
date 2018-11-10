@@ -1,8 +1,8 @@
 package cat.xlagunas.viv.contact
 
 import androidx.lifecycle.LiveData
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel

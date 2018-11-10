@@ -1,6 +1,5 @@
 package cat.xlagunas.data.contact
 
-import cat.xlagunas.data.common.net.FriendDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -11,7 +10,7 @@ import retrofit2.http.Path
 interface ContactsApi {
 
     @GET("/contact/search/{filter}")
-    fun searchContact(@Path("filter") query: String): Single<List<FriendDto>>
+    fun searchContact(@Path("filter") query: String): Single<List<cat.xlagunas.core.data.net.FriendDto>>
 
     @PUT("/contact/{contactId}")
     fun addContact(@Path("contactId") contactId: Long): Completable
@@ -23,5 +22,5 @@ interface ContactsApi {
     fun rejectContact(@Path("contactId") contactId: Long): Completable
 
     @GET("/contact/list")
-    fun listContacts(): Single<List<FriendDto>>
+    fun listContacts(): Single<List<cat.xlagunas.core.data.net.FriendDto>>
 }

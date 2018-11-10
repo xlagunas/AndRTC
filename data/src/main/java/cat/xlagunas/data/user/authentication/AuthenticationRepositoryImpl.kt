@@ -2,14 +2,11 @@ package cat.xlagunas.data.user.authentication
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.data.common.converter.UserConverter
-import cat.xlagunas.data.common.db.UserDao
-import cat.xlagunas.data.common.db.VivDatabase
+import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.push.PushTokenDto
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.push.PushTokenProvider
-import cat.xlagunas.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
@@ -21,12 +18,12 @@ import javax.inject.Inject
 class AuthenticationRepositoryImpl
 @Inject constructor(
     private val authenticationApi: AuthenticationApi,
-    private val userDao: UserDao,
-    private val userConverter: UserConverter,
+    private val userDao: cat.xlagunas.core.data.db.UserDao,
+    private val userConverter: cat.xlagunas.core.data.converter.UserConverter,
     private val schedulers: RxSchedulers,
     private val tokenDataStore: AuthTokenDataStore,
     private val pushTokenProvider: PushTokenProvider,
-    private val vivDatabase: VivDatabase,
+    private val vivDatabase: cat.xlagunas.core.data.db.VivDatabase,
     private val sharedPreferences: SharedPreferences
 ) : AuthenticationRepository {
 

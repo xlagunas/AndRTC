@@ -3,7 +3,7 @@ package cat.xlagunas.data.contact
 import android.content.Context
 import android.content.SharedPreferences
 import cat.xlagunas.data.BuildConfig
-import cat.xlagunas.domain.common.time.TimeProvider
+import cat.xlagunas.core.domain.time.TimeProvider
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +23,7 @@ class ContactCacheImplTest {
     private lateinit var sharedPreferences: SharedPreferences
 
     @Mock
-    private lateinit var timeProvider: TimeProvider
+    private lateinit var timeProvider: cat.xlagunas.core.domain.time.TimeProvider
 
     private lateinit var contactCache: ContactCache
 

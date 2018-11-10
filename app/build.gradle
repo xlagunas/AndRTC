@@ -43,13 +43,10 @@ android {
 
     productFlavors {
         production {
-            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
         }
 
         development {
             versionNameSuffix '.local'
-            buildConfigField "String", "ENDPOINT", '"http://192.168.0.158:8080"'
-//            buildConfigField "String", "ENDPOINT", '"http://10.239.162.38:8080"'
         }
     }
 
@@ -74,7 +71,7 @@ android {
     }
 
     dataBinding {
-        enabled = true
+        enabled = false
     }
 
     testOptions {
@@ -89,7 +86,7 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-    dynamicFeatures = [":conference"]
+//    dynamicFeatures = [":conference"]
 }
 
 
@@ -98,62 +95,46 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':data')
     implementation project(':domain')
-
-    kapt 'com.google.dagger:dagger-compiler:2.17'
-    implementation 'com.google.dagger:dagger:2.17'
-
+    kapt 'com.google.dagger:dagger-compiler:2.19'
+    implementation 'com.google.dagger:dagger:2.19'
     kapt 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
-
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.media:media:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-
+    implementation 'androidx.appcompat:appcompat:1.0.1'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
     implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha07'
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0-alpha07'
-    implementation 'androidx.room:room-runtime:2.1.0-alpha01'
-
+    implementation 'androidx.room:room-runtime:2.1.0-alpha02'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.8.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
-
-
     implementation 'com.google.firebase:firebase-core:16.0.4'
-    implementation 'com.google.firebase:firebase-analytics:16.0.4'
+    implementation 'com.google.firebase:firebase-analytics:16.0.5'
     implementation 'com.google.firebase:firebase-perf:16.2.0'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true
     }
-
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
-
-
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
     testImplementation 'junit:junit:4.12'
-
-    androidTestImplementation("com.github.tomakehurst:wiremock:2.8.0") {
+    androidTestImplementation('com.github.tomakehurst:wiremock:2.8.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
         exclude group: 'asm', module: 'asm'
         exclude group: 'org.json', module: 'json'
     }
-
-    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.17'
-    kaptTest 'com.google.dagger:dagger-compiler:2.17'
-
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.19'
+    kaptTest 'com.google.dagger:dagger-compiler:2.19'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test:rules:1.1.0'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
@@ -164,8 +145,8 @@ dependencies {
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.0'
-
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation project(':core')
 }
 
 static def isMinifyEnabledForBuild() {
