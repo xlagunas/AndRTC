@@ -1,11 +1,13 @@
 package cat.xlagunas.viv.register
 
 import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import cat.xlagunas.core.BR
+import cat.xlagunas.viv.commons.binding.bindable
 
 class RegisterUserBinder : BaseObservable() {
 
-    //TODO FIX databinding
-   /* @get:Bindable
+   @get:Bindable
     var firstName by bindable("", BR.firstName)
 
     @get:Bindable
@@ -17,5 +19,5 @@ class RegisterUserBinder : BaseObservable() {
     var username by bindable("", BR.username)
 
     @get:Bindable
-    var password by bindable("", BR.password)*/
+    var password by bindable("", BR.password)
 }

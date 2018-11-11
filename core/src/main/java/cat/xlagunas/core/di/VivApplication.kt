@@ -8,7 +8,7 @@ import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
-class VivApplication : Application() {
+open class VivApplication : Application() {
 
     @Inject
     lateinit var activityMonitor: cat.xlagunas.core.data.provider.ActivityMonitor

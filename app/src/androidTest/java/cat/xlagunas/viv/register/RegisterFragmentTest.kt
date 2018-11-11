@@ -1,6 +1,7 @@
 package cat.xlagunas.viv.register
 
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -11,8 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import androidx.navigation.NavController
-import cat.xlagunas.domain.commons.User
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
 import cat.xlagunas.viv.test.SingleFragmentActivity

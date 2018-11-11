@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +14,7 @@ import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 import dagger.DaggerMonolythComponent
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,7 +24,7 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
 
     private lateinit var registerViewModel: RegisterViewModel
     private lateinit var actionButton: com.google.android.material.floatingactionbutton.FloatingActionButton
-    //private lateinit var binding: ActivityRegisterBinding
+    private lateinit var binding: ActivityRegisterBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,18 +44,16 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // TODO Fix view bc databinding is complaining
-        // binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
-        // binding.user = RegisterUserBinder()
-        // return binding.root
+         binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
+         binding.user = RegisterUserBinder()
+         return binding.root
         return null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         actionButton = view.findViewById(R.id.fab)
-        //TODO put back once bindings work again
-        /*actionButton.setOnClickListener {
+        actionButton.setOnClickListener {
             registerViewModel
                 .register(RegisterUserConverter().toUser(binding.user!!))
                 .doOnSubscribe { actionButton.isEnabled = false }
@@ -66,7 +66,7 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
                     actionButton.isEnabled = true
                     showErrorToast()
                 })
-        }*/
+        }
     }
 
     private fun showToast() {
