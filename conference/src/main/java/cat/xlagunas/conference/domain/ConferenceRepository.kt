@@ -4,7 +4,7 @@ import io.reactivex.Flowable
 
 interface ConferenceRepository {
 
-    fun joinRoom(roomId: String)
+    fun joinRoom()
     fun getConnectedUsers(): Flowable<Conferencee>
     fun logoutRoom()
 }

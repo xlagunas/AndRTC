@@ -14,6 +14,7 @@ import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import dagger.BindsInstance
 import dagger.Component
+import okhttp3.OkHttpClient
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
 
@@ -35,7 +36,9 @@ interface ApplicationComponent {
     fun retrofit(): Retrofit
     fun activityMonitor(): ActivityMonitor
     fun friendConverter(): FriendConverter
+    fun okHttpClient(): OkHttpClient
     fun context(): Context
+    fun application(): Application
     fun timeProvider(): TimeProvider
 
     @Component.Builder
@@ -48,10 +51,4 @@ interface ApplicationComponent {
     }
 
     fun inject(app: VivApplication)
-//    fun inject(activity: MainActivity)
-//    fun inject(fragment: LoginFragment)
-//    fun inject(fragment: RegisterFragment)
-//    fun inject(fragment: ContactFragment)
-//    fun inject(fragment: ProfileFragment)
-//    fun inject(service: PushMessageHandler)
 }

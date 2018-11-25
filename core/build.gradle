@@ -76,8 +76,15 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+
     debugApi 'com.readystatesoftware.chuck:library:1.1.0'
     releaseApi 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+
     implementation 'androidx.core:core-ktx:1.0.1'
 
     compileOnly('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {

@@ -17,7 +17,6 @@ import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.extension.text
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
 import com.google.android.material.snackbar.Snackbar
@@ -70,7 +69,9 @@ class LoginFragment : androidx.fragment.app.Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
         signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
-        loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
+        //loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
+        loginButton.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).setClassName(context!!, "cat.xlagunas.conference.ui.ConferenceActivity"))}
         registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
     }
 

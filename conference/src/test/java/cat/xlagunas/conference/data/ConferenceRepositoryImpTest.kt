@@ -7,10 +7,11 @@ import com.tinder.scarlet.ShutdownReason
 import com.tinder.scarlet.lifecycle.LifecycleRegistry
 import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
 import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class ConferenceRepositoryImpTest {
@@ -33,16 +34,14 @@ class ConferenceRepositoryImpTest {
     @Test
     fun joinRoom() {
         wsMessagingApi = scarletInstance.create(WsMessagingApi::class.java)
-        val helloMsg = Message("JOIN", "", "")
+        val helloMsg = MessageDto("JOIN", "", MessageType.ICE_CANDIDATE, "")
         lifecycleRegistry.onNext(Lifecycle.State.Stopped.WithReason(ShutdownReason.GRACEFUL))
-
-        var message: Message
 
         wsMessagingApi.sendMessage(helloMsg)
         lifecycleRegistry.onNext(Lifecycle.State.Stopped.AndAborted)
-        val routine = GlobalScope.async {
-            message = wsMessagingApi.observeMessageStream().receive()
-            assert(message.data != null)
+        runBlocking {
+            val iceCandidateMessage = wsMessagingApi.observeIceCandidateStream().receive()
+            assertThat(iceCandidateMessage).isNotNull()
         }
     }
 

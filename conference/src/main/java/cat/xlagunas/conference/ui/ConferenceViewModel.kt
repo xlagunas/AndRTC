@@ -1,15 +1,13 @@
 package cat.xlagunas.conference.ui
 
 import androidx.lifecycle.ViewModel
-import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.domain.ConferenceRepository
+import javax.inject.Inject
 
-class ConferenceViewModel : ViewModel() {
-
-    private val conferenceRepository: ConferenceRepository = ConferenceRepositoryImp()
+class ConferenceViewModel @Inject constructor(private val conferenceRepository: ConferenceRepository) : ViewModel() {
 
     fun onStart() {
-        conferenceRepository.joinRoom("anyString")
+        conferenceRepository.joinRoom()
     }
 
     override fun onCleared() {
