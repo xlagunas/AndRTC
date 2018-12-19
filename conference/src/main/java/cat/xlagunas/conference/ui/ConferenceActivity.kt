@@ -21,9 +21,11 @@ class ConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         component = DaggerConferenceComponent.builder()
             .parent(VivApplication.appComponent(this))
-            .roomId("room")
+            .roomId("newRoom2")
             .activity(this)
-            .build().apply { inject(this@ConferenceActivity) }
+            .build().apply {
+                inject(this@ConferenceActivity)
+            }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conference)

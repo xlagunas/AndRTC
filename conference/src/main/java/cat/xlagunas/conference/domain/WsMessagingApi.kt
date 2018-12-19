@@ -23,4 +23,9 @@ interface WsMessagingApi {
     @Send
     fun sendMessage(messageDto: MessageDto)
 
+    @Send
+    fun sendMessage(sessionMessage: SessionMessage)
+
+    @Send
+    fun sendMessage(iceCandidateMessage: IceCandidateMessage)
 }

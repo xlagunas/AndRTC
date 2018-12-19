@@ -11,6 +11,7 @@
     </dist:module>
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
             android:name="cat.xlagunas.core.di.VivApplication"
@@ -19,7 +20,9 @@
             android:label="${appName}"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true"
+            >
         <activity
                 android:name="cat.xlagunas.conference.ui.ConferenceActivity"
                 android:label="@string/title_activity_main">

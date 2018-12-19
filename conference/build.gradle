@@ -34,6 +34,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
 }
 
 tasks.withType(Test) {
@@ -62,15 +68,15 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.0.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.0.0'
 
-    implementation 'com.github.tinder.scarlet:scarlet:0.1.6'
-    implementation 'com.github.tinder.scarlet:scarlet-message-adapter-gson:0.1.6'
+    implementation 'com.github.tinder.scarlet:scarlet:0.2.1-alpha2'
+    implementation 'com.github.tinder.scarlet:scarlet-message-adapter-gson:0.2.1-alpha2'
 
     //TODO once this is propagated implement right version
-    implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-coroutines:0.1.6'
-    implementation 'com.github.tinder.scarlet:scarlet-websocket-okhttp:0.1.6'
-    implementation 'com.github.tinder.scarlet:scarlet-lifecycle-android:0.1.6'
+    implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-coroutines:0.2.1-alpha2'
+    implementation 'com.github.tinder.scarlet:scarlet-websocket-okhttp:0.2.1-alpha2'
+    implementation 'com.github.tinder.scarlet:scarlet-lifecycle-android:0.2.1-alpha2'
 
-    implementation 'org.webrtc:google-webrtc:1.0.24616'
+    implementation 'org.webrtc:google-webrtc:1.0.25821'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
