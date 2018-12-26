@@ -10,7 +10,5 @@ data class MessageDto(
 )
 
 enum class MessageType {
-    ICE_CANDIDATE,
-    SESSION_DESCRIPTION,
-    SERVER
+    OFFER, ANSWER, ICE_CANDIDATE, ROOM_DISCOVERY
 }

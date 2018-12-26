@@ -1,16 +1,13 @@
 package cat.xlagunas.conference.data
 
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.webrtc.DataChannel
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection
 import org.webrtc.RtpReceiver
-import org.webrtc.SessionDescription
 import timber.log.Timber
-import javax.inject.Inject
 
 class VivPeerConnectionObserver(private val userId: String, private val handler: WebRTCEventHandler) :
     PeerConnection.Observer {
@@ -77,13 +74,6 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
 
     override fun onAddTrack(p0: RtpReceiver, p1: Array<out MediaStream>) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    class WebRTCEventHandler @Inject constructor() {
-        val mediaStreamChannel = Channel<Triple<String, MediaStream, MediaStreamState>>()
-        val iceCandidateHandler = Channel<Pair<String, IceCandidate>>()
-        val signalingStateHandler = Channel<Pair<String, PeerConnection.SignalingState>>()
-        val sessionDescriptionHandler = Channel<Triple<String, SessionDescription, SessionDescriptionState>>()
     }
 
     enum class MediaStreamState {

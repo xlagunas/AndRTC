@@ -1,10 +1,11 @@
 package cat.xlagunas.conference.data
 
-import cat.xlagunas.conference.data.VivPeerConnectionObserver.SessionDescriptionState
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.Conferencee
+import cat.xlagunas.conference.domain.IceCandidateMessage
 import cat.xlagunas.conference.domain.SessionMessage
-import cat.xlagunas.conference.domain.WsMessagingApi
+import cat.xlagunas.conference.domain.UserSessionIdentifier
+import cat.xlagunas.conference.domain.WsMessagingWrapper
 import com.google.gson.Gson
 import com.tinder.scarlet.WebSocket
 import io.reactivex.Flowable
@@ -13,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.filter
 import kotlinx.coroutines.launch
+import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
@@ -22,13 +24,15 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 class ConferenceRepositoryImp @Inject constructor(
-    private val messagingApi: WsMessagingApi,
+    private val messagingApiWrapper: WsMessagingWrapper,
     private val peerConnectionFactory: PeerConnectionFactory,
     private val rtcConfiguration: PeerConnection.RTCConfiguration,
-    private val webRTCEventHandler: VivPeerConnectionObserver.WebRTCEventHandler
+    private val webRTCEventHandler: WebRTCEventHandler,
+    private val userSessionIdentifier: UserSessionIdentifier
+
 ) : ConferenceRepository {
 
-    private val peerConnectionMap = ConcurrentHashMap<String, PeerData>()
+    private val peerConnectionMap = ConcurrentHashMap<String, PeerConnection>()
     private val peerConnectionConstraints = MediaConstraints().apply {
         mandatory.add(
             MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true")
@@ -39,109 +43,141 @@ class ConferenceRepositoryImp @Inject constructor(
             )
         )
     }
+    //TODO Should be passed as dependency
+    private val temporalGson = Gson()
 
     override fun joinRoom() {
+        Timber.d("Handling state for current user on phone: ${userSessionIdentifier.getUserId()}")
+        messagingApiWrapper.setupWebSocketListeners()
 
         GlobalScope.launch {
-            messagingApi.observeMessageEvent()
+            messagingApiWrapper.observeMessageEvent()
                 .filter { it is WebSocket.Event.OnConnectionOpened<*> }
                 .consumeEach {
-                    messagingApi.sendMessage(
+                    messagingApiWrapper.sendMessage(
                         MessageDto(
+                            userSessionIdentifier.getUserId(),
                             "",
-                            "Hello from Android",
-                            MessageType.SERVER,
-                            "JOIN"
+                            MessageType.ROOM_DISCOVERY,
+                            "SERVER"
                         )
                     )
                 }
-
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            val users = messagingApi.getRoomParticipants().receive()
-            for (user in users) {
-                Timber.d("New User found in room, user: ${user.userId}")
-                val peerConnection = createPeerConnection(user.userId, SessionDescriptionState.OFFER)
-                peerConnection?.createOffer(peerConnectionMap[user.userId]?.sdpObserver, peerConnectionConstraints)
-            }
-//TODO remove this and move it to the proper converter
-            val temporalGson = Gson()
-            webRTCEventHandler.sessionDescriptionHandler.consumeEach {
-                when (it.third) {
-                    SessionDescriptionState.OFFER -> {
-                        peerConnectionMap[it.first]?.peerConnection?.setLocalDescription(
-                            peerConnectionMap[it.first]?.sdpObserver,
-                            it.second
-                        )
-                        messagingApi.sendMessage(
-                            MessageDto(
-                                "",
-                                temporalGson.toJson(SessionMessage(it.second, it.first)),
-                                MessageType.SESSION_DESCRIPTION,
-                                it.first
-                            )
-                        )
-                    }
-                    SessionDescriptionState.ANSWER -> {
-                        peerConnectionMap[it.first]?.peerConnection?.setRemoteDescription(
-                            peerConnectionMap[it.first]?.sdpObserver,
-                            it.second
-                        )
-                        messagingApi.sendMessage(
-                            MessageDto(
-                                "",
-                                temporalGson.toJson(SessionMessage(it.second, it.first)),
-                                MessageType.SESSION_DESCRIPTION,
-                                it.first
-                            )
-                        )
+            val users = messagingApiWrapper.getRoomParticipants.receive()
+            for (user in users.users) {
+                if (user.userId != userSessionIdentifier.getUserId()) {
+                    Timber.d("New User found in room, user: ${user.userId}")
+                    val peerConnection = createPeerConnection(user.userId)
+                    if (peerConnection != null) {
+                        createOffer(user.userId)
                     }
                 }
             }
+        }
 
+        GlobalScope.launch(Dispatchers.IO) {
+            messagingApiWrapper.observeSessionStream
+                .consumeEach { message ->
+                    if (message.second == MessageType.OFFER) {
+                        createPeerConnection(message.first.receiver)
+                        handleRemoteOffer(message.first.receiver, message.first.sessionDescription)
+                    } else {
+                        handleRemoteAnswer(message.first.receiver, message.first.sessionDescription)
+                    }
+                }
+        }
 
-
-
-            messagingApi.observeSessionStream()
+        GlobalScope.launch(Dispatchers.IO) {
+            messagingApiWrapper.observeIceCandidateStream
                 .consumeEach { message ->
                     Timber.d("New message received: $message.data")
-                    val sessionDescriptionState =
-                        if (message.sessionDescription.type == SessionDescription.Type.OFFER) {
-                            SessionDescriptionState.OFFER
-                        } else {
-                            SessionDescriptionState.ANSWER
-                        }
+                    addIceCandidate(message.receiver, message.iceCandidate)
 
-                    createPeerConnection(message.receiver, sessionDescriptionState)
-                    //TODO not really happy of the double direction this allows. Ideally we should only read from this value, not update it directly, otherwise this is an eventBus
-                    webRTCEventHandler.sessionDescriptionHandler.send(
-                        Triple(
-                            message.receiver,
-                            message.sessionDescription,
-                            sessionDescriptionState
+                }
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            webRTCEventHandler.iceCandidateHandler
+                .consumeEach {
+                    messagingApiWrapper.sendMessage(
+                        MessageDto(
+                            userSessionIdentifier.getUserId(),
+                            temporalGson.toJson(IceCandidateMessage(it.second, userSessionIdentifier.getUserId())),
+                            MessageType.ICE_CANDIDATE,
+                            it.first
                         )
                     )
-
-                }
-
-            messagingApi.observeIceCandidateStream()
-                .consumeEach { message ->
-                    Timber.d("New message received: $message.data")
-                    webRTCEventHandler.iceCandidateHandler.send(Pair(message.receiver, message.iceCandidate))
-
                 }
         }
     }
 
-    private fun createPeerConnection(contactId: String, sessionDescription: SessionDescriptionState): PeerConnection? {
+    private fun addIceCandidate(contactId: String, iceCandidate: IceCandidate) {
+        Timber.d("Adding Ice candidate for $contactId")
+        peerConnectionMap[contactId]?.addIceCandidate(iceCandidate)
+    }
+
+    private fun createPeerConnection(contactId: String): PeerConnection? {
+        Timber.d("Creating peer connection per $contactId")
+        if (peerConnectionMap[contactId] != null) {
+            Timber.w("Requesting creation of a peer whose already in the list")
+            return null
+        }
         val peerObserver = VivPeerConnectionObserver(contactId, webRTCEventHandler)
         val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)
-        peerConnection?.let {
-            val sdpObserver = VivSdpObserver(contactId, webRTCEventHandler, sessionDescription)
-            peerConnectionMap[contactId] = PeerData(peerConnection, sdpObserver)
-        } ?: Timber.w("Attempt to create peer connection returned null for contact $contactId")
+        if (peerConnection != null) {
+            peerConnectionMap[contactId] = peerConnection
+        }
         return peerConnection
+    }
+
+    private fun createOffer(contactId: String) {
+        Timber.d("Creating offer for $contactId")
+        val sdpObserver = object : VivSdpObserver(contactId) {
+            override fun onCreateSuccess(sessionDescription: SessionDescription) {
+                //TODO MAYBE IT IS NOT NEEDED
+                peerConnectionMap[contactId]?.setLocalDescription(NoOPVivSdpObserver(contactId), sessionDescription)
+                messagingApiWrapper.sendMessage(
+                    MessageDto(
+                        userSessionIdentifier.getUserId(),
+                        temporalGson.toJson(SessionMessage(sessionDescription, userSessionIdentifier.getUserId())),
+                        MessageType.OFFER,
+                        contactId
+                    )
+                )
+            }
+        }
+        peerConnectionMap[contactId]?.createOffer(sdpObserver, peerConnectionConstraints)
+    }
+
+    private fun handleRemoteOffer(contactId: String, sessionDescription: SessionDescription) {
+        Timber.d("Handling remote offer from $contactId")
+        val peerConnection = peerConnectionMap[contactId]!!
+        val sdpObserver = object : VivSdpObserver(contactId) {
+            override fun onCreateSuccess(sessionDescription: SessionDescription) {
+                Timber.d("Sending answer message to $contactId")
+                //TODO MAYBE MAKES NO SENSE
+                peerConnection.setLocalDescription(NoOPVivSdpObserver(contactId), sessionDescription)
+                messagingApiWrapper.sendMessage(
+                    MessageDto(
+                        userSessionIdentifier.getUserId(),
+                        temporalGson.toJson(SessionMessage(sessionDescription, userSessionIdentifier.getUserId())),
+                        MessageType.ANSWER,
+                        this.contactId
+                    )
+                )
+            }
+        }
+        peerConnection.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
+        peerConnection.createAnswer(sdpObserver, peerConnectionConstraints)
+    }
+
+    private fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription) {
+        Timber.d("Handling remote answer for $contactId")
+        val peerConnection = peerConnectionMap[contactId]!!
+        peerConnection.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
     }
 
     override fun getConnectedUsers(): Flowable<Conferencee> {
@@ -150,5 +186,11 @@ class ConferenceRepositoryImp @Inject constructor(
 
     override fun logoutRoom() {
         Timber.d("Logging out room!")
+    }
+
+    class NoOPVivSdpObserver(val userId: String) : VivSdpObserver(userId) {
+        override fun onCreateSuccess(sessionDescription: SessionDescription) {
+            Timber.i("onCreateSuccess called for $userId")
+        }
     }
 }

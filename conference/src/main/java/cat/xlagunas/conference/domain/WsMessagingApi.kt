@@ -11,21 +11,8 @@ interface WsMessagingApi {
     @Receive
     fun observeMessageEvent(): ReceiveChannel<WebSocket.Event>
 
-    @Receive
-    fun observeSessionStream(): ReceiveChannel<SessionMessage>
-
-    @Receive
-    fun observeIceCandidateStream(): ReceiveChannel<IceCandidateMessage>
-
-    @Receive
-    fun getRoomParticipants(): ReceiveChannel<List<RoomParticipant>>
+    @Receive fun getMessage(): ReceiveChannel<MessageDto>
 
     @Send
     fun sendMessage(messageDto: MessageDto)
-
-    @Send
-    fun sendMessage(sessionMessage: SessionMessage)
-
-    @Send
-    fun sendMessage(iceCandidateMessage: IceCandidateMessage)
 }

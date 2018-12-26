@@ -3,8 +3,9 @@ package cat.xlagunas.conference.di
 import android.app.Application
 import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.data.CoroutinesStreamAdapterFactory
-import cat.xlagunas.conference.data.WebRtcMessageAdapter
+import cat.xlagunas.conference.data.WebRTCEventHandler
 import cat.xlagunas.conference.domain.ConferenceRepository
+import cat.xlagunas.conference.domain.UserSessionIdentifier
 import cat.xlagunas.conference.domain.WsMessagingApi
 import cat.xlagunas.conference.ui.ConferenceActivity
 import com.tinder.scarlet.Lifecycle
@@ -21,7 +22,7 @@ import org.webrtc.EglBase
 import org.webrtc.HardwareVideoEncoderFactory
 import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
-import java.util.UUID
+import javax.inject.Singleton
 
 @Module
 class ConferenceModule {
@@ -35,13 +36,11 @@ class ConferenceModule {
     fun provideScarletInstance(
         okHttpClient: OkHttpClient,
         roomId: String,
-        lifecycle: Lifecycle
+        lifecycle: Lifecycle,
+        userSessionIdentifier: UserSessionIdentifier
     ): Scarlet {
-        val uuid = UUID.randomUUID()
-
         return Scarlet.Builder()
-            .webSocketFactory(okHttpClient.newWebSocketFactory("ws://192.168.0.161:8080/$roomId/$uuid"))
-            .addMessageAdapterFactory(WebRtcMessageAdapter.Factory(uuid.toString()))
+            .webSocketFactory(okHttpClient.newWebSocketFactory("ws://192.168.0.158:8080/$roomId/${userSessionIdentifier.getUserId()}"))
             .addMessageAdapterFactory(GsonMessageAdapter.Factory())
             .addStreamAdapterFactory(CoroutinesStreamAdapterFactory())
             .lifecycle(lifecycle)
@@ -55,7 +54,7 @@ class ConferenceModule {
 
     @Provides
     fun provideLifecycleRegistry(activity: ConferenceActivity, application: Application): Lifecycle {
-        return  AndroidLifecycle.ofLifecycleOwnerForeground(application, activity)
+        return AndroidLifecycle.ofLifecycleOwnerForeground(application, activity)
     }
 
     @Provides
@@ -86,4 +85,8 @@ class ConferenceModule {
         val iceServerList = Util.immutableList(PeerConnection.IceServer("turn:xlagunas.cat", "Hercules", "X4v1"))
         return PeerConnection.RTCConfiguration(iceServerList)
     }
+
+    @Provides
+    @Singleton
+    fun provideWebRTCEventHandler() = WebRTCEventHandler()
 }

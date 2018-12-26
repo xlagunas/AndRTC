@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.conference.R
+import cat.xlagunas.conference.data.UUIDUserSession
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
 import cat.xlagunas.core.di.VivApplication
@@ -21,7 +22,8 @@ class ConferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         component = DaggerConferenceComponent.builder()
             .parent(VivApplication.appComponent(this))
-            .roomId("newRoom2")
+            .roomId("christmasRoom")
+            .userSession(UUIDUserSession())
             .activity(this)
             .build().apply {
                 inject(this@ConferenceActivity)

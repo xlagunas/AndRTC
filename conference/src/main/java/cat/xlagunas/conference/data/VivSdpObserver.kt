@@ -1,15 +1,11 @@
 package cat.xlagunas.conference.data
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
 import timber.log.Timber
 
-class VivSdpObserver(
-    private val contactId: String,
-    private val webRTCEventHandler: VivPeerConnectionObserver.WebRTCEventHandler,
-    private val sessionDescriptionState: VivPeerConnectionObserver.SessionDescriptionState
+abstract class VivSdpObserver(
+    internal val contactId: String
 ) : SdpObserver {
 
     override fun onSetFailure(p0: String) {
@@ -21,16 +17,6 @@ class VivSdpObserver(
     }
 
     override fun onCreateSuccess(sessionDescription: SessionDescription) {
-        Timber.i("sessionDescription created for user $contactId")
-        GlobalScope.launch {
-            webRTCEventHandler.sessionDescriptionHandler.send(
-                Triple(
-                    contactId,
-                    sessionDescription,
-                    sessionDescriptionState
-                )
-            )
-        }
     }
 
     override fun onCreateFailure(p0: String) {
