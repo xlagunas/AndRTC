@@ -1,6 +1,6 @@
 package cat.xlagunas.conference.domain
 
-import cat.xlagunas.conference.data.MessageDto
+import cat.xlagunas.conference.data.dto.MessageDto
 import com.tinder.scarlet.WebSocket
 import com.tinder.scarlet.ws.Receive
 import com.tinder.scarlet.ws.Send

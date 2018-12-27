@@ -1,10 +1,14 @@
 package cat.xlagunas.conference.domain
 
-import cat.xlagunas.conference.data.MessageDto
-import cat.xlagunas.conference.data.MessageType
+import cat.xlagunas.conference.data.dto.MessageDto
+import cat.xlagunas.conference.data.dto.RoomDetailsDto
+import cat.xlagunas.conference.domain.model.IceCandidateMessage
+import cat.xlagunas.conference.domain.model.MessageType
+import cat.xlagunas.conference.domain.model.SessionMessage
 import com.google.gson.Gson
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -14,7 +18,7 @@ import javax.inject.Inject
 class WsMessagingWrapper @Inject constructor(private val wsMessagingApi: WsMessagingApi) {
     private val gson = Gson()
 
-    val getRoomParticipants = Channel<RoomDetails>()
+    val getRoomParticipants = BroadcastChannel<RoomDetailsDto>(1)
     val observeSessionStream = Channel<Pair<SessionMessage, MessageType>>()
     val observeIceCandidateStream = Channel<IceCandidateMessage>()
 
@@ -35,7 +39,7 @@ class WsMessagingWrapper @Inject constructor(private val wsMessagingApi: WsMessa
                         observeIceCandidateStream.send(iceCandidate)
                     }
                     MessageType.ROOM_DISCOVERY -> {
-                        val roomDetails = gson.fromJson(it.data, RoomDetails::class.java)
+                        val roomDetails = gson.fromJson(it.data, RoomDetailsDto::class.java)
                         getRoomParticipants.send(roomDetails)
                     }
                 }

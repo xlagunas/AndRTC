@@ -2,10 +2,11 @@ package cat.xlagunas.conference.di
 
 import android.app.Application
 import cat.xlagunas.conference.data.ConferenceRepositoryImp
-import cat.xlagunas.conference.data.CoroutinesStreamAdapterFactory
+import cat.xlagunas.conference.data.utils.CoroutinesStreamAdapterFactory
 import cat.xlagunas.conference.data.WebRTCEventHandler
+import cat.xlagunas.conference.data.dto.mapper.ConferenceeMapper
 import cat.xlagunas.conference.domain.ConferenceRepository
-import cat.xlagunas.conference.domain.UserSessionIdentifier
+import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import cat.xlagunas.conference.domain.WsMessagingApi
 import cat.xlagunas.conference.ui.ConferenceActivity
 import com.tinder.scarlet.Lifecycle
@@ -89,4 +90,10 @@ class ConferenceModule {
     @Provides
     @Singleton
     fun provideWebRTCEventHandler() = WebRTCEventHandler()
+
+    @Provides
+    @Singleton
+    fun provideConferenceeMapper() : ConferenceeMapper{
+        return ConferenceeMapper()
+    }
 }

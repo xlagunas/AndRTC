@@ -1,6 +1,6 @@
 package cat.xlagunas.conference.di
 
-import cat.xlagunas.conference.domain.UserSessionIdentifier
+import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import cat.xlagunas.conference.ui.ConferenceActivity
 import cat.xlagunas.core.di.ApplicationComponent
 import dagger.BindsInstance

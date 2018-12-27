@@ -1,13 +1,17 @@
 package cat.xlagunas.conference.ui
 
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.conference.R
-import cat.xlagunas.conference.data.UUIDUserSession
+import cat.xlagunas.conference.data.utils.UUIDUserSession
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
+import cat.xlagunas.conference.domain.model.Conferencee
 import cat.xlagunas.core.di.VivApplication
+import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class ConferenceActivity : AppCompatActivity() {
@@ -33,7 +37,17 @@ class ConferenceActivity : AppCompatActivity() {
         setContentView(R.layout.activity_conference)
         conference = ViewModelProviders.of(this, viewModelFactory).get(ConferenceViewModel::class.java)
             .apply { onStart() }
+        conference.conferenceAttendees.observe(this, Observer(onConferencee()))
     }
+
+    private fun onConferencee(): (List<Conferencee>) -> Unit =
+        {
+            Snackbar.make(
+                findViewById<FrameLayout>(android.R.id.content),
+                "Joined room with other ${it.size} attendants",
+                Snackbar.LENGTH_INDEFINITE
+            ).show()
+        }
 
 /*
     override fun onSupportNavigateUp() = getNavController().navigateUp()

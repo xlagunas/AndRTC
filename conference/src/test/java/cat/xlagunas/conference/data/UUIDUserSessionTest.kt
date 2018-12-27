@@ -1,5 +1,6 @@
 package cat.xlagunas.conference.data
 
+import cat.xlagunas.conference.data.utils.UUIDUserSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

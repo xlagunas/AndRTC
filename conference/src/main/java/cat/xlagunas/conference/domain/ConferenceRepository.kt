@@ -1,10 +1,11 @@
 package cat.xlagunas.conference.domain
 
-import io.reactivex.Flowable
+import cat.xlagunas.conference.domain.model.Conferencee
+import kotlinx.coroutines.channels.ReceiveChannel
 
 interface ConferenceRepository {
 
     fun joinRoom()
-    fun getConnectedUsers(): Flowable<Conferencee>
+    suspend fun getConnectedUsers(): ReceiveChannel<List<Conferencee>>
     fun logoutRoom()
 }

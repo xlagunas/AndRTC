@@ -1,18 +1,22 @@
 package cat.xlagunas.conference.data
 
+import cat.xlagunas.conference.data.dto.MessageDto
+import cat.xlagunas.conference.data.dto.mapper.ConferenceeMapper
 import cat.xlagunas.conference.domain.ConferenceRepository
-import cat.xlagunas.conference.domain.Conferencee
-import cat.xlagunas.conference.domain.IceCandidateMessage
-import cat.xlagunas.conference.domain.SessionMessage
-import cat.xlagunas.conference.domain.UserSessionIdentifier
 import cat.xlagunas.conference.domain.WsMessagingWrapper
+import cat.xlagunas.conference.domain.model.Conferencee
+import cat.xlagunas.conference.domain.model.IceCandidateMessage
+import cat.xlagunas.conference.domain.model.MessageType
+import cat.xlagunas.conference.domain.model.SessionMessage
+import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import com.google.gson.Gson
 import com.tinder.scarlet.WebSocket
-import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.channels.filter
+import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.launch
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
@@ -28,7 +32,8 @@ class ConferenceRepositoryImp @Inject constructor(
     private val peerConnectionFactory: PeerConnectionFactory,
     private val rtcConfiguration: PeerConnection.RTCConfiguration,
     private val webRTCEventHandler: WebRTCEventHandler,
-    private val userSessionIdentifier: UserSessionIdentifier
+    private val userSessionIdentifier: UserSessionIdentifier,
+    private val conferenceeMapper: ConferenceeMapper
 
 ) : ConferenceRepository {
 
@@ -38,9 +43,7 @@ class ConferenceRepositoryImp @Inject constructor(
             MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true")
         )
         mandatory.add(
-            MediaConstraints.KeyValuePair(
-                "OfferToReceiveVideo", "true"
-            )
+            MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true")
         )
     }
     //TODO Should be passed as dependency
@@ -50,34 +53,47 @@ class ConferenceRepositoryImp @Inject constructor(
         Timber.d("Handling state for current user on phone: ${userSessionIdentifier.getUserId()}")
         messagingApiWrapper.setupWebSocketListeners()
 
-        GlobalScope.launch {
-            messagingApiWrapper.observeMessageEvent()
-                .filter { it is WebSocket.Event.OnConnectionOpened<*> }
+        registerToServer()
+
+        getRoomParticipants()
+
+        observeRemoteSessions()
+
+        observeRemoteIceCandidates()
+
+
+        GlobalScope.launch(Dispatchers.IO) {
+            webRTCEventHandler.iceCandidateHandler
                 .consumeEach {
                     messagingApiWrapper.sendMessage(
                         MessageDto(
                             userSessionIdentifier.getUserId(),
-                            "",
-                            MessageType.ROOM_DISCOVERY,
-                            "SERVER"
+                            temporalGson.toJson(
+                                IceCandidateMessage(
+                                    it.second,
+                                    userSessionIdentifier.getUserId()
+                                )
+                            ),
+                            MessageType.ICE_CANDIDATE,
+                            it.first
                         )
                     )
                 }
         }
+    }
 
+    fun observeRemoteIceCandidates() {
         GlobalScope.launch(Dispatchers.IO) {
-            val users = messagingApiWrapper.getRoomParticipants.receive()
-            for (user in users.users) {
-                if (user.userId != userSessionIdentifier.getUserId()) {
-                    Timber.d("New User found in room, user: ${user.userId}")
-                    val peerConnection = createPeerConnection(user.userId)
-                    if (peerConnection != null) {
-                        createOffer(user.userId)
-                    }
-                }
-            }
-        }
+            messagingApiWrapper.observeIceCandidateStream
+                .consumeEach { message ->
+                    Timber.d("New message received: $message.data")
+                    addIceCandidate(message.receiver, message.iceCandidate)
 
+                }
+        }
+    }
+
+    fun observeRemoteSessions() {
         GlobalScope.launch(Dispatchers.IO) {
             messagingApiWrapper.observeSessionStream
                 .consumeEach { message ->
@@ -89,25 +105,34 @@ class ConferenceRepositoryImp @Inject constructor(
                     }
                 }
         }
+    }
 
+    fun getRoomParticipants() {
         GlobalScope.launch(Dispatchers.IO) {
-            messagingApiWrapper.observeIceCandidateStream
-                .consumeEach { message ->
-                    Timber.d("New message received: $message.data")
-                    addIceCandidate(message.receiver, message.iceCandidate)
-
+            val users = messagingApiWrapper.getRoomParticipants.openSubscription().receive()
+            for (user in users.users) {
+                if (user.userId != userSessionIdentifier.getUserId()) {
+                    Timber.d("New User found in room, user: ${user.userId}")
+                    val peerConnection = createPeerConnection(user.userId)
+                    if (peerConnection != null) {
+                        createOffer(user.userId)
+                    }
                 }
+            }
         }
+    }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            webRTCEventHandler.iceCandidateHandler
+    fun registerToServer() {
+        GlobalScope.launch {
+            messagingApiWrapper.observeMessageEvent()
+                .filter { it is WebSocket.Event.OnConnectionOpened<*> }
                 .consumeEach {
                     messagingApiWrapper.sendMessage(
                         MessageDto(
                             userSessionIdentifier.getUserId(),
-                            temporalGson.toJson(IceCandidateMessage(it.second, userSessionIdentifier.getUserId())),
-                            MessageType.ICE_CANDIDATE,
-                            it.first
+                            "",
+                            MessageType.ROOM_DISCOVERY,
+                            "SERVER"
                         )
                     )
                 }
@@ -142,7 +167,12 @@ class ConferenceRepositoryImp @Inject constructor(
                 messagingApiWrapper.sendMessage(
                     MessageDto(
                         userSessionIdentifier.getUserId(),
-                        temporalGson.toJson(SessionMessage(sessionDescription, userSessionIdentifier.getUserId())),
+                        temporalGson.toJson(
+                            SessionMessage(
+                                sessionDescription,
+                                userSessionIdentifier.getUserId()
+                            )
+                        ),
                         MessageType.OFFER,
                         contactId
                     )
@@ -163,7 +193,12 @@ class ConferenceRepositoryImp @Inject constructor(
                 messagingApiWrapper.sendMessage(
                     MessageDto(
                         userSessionIdentifier.getUserId(),
-                        temporalGson.toJson(SessionMessage(sessionDescription, userSessionIdentifier.getUserId())),
+                        temporalGson.toJson(
+                            SessionMessage(
+                                sessionDescription,
+                                userSessionIdentifier.getUserId()
+                            )
+                        ),
                         MessageType.ANSWER,
                         this.contactId
                     )
@@ -180,8 +215,8 @@ class ConferenceRepositoryImp @Inject constructor(
         peerConnection.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
     }
 
-    override fun getConnectedUsers(): Flowable<Conferencee> {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    override suspend fun getConnectedUsers(): ReceiveChannel<List<Conferencee>> {
+        return messagingApiWrapper.getRoomParticipants.openSubscription().map { conferenceeMapper.fromDto(it) }
     }
 
     override fun logoutRoom() {

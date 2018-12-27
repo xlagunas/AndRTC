@@ -1,6 +1,6 @@
-package cat.xlagunas.conference.data
+package cat.xlagunas.conference.data.utils
 
-import cat.xlagunas.conference.domain.UserSessionIdentifier
+import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import java.util.UUID
 import javax.inject.Inject
 

@@ -79,8 +79,4 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
     enum class MediaStreamState {
         ADDED, REMOVED
     }
-
-    enum class SessionDescriptionState {
-        OFFER, ANSWER
-    }
 }

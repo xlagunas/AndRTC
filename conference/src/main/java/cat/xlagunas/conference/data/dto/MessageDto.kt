@@ -1,5 +1,6 @@
-package cat.xlagunas.conference.data
+package cat.xlagunas.conference.data.dto
 
+import cat.xlagunas.conference.domain.model.MessageType
 import com.google.gson.annotations.SerializedName
 
 data class MessageDto(
@@ -9,6 +10,3 @@ data class MessageDto(
     @SerializedName("destination") val destination: String
 )
 
-enum class MessageType {
-    OFFER, ANSWER, ICE_CANDIDATE, ROOM_DISCOVERY
-}
