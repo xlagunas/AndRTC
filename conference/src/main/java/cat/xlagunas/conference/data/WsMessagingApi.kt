@@ -1,4 +1,4 @@
-package cat.xlagunas.conference.domain
+package cat.xlagunas.conference.data
 
 import cat.xlagunas.conference.data.dto.MessageDto
 import com.tinder.scarlet.WebSocket
@@ -11,7 +11,8 @@ interface WsMessagingApi {
     @Receive
     fun observeMessageEvent(): ReceiveChannel<WebSocket.Event>
 
-    @Receive fun getMessage(): ReceiveChannel<MessageDto>
+    @Receive
+    fun getMessage(): ReceiveChannel<MessageDto>
 
     @Send
     fun sendMessage(messageDto: MessageDto)

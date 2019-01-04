@@ -1,6 +1,6 @@
 //package cat.xlagunas.conference.data
 //
-//import cat.xlagunas.conference.domain.WsMessagingApi
+//import cat.xlagunas.conference.data.WsMessagingApi
 //import com.tinder.scarlet.Lifecycle
 //import com.tinder.scarlet.Scarlet
 //import com.tinder.scarlet.ShutdownReason

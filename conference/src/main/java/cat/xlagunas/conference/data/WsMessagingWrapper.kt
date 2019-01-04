@@ -1,4 +1,4 @@
-package cat.xlagunas.conference.domain
+package cat.xlagunas.conference.data
 
 import cat.xlagunas.conference.data.dto.MessageDto
 import cat.xlagunas.conference.data.dto.RoomDetailsDto
@@ -15,8 +15,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class WsMessagingWrapper @Inject constructor(private val wsMessagingApi: WsMessagingApi) {
-    private val gson = Gson()
+class WsMessagingWrapper @Inject constructor(private val wsMessagingApi: WsMessagingApi, private val gson: Gson) {
 
     val getRoomParticipants = BroadcastChannel<RoomDetailsDto>(1)
     val observeSessionStream = Channel<Pair<SessionMessage, MessageType>>()

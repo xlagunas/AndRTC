@@ -2,13 +2,17 @@ package cat.xlagunas.conference.di
 
 import android.app.Application
 import cat.xlagunas.conference.data.ConferenceRepositoryImp
-import cat.xlagunas.conference.data.utils.CoroutinesStreamAdapterFactory
 import cat.xlagunas.conference.data.WebRTCEventHandler
+import cat.xlagunas.conference.data.WsMessagingApi
 import cat.xlagunas.conference.data.dto.mapper.ConferenceeMapper
+import cat.xlagunas.conference.data.dto.mapper.MessageDtoMapper
+import cat.xlagunas.conference.data.utils.CoroutinesStreamAdapterFactory
 import cat.xlagunas.conference.domain.ConferenceRepository
+import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
-import cat.xlagunas.conference.domain.WsMessagingApi
 import cat.xlagunas.conference.ui.ConferenceActivity
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
@@ -93,7 +97,30 @@ class ConferenceModule {
 
     @Provides
     @Singleton
-    fun provideConferenceeMapper() : ConferenceeMapper{
+    fun provideConferenceeMapper(): ConferenceeMapper {
         return ConferenceeMapper()
+    }
+
+    @Provides
+    @Singleton
+    //TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
+    fun provideGson(): Gson {
+        return GsonBuilder().create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageDtoMapper(gson: Gson, userSessionIdentifier: UserSessionIdentifier): MessageDtoMapper {
+        return MessageDtoMapper(gson, userSessionIdentifier)
+    }
+
+    @Provides
+    @Singleton
+    fun providePeerConnectionDataSource(
+        peerConnectionFactory: PeerConnectionFactory,
+        webRTCEventHandler: WebRTCEventHandler,
+        rtcConfiguration: PeerConnection.RTCConfiguration
+    ): PeerConnectionDataSource {
+        return PeerConnectionDataSource(peerConnectionFactory, webRTCEventHandler, rtcConfiguration)
     }
 }
