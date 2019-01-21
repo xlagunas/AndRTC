@@ -32,6 +32,8 @@ class ConferenceActivity : AppCompatActivity() {
 
     private lateinit var localSurfaceViewRenderer: SurfaceViewRenderer
 
+    private lateinit var remoteSurfaceViewRenderer: SurfaceViewRenderer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         component = DaggerConferenceComponent.builder()
             .parent(VivApplication.appComponent(this))
@@ -51,9 +53,16 @@ class ConferenceActivity : AppCompatActivity() {
             setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
             setEnableHardwareScaler(false /* enabled */)
         }
+        remoteSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.remote_renderer).apply {
+            init(conference.getEGLContext(), null)
+            setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
+            setZOrderMediaOverlay(true)
+            setEnableHardwareScaler(false /* enabled */)
+        }
         checkPermissions()
         conference.conferenceAttendees.observe(this, Observer(onConferencee()))
         conference.localStream.observe(this, Observer { it ->it.setTarget(localSurfaceViewRenderer)})
+        conference.remoteStream.observe(this, Observer { it ->it.setTarget(remoteSurfaceViewRenderer)})
     }
 
     private fun init() {

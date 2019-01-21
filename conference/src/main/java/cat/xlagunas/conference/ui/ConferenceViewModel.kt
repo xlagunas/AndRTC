@@ -23,6 +23,7 @@ class ConferenceViewModel @Inject constructor(
     val conferenceAttendees by lazy { MutableLiveData<List<Conferencee>>() }
 
     val localStream by lazy { MutableLiveData<ProxyVideoSink>() }
+    val remoteStream by lazy { MutableLiveData<ProxyVideoSink>() }
 
     fun getEGLContext(): EglBase.Context {
         return eglContext
@@ -46,6 +47,7 @@ class ConferenceViewModel @Inject constructor(
         }
 
         localStream.postValue(conferenceRepository.getLocalRenderer())
+        remoteStream.postValue(conferenceRepository.getRemoteRenderer())
     }
 
     override fun onCleared() {

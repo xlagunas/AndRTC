@@ -19,6 +19,7 @@ class MediaDataSourceImp @Inject constructor(
 ) {
 
     val proxyLocalVideoSink = ProxyVideoSink()
+    val remoteLocalVideoSink = ProxyVideoSink()
 
     fun getCameraEnumerator(): CameraEnumerator {
 

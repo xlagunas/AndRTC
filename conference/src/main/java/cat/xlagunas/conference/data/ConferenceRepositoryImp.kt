@@ -1,5 +1,6 @@
 package cat.xlagunas.conference.data
 
+import cat.xlagunas.conference.data.MediaDataSourceImp.Companion.VIDEO_TRACK_ID
 import cat.xlagunas.conference.data.dto.MessageDto
 import cat.xlagunas.conference.data.dto.mapper.ConferenceeMapper
 import cat.xlagunas.conference.data.dto.mapper.MessageDtoMapper
@@ -20,8 +21,10 @@ import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.launch
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
+import org.webrtc.MediaStreamTrack
 import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
+import org.webrtc.VideoTrack
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -120,8 +123,11 @@ class ConferenceRepositoryImp @Inject constructor(
     override fun createPeerConnection(userId: String): PeerConnection? {
         val peer = peerConnectionDataSource.createPeerConnection(userId)
         val videoCapturer = mediaSourceDataSource.createLocalVideoCapturer(mediaSourceDataSource.getCameraEnumerator())
-        val videoTrack = mediaSourceDataSource.createVideoTrack(videoCapturer!!)
-        //peer?.addTrack(videoTrack, listOf(VIDEO_TRACK_ID))
+        val localVideoTrack = mediaSourceDataSource.createVideoTrack(videoCapturer!!)
+        peer?.addTrack(localVideoTrack, listOf(VIDEO_TRACK_ID))
+        val remoteVideoTrack =  getRemoteVideoTrack(peer!!)
+        remoteVideoTrack.setEnabled(true)
+        remoteVideoTrack.addSink(mediaSourceDataSource.remoteLocalVideoSink)
         return peer
     }
 
@@ -148,5 +154,14 @@ class ConferenceRepositoryImp @Inject constructor(
 
     override fun getLocalRenderer(): ProxyVideoSink {
         return mediaSourceDataSource.proxyLocalVideoSink
+    }
+
+    override fun getRemoteRenderer(): ProxyVideoSink {
+        return mediaSourceDataSource.remoteLocalVideoSink
+    }
+
+
+    fun getRemoteVideoTrack(peerConnection: PeerConnection) : VideoTrack{
+        return peerConnection.transceivers.filter { it.mediaType == MediaStreamTrack.MediaType.MEDIA_TYPE_VIDEO }.first().receiver.track() as VideoTrack
     }
 }

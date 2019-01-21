@@ -14,4 +14,5 @@ interface ConferenceRepository {
     suspend fun registerUser()
     fun logoutRoom()
     fun getLocalRenderer() : ProxyVideoSink
+    fun getRemoteRenderer(): ProxyVideoSink
 }

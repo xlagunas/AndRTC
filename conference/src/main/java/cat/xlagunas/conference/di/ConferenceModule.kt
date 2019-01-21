@@ -88,7 +88,7 @@ class ConferenceModule {
     @Provides
     fun provideRTCConfiguration(): PeerConnection.RTCConfiguration {
         val iceServerList = Util.immutableList(PeerConnection.IceServer("turn:xlagunas.cat", "Hercules", "X4v1"))
-        return PeerConnection.RTCConfiguration(iceServerList)
+        return PeerConnection.RTCConfiguration(iceServerList).also { it.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
     }
 
     @Provides
