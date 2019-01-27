@@ -45,7 +45,7 @@ class ConferenceModule {
         userSessionIdentifier: UserSessionIdentifier
     ): Scarlet {
         return Scarlet.Builder()
-            .webSocketFactory(okHttpClient.newWebSocketFactory("ws://192.168.0.158:8080/$roomId/${userSessionIdentifier.getUserId()}"))
+            .webSocketFactory(okHttpClient.newWebSocketFactory("ws://192.168.0.165:8080/$roomId/${userSessionIdentifier.getUserId()}"))
             .addMessageAdapterFactory(GsonMessageAdapter.Factory())
             .addStreamAdapterFactory(CoroutinesStreamAdapterFactory())
             .lifecycle(lifecycle)

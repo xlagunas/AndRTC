@@ -69,7 +69,7 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
     }
 
     override fun onRenegotiationNeeded() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Timber.w("onRenegotiation needed!")
     }
 
     override fun onAddTrack(p0: RtpReceiver, p1: Array<out MediaStream>) {
