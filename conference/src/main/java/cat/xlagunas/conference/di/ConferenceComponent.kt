@@ -21,10 +21,6 @@ interface ConferenceComponent {
         @BindsInstance
         fun activity(activity: ConferenceActivity): Builder
 
-        @BindsInstance
-        fun userSession(userSession: UserSessionIdentifier): Builder
-
-
     }
 
     fun inject(activity: ConferenceActivity)

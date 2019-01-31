@@ -46,6 +46,6 @@
 //    }
 //
 //    @Test
-//    fun getConnectedUsers() {
+//    fun onNewUser() {
 //    }
 //}

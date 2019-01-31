@@ -14,7 +14,6 @@ import cat.xlagunas.conference.R
 import cat.xlagunas.conference.data.utils.UUIDUserSession
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
-import cat.xlagunas.conference.domain.model.Conferencee
 import cat.xlagunas.core.di.VivApplication
 import com.google.android.material.snackbar.Snackbar
 import org.webrtc.RendererCommon
@@ -38,7 +37,6 @@ class ConferenceActivity : AppCompatActivity() {
         component = DaggerConferenceComponent.builder()
             .parent(VivApplication.appComponent(this))
             .roomId("christmasRoom")
-            .userSession(UUIDUserSession())
             .activity(this)
             .build().apply {
                 inject(this@ConferenceActivity)
@@ -69,11 +67,11 @@ class ConferenceActivity : AppCompatActivity() {
         conference.onStart()
     }
 
-    private fun onConferencee(): (List<Conferencee>) -> Unit {
+    private fun onConferencee(): (Int) -> Unit {
         return {
             Snackbar.make(
                 findViewById<FrameLayout>(android.R.id.content),
-                "Joined room with other ${it.size} attendants",
+                "Joined room with other $it attendants",
                 Snackbar.LENGTH_INDEFINITE
             ).show()
         }

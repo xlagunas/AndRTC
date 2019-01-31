@@ -1,5 +1,6 @@
 package cat.xlagunas.conference.domain
 
+import cat.xlagunas.conference.data.dto.ConnectedUser
 import cat.xlagunas.conference.domain.model.Conferencee
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -8,7 +9,7 @@ import org.webrtc.PeerConnection
 interface ConferenceRepository {
 
     fun joinRoom()
-    suspend fun getConnectedUsers(): ReceiveChannel<List<Conferencee>>
+    suspend fun onNewUser(): ReceiveChannel<ConnectedUser>
     fun createPeerConnection(userId: String): PeerConnection?
     fun createOffer(userId: String)
     suspend fun registerUser()
