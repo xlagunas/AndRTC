@@ -6,6 +6,7 @@ import cat.xlagunas.conference.data.SocketIoLifecycle
 import cat.xlagunas.conference.data.WebRTCEventHandler
 import cat.xlagunas.conference.data.dto.mapper.ConferenceeMapper
 import cat.xlagunas.conference.data.dto.mapper.MessageDtoMapper
+import cat.xlagunas.conference.data.utils.SocketSessionIdentifier
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
@@ -16,6 +17,7 @@ import dagger.Module
 import dagger.Provides
 import io.socket.client.IO
 import io.socket.client.Socket
+import okhttp3.OkHttpClient
 import okhttp3.internal.Util
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.EglBase
@@ -40,8 +42,11 @@ class ConferenceModule {
 
     @Provides
     @Singleton
-    fun provideSocketIo(socketIoLifecycleFactory: SocketIoLifecycle.Factory): Socket {
-        return IO.socket("http://192.168.0.165:8080")
+    fun provideSocketIo(socketIoLifecycleFactory: SocketIoLifecycle.Factory, okHttpClient: OkHttpClient): Socket {
+
+        IO.setDefaultOkHttpCallFactory(okHttpClient)
+
+        return IO.socket("http://192.168.0.155:8080")
                 .also {
                     socketIoLifecycleFactory.create(it).init()
                 }
@@ -73,7 +78,8 @@ class ConferenceModule {
     @Provides
     fun provideRTCConfiguration(): PeerConnection.RTCConfiguration {
         val iceServerList = Util.immutableList(PeerConnection.IceServer("turn:xlagunas.cat", "Hercules", "X4v1"))
-        return PeerConnection.RTCConfiguration(iceServerList).also { it.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
+        return PeerConnection.RTCConfiguration(iceServerList)
+                .also { it.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN }
     }
 
     @Provides
@@ -96,12 +102,9 @@ class ConferenceModule {
     @Provides
     @Singleton
     fun provideUserSession(socket: Socket): UserSessionIdentifier {
-        return object : UserSessionIdentifier {
-            override fun getUserId(): String {
-                return socket.id()
-            }
-        }
+        return SocketSessionIdentifier(socket)
     }
+
 
     @Provides
     @Singleton
