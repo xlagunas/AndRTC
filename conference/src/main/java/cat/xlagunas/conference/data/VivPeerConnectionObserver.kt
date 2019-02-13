@@ -34,16 +34,6 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
     }
 
     override fun onAddStream(p0: MediaStream) {
-        Timber.i("On Added stream called for $userId")
-        GlobalScope.launch {
-            handler.mediaStreamChannel.send(
-                Triple(
-                    this@VivPeerConnectionObserver.userId,
-                    p0,
-                    MediaStreamState.ADDED
-                )
-            )
-        }
     }
 
     override fun onSignalingChange(p0: PeerConnection.SignalingState) {
@@ -56,24 +46,13 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
     }
 
     override fun onRemoveStream(p0: MediaStream) {
-        Timber.i("On Remove stream called for $userId")
-        GlobalScope.launch {
-            handler.mediaStreamChannel.send(
-                Triple(
-                    this@VivPeerConnectionObserver.userId,
-                    p0,
-                    MediaStreamState.REMOVED
-                )
-            )
-        }
     }
 
     override fun onRenegotiationNeeded() {
-        Timber.w("onRenegotiation needed!")
     }
 
     override fun onAddTrack(p0: RtpReceiver, p1: Array<out MediaStream>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Timber.i("received onAddTrack message")
     }
 
     enum class MediaStreamState {

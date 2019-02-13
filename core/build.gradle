@@ -20,7 +20,7 @@ android {
 
     productFlavors {
         production {
-            buildConfigField "String", "ENDPOINT", '"https://andrtc.xlagunas.cat"'
+            buildConfigField "String", "ENDPOINT", '"https://api.viv.cat"'
         }
 
         development {

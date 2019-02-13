@@ -17,6 +17,7 @@ abstract class VivSdpObserver(
     }
 
     override fun onCreateSuccess(sessionDescription: SessionDescription) {
+        Timber.i("onCreateSuccess called for peer $contactId")
     }
 
     override fun onCreateFailure(p0: String) {

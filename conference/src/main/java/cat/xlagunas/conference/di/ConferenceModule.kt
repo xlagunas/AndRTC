@@ -19,11 +19,7 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import okhttp3.OkHttpClient
 import okhttp3.internal.Util
-import org.webrtc.DefaultVideoDecoderFactory
-import org.webrtc.EglBase
-import org.webrtc.HardwareVideoEncoderFactory
-import org.webrtc.PeerConnection
-import org.webrtc.PeerConnectionFactory
+import org.webrtc.*
 import javax.inject.Singleton
 
 @Module
@@ -46,7 +42,7 @@ class ConferenceModule {
 
         IO.setDefaultOkHttpCallFactory(okHttpClient)
 
-        return IO.socket("http://192.168.0.155:8080")
+        return IO.socket("http://192.168.0.155:3000")
                 .also {
                     socketIoLifecycleFactory.create(it).init()
                 }
@@ -65,7 +61,8 @@ class ConferenceModule {
         PeerConnectionFactory.initialize(initOptions)
 
         return PeerConnectionFactory.builder()
-                .setVideoEncoderFactory(HardwareVideoEncoderFactory(context, true, true))
+                .setVideoEncoderFactory(DefaultVideoEncoderFactory(context, false, false))
+//                .setVideoEncoderFactory(HardwareVideoEncoderFactory(context, true, true))
                 .setVideoDecoderFactory(DefaultVideoDecoderFactory(context))
                 .createPeerConnectionFactory()
     }

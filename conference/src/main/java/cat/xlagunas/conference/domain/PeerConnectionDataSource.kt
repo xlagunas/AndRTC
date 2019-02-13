@@ -21,8 +21,8 @@ class PeerConnectionDataSource @Inject constructor(
 
     private val peerConnectionMap = ConcurrentHashMap<String, PeerConnection>()
 
-    fun getPeerConnection(userId: String): PeerConnection {
-        return peerConnectionMap[userId]!!
+    fun getPeerConnection(userId: String): PeerConnection? {
+        return peerConnectionMap[userId]
     }
 
     fun addPeerConnection(userId: String, peerConnection: PeerConnection) {
@@ -46,18 +46,24 @@ class PeerConnectionDataSource @Inject constructor(
         Timber.d("Creating offer for $userId")
         val sdpObserver = object : VivSdpObserver(userId) {
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
-                //TODO PROBABLY WE DON'T NEED THIS LINE
-//                getPeerConnection(userId).setLocalDescription(NoOPVivSdpObserver(userId), sessionDescription)
+                super.onCreateSuccess(sessionDescription)
+                getPeerConnection(userId)?.setLocalDescription(this, sessionDescription)
                 block(sessionDescription)
             }
         }
-        getPeerConnection(userId).createOffer(sdpObserver, peerConnectionConstraints)
+        getPeerConnection(userId)?.createOffer(sdpObserver, peerConnectionConstraints)
     }
 
-    fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription) {
+    fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription, block: (() -> Unit)) {
         Timber.d("Handling remote answer for $contactId")
         val peerConnection = getPeerConnection(contactId)
-        peerConnection.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
+        val sdpObserver = object : VivSdpObserver(contactId) {
+            override fun onSetSuccess() {
+                super.onSetSuccess()
+                block()
+            }
+        }
+        peerConnection?.setRemoteDescription(sdpObserver, sessionDescription)
     }
 
     fun handleRemoteOffer(
@@ -68,18 +74,17 @@ class PeerConnectionDataSource @Inject constructor(
     ) {
         Timber.d("Handling remote offer from $contactId")
         val peerConnection = getPeerConnection(contactId)
+        peerConnection?.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
+
         val sdpObserver = object : VivSdpObserver(contactId) {
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
                 Timber.d("Sending answer message to $contactId")
-                //TODO MAYBE MAKES NO SENSE
-//                peerConnection.setLocalDescription(
-//                    NoOPVivSdpObserver(contactId),
-//                    sessionDescription
-//                )
+                peerConnection?.setLocalDescription(this, sessionDescription)
                 block(sessionDescription)
             }
+
+
         }
-        peerConnection.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
-        peerConnection.createAnswer(sdpObserver, peerConnectionConstraints)
+        peerConnection?.createAnswer(sdpObserver, peerConnectionConstraints)
     }
 }

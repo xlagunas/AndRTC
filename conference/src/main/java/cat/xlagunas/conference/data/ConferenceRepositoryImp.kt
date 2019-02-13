@@ -38,28 +38,23 @@ class ConferenceRepositoryImp @Inject constructor(
     //TODO THIS SHOULD BE PROVIDED THROUGH VIEWMODEL BC IT CAN CHANGE AT ANY TIME
     private val peerConnectionConstraints = MediaConstraints().apply {
         mandatory.add(
-                MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true")
+                MediaConstraints.KeyValuePair("offerToReceiveAudio", "true")
         )
         mandatory.add(
-                MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true")
+                MediaConstraints.KeyValuePair("offerToReceiveVideo", "true")
         )
     }
 
     override fun joinRoom() {
         messagingApiWrapper.setupWebSocketListeners()
-
         observeRemoteSessions()
-
-        observeRemoteIceCandidates()
-
-        emitGeneratedIceCandidates()
     }
 
     override suspend fun onNewUser(): ReceiveChannel<ConnectedUser> {
         return messagingApiWrapper.getNewJoiners.openSubscription()
     }
 
-    fun observeRemoteIceCandidates() {
+    private fun observeRemoteIceCandidates() {
         GlobalScope.launch(Dispatchers.IO) {
             messagingApiWrapper.observeIceCandidateStream
                     .consumeEach { message ->
@@ -69,7 +64,7 @@ class ConferenceRepositoryImp @Inject constructor(
         }
     }
 
-    fun observeRemoteSessions() {
+    private fun observeRemoteSessions() {
         GlobalScope.launch(Dispatchers.IO) {
             messagingApiWrapper.observeSessionStream
                     .consumeEach { message ->
@@ -102,7 +97,7 @@ class ConferenceRepositoryImp @Inject constructor(
 
     private fun addIceCandidate(contactId: String, iceCandidate: IceCandidate) {
         Timber.d("Adding Ice candidate for $contactId")
-        peerConnectionDataSource.getPeerConnection(contactId).addIceCandidate(iceCandidate)
+        peerConnectionDataSource.getPeerConnection(contactId)?.addIceCandidate(iceCandidate)
     }
 
     override fun createPeerConnection(userId: String): PeerConnection? {
@@ -125,16 +120,22 @@ class ConferenceRepositoryImp @Inject constructor(
     }
 
     private fun handleRemoteOffer(contactId: String, sessionDescription: SessionDescription) {
-        peerConnectionDataSource.handleRemoteOffer(contactId, sessionDescription, peerConnectionConstraints) {
+        peerConnectionDataSource.handleRemoteOffer(contactId, sessionDescription, peerConnectionConstraints) { answer ->
             Timber.d("Sending answer message to $contactId")
-            val sessionMessage = SessionMessage(sessionDescription, userSessionIdentifier.getUserId())
+            val sessionMessage = SessionMessage(answer, userSessionIdentifier.getUserId())
             val answerDto = messageDtoMapper.createMessageDto(sessionMessage, MessageType.ANSWER, contactId)
             messagingApiWrapper.sendMessage("DIRECT_MESSAGE", answerDto)
+            observeRemoteIceCandidates()
+            emitGeneratedIceCandidates()
         }
     }
 
     private fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription) {
-        peerConnectionDataSource.handleRemoteAnswer(contactId, sessionDescription)
+        peerConnectionDataSource.handleRemoteAnswer(contactId, sessionDescription) {
+            observeRemoteIceCandidates()
+            emitGeneratedIceCandidates()
+        }
+
     }
 
     override fun getLocalRenderer(): ProxyVideoSink {
