@@ -59,8 +59,8 @@ class ConferenceActivity : AppCompatActivity() {
         }
         checkPermissions()
         conference.conferenceAttendees.observe(this, Observer(onConferencee()))
-        conference.localStream.observe(this, Observer { it ->it.setTarget(localSurfaceViewRenderer)})
-        conference.remoteStream.observe(this, Observer { it ->it.setTarget(remoteSurfaceViewRenderer)})
+        conference.localStream.observe(this, Observer { it.setTarget(localSurfaceViewRenderer)})
+        conference.remoteStream.observe(this, Observer { it.setTarget(remoteSurfaceViewRenderer)})
     }
 
     private fun init() {

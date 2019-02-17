@@ -32,10 +32,10 @@ class PeerConnectionDataSource @Inject constructor(
     fun createPeerConnection(userId: String): PeerConnection? {
         Timber.d("Creating peer connection per $userId")
         val peerObserver = VivPeerConnectionObserver(userId, webRTCEventHandler)
-        val peerConnection = peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)!!
-        Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO)
-        addPeerConnection(userId, peerConnection)
-        return peerConnection
+        return peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)?.apply {
+            Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO)
+            addPeerConnection(userId, this)
+        }
     }
 
     fun createOffer(

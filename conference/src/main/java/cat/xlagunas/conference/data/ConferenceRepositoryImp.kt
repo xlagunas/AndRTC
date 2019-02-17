@@ -104,11 +104,20 @@ class ConferenceRepositoryImp @Inject constructor(
         val peer = peerConnectionDataSource.createPeerConnection(userId)
         val videoCapturer = mediaSourceDataSource.createLocalVideoCapturer(mediaSourceDataSource.getCameraEnumerator())
         val localVideoTrack = mediaSourceDataSource.createVideoTrack(videoCapturer!!)
-        peer?.addTrack(localVideoTrack, listOf(VIDEO_TRACK_ID))
-        val remoteVideoTrack = getRemoteVideoTrack(peer!!)
+
+        if (peer != null) {
+            peer.addTrack(localVideoTrack, listOf(VIDEO_TRACK_ID))
+            setupRemoteTrack(peer)
+        } else {
+            Timber.w("PeerConnection was not correctly instantiated, returned null on creation")
+        }
+        return peer
+    }
+
+    private fun setupRemoteTrack(peer: PeerConnection) {
+        val remoteVideoTrack = getRemoteVideoTrack(peer)
         remoteVideoTrack.setEnabled(true)
         remoteVideoTrack.addSink(mediaSourceDataSource.remoteLocalVideoSink)
-        return peer
     }
 
     override fun createOffer(userId: String) {
