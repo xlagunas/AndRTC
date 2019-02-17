@@ -49,13 +49,13 @@ class ConferenceActivity : AppCompatActivity() {
         localSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.local_renderer).apply {
             init(conference.getEGLContext(), null)
             setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
-            setEnableHardwareScaler(false /* enabled */)
+            setZOrderMediaOverlay(true)
+            setEnableHardwareScaler(true /* enabled */)
         }
         remoteSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.remote_renderer).apply {
             init(conference.getEGLContext(), null)
             setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
-            setZOrderMediaOverlay(true)
-            setEnableHardwareScaler(false /* enabled */)
+            setEnableHardwareScaler(true /* enabled */)
         }
         checkPermissions()
         conference.conferenceAttendees.observe(this, Observer(onConferencee()))

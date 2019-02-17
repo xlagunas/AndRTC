@@ -68,7 +68,7 @@ class ConferenceModule {
 
         return PeerConnectionFactory.builder()
                 .setOptions(PeerConnectionFactory.Options())
-                .setVideoEncoderFactory(DefaultVideoEncoderFactory(context, false, false))
+                .setVideoEncoderFactory(DefaultVideoEncoderFactory(context, true, true))
                 .setVideoDecoderFactory(DefaultVideoDecoderFactory(context))
                 .setAudioDeviceModule(audioDeviceModule)
                 .createPeerConnectionFactory()
