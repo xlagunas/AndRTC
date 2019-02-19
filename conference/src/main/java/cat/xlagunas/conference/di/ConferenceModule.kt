@@ -29,6 +29,7 @@ import org.webrtc.audio.JavaAudioDeviceModule
 class ConferenceModule {
 
     @Provides
+    @Singleton
     fun provideRepository(repository: ConferenceRepositoryImp): ConferenceRepository {
         return repository
     }
@@ -52,11 +53,13 @@ class ConferenceModule {
     }
 
     @Provides
+    @Singleton
     fun provideEglContext(): EglBase.Context {
         return EglBase.create().eglBaseContext
     }
 
     @Provides
+    @Singleton
     fun providePeerConnectionFactory(
             context: EglBase.Context,
             initOptions: PeerConnectionFactory.InitializationOptions,
@@ -88,7 +91,6 @@ class ConferenceModule {
     @Provides
     fun providePeerConnectionFactoryInitialisingOptions(application: Application): PeerConnectionFactory.InitializationOptions {
         return PeerConnectionFactory.InitializationOptions.builder(application)
-//                .setFieldTrials(true)
                 .setEnableInternalTracer(true)
                 .createInitializationOptions()
     }
@@ -105,9 +107,7 @@ class ConferenceModule {
                     it.bundlePolicy = PeerConnection.BundlePolicy.MAXBUNDLE
                     it.rtcpMuxPolicy = PeerConnection.RtcpMuxPolicy.REQUIRE
                     it.continualGatheringPolicy = PeerConnection.ContinualGatheringPolicy.GATHER_CONTINUALLY
-                    // Use ECDSA encryption.
                     it.keyType = PeerConnection.KeyType.ECDSA
-                    // Enable DTLS for normal calls and disable for loopback calls.
                     it.enableDtlsSrtp = true
                     it.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
                 }

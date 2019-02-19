@@ -52,8 +52,10 @@ class ConferenceActivity : AppCompatActivity() {
             setZOrderMediaOverlay(true)
             setEnableHardwareScaler(true /* enabled */)
         }
+
         remoteSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.remote_renderer).apply {
             init(conference.getEGLContext(), null)
+            this.
             setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
             setEnableHardwareScaler(true /* enabled */)
         }

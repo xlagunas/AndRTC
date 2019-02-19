@@ -13,18 +13,15 @@ import org.webrtc.VideoTrack
 import javax.inject.Inject
 
 class MediaDataSourceImp @Inject constructor(
-    private val application: Application,
-    private val peerConnectionFactory: PeerConnectionFactory,
-    private val eglContext: EglBase.Context
+        private val application: Application,
+        private val peerConnectionFactory: PeerConnectionFactory,
+        private val eglContext: EglBase.Context
 ) {
 
     val proxyLocalVideoSink = ProxyVideoSink()
     val remoteLocalVideoSink = ProxyVideoSink()
 
     fun getCameraEnumerator(): CameraEnumerator {
-
-        return Camera1Enumerator(false)
-        //TODO Until renderToTexture is worked out, we can't use it (blank screen!!)
         return if (Camera2Enumerator.isSupported(application)) {
             Camera2Enumerator(application)
         } else {
