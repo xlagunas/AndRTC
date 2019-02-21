@@ -49,13 +49,15 @@ class LoginFragment : Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build()
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build()
             .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loginViewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+        loginViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
         lifecycle.addObserver(loginViewModel.registerGoogle())
 
@@ -63,16 +65,26 @@ class LoginFragment : Fragment(), Injectable {
             .observe(this, Observer(this::handleLoginResult))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
         signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
-        //loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
+        // loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
         loginButton.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW).setClassName(context!!, "cat.xlagunas.conference.ui.ConferenceActivity"))}
+            startActivity(
+                Intent(Intent.ACTION_VIEW).setClassName(
+                    context!!,
+                    "cat.xlagunas.conference.ui.ConferenceActivity"
+                )
+            )
+        }
         registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
     }
 

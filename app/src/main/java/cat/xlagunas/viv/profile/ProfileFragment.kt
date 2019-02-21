@@ -49,18 +49,24 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build().inject(this)
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build().inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
+        profileViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
         profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
         profileViewModel.user.observe(this, Observer(this::onUserEvent))
         profileViewModel.getLoginStatus()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.content_profile, container, false)
     }
 

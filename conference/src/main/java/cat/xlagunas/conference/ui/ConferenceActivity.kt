@@ -1,6 +1,7 @@
 package cat.xlagunas.conference.ui
 
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -11,13 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.conference.R
-import cat.xlagunas.conference.data.utils.UUIDUserSession
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
 import cat.xlagunas.core.di.VivApplication
 import com.google.android.material.snackbar.Snackbar
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
+import timber.log.Timber
 import javax.inject.Inject
 
 class ConferenceActivity : AppCompatActivity() {
@@ -34,18 +35,21 @@ class ConferenceActivity : AppCompatActivity() {
     private lateinit var remoteSurfaceViewRenderer: SurfaceViewRenderer
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        component = DaggerConferenceComponent.builder()
-            .parent(VivApplication.appComponent(this))
-            .roomId("christmasRoom")
-            .activity(this)
-            .build().apply {
-                inject(this@ConferenceActivity)
-            }
+
+        parseRoomFromUriOrFinish(intent.data) {
+            component = DaggerConferenceComponent.builder()
+                    .parent(VivApplication.appComponent(this@ConferenceActivity))
+                    .roomId(it)
+                    .activity(this@ConferenceActivity)
+                    .build().apply {
+                        inject(this@ConferenceActivity)
+                    }
+        }
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conference)
         conference = ViewModelProviders.of(this, viewModelFactory).get(ConferenceViewModel::class.java)
-        //TODO NOT HAPPY WITH HOW THE CONTEXT NEEDS TO BE PASSED
+        // TODO NOT HAPPY WITH HOW THE CONTEXT NEEDS TO BE PASSED
         localSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.local_renderer).apply {
             init(conference.getEGLContext(), null)
             setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
@@ -55,14 +59,24 @@ class ConferenceActivity : AppCompatActivity() {
 
         remoteSurfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.remote_renderer).apply {
             init(conference.getEGLContext(), null)
-            this.
-            setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
+            this.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
             setEnableHardwareScaler(true /* enabled */)
         }
         checkPermissions()
         conference.conferenceAttendees.observe(this, Observer(onConferencee()))
-        conference.localStream.observe(this, Observer { it.setTarget(localSurfaceViewRenderer)})
-        conference.remoteStream.observe(this, Observer { it.setTarget(remoteSurfaceViewRenderer)})
+        conference.localStream.observe(this, Observer { it.setTarget(localSurfaceViewRenderer) })
+        conference.remoteStream.observe(this, Observer { it.setTarget(remoteSurfaceViewRenderer) })
+    }
+
+    private fun parseRoomFromUriOrFinish(data: Uri?, block: (String) -> Unit) {
+        val roomId = data?.getQueryParameter("roomId")
+
+        if (roomId != null) {
+            block(roomId)
+        } else {
+            Timber.w("Room can't be parsed from uri, closing activity")
+            finish()
+        }
     }
 
     private fun init() {
@@ -72,9 +86,9 @@ class ConferenceActivity : AppCompatActivity() {
     private fun onConferencee(): (Int) -> Unit {
         return {
             Snackbar.make(
-                findViewById<FrameLayout>(android.R.id.content),
-                "Joined room with other $it attendants",
-                Snackbar.LENGTH_INDEFINITE
+                    findViewById<FrameLayout>(android.R.id.content),
+                    "Joined room with other $it attendants",
+                    Snackbar.LENGTH_INDEFINITE
             ).show()
         }
     }
@@ -85,9 +99,9 @@ class ConferenceActivity : AppCompatActivity() {
 
         for (i in 0 until PERMISSIONS.size) {
             if (ContextCompat.checkSelfPermission(
-                    this,
-                    PERMISSIONS[i]
-                ) != PackageManager.PERMISSION_GRANTED
+                            this,
+                            PERMISSIONS[i]
+                    ) != PackageManager.PERMISSION_GRANTED
             ) {
                 arePermissionsOk = false
                 if (permissionsToAsk == null) {
@@ -101,9 +115,9 @@ class ConferenceActivity : AppCompatActivity() {
             init()
         } else {
             ActivityCompat.requestPermissions(
-                this,
-                permissionsToAsk!!.toTypedArray(),
-                CONFERENCE_REQUEST_CODE
+                    this,
+                    permissionsToAsk!!.toTypedArray(),
+                    CONFERENCE_REQUEST_CODE
             )
         }
     }
@@ -113,14 +127,7 @@ class ConferenceActivity : AppCompatActivity() {
         const val CONFERENCE_REQUEST_CODE = 1010
     }
 
-    /*
-        override fun onSupportNavigateUp() = getNavController().navigateUp()
-
-        private fun getNavController(): NavController {
-            return findNavController(cat.xlagunas.viv.R.id.my_nav_host_fragment)
-        }*/
-
-    //TODO CHECK THIS LOGIC, IS REALLY COMPLEX FOR WHAT IT NEEDS TO DO
+    // TODO CHECK THIS LOGIC, IS REALLY COMPLEX FOR WHAT IT NEEDS TO DO
     override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CONFERENCE_REQUEST_CODE) {

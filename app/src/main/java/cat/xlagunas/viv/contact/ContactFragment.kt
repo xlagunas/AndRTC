@@ -12,11 +12,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.viv.R
-import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
 import javax.inject.Inject
@@ -42,18 +42,24 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(context!!)).build()
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build()
             .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_contact, container, false)
     }
 
@@ -85,7 +91,10 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
                     contactViewModel.findContact(query)
-                        .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
+                        .observe(
+                            this@ContactFragment,
+                            Observer(this@ContactFragment::renderFriends)
+                        )
                     return true
                 }
             }
@@ -96,7 +105,11 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
 
     private fun setUpRecyclerView() {
         recyclerView.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                activity,
+                LinearLayout.VERTICAL,
+                false
+            )
             adapter = contactAdapter
             addItemDecoration(
                 androidx.recyclerview.widget.DividerItemDecoration(

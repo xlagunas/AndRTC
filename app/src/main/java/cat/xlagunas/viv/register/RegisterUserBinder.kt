@@ -7,7 +7,7 @@ import cat.xlagunas.viv.commons.binding.bindable
 
 class RegisterUserBinder : BaseObservable() {
 
-   @get:Bindable
+    @get:Bindable
     var firstName by bindable("", BR.firstName)
 
     @get:Bindable

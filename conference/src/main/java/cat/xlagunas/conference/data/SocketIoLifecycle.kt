@@ -10,11 +10,10 @@ import javax.inject.Inject
 
 class SocketIoLifecycle private constructor(private val activity: AppCompatActivity, private val socket: Socket, private val roomId: String) : LifecycleObserver {
 
-    fun init(){
+    fun init() {
         Timber.d("Binding Socket.IO lifecycle to activity")
         activity.lifecycle.addObserver(this)
     }
-
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun start() {
@@ -25,16 +24,14 @@ class SocketIoLifecycle private constructor(private val activity: AppCompatActiv
         }
     }
 
-
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stop() {
         socket.disconnect()
         Timber.d("Disconnecting Socket.IO instance")
     }
 
-
-    class Factory @Inject constructor(private val activity: AppCompatActivity, private val roomId: String){
-        fun create(socket: Socket): SocketIoLifecycle{
+    class Factory @Inject constructor(private val activity: AppCompatActivity, private val roomId: String) {
+        fun create(socket: Socket): SocketIoLifecycle {
             return SocketIoLifecycle(activity, socket, roomId)
         }
     }

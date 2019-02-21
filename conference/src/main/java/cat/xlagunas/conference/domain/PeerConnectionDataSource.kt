@@ -82,8 +82,6 @@ class PeerConnectionDataSource @Inject constructor(
                 peerConnection?.setLocalDescription(this, sessionDescription)
                 block(sessionDescription)
             }
-
-
         }
         peerConnection?.createAnswer(sdpObserver, peerConnectionConstraints)
     }

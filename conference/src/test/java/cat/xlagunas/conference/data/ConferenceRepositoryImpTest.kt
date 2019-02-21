@@ -1,20 +1,20 @@
-//package cat.xlagunas.conference.data
+// package cat.xlagunas.conference.data
 //
-//import cat.xlagunas.conference.data.WsMessagingApi
-//import com.tinder.scarlet.Lifecycle
-//import com.tinder.scarlet.Scarlet
-//import com.tinder.scarlet.ShutdownReason
-//import com.tinder.scarlet.lifecycle.LifecycleRegistry
-//import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
-//import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
-//import kotlinx.coroutines.runBlocking
-//import okhttp3.OkHttpClient
-//import org.assertj.core.api.Assertions.assertThat
-//import org.junit.Before
-//import org.junit.Ignore
-//import org.junit.Test
+// import cat.xlagunas.conference.data.WsMessagingApi
+// import com.tinder.scarlet.Lifecycle
+// import com.tinder.scarlet.Scarlet
+// import com.tinder.scarlet.ShutdownReason
+// import com.tinder.scarlet.lifecycle.LifecycleRegistry
+// import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
+// import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
+// import kotlinx.coroutines.runBlocking
+// import okhttp3.OkHttpClient
+// import org.assertj.core.api.Assertions.assertThat
+// import org.junit.Before
+// import org.junit.Ignore
+// import org.junit.Test
 //
-//class ConferenceRepositoryImpTest {
+// class ConferenceRepositoryImpTest {
 //
 //    private lateinit var wsMessagingApi: WsMessagingApi
 //    private lateinit var scarletInstance: Scarlet
@@ -48,4 +48,4 @@
 //    @Test
 //    fun onNewUser() {
 //    }
-//}
+// }

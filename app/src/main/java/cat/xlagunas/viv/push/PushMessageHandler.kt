@@ -21,7 +21,8 @@ class PushMessageHandler : FirebaseMessagingService() {
     private val disposables = CompositeDisposable()
 
     override fun onCreate() {
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this)).build()
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this))
+            .build()
             .inject(this)
         super.onCreate()
     }

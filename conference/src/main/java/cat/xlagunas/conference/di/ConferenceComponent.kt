@@ -1,6 +1,5 @@
 package cat.xlagunas.conference.di
 
-import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import cat.xlagunas.conference.ui.ConferenceActivity
 import cat.xlagunas.core.di.ApplicationComponent
 import dagger.BindsInstance
@@ -20,7 +19,6 @@ interface ConferenceComponent {
 
         @BindsInstance
         fun activity(activity: ConferenceActivity): Builder
-
     }
 
     fun inject(activity: ConferenceActivity)

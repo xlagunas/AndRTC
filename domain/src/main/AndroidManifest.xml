@@ -1,3 +1,1 @@
-<manifest
-        package="cat.xlagunas.domain">
-</manifest>
+<manifest package="cat.xlagunas.domain"></manifest>

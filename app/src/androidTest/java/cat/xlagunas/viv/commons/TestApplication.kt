@@ -7,7 +7,4 @@ class TestApplication : VivApplication() {
     override fun onCreate() {
         super.onCreate()
     }
-
-
-
 }

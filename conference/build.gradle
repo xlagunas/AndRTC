@@ -69,7 +69,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.0.0'
 
     //TODO once this is propagated implement right version
-    compile ('io.socket:socket.io-client:1.0.0') {
+    implementation('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }

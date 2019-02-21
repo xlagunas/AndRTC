@@ -4,13 +4,12 @@ import cat.xlagunas.conference.data.utils.UUIDUserSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
-class UUIDUserSessionTest{
+class UUIDUserSessionTest {
 
     private val userSession = UUIDUserSession()
 
     @Test
-    fun givenMultipleCalls_thenSameString(){
+    fun givenMultipleCalls_thenSameString() {
         val firstCall = userSession.getUserId()
         val secondCall = userSession.getUserId()
 

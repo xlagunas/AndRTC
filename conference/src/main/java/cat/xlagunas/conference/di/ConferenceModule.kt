@@ -18,12 +18,14 @@ import dagger.Provides
 import io.socket.client.IO
 import io.socket.client.Socket
 import okhttp3.OkHttpClient
-import org.webrtc.*
-import javax.inject.Singleton
+import org.webrtc.DefaultVideoDecoderFactory
+import org.webrtc.DefaultVideoEncoderFactory
+import org.webrtc.EglBase
 import org.webrtc.PeerConnection
+import org.webrtc.PeerConnectionFactory
 import org.webrtc.audio.AudioDeviceModule
 import org.webrtc.audio.JavaAudioDeviceModule
-
+import javax.inject.Singleton
 
 @Module
 class ConferenceModule {
@@ -46,7 +48,7 @@ class ConferenceModule {
 
         IO.setDefaultOkHttpCallFactory(okHttpClient)
 
-        return IO.socket("http://192.168.0.155:3000")
+        return IO.socket("https://wss.viv.cat")
                 .also {
                     socketIoLifecycleFactory.create(it).init()
                 }
@@ -61,9 +63,9 @@ class ConferenceModule {
     @Provides
     @Singleton
     fun providePeerConnectionFactory(
-            context: EglBase.Context,
-            initOptions: PeerConnectionFactory.InitializationOptions,
-            audioDeviceModule: AudioDeviceModule
+        context: EglBase.Context,
+        initOptions: PeerConnectionFactory.InitializationOptions,
+        audioDeviceModule: AudioDeviceModule
     ): PeerConnectionFactory {
         PeerConnectionFactory.initialize(initOptions)
 
@@ -78,7 +80,7 @@ class ConferenceModule {
     }
 
     @Provides
-    fun provideAudioDeviceModule(application: Application) : AudioDeviceModule{
+    fun provideAudioDeviceModule(application: Application): AudioDeviceModule {
         return JavaAudioDeviceModule.builder(application)
 //                .setSamplesReadyCallback(saveRecordedAudioToFile)
 //                .setUseHardwareAcousticEchoCanceler(!peerConnectionParameters.disableBuiltInAEC)
@@ -135,7 +137,7 @@ class ConferenceModule {
 
     @Provides
     @Singleton
-    //TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
+    // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     fun provideGson(): Gson {
         return GsonBuilder().create()
     }
@@ -146,7 +148,6 @@ class ConferenceModule {
         return SocketSessionIdentifier(socket)
     }
 
-
     @Provides
     @Singleton
     fun provideMessageDtoMapper(gson: Gson, userSessionIdentifier: UserSessionIdentifier): MessageDtoMapper {
@@ -156,9 +157,9 @@ class ConferenceModule {
     @Provides
     @Singleton
     fun providePeerConnectionDataSource(
-            peerConnectionFactory: PeerConnectionFactory,
-            webRTCEventHandler: WebRTCEventHandler,
-            rtcConfiguration: PeerConnection.RTCConfiguration
+        peerConnectionFactory: PeerConnectionFactory,
+        webRTCEventHandler: WebRTCEventHandler,
+        rtcConfiguration: PeerConnection.RTCConfiguration
     ): PeerConnectionDataSource {
         return PeerConnectionDataSource(peerConnectionFactory, webRTCEventHandler, rtcConfiguration)
     }

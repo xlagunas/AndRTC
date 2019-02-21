@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
+import org.webrtc.MediaConstraints
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -21,8 +22,12 @@ class ConferenceViewModel @Inject constructor(
 
     private val jobs = mutableListOf<Job>()
 
-    val conferenceAttendees by lazy { MutableLiveData<Int>() }
+    private val peerConnectionConstraints = MediaConstraints().apply {
+        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveAudio", "true"))
+        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveVideo", "true"))
+    }
 
+    val conferenceAttendees by lazy { MutableLiveData<Int>() }
     val localStream by lazy { MutableLiveData<ProxyVideoSink>() }
     val remoteStream by lazy { MutableLiveData<ProxyVideoSink>() }
 
@@ -33,15 +38,14 @@ class ConferenceViewModel @Inject constructor(
     }
 
     fun onStart() {
-        conferenceRepository.joinRoom()
+        conferenceRepository.joinRoom(peerConnectionConstraints)
 
         jobs += GlobalScope.launch(Dispatchers.IO) {
-           conferenceRepository.onNewUser().consumeEach {
-               conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
+            conferenceRepository.onNewUser().consumeEach {
+                conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
                 val peerConnection = conferenceRepository.createPeerConnection(it.userId)
                 if (peerConnection != null) {
-                    //TODO Add local media stream before creating offer
-                    conferenceRepository.createOffer(it.userId)
+                    conferenceRepository.createOffer(it.userId, peerConnectionConstraints)
                 } else Timber.w("Couldn't create peer connection, aborting offer sending")
             }
         }

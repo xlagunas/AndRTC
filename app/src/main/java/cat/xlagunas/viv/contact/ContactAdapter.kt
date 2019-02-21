@@ -15,7 +15,10 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
 
     private var items = emptyList<Friend>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
             R.layout.row_request_contact -> RequestFriendViewHolder(holder, contactListener)
@@ -28,7 +31,10 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
 
     override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
+        position: Int
+    ) {
         (holder as FriendViewHolder).bind(items[position])
     }
 

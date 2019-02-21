@@ -13,9 +13,9 @@ import org.webrtc.VideoTrack
 import javax.inject.Inject
 
 class MediaDataSourceImp @Inject constructor(
-        private val application: Application,
-        private val peerConnectionFactory: PeerConnectionFactory,
-        private val eglContext: EglBase.Context
+    private val application: Application,
+    private val peerConnectionFactory: PeerConnectionFactory,
+    private val eglContext: EglBase.Context
 ) {
 
     val proxyLocalVideoSink = ProxyVideoSink()
@@ -46,7 +46,7 @@ class MediaDataSourceImp @Inject constructor(
         val videoSource = peerConnectionFactory.createVideoSource(capturer.isScreencast)
         peerConnectionFactory.createLocalMediaStream("VIDEO")
         capturer.initialize(surfaceTextureHelper, application, videoSource.capturerObserver)
-        //TODO Make this dynamic
+        // TODO Make this dynamic
         capturer.startCapture(1280, 720, 30)
 
         val localVideoTrack = peerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource)

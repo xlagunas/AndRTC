@@ -29,7 +29,8 @@ class MainActivity : AppCompatActivity() {
 
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this)).build().inject(this)
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this))
+            .build().inject(this)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)

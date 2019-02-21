@@ -9,4 +9,3 @@ data class MessageDto(
     @SerializedName("type") val type: MessageType,
     @SerializedName("to") val destination: String
 )
-

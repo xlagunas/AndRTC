@@ -20,7 +20,8 @@ class ContactModule {
     }
 
     @Provides
-    fun provideContactsApi(retrofit: Retrofit): ContactsApi = retrofit.create(ContactsApi::class.java)
+    fun provideContactsApi(retrofit: Retrofit): ContactsApi =
+        retrofit.create(ContactsApi::class.java)
 
     @Provides
     fun providePhoneContactDataSource(phoneContactsDataSource: PhoneContactsDataSourceImpl): PhoneContactsDataSource {

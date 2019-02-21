@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:dist="http://schemas.android.com/apk/distribution"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="cat.xlagunas.conference">
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="cat.xlagunas.conference">
 
     <dist:module
-            dist:instant="false"
-            dist:onDemand="false"
-            dist:title="@string/title_conference">
-        <dist:fusing dist:include="true"/>
+        dist:instant="false"
+        dist:onDemand="false"
+        dist:title="@string/title_conference">
+        <dist:fusing dist:include="true" />
     </dist:module>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission tools:ignore="ProtectedPermissions"
-                     android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission
+        android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
+        tools:ignore="ProtectedPermissions" />
 
     <application
-            android:name="cat.xlagunas.core.di.VivApplication"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="${appName}"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            android:usesCleartextTraffic="true"
-            >
+        android:name="cat.xlagunas.core.di.VivApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${appName}"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity
-                android:name="cat.xlagunas.conference.ui.ConferenceActivity"
-                android:label="@string/title_activity_main">
+            android:name="cat.xlagunas.conference.ui.ConferenceActivity"
+            android:label="@string/title_activity_main">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
     </application>

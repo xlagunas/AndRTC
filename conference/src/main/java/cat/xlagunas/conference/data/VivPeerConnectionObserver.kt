@@ -22,7 +22,7 @@ class VivPeerConnectionObserver(private val userId: String, private val handler:
     }
 
     override fun onIceConnectionReceivingChange(p0: Boolean) {
-        Timber.i("onIceConnectionReceivingChange for user $userId to state ${p0}")
+        Timber.i("onIceConnectionReceivingChange for user $userId to state $p0")
     }
 
     override fun onIceConnectionChange(p0: PeerConnection.IceConnectionState) {

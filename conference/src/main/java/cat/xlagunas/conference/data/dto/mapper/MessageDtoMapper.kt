@@ -14,20 +14,19 @@ class MessageDtoMapper @Inject constructor(
 ) {
     fun createIceCandidateMessage(iceCandidate: IceCandidate, destinationUserId: String): MessageDto {
         return MessageDto(
-            from = userSessionIdentifier.getUserId(),
-            data = gson.toJson(IceCandidateMessage(iceCandidate, userSessionIdentifier.getUserId())),
-            type = MessageType.ICE_CANDIDATE,
-            destination = destinationUserId
+                from = userSessionIdentifier.getUserId(),
+                data = gson.toJson(IceCandidateMessage(iceCandidate, userSessionIdentifier.getUserId())),
+                type = MessageType.ICE_CANDIDATE,
+                destination = destinationUserId
         )
     }
 
-    //TODO Investigate if Any is using reflection and what is the impact to serialise it
     fun createMessageDto(body: Any, type: MessageType, destinationUserId: String): MessageDto {
         return MessageDto(
-            from = userSessionIdentifier.getUserId(),
-            data = gson.toJson(body),
-            type = type,
-            destination = destinationUserId
+                from = userSessionIdentifier.getUserId(),
+                data = gson.toJson(body),
+                type = type,
+                destination = destinationUserId
         )
     }
 }

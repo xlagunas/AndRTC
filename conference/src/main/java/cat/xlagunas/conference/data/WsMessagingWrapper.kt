@@ -25,7 +25,7 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
     }
 
     private fun onNewMessage() {
-        socket.on("DIRECT_MESSAGE") {content ->
+        socket.on("DIRECT_MESSAGE") { content ->
             GlobalScope.launch {
 
                 val message = content
@@ -47,13 +47,12 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
                     }
                 }
             }
-
         }
     }
 
     private fun onNewJoiner() {
-        socket.on("NEW_USER") {user ->
-            val attendingUsers = user.map { it as String}.map { userId -> ConnectedUser(userId) }.first()
+        socket.on("NEW_USER") { user ->
+            val attendingUsers = user.map { it as String }.map { userId -> ConnectedUser(userId) }.first()
             GlobalScope.launch { getNewJoiners.send(attendingUsers) }
         }
     }
