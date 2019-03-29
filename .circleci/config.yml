@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
     environment:
       JVM_OPTS: -Xmx3200m
       MINIFY_ENABLED: true
@@ -31,7 +31,7 @@ jobs:
   android_test:
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
     environment:
       MINIFY_ENABLED: false
     steps:
@@ -55,7 +55,7 @@ jobs:
   release_apk:
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
     environment:
       MINIFY_ENABLED: true
     steps:
