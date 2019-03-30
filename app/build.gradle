@@ -149,6 +149,8 @@ dependencies {
     implementation project(':core')
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha05'
+
 }
 
 static def isMinifyEnabledForBuild() {
