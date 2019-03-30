@@ -73,9 +73,9 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Generate Production APK
-          command: ./gradlew :app:assembleProductionRelease
+          command: ./gradlew :app:bundleProductionRelease
       - store_artifacts:
-          path: app/build/outputs/apk
+          path: app/build/outputs/bundle
 
       - store_artifacts:
           path: app/build/outputs/mapping
