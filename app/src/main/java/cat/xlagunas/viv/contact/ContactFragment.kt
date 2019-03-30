@@ -1,36 +1,35 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
 import cat.xlagunas.viv.push.PushTokenPresenter
+import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
 @OpenForTesting
-class ContactFragment : Fragment(), Injectable, ContactListener {
+class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactListener {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
 
     @BindView(R.id.recycler_view)
-    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,14 +41,30 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     private val contactAdapter by lazy { ContactAdapter(this) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inject()
+    }
+
+    protected fun inject() {
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build()
+            .inject(this)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_contact, container, false)
     }
 
@@ -81,7 +96,10 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
                     contactViewModel.findContact(query)
-                        .observe(this@ContactFragment, Observer(this@ContactFragment::renderFriends))
+                        .observe(
+                            this@ContactFragment,
+                            Observer(this@ContactFragment::renderFriends)
+                        )
                     return true
                 }
             }
@@ -92,9 +110,18 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     private fun setUpRecyclerView() {
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayout.VERTICAL, false)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                activity,
+                RecyclerView.VERTICAL,
+                false
+            )
             adapter = contactAdapter
-            addItemDecoration(DividerItemDecoration(this@ContactFragment.activity, LinearLayout.VERTICAL))
+            addItemDecoration(
+                androidx.recyclerview.widget.DividerItemDecoration(
+                    this@ContactFragment.activity,
+                    LinearLayout.VERTICAL
+                )
+            )
         }
     }
 

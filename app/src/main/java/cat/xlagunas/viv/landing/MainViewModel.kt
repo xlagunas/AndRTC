@@ -1,7 +1,7 @@
 package cat.xlagunas.viv.landing
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.SingleLiveEvent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SingleLiveEvent
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
 import cat.xlagunas.viv.commons.extension.toLiveData

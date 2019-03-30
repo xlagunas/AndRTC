@@ -1,28 +1,28 @@
 package cat.xlagunas.viv.login
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.data.common.extensions.text
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
+import cat.xlagunas.viv.commons.extension.text
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
+import com.google.android.material.snackbar.Snackbar
+import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
 @OpenForTesting
@@ -32,10 +32,10 @@ class LoginFragment : Fragment(), Injectable {
     lateinit var signInButton: SignInButton
 
     @BindView(R.id.username_input_layout)
-    lateinit var usernameInputLayout: TextInputLayout
+    lateinit var usernameInputLayout: com.google.android.material.textfield.TextInputLayout
 
     @BindView(R.id.password_text_input)
-    lateinit var passwordInputLayout: TextInputLayout
+    lateinit var passwordInputLayout: com.google.android.material.textfield.TextInputLayout
 
     @BindView(R.id.login_button)
     lateinit var loginButton: Button
@@ -48,9 +48,21 @@ class LoginFragment : Fragment(), Injectable {
 
     private lateinit var loginViewModel: LoginViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inject()
+    }
+
+    protected fun inject() {
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build()
+            .inject(this)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loginViewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+        loginViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
         lifecycle.addObserver(loginViewModel.registerGoogle())
 
@@ -58,7 +70,11 @@ class LoginFragment : Fragment(), Injectable {
             .observe(this, Observer(this::handleLoginResult))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
@@ -86,7 +102,9 @@ class LoginFragment : Fragment(), Injectable {
             is SuccessLoginState -> {
                 navController().popBackStack()
             }
-            is InvalidLoginState -> Snackbar.make(view!!, loginState.errorMessage, Toast.LENGTH_SHORT).show()
+            is InvalidLoginState -> com.google.android.material.snackbar.Snackbar.make(
+                view!!, loginState.errorMessage, Snackbar.LENGTH_SHORT
+            ).show()
             is ValidationError -> {
                 usernameInputLayout.error = "Username can't be empty"
                 passwordInputLayout.error = "Password can't be empty"

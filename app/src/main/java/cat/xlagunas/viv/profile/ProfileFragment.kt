@@ -1,30 +1,31 @@
 package cat.xlagunas.viv.profile
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.di.Injectable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
 @OpenForTesting
 class
-ProfileFragment : Fragment(), Injectable {
+ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
 
     @BindView(R.id.profile_image)
     lateinit var thumbnail: ImageView
@@ -46,15 +47,26 @@ ProfileFragment : Fragment(), Injectable {
 
     private lateinit var profileViewModel: ProfileViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DaggerMonolythComponent.builder()
+            .withParentComponent(VivApplication.appComponent(context!!)).build().inject(this)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
+        profileViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
         profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
         profileViewModel.user.observe(this, Observer(this::onUserEvent))
         profileViewModel.getLoginStatus()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.content_profile, container, false)
     }
 

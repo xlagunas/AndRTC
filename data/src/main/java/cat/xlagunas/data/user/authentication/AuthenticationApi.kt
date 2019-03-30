@@ -1,6 +1,5 @@
 package cat.xlagunas.data.user.authentication
 
-import cat.xlagunas.data.common.net.UserDto
 import cat.xlagunas.data.push.PushTokenDto
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -12,10 +11,10 @@ import retrofit2.http.PUT
 interface AuthenticationApi {
 
     @PUT("/user/")
-    fun registerUser(@Body userDto: UserDto): Completable
+    fun registerUser(@Body userDto: cat.xlagunas.core.data.net.UserDto): Completable
 
     @GET("/user/")
-    fun getUser(): Single<UserDto>
+    fun getUser(): Single<cat.xlagunas.core.data.net.UserDto>
 
     @POST("/auth/")
     fun loginUser(@Body authCredentials: AuthDto): Single<AuthTokenDto>

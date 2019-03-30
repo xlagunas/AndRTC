@@ -1,18 +1,17 @@
 package cat.xlagunas.viv.contact.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.contact.ContactListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 abstract class FriendViewHolder(view: View, internal val contactListener: ContactListener) :
-    RecyclerView.ViewHolder(view) {
+    androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
 
     @BindView(R.id.contact_thumbnail)
     lateinit var profileImage: ImageView

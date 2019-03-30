@@ -1,26 +1,21 @@
 package cat.xlagunas.viv.landing
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.viv.R
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.DaggerMonolythComponent
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -28,11 +23,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     private lateinit var mainViewModel: MainViewModel
 
     @BindView(R.id.bottom_bar)
-    lateinit var bottomNavigationView: BottomNavigationView
+    lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this))
+            .build().inject(this)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)
@@ -43,8 +41,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     override fun onSupportNavigateUp() = getNavController().navigateUp()
-
-    override fun supportFragmentInjector() = dispatchingAndroidInjector
 
     private fun getNavController(): NavController {
         return findNavController(R.id.my_nav_host_fragment)

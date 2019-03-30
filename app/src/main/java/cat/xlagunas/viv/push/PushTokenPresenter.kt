@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 @OpenForTesting
 class PushTokenPresenter @Inject
-constructor(private val authenticationRepository: AuthenticationRepository) : DisposableViewModel() {
+constructor(private val authenticationRepository: AuthenticationRepository) :
+    DisposableViewModel() {
 
     fun registerToken() {
         disposable.add(

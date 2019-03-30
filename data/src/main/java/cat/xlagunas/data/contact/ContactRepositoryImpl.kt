@@ -1,11 +1,11 @@
 package cat.xlagunas.data.contact
 
 import android.annotation.SuppressLint
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.contact.ContactDetails
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.contact.PhoneContactsDataSource
-import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe

@@ -1,8 +1,8 @@
 package cat.xlagunas.viv.contact
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
@@ -31,7 +31,9 @@ class ContactViewModel
         Timber.d("Requesting addContact to ${friend.friendId}")
         disposable.add(
             contactRepository.requestFriendship(friend)
-                .subscribe({ Timber.i("FriendshipRequest successful") }, { Timber.e(it, "FriendshipRequest errpr") })
+                .subscribe(
+                    { Timber.i("FriendshipRequest successful") },
+                    { Timber.e(it, "FriendshipRequest errpr") })
         )
     }
 
@@ -45,7 +47,9 @@ class ContactViewModel
     fun rejectContactRequest(friend: Friend) {
         disposable.add(
             contactRepository.rejectContact(friend)
-                .subscribe({ Timber.i("Rejected contact") }, { Timber.e(it, "RejectContact error") })
+                .subscribe(
+                    { Timber.i("Rejected contact") },
+                    { Timber.e(it, "RejectContact error") })
         )
     }
 

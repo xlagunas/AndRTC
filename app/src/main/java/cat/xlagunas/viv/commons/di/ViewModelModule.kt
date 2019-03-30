@@ -1,8 +1,8 @@
 package cat.xlagunas.viv.commons.di
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import cat.xlagunas.viv.commons.ViewModelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import cat.xlagunas.core.di.ViewModelKey
 import cat.xlagunas.viv.contact.ContactViewModel
 import cat.xlagunas.viv.contact.viewholder.FriendshipViewModel
 import cat.xlagunas.viv.landing.MainViewModel

@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.register
 
-import cat.xlagunas.domain.commons.User
+import cat.xlagunas.core.domain.entity.User
 
 class RegisterUserConverter {
 

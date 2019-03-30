@@ -1,8 +1,8 @@
 package cat.xlagunas.viv.register
 
-import android.databinding.BaseObservable
-import android.databinding.Bindable
-import cat.xlagunas.viv.BR
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import cat.xlagunas.core.BR
 import cat.xlagunas.viv.commons.binding.bindable
 
 class RegisterUserBinder : BaseObservable() {

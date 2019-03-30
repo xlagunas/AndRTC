@@ -2,8 +2,7 @@ package cat.xlagunas.data.contact
 
 import android.content.Context
 import android.content.SharedPreferences
-import cat.xlagunas.data.BuildConfig
-import cat.xlagunas.domain.common.time.TimeProvider
+import cat.xlagunas.core.domain.time.TimeProvider
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -13,10 +12,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, sdk = [26])
 class ContactCacheImplTest {
 
     @Mock
@@ -85,7 +82,8 @@ class ContactCacheImplTest {
 
     @Test
     fun whenUpdateCache_thenSharedPreferenceUpdated() {
-        val sharedPreferences = RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
         val fakeCurrentTime = 50000L
         contactCache = ContactCacheImpl(sharedPreferences, timeProvider)
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
@@ -99,7 +97,8 @@ class ContactCacheImplTest {
 
     @Test
     fun whenInvalidateCache_thenNoSharedPreferenceValue() {
-        val sharedPreferences = RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
         contactCache = ContactCacheImpl(sharedPreferences, timeProvider)
 
         contactCache.invalidateCache().test().assertComplete()

@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="cat.xlagunas.viv">
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="cat.xlagunas.viv">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <dist:module dist:instant="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-            android:name=".commons.di.VivApplication"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="${appName}"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme">
-
+        android:name="cat.xlagunas.core.di.VivApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${appName}"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity
-                android:name=".landing.MainActivity"
-                android:theme="@style/AppTheme.SplashTheme">
+            android:name=".landing.MainActivity"
+            android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
-                android:name="cat.xlagunas.viv.push.PushMessageHandler"
-                android:exported="false">
+            android:name=".push.PushMessageHandler"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <meta-data
-                android:name="io.fabric.ApiKey"
-                android:value="d77ab5e5cbb3f893a9f94fd2e8aeec00e21539d8"/>
-
+            android:name="io.fabric.ApiKey"
+            android:value="d77ab5e5cbb3f893a9f94fd2e8aeec00e21539d8" />
     </application>
 
 </manifest>

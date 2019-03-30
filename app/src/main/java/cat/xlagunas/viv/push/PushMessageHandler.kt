@@ -1,9 +1,10 @@
 package cat.xlagunas.viv.push
 
+import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.domain.contact.ContactRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.android.AndroidInjection
+import dagger.DaggerMonolythComponent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import timber.log.Timber
@@ -20,7 +21,9 @@ class PushMessageHandler : FirebaseMessagingService() {
     private val disposables = CompositeDisposable()
 
     override fun onCreate() {
-        AndroidInjection.inject(this)
+        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this))
+            .build()
+            .inject(this)
         super.onCreate()
     }
 

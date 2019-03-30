@@ -1,8 +1,7 @@
 package cat.xlagunas.data.contact
 
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.data.common.converter.FriendConverter
-import cat.xlagunas.domain.commons.Friend
 import cat.xlagunas.domain.contact.ContactDataSource
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class RemoteContactDataSource
 @Inject constructor(
     private val contactsApi: ContactsApi,
-    private val friendConverter: FriendConverter
+    private val friendConverter: cat.xlagunas.core.data.converter.FriendConverter
 ) : ContactDataSource {
 
     override fun searchContacts(searchTerm: String): Single<List<Friend>> {

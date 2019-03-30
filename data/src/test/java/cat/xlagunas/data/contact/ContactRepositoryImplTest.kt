@@ -1,8 +1,8 @@
 package cat.xlagunas.data.contact
 
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.contact.ContactRepository
-import cat.xlagunas.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -35,7 +35,8 @@ class ContactRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val schedulers = RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
+        val schedulers =
+            RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
         contactRepository = ContactRepositoryImpl(
             localContactDataSource,
             remoteContactDataSource,

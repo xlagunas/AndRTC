@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.contact.viewholder
 
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
 import timber.log.Timber
