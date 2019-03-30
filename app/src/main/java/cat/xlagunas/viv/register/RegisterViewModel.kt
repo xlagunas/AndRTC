@@ -6,7 +6,6 @@ import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
-import io.reactivex.Completable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,8 +14,15 @@ class RegisterViewModel @Inject constructor(private val userRepository: Authenti
     DisposableViewModel() {
 
     private val user: MutableLiveData<User> = MutableLiveData()
+    val registrationState: MutableLiveData<RegistrationState> = MutableLiveData()
 
-    fun register(user: User): Completable = userRepository.registerUser(user)
+    fun register(user: User) {
+        disposable.add(
+            userRepository.registerUser(user).subscribe(
+                { registrationState.value = Success },
+                { error -> registrationState.value = RegistrationError(error.message) })
+        )
+    }
 
     fun findUser(): LiveData<User> {
         disposable.add(

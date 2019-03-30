@@ -1,9 +1,14 @@
 package cat.xlagunas.viv.login
 
+import android.os.Bundle
 import android.widget.EditText
 import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
@@ -16,15 +21,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
-import cat.xlagunas.viv.test.SingleFragmentActivity
 import com.google.android.material.snackbar.SnackbarContentLayout
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
@@ -36,31 +38,30 @@ import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class LoginFragmentTest {
-
-    @Rule
-    @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
-
-    private val testFragment = TestLoginFragment()
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel = mock(LoginViewModel::class.java)
     private val loginState = MutableLiveData<LoginState>()
+    private lateinit var testLoginFactory: TestLoginFactory
 
     @Before
     fun setUp() {
-        loginViewModel = mock(LoginViewModel::class.java)
         `when`(loginViewModel.registerGoogle()).thenReturn(mock(LifecycleObserver::class.java))
         `when`(loginViewModel.onLoginStateChange()).thenReturn(loginState)
 
-        activityRule.activity.setFragment(testFragment)
-        testFragment.viewModelFactory = ViewModelUtil.createFor(loginViewModel)
+        testLoginFactory = TestLoginFactory(ViewModelUtil.createFor(loginViewModel))
     }
 
     @Test
-    fun givenValidCredentials_whenUserLogsIn_thenLoginActivityFinishes() {
+    fun givenValidCredentials_whenUserLogsIn_thenLoggedUserFragment() {
         doAnswer {
             loginState.postValue(SuccessLoginState)
             Unit
         }.`when`(loginViewModel).login(anyString(), anyString())
+
+        val scenario = launchFragmentInContainer<TestLoginFragment>(
+            Bundle(),
+            R.style.AppTheme_NoActionBar,
+            testLoginFactory
+        )
 
         onEditTextWithinTilWithId(R.id.username_input_layout).perform(
             typeText("aRandomValidUsername"),
@@ -73,7 +74,7 @@ class LoginFragmentTest {
 
         onView(ViewMatchers.withId(R.id.login_button)).perform(click())
 
-        verify(testFragment.navController).popBackStack()
+        scenario.onFragment { verify(it.navController).popBackStack() }
     }
 
     @Test
@@ -82,6 +83,12 @@ class LoginFragmentTest {
             loginState.postValue(InvalidLoginState("Authentication error"))
             Unit
         }.`when`(loginViewModel).login(anyString(), anyString())
+
+        launchFragmentInContainer<TestLoginFragment>(
+            Bundle(),
+            R.style.AppTheme_NoActionBar,
+            testLoginFactory
+        )
 
         onEditTextWithinTilWithId(R.id.username_input_layout).perform(
             typeText("aRandomInvalidUsername"),
@@ -98,19 +105,43 @@ class LoginFragmentTest {
 
     @Test
     fun whenUserClickRegister_thenNavigateToRegister() {
+        val scenario = launchFragmentInContainer<TestLoginFragment>(
+            Bundle(),
+            R.style.AppTheme_NoActionBar,
+            testLoginFactory
+        )
+
         onView(ViewMatchers.withId(R.id.register)).perform(click())
 
-        verify(testFragment.navController).navigate(R.id.action_login_to_register)
+        scenario.onFragment { verify(it.navController).navigate(R.id.action_login_to_register) }
     }
 
     private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {
         // Note, if you have specified an ID for the EditText that you place inside
         // the TextInputLayout, use that instead - i.e, onView(withId(R.id.my_edit_text));
-        return onView(allOf(isDescendantOfA(withId(textInputLayoutId)), isAssignableFrom(EditText::class.java)))
+        return onView(
+            allOf(
+                isDescendantOfA(withId(textInputLayoutId)),
+                isAssignableFrom(EditText::class.java)
+            )
+        )
     }
 
     class TestLoginFragment : LoginFragment() {
         val navController = Mockito.mock(NavController::class.java)
         override fun navController() = navController
+
+        override fun inject() {}
+    }
+
+    class TestLoginFactory(private val loginViewModelFactory: ViewModelProvider.Factory) :
+        FragmentFactory() {
+        override fun instantiate(
+            classLoader: ClassLoader,
+            className: String,
+            args: Bundle?
+        ): Fragment {
+            return TestLoginFragment().apply { viewModelFactory = loginViewModelFactory }
+        }
     }
 }
