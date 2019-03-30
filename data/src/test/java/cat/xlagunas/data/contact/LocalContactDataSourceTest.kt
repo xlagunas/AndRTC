@@ -2,14 +2,7 @@ package cat.xlagunas.data.contact
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import cat.xlagunas.data.BuildConfig
-import cat.xlagunas.core.data.converter.FriendConverter
-import cat.xlagunas.core.data.db.FriendDao
-import cat.xlagunas.core.data.db.UserDao
-import cat.xlagunas.core.data.db.UserEntity
-import cat.xlagunas.core.data.db.VivDatabase
-import cat.xlagunas.core.data.net.Relationship
-import cat.xlagunas.domain.commons.Friend
+import cat.xlagunas.core.domain.entity.Friend
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -19,10 +12,8 @@ import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, sdk = [26])
 class LocalContactDataSourceTest {
 
     private lateinit var localContactDataSource: LocalContactDataSource

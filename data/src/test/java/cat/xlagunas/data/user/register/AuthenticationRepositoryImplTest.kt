@@ -1,17 +1,16 @@
 package cat.xlagunas.data.user.register
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import android.content.Context
-import cat.xlagunas.data.BuildConfig
+import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.data.user.authentication.AuthDto
 import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
-import cat.xlagunas.domain.commons.User
 import cat.xlagunas.domain.push.PushTokenProvider
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.user.authentication.AuthTokenDataStore
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
@@ -29,11 +28,9 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 import java.io.IOException
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, sdk = [26])
 class AuthenticationRepositoryImplTest {
 
     private lateinit var authenticationRepository: AuthenticationRepository
