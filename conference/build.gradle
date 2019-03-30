@@ -68,6 +68,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.0.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.0.0'
 
+    //Need the dependency to compile the bundle in prod with proguard
+    compileOnly 'com.squareup.retrofit2:converter-gson:2.4.0'
+
     //TODO once this is propagated implement right version
     implementation('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
