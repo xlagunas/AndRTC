@@ -102,7 +102,7 @@ class TestRegisterFragment : RegisterFragment() {
     override fun inject() {}
 }
 
-class TestRegisterFragmentFactory(private val registerViewModelFactory: ViewModelProvider.Factory): FragmentFactory() {
+class TestRegisterFragmentFactory(private val registerViewModelFactory: ViewModelProvider.Factory) : FragmentFactory() {
     override fun instantiate(classLoader: ClassLoader, className: String, args: Bundle?): Fragment {
         return TestRegisterFragment().apply { viewModelFactory = registerViewModelFactory }
     }
