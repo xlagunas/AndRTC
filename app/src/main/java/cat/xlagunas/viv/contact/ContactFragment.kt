@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.core.di.Injectable
@@ -42,6 +43,10 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        inject()
+    }
+
+    protected fun inject() {
         DaggerMonolythComponent.builder()
             .withParentComponent(VivApplication.appComponent(context!!)).build()
             .inject(this)
@@ -107,7 +112,7 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
         recyclerView.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
                 activity,
-                LinearLayout.VERTICAL,
+                RecyclerView.VERTICAL,
                 false
             )
             adapter = contactAdapter
