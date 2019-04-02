@@ -18,6 +18,9 @@ import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.login.InvalidLoginState
+import cat.xlagunas.viv.login.LoginState
+import cat.xlagunas.viv.login.Logout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import dagger.DaggerMonolythComponent
@@ -55,8 +58,7 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
+        profileViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
         profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
         profileViewModel.user.observe(this, Observer(this::onUserEvent))
         profileViewModel.getLoginStatus()
@@ -75,9 +77,10 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
         ButterKnife.bind(this, view)
     }
 
-    private fun userLoggedInStatus(loggedInStatus: Boolean?) {
-        if (loggedInStatus == false) {
-            navController().navigate(R.id.action_login)
+    private fun userLoggedInStatus(loggedInStatus: LoginState?) {
+        when (loggedInStatus) {
+            is InvalidLoginState -> navController().navigate(R.id.action_login)
+            is Logout -> navController().popBackStack()
         }
     }
 
