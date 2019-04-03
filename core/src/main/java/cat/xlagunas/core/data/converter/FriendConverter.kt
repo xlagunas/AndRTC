@@ -52,4 +52,19 @@ class FriendConverter {
     fun updateRelationship(friend: Friend, newRelationship: Relationship): Friend {
         return friend.copy(relationshipStatus = newRelationship.name)
     }
+
+    fun toFriendDtoList(friends: List<Friend>): List<FriendDto> {
+        return friends.map(this::toFriendDto).toList()
+    }
+
+    private fun toFriendDto(friend: Friend): FriendDto {
+        return FriendDto(
+            id = friend.friendId,
+            email = friend.email,
+            name = friend.name,
+            username = friend.username,
+            profilePic = friend.image,
+            relationship = Relationship.valueOf(friend.relationshipStatus)
+        )
+    }
 }

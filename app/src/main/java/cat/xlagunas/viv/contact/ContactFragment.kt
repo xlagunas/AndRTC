@@ -1,11 +1,14 @@
 package cat.xlagunas.viv.contact
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -20,10 +23,11 @@ import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
+import okhttp3.HttpUrl
 import javax.inject.Inject
 
 @OpenForTesting
-class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactListener {
+class ContactFragment : Fragment(), Injectable, ContactListener {
 
     @BindView(R.id.search)
     lateinit var searchView: SearchView
@@ -54,8 +58,7 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
     }
@@ -81,6 +84,15 @@ class ContactFragment : androidx.fragment.app.Fragment(), Injectable, ContactLis
 
     override fun onContactAccepted(friend: Friend) {
         contactViewModel.acceptContactRequest(friend)
+    }
+
+    private fun generateCallIntent(roomId: String): Intent {
+        val url = HttpUrl.get("https://viv.cat/conference?roomId=$roomId")
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.`package` = context!!.packageName
+        intent.data = Uri.parse(url.toString())
+        return intent
     }
 
     override fun onContactRejected(friend: Friend) {

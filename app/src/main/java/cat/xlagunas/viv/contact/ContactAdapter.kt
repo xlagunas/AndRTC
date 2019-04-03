@@ -2,6 +2,10 @@ package cat.xlagunas.viv.contact
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import cat.xlagunas.core.data.net.Relationship.ACCEPTED
+import cat.xlagunas.core.data.net.Relationship.NONE
+import cat.xlagunas.core.data.net.Relationship.PENDING
+import cat.xlagunas.core.data.net.Relationship.REQUESTED
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
@@ -45,10 +49,10 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position].relationshipStatus) {
-            cat.xlagunas.core.data.net.Relationship.NONE.name -> R.layout.row_request_contact
-            cat.xlagunas.core.data.net.Relationship.REQUESTED.name -> R.layout.row_pending_contact
-            cat.xlagunas.core.data.net.Relationship.ACCEPTED.name -> R.layout.row_contact
-            cat.xlagunas.core.data.net.Relationship.PENDING.name -> R.layout.row_confirm_contact
+            NONE.name -> R.layout.row_request_contact
+            REQUESTED.name -> R.layout.row_pending_contact
+            ACCEPTED.name -> R.layout.row_contact
+            PENDING.name -> R.layout.row_confirm_contact
             else -> throw IllegalStateException("This should never be called")
         }
     }
