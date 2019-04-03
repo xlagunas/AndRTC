@@ -7,8 +7,9 @@ import cat.xlagunas.domain.call.Call
 import cat.xlagunas.domain.call.CallRepository
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class CallRepositoryImpl(
+class CallRepositoryImpl @Inject constructor(
     private val callApi: CallApi,
     private val friendConverter: FriendConverter,
     private val callConverter: CallConverter,

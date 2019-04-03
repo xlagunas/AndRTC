@@ -1,10 +1,14 @@
 package cat.xlagunas.viv.contact
 
+import cat.xlagunas.data.call.CallApi
+import cat.xlagunas.data.call.CallConverter
+import cat.xlagunas.data.call.CallRepositoryImpl
 import cat.xlagunas.data.contact.ContactCache
 import cat.xlagunas.data.contact.ContactCacheImpl
 import cat.xlagunas.data.contact.ContactRepositoryImpl
 import cat.xlagunas.data.contact.ContactsApi
 import cat.xlagunas.data.contact.PhoneContactsDataSourceImpl
+import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import dagger.Module
@@ -32,4 +36,16 @@ class ContactModule {
     fun provideContactCache(contactCache: ContactCacheImpl): ContactCache {
         return contactCache
     }
+
+    @Provides
+    fun provideCallRepository(callRepository: CallRepositoryImpl): CallRepository {
+        return callRepository
+    }
+
+    @Provides
+    fun provideCallApi(retrofit: Retrofit): CallApi =
+        retrofit.create(CallApi::class.java)
+
+    @Provides
+    fun provideCallConverter() = CallConverter()
 }

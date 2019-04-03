@@ -1,5 +1,5 @@
 package cat.xlagunas.data.call
 
-import java.time.Instant
+import com.google.gson.annotations.SerializedName
 
-class CallDto(val roomId: String, val date: Instant)
+class CallDto(@SerializedName("callId") val roomId: String)

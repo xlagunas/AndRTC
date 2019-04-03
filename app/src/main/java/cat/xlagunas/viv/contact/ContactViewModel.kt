@@ -3,6 +3,8 @@ package cat.xlagunas.viv.contact
 import androidx.lifecycle.LiveData
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.domain.call.Call
+import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
@@ -14,7 +16,8 @@ import javax.inject.Inject
 class ContactViewModel
 @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val callRepository: CallRepository
 ) : DisposableViewModel() {
 
     val contacts by lazy {
@@ -22,6 +25,7 @@ class ContactViewModel
             .doOnNext { Timber.d("Next user: ${it.username}") }
             .switchMap { contactRepository.getContacts() }.toLiveData()
     }
+
 
     fun findContact(searchTerm: String): LiveData<List<Friend>> {
         return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
@@ -33,7 +37,7 @@ class ContactViewModel
             contactRepository.requestFriendship(friend)
                 .subscribe(
                     { Timber.i("FriendshipRequest successful") },
-                    { Timber.e(it, "FriendshipRequest errpr") })
+                    { Timber.e(it, "FriendshipRequest error") })
         )
     }
 
@@ -53,7 +57,7 @@ class ContactViewModel
         )
     }
 
-    fun callFriend(friend: Friend) {
-
+    fun observeCall(friends: List<Friend>) : LiveData<Call> {
+        return callRepository.createCall(friends).toFlowable().toLiveData()
     }
 }

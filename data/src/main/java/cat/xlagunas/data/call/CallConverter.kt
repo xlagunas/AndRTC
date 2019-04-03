@@ -13,6 +13,6 @@ class CallConverter {
     }
 
     fun toCall(callDto: CallDto): Call {
-        return Call(callDto.roomId, callDto.date)
+        return Call(callDto.roomId)
     }
 }

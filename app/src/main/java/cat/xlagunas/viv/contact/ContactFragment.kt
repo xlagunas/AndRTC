@@ -20,10 +20,12 @@ import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.domain.call.Call
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
 import okhttp3.HttpUrl
+import timber.log.Timber
 import javax.inject.Inject
 
 @OpenForTesting
@@ -58,7 +60,8 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
         registerPushToken()
     }
@@ -86,6 +89,19 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
         contactViewModel.acceptContactRequest(friend)
     }
 
+    override fun onContactRejected(friend: Friend) {
+        contactViewModel.rejectContactRequest(friend)
+    }
+
+    override fun onContactCalled(friend: Friend) {
+        contactViewModel.observeCall(listOf(friend)).observe(this, Observer(this::handleCall))
+    }
+
+    fun handleCall(call: Call) {
+        Timber.d("Call Successfully created with id: ${call.id}")
+        startActivity(generateCallIntent(call.id))
+    }
+
     private fun generateCallIntent(roomId: String): Intent {
         val url = HttpUrl.get("https://viv.cat/conference?roomId=$roomId")
         val intent = Intent(Intent.ACTION_VIEW)
@@ -93,14 +109,6 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
         intent.`package` = context!!.packageName
         intent.data = Uri.parse(url.toString())
         return intent
-    }
-
-    override fun onContactRejected(friend: Friend) {
-        contactViewModel.rejectContactRequest(friend)
-    }
-
-    override fun onContactCalled(friend: Friend) {
-        contactViewModel.callFriend(friend)
     }
 
     private fun setupSearchView() {
