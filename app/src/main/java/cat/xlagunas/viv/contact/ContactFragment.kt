@@ -20,6 +20,7 @@ import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.call.Call
 import cat.xlagunas.viv.R
+import cat.xlagunas.viv.landing.MainViewModel
 import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
 import timber.log.Timber
@@ -42,6 +43,8 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     private lateinit var contactViewModel: ContactViewModel
 
+    private lateinit var userViewModel: MainViewModel
+
     private val contactAdapter by lazy { ContactAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +63,9 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
         contactViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
-        registerPushToken()
+        userViewModel =
+            ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)
+        userViewModel.isUserLoggedIn.observe(this, Observer(this::registerPushToken))
     }
 
     override fun onCreateView(
@@ -133,8 +138,8 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
         }
     }
 
-    private fun registerPushToken() {
-        if (!pushTokenPresenter.isPushTokenRegistered()) {
+    private fun registerPushToken(isUserRegistered: Boolean) {
+        if (!pushTokenPresenter.isPushTokenRegistered() && isUserRegistered) {
             pushTokenPresenter.registerToken()
         }
     }

@@ -8,6 +8,7 @@ import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.data.user.login.GoogleSignInDataSource
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
+import cat.xlagunas.push.PushTokenRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import dagger.Lazy
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @OpenForTesting
 class LoginViewModel @Inject constructor(
     private val googleSignInDataSource: Lazy<GoogleSignInDataSource>,
-    private val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository,
+    private val pushTokenRepository: PushTokenRepository
 ) : ViewModel() {
 
     private val liveData: MutableLiveData<LoginState> = MutableLiveData()
@@ -41,6 +43,7 @@ class LoginViewModel @Inject constructor(
     fun login(username: String, password: String) {
         disposable.add(
             authenticationRepository.login(AuthenticationCredentials(username, password))
+                .andThen(pushTokenRepository.registerPushToken())
                 .subscribe(this::onSuccessfullyLogged, this::handleErrorState)
         )
     }

@@ -1,5 +1,14 @@
 package cat.xlagunas.viv.push
 
+import cat.xlagunas.push.MessageProcessor
+import cat.xlagunas.push.MessageType
+import cat.xlagunas.push.PushMessageProcessorKey
+import cat.xlagunas.push.PushTokenProvider
+import cat.xlagunas.push.PushTokenProviderImpl
+import cat.xlagunas.push.PushTokenRepository
+import cat.xlagunas.push.PushTokenRepositoryImpl
+import cat.xlagunas.viv.contact.CallMessageProcessor
+import cat.xlagunas.viv.contact.ContactsMessageProcessor
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -29,4 +38,9 @@ abstract class PushModule {
     @PushMessageProcessorKey(MessageType.REJECT_FRIENDSHIP)
     abstract fun provideRejectContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): MessageProcessor
 
+    @Binds
+    abstract fun providePushTokenRepository(pushTokenRepository: PushTokenRepositoryImpl): PushTokenRepository
+
+    @Binds
+    abstract fun providePushTokenProvider(pushTokenProvider: PushTokenProviderImpl): PushTokenProvider
 }

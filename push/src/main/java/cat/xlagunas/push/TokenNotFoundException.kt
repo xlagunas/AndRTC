@@ -1,4 +1,4 @@
-package cat.xlagunas.data.push
+package cat.xlagunas.push
 
 import java.lang.Exception
 

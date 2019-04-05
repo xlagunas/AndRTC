@@ -1,7 +1,9 @@
-package cat.xlagunas.viv.push
+package cat.xlagunas.viv.contact
 
 import android.annotation.SuppressLint
 import cat.xlagunas.domain.contact.ContactRepository
+import cat.xlagunas.push.Message
+import cat.xlagunas.push.MessageProcessor
 import timber.log.Timber
 import javax.inject.Inject
 

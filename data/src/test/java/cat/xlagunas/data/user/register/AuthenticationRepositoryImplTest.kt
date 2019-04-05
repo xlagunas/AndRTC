@@ -10,7 +10,6 @@ import cat.xlagunas.data.user.authentication.AuthDto
 import cat.xlagunas.data.user.authentication.AuthTokenDto
 import cat.xlagunas.data.user.authentication.AuthenticationApi
 import cat.xlagunas.data.user.authentication.AuthenticationRepositoryImpl
-import cat.xlagunas.domain.push.PushTokenProvider
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
 import io.reactivex.Completable
@@ -46,9 +45,6 @@ class AuthenticationRepositoryImplTest {
     private lateinit var authenticationApi: AuthenticationApi
 
     @Mock
-    private lateinit var pushTokenProvider: PushTokenProvider
-
-    @Mock
     private lateinit var authTokenDataStore: AuthTokenDataStore
 
     @Before
@@ -63,7 +59,7 @@ class AuthenticationRepositoryImplTest {
             userDao,
             userConverter,
             RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-            authTokenDataStore, pushTokenProvider, database, RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            authTokenDataStore, database, RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
         )
     }

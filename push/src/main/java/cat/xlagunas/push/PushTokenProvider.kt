@@ -1,4 +1,4 @@
-package cat.xlagunas.domain.push
+package cat.xlagunas.push
 
 interface PushTokenProvider {
 

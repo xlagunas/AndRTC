@@ -15,7 +15,6 @@ class MainViewModel @Inject constructor(private val authenticationRepository: Au
     val isUserLoggedIn: LiveData<Boolean>
         get() = authenticationRepository
             .isUserLoggedIn()
-            .filter { !it }
             .toLiveData()
 
     init {

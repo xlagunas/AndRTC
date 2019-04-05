@@ -1,19 +1,17 @@
-package cat.xlagunas.viv.push
+package cat.xlagunas.push
 
-import cat.xlagunas.data.call.CallDto
-import cat.xlagunas.viv.push.MessageType.ACCEPT_CALL
-import cat.xlagunas.viv.push.MessageType.ACCEPT_FRIENDSHIP
-import cat.xlagunas.viv.push.MessageType.CREATE_CALL
-import cat.xlagunas.viv.push.MessageType.REJECT_CALL
-import cat.xlagunas.viv.push.MessageType.REJECT_FRIENDSHIP
-import cat.xlagunas.viv.push.MessageType.REQUEST_FRIENDSHIP
-import cat.xlagunas.viv.push.MessageType.valueOf
+import cat.xlagunas.push.MessageType.ACCEPT_CALL
+import cat.xlagunas.push.MessageType.ACCEPT_FRIENDSHIP
+import cat.xlagunas.push.MessageType.CREATE_CALL
+import cat.xlagunas.push.MessageType.REJECT_CALL
+import cat.xlagunas.push.MessageType.REJECT_FRIENDSHIP
+import cat.xlagunas.push.MessageType.REQUEST_FRIENDSHIP
+import cat.xlagunas.push.MessageType.valueOf
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
 import timber.log.Timber
 import javax.inject.Inject
 
-class MessageConverter @Inject constructor(private val gson: Gson) {
+class MessageConverter @Inject constructor(/*rivate val gson: Gson*/) {
 
     fun toMessage(remoteMessage: RemoteMessage): Message? {
         val messageKey = remoteMessage.data["eventType"] ?: return null
@@ -35,7 +33,8 @@ class MessageConverter @Inject constructor(private val gson: Gson) {
     }
 
     private fun parseRoomIdFromCallMsg(message: String): String {
-        val callDto = gson.fromJson(message, CallDto::class.java)
-        return callDto.roomId
+        // val callDto = gson.fromJson(message, CallDto::class.java)
+        // return callDto.roomId
+        return ""
     }
 }

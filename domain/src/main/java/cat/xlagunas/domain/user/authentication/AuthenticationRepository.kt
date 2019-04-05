@@ -24,12 +24,6 @@ interface AuthenticationRepository {
 
     fun refreshToken(): Completable
 
-    fun registerPushToken(): Completable
-
-    fun isPushTokenRegistered(): Boolean
-
-    fun markPushTokenAsRegistered()
-
     fun isUserLoggedIn(): Flowable<Boolean>
 
     fun logoutUser(): Completable

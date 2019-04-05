@@ -1,8 +1,7 @@
-package cat.xlagunas.data.push
+package cat.xlagunas.push
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.domain.push.PushTokenProvider
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.iid.FirebaseInstanceId
 import javax.inject.Inject

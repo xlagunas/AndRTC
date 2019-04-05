@@ -1,4 +1,4 @@
-package cat.xlagunas.data.push
+package cat.xlagunas.push
 
 import com.google.gson.annotations.SerializedName
 

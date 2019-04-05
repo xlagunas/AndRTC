@@ -23,7 +23,6 @@ import cat.xlagunas.viv.commons.ViewModelUtil
 import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.viv.contact.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
-import cat.xlagunas.viv.push.PushTokenPresenter
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test

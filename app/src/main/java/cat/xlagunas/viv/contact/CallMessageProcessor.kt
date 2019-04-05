@@ -1,7 +1,9 @@
-package cat.xlagunas.viv.push
+package cat.xlagunas.viv.contact
 
 import android.content.Context
-import cat.xlagunas.viv.contact.ContactUtils
+import cat.xlagunas.push.CallMessage
+import cat.xlagunas.push.Message
+import cat.xlagunas.push.MessageProcessor
 import timber.log.Timber
 import javax.inject.Inject
 

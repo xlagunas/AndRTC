@@ -1,6 +1,9 @@
 package cat.xlagunas.viv.push
 
 import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.push.MessageConverter
+import cat.xlagunas.push.MessageProcessor
+import cat.xlagunas.push.MessageType
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.DaggerMonolythComponent
@@ -36,6 +39,8 @@ class PushMessageHandler : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String?) {
-        pushTokenPresenter.registerToken()
+        if (pushTokenPresenter.isPushTokenRegistered()) {
+            pushTokenPresenter.clearPushToken()
+        }
     }
 }

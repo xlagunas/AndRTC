@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.push
+package cat.xlagunas.push
 
 sealed class Message {
     abstract val messageType: MessageType

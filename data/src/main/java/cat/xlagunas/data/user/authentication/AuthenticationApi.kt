@@ -1,6 +1,5 @@
 package cat.xlagunas.data.user.authentication
 
-import cat.xlagunas.data.push.PushTokenDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
@@ -22,6 +21,4 @@ interface AuthenticationApi {
     @GET("/refresh/")
     fun refreshUserToken(): Single<AuthTokenDto>
 
-    @PUT("/token/")
-    fun addPushToken(@Body token: PushTokenDto): Completable
 }

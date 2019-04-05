@@ -4,8 +4,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import cat.xlagunas.core.domain.auth.AuthTokenDataStore
 import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.data.push.PushTokenDto
-import cat.xlagunas.domain.push.PushTokenProvider
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository
@@ -22,7 +20,6 @@ class AuthenticationRepositoryImpl
     private val userConverter: cat.xlagunas.core.data.converter.UserConverter,
     private val schedulers: RxSchedulers,
     private val tokenDataStore: AuthTokenDataStore,
-    private val pushTokenProvider: PushTokenProvider,
     private val vivDatabase: cat.xlagunas.core.data.db.VivDatabase,
     private val sharedPreferences: SharedPreferences
 ) : AuthenticationRepository {
@@ -60,8 +57,7 @@ class AuthenticationRepositoryImpl
 
     override fun login(authenticationCredentials: AuthenticationCredentials): Completable {
         return authenticationApi.loginUser(
-            AuthDto(
-                authenticationCredentials.username,
+            AuthDto(authenticationCredentials.username,
                 authenticationCredentials.password
             )
         )
@@ -90,34 +86,9 @@ class AuthenticationRepositoryImpl
             .ignoreElement()
     }
 
-    override fun isPushTokenRegistered() = pushTokenProvider.isTokenRegistered()
-
-    override fun markPushTokenAsRegistered() = pushTokenProvider.markTokenAsRegistered()
-
-    override fun registerPushToken(): Completable {
-        return findUser()
-            .flatMap { getTokenFromTokenProvider() }
-            .flatMapCompletable(this::requestTokenRegistration)
-            .observeOn(schedulers.mainThread)
-            .subscribeOn(schedulers.io)
-    }
-
-    private fun requestTokenRegistration(token: String): Completable {
-        return authenticationApi.addPushToken(PushTokenDto(token))
-            .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
-            .doOnComplete { Timber.d("Push token successfully registered") }
-            .doOnSubscribe { Timber.d("Starting token registration") }
-    }
-
-    private fun getTokenFromTokenProvider(): Maybe<String> {
-        return Maybe.fromCallable { pushTokenProvider.getPushToken() }
-            .observeOn(schedulers.mainThread)
-            .subscribeOn(schedulers.io)
-    }
 
     override fun logoutUser(): Completable {
         return Completable.fromAction { deleteAuthToken() }
-            .andThen(Completable.fromAction { pushTokenProvider.invalidatePushToken() })
             .andThen(Completable.fromAction { vivDatabase.clearAllTables() })
             .andThen(Completable.fromAction { sharedPreferences.edit { clear() } })
             .observeOn(schedulers.mainThread)
