@@ -1,7 +1,5 @@
 package cat.xlagunas.viv.contact
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +22,6 @@ import cat.xlagunas.domain.call.Call
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
-import okhttp3.HttpUrl
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -99,16 +96,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     fun handleCall(call: Call) {
         Timber.d("Call Successfully created with id: ${call.id}")
-        startActivity(generateCallIntent(call.id))
-    }
-
-    private fun generateCallIntent(roomId: String): Intent {
-        val url = HttpUrl.get("https://viv.cat/conference?roomId=$roomId")
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.`package` = context!!.packageName
-        intent.data = Uri.parse(url.toString())
-        return intent
+        startActivity(ContactUtils.generateCallIntent(call.id, context!!))
     }
 
     private fun setupSearchView() {

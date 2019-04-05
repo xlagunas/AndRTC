@@ -9,11 +9,12 @@ import cat.xlagunas.viv.login.LoginFragment
 import cat.xlagunas.viv.login.LoginModule
 import cat.xlagunas.viv.profile.ProfileFragment
 import cat.xlagunas.viv.push.PushMessageHandler
+import cat.xlagunas.viv.push.PushModule
 import cat.xlagunas.viv.register.RegisterFragment
 import cat.xlagunas.viv.register.RegisterModule
 
 @Component(
-    modules = [ViewModelModule::class, ContactModule::class, LoginModule::class, RegisterModule::class],
+    modules = [ViewModelModule::class, ContactModule::class, LoginModule::class, RegisterModule::class, PushModule::class],
     dependencies = [ApplicationComponent::class]
 )
 interface MonolythComponent {

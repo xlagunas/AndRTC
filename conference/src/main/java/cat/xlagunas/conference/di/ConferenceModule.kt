@@ -48,7 +48,8 @@ class ConferenceModule {
 
         IO.setDefaultOkHttpCallFactory(okHttpClient)
 
-        return IO.socket("https://wss.viv.cat")
+        // return IO.socket("https://wss.viv.cat")
+        return IO.socket("http://192.168.0.155:3000")
                 .also {
                     socketIoLifecycleFactory.create(it).init()
                 }
