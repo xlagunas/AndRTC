@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.runner.AndroidJUnit4
 import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
 import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
@@ -117,7 +118,7 @@ class ContactFragmentTest {
             0
         )
 
-        verify(contactViewModel).callFriend(friend)
+        verify(contactViewModel).observeCall(listOf(friend))
     }
 
     private fun <VH : androidx.recyclerview.widget.RecyclerView.ViewHolder> setupFriendRelationshipAndViewHolderType(

@@ -1,7 +1,6 @@
 package cat.xlagunas.viv.contact
 
 import cat.xlagunas.data.call.CallApi
-import cat.xlagunas.data.call.CallConverter
 import cat.xlagunas.data.call.CallRepositoryImpl
 import cat.xlagunas.data.contact.ContactCache
 import cat.xlagunas.data.contact.ContactCacheImpl
@@ -11,6 +10,8 @@ import cat.xlagunas.data.contact.PhoneContactsDataSourceImpl
 import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.contact.PhoneContactsDataSource
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -47,5 +48,8 @@ class ContactModule {
         retrofit.create(CallApi::class.java)
 
     @Provides
-    fun provideCallConverter() = CallConverter()
+    // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
+    fun provideGson(): Gson {
+        return GsonBuilder().create()
+    }
 }

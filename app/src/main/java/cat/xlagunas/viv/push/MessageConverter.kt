@@ -11,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
 import javax.inject.Inject
 
-class MessageConverter @Inject constructor(/*rivate val gson: Gson*/) {
+class MessageConverter @Inject constructor() {
 
     fun toMessage(remoteMessage: RemoteMessage): Message? {
         val messageKey = remoteMessage.data["eventType"] ?: return null
@@ -19,7 +19,7 @@ class MessageConverter @Inject constructor(/*rivate val gson: Gson*/) {
         return try {
             val messageType = valueOf(messageKey)
             when (messageType) {
-                CREATE_CALL -> CallMessage(CREATE_CALL, parseRoomIdFromCallMsg(remoteMessage.data["params"]!!))
+                CREATE_CALL -> CallMessage(CREATE_CALL, remoteMessage.data["params"]!!)
                 ACCEPT_CALL -> TODO("Accept call flow still not implemented")
                 REJECT_CALL -> TODO("Reject call flow still not implemented")
                 REQUEST_FRIENDSHIP -> ContactMessage(REQUEST_FRIENDSHIP)
@@ -30,11 +30,5 @@ class MessageConverter @Inject constructor(/*rivate val gson: Gson*/) {
             Timber.e("Invalid eventType received on push notification $messageKey")
             null
         }
-    }
-
-    private fun parseRoomIdFromCallMsg(message: String): String {
-        // val callDto = gson.fromJson(message, CallDto::class.java)
-        // return callDto.roomId
-        return ""
     }
 }

@@ -1,6 +1,5 @@
 package cat.xlagunas.push
 
-import cat.xlagunas.push.MessageType
 import dagger.MapKey
 
 @MustBeDocumented

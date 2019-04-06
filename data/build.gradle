@@ -60,6 +60,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':domain')
     implementation project(':core')
+    implementation project(path: ':push')
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.dagger:dagger:2.21'

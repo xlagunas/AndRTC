@@ -26,7 +26,6 @@ class ContactViewModel
             .switchMap { contactRepository.getContacts() }.toLiveData()
     }
 
-
     fun findContact(searchTerm: String): LiveData<List<Friend>> {
         return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
     }
@@ -57,7 +56,7 @@ class ContactViewModel
         )
     }
 
-    fun observeCall(friends: List<Friend>) : LiveData<Call> {
+    fun observeCall(friends: List<Friend>): LiveData<Call> {
         return callRepository.createCall(friends).toFlowable().toLiveData()
     }
 }

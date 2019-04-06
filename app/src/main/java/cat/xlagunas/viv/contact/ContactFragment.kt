@@ -19,9 +19,9 @@ import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
 import cat.xlagunas.domain.call.Call
+import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.landing.MainViewModel
-import cat.xlagunas.viv.push.PushTokenPresenter
 import dagger.DaggerMonolythComponent
 import timber.log.Timber
 import javax.inject.Inject

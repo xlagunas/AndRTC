@@ -20,5 +20,4 @@ interface AuthenticationApi {
 
     @GET("/refresh/")
     fun refreshUserToken(): Single<AuthTokenDto>
-
 }

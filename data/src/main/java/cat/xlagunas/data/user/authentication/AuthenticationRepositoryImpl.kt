@@ -86,7 +86,6 @@ class AuthenticationRepositoryImpl
             .ignoreElement()
     }
 
-
     override fun logoutUser(): Completable {
         return Completable.fromAction { deleteAuthToken() }
             .andThen(Completable.fromAction { vivDatabase.clearAllTables() })

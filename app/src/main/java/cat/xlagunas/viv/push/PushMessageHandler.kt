@@ -4,6 +4,7 @@ import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.push.MessageConverter
 import cat.xlagunas.push.MessageProcessor
 import cat.xlagunas.push.MessageType
+import cat.xlagunas.push.PushTokenPresenter
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.DaggerMonolythComponent

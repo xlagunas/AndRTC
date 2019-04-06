@@ -5,6 +5,7 @@ import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.domain.call.Call
 import cat.xlagunas.domain.call.CallRepository
+import com.google.gson.Gson
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
@@ -12,7 +13,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import java.time.Instant
 
 class CallRepositoryImplTest {
 
@@ -27,13 +27,14 @@ class CallRepositoryImplTest {
         val schedulers =
             RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
 
-        callRepository = CallRepositoryImpl(callApi, FriendConverter(), CallConverter(),schedulers)
+        callRepository =
+            CallRepositoryImpl(callApi, FriendConverter(), CallConverter(Gson()), schedulers)
     }
 
     @Test
     fun whenCreateCall_thenCreateCallRequest() {
-        val fakeCallDto = CallDto("theRoomId", Instant.now())
-        val fakeCall = Call(fakeCallDto.roomId, fakeCallDto.date)
+        val fakeCallDto = CallDto("theRoomId")
+        val fakeCall = Call(fakeCallDto.roomId)
         val callParticipants = CallParticipantsDto(listOf(CallParticipantDto(5)))
 
         `when`(callApi.createCall(callParticipants)).thenReturn(Single.just(fakeCallDto))
@@ -42,16 +43,6 @@ class CallRepositoryImplTest {
             .test()
             .assertValue(fakeCall)
             .assertComplete()
-    }
-
-    @Test
-    fun whenAcceptCall_thenAcceptCallRequest() {
-        throw IllegalStateException()
-    }
-
-    @Test
-    fun whenRejectCall_thenRejectCallRequest() {
-        throw IllegalStateException()
     }
 
     private fun generateFakeFriend(friendId: Long): Friend {
