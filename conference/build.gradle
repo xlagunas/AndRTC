@@ -52,6 +52,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':app')
     kapt 'com.google.dagger:dagger-compiler:2.21'
+
     implementation 'com.google.dagger:dagger:2.21'
     implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
@@ -62,7 +63,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
 
-    //    implementation "org.jetbrains.kotlin:kotlinx-coroutines-core:$kotlin_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.0.0'
@@ -99,6 +99,6 @@ dependencies {
 
     // Assertions
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.ext:truth:1.1.0'
-    androidTestImplementation 'com.google.truth:truth:0.42'
+//    androidTestImplementation 'androidx.test.ext:truth:1.1.0'
+//    androidTestImplementation 'com.google.truth:truth:0.42'
 }

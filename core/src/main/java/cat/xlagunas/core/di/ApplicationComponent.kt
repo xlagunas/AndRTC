@@ -3,6 +3,7 @@ package cat.xlagunas.core.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.data.converter.FriendConverter
 import cat.xlagunas.core.data.converter.UserConverter
 import cat.xlagunas.core.data.db.FriendDao
@@ -40,6 +41,7 @@ interface ApplicationComponent {
     fun context(): Context
     fun application(): Application
     fun timeProvider(): TimeProvider
+    fun notificationManager() : NotificationManagerCompat
 
     @Component.Builder
     interface Builder {

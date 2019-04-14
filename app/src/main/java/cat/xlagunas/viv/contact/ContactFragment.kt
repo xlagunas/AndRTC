@@ -101,7 +101,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
 
     fun handleCall(call: Call) {
         Timber.d("Call Successfully created with id: ${call.id}")
-        startActivity(ContactUtils.generateCallIntent(call.id, context!!))
+        requireActivity().startActivity(ContactUtils.generateRoomIntent(call))
     }
 
     private fun setupSearchView() {

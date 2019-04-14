@@ -1,7 +1,11 @@
 package cat.xlagunas.viv.contact
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import cat.xlagunas.core.di.ApplicationModule
 import cat.xlagunas.domain.call.Call
 import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.push.Message
@@ -11,7 +15,8 @@ import javax.inject.Inject
 
 class CallMessageProcessor @Inject constructor(
     private val context: Context,
-    private val callRepository: CallRepository
+    private val callRepository: CallRepository,
+    private val notificationManager: NotificationManagerCompat
 ) :
     MessageProcessor {
     @SuppressLint("CheckResult")
@@ -22,7 +27,28 @@ class CallMessageProcessor @Inject constructor(
     }
 
     private fun startConference(call: Call) {
-        val intent = ContactUtils.generateCallIntent(call.id, context)
-        context.startActivity(intent)
+        createPriorityNotification(call)
     }
+
+    private fun createPriorityNotification(call: Call) {
+        val notification = NotificationCompat.Builder(context, ApplicationModule.CALL_CHANNEL_ID)
+            .setContentText("New Call received")
+            .setSmallIcon(android.R.drawable.ic_menu_call)
+            .addAction(generateAcceptAction(call))
+            .build()
+        notificationManager.notify(0, notification)
+    }
+
+    private fun generateAcceptAction(call: Call) = NotificationCompat.Action(
+        android.R.drawable.ic_menu_call,
+        "Accept",
+        getConferenceIntent(call)
+    )
+
+    private fun getConferenceIntent(call: Call) = PendingIntent.getActivity(
+        context,
+        1000,
+        ContactUtils.generateRoomIntent(call),
+        PendingIntent.FLAG_ONE_SHOT
+    )
 }

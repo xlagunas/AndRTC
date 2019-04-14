@@ -1,13 +1,19 @@
 package cat.xlagunas.core.di
 
+import android.annotation.TargetApi
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.data.auth.AuthTokenPreferenceDataStore
 import cat.xlagunas.core.data.time.SystemTimeProvider
 import cat.xlagunas.core.domain.auth.AuthTokenDataStore
-import cat.xlagunas.core.domain.time.TimeProvider
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.domain.time.TimeProvider
 import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,7 +30,8 @@ class ApplicationModule {
         context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
     @Provides
-    fun provideRxSchedulers() = RxSchedulers(Schedulers.io(), AndroidSchedulers.mainThread(), Schedulers.computation())
+    fun provideRxSchedulers() =
+        RxSchedulers(Schedulers.io(), AndroidSchedulers.mainThread(), Schedulers.computation())
 
     @Provides
     fun provideUserMapping() = cat.xlagunas.core.data.converter.UserConverter()
@@ -41,4 +48,28 @@ class ApplicationModule {
 
     @Provides
     fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
+
+    @Provides
+    fun provideNotificationManager(context: Context): NotificationManagerCompat {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(context)
+        }
+        return NotificationManagerCompat.from(context)
+    }
+
+    @TargetApi(26)
+    private fun createNotificationChannel(context: Context) {
+        val notificationManager =
+            context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+        val callNotificationChannel = NotificationChannel(
+            CALL_CHANNEL_ID,
+            "Call notifications",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        notificationManager.createNotificationChannel(callNotificationChannel)
+    }
+
+    companion object {
+        const val CALL_CHANNEL_ID = "call_channel"
+    }
 }
