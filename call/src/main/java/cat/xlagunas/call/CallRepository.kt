@@ -1,4 +1,4 @@
-package cat.xlagunas.domain.call
+package cat.xlagunas.call
 
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.push.Message

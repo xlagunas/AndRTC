@@ -1,10 +1,8 @@
-package cat.xlagunas.data.call
+package cat.xlagunas.call
 
 import cat.xlagunas.core.data.converter.FriendConverter
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.call.Call
-import cat.xlagunas.domain.call.CallRepository
 import com.google.gson.Gson
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +26,12 @@ class CallRepositoryImplTest {
             RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
 
         callRepository =
-            CallRepositoryImpl(callApi, FriendConverter(), CallConverter(Gson()), schedulers)
+            CallRepositoryImpl(
+                callApi,
+                FriendConverter(),
+                CallConverter(Gson()),
+                schedulers
+            )
     }
 
     @Test

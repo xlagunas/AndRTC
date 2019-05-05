@@ -1,4 +1,4 @@
-package cat.xlagunas.data.call
+package cat.xlagunas.call
 
 import io.reactivex.Single
 import retrofit2.http.Body

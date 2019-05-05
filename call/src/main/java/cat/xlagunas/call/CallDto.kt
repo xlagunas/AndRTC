@@ -1,4 +1,4 @@
-package cat.xlagunas.data.call
+package cat.xlagunas.call
 
 import com.google.gson.annotations.SerializedName
 

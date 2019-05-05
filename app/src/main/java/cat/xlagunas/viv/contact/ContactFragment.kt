@@ -14,11 +14,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.call.Call
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.domain.call.Call
 import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.landing.MainViewModel
@@ -33,7 +33,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     lateinit var searchView: SearchView
 
     @BindView(R.id.recycler_view)
-    lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
+    lateinit var recyclerView: RecyclerView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

@@ -1,10 +1,8 @@
-package cat.xlagunas.data.call
+package cat.xlagunas.call
 
 import cat.xlagunas.core.data.converter.FriendConverter
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.domain.call.Call
-import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.push.CallMessage
 import cat.xlagunas.push.Message
 import io.reactivex.Completable

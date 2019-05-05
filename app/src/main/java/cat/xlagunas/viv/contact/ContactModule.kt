@@ -1,13 +1,13 @@
 package cat.xlagunas.viv.contact
 
-import cat.xlagunas.data.call.CallApi
-import cat.xlagunas.data.call.CallRepositoryImpl
+import cat.xlagunas.call.CallApi
+import cat.xlagunas.call.CallRepository
+import cat.xlagunas.call.CallRepositoryImpl
 import cat.xlagunas.data.contact.ContactCache
 import cat.xlagunas.data.contact.ContactCacheImpl
 import cat.xlagunas.data.contact.ContactRepositoryImpl
 import cat.xlagunas.data.contact.ContactsApi
 import cat.xlagunas.data.contact.PhoneContactsDataSourceImpl
-import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.domain.contact.ContactRepository
 import cat.xlagunas.domain.contact.PhoneContactsDataSource
 import com.google.gson.Gson

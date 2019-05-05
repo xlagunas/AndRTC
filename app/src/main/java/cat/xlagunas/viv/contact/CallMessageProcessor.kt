@@ -5,9 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import cat.xlagunas.call.Call
+import cat.xlagunas.call.CallRepository
 import cat.xlagunas.core.di.ApplicationModule
-import cat.xlagunas.domain.call.Call
-import cat.xlagunas.domain.call.CallRepository
 import cat.xlagunas.push.Message
 import cat.xlagunas.push.MessageProcessor
 import timber.log.Timber

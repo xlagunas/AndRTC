@@ -96,6 +96,7 @@ dependencies {
     implementation project(':data')
     implementation project(':domain')
     implementation project(':push')
+    implementation project(':call')
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
     kapt 'com.jakewharton:butterknife-compiler:10.1.0'
