@@ -6,7 +6,7 @@ import cat.xlagunas.call.CallRepository
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.domain.user.authentication.AuthenticationRepository
+import cat.xlagunas.user.domain.AuthenticationRepository
 import cat.xlagunas.viv.commons.DisposableViewModel
 import cat.xlagunas.viv.commons.extension.toLiveData
 import timber.log.Timber
