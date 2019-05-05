@@ -40,9 +40,6 @@ class ApplicationModule {
     fun provideFriendMapping() = cat.xlagunas.core.data.converter.FriendConverter()
 
     @Provides
-    fun provideActivityMonitor() = cat.xlagunas.core.data.provider.ActivityMonitor()
-
-    @Provides
     fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore =
         AuthTokenPreferenceDataStore(sharedPreferences)
 

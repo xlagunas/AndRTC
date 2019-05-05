@@ -2,20 +2,19 @@ package dagger
 
 import cat.xlagunas.core.di.ApplicationComponent
 import cat.xlagunas.push.PushModule
+import cat.xlagunas.user.di.UserModule
 import cat.xlagunas.viv.commons.di.ViewModelModule
 import cat.xlagunas.viv.contact.ContactFragment
 import cat.xlagunas.viv.contact.ContactModule
 import cat.xlagunas.viv.landing.MainActivity
 import cat.xlagunas.viv.login.LoginFragment
-import cat.xlagunas.viv.login.LoginModule
 import cat.xlagunas.viv.profile.ProfileFragment
 import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.push.PushMessageProcessorsModule
 import cat.xlagunas.viv.register.RegisterFragment
-import cat.xlagunas.viv.register.RegisterModule
 
 @Component(
-    modules = [ViewModelModule::class, ContactModule::class, LoginModule::class, RegisterModule::class, PushModule::class, PushMessageProcessorsModule::class],
+    modules = [ViewModelModule::class, ContactModule::class, UserModule::class, PushModule::class, PushMessageProcessorsModule::class],
     dependencies = [ApplicationComponent::class]
 )
 interface MonolythComponent {

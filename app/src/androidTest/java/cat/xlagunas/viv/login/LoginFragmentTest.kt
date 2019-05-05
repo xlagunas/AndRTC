@@ -6,7 +6,6 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -44,7 +43,6 @@ class LoginFragmentTest {
 
     @Before
     fun setUp() {
-        `when`(loginViewModel.registerGoogle()).thenReturn(mock(LifecycleObserver::class.java))
         `when`(loginViewModel.onLoginStateChange()).thenReturn(loginState)
 
         testLoginFactory = TestLoginFactory(ViewModelUtil.createFor(loginViewModel))

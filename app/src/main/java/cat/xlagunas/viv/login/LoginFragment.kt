@@ -1,6 +1,5 @@
 package cat.xlagunas.viv.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,23 +12,17 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
-import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.extension.text
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.SignInButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.DaggerMonolythComponent
 import javax.inject.Inject
 
 @OpenForTesting
 class LoginFragment : Fragment(), Injectable {
-
-    @BindView(R.id.sign_in_button)
-    lateinit var signInButton: SignInButton
 
     @BindView(R.id.username_input_layout)
     lateinit var usernameInputLayout: com.google.android.material.textfield.TextInputLayout
@@ -64,8 +57,6 @@ class LoginFragment : Fragment(), Injectable {
         loginViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
-        lifecycle.addObserver(loginViewModel.registerGoogle())
-
         loginViewModel.onLoginStateChange()
             .observe(this, Observer(this::handleLoginResult))
     }
@@ -80,21 +71,8 @@ class LoginFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
-        signInButton.setOnClickListener { loginViewModel.initGoogleSignIn() }
         loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
         registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
-            loginViewModel.handleLoginResult(GoogleSignIn.getSignedInAccountFromIntent(data))
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycle.removeObserver(loginViewModel.registerGoogle())
     }
 
     private fun handleLoginResult(loginState: LoginState?) {

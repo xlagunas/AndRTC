@@ -6,12 +6,8 @@ import cat.xlagunas.core.BuildConfig
 import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
-import javax.inject.Inject
 
 open class VivApplication : Application() {
-
-    @Inject
-    lateinit var activityMonitor: cat.xlagunas.core.data.provider.ActivityMonitor
 
     private val appComponent: ApplicationComponent by lazy {
         DaggerApplicationComponent.builder().withApplication(this).build()
@@ -27,8 +23,6 @@ open class VivApplication : Application() {
         }
 
         appComponent(this).inject(this)
-
-        registerActivityLifecycleCallbacks(activityMonitor)
     }
 
     companion object {

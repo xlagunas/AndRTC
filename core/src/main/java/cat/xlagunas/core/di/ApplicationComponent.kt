@@ -9,7 +9,6 @@ import cat.xlagunas.core.data.converter.UserConverter
 import cat.xlagunas.core.data.db.FriendDao
 import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.data.db.VivDatabase
-import cat.xlagunas.core.data.provider.ActivityMonitor
 import cat.xlagunas.core.domain.auth.AuthTokenDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
@@ -35,7 +34,6 @@ interface ApplicationComponent {
     fun vivDabase(): VivDatabase
     fun sharedPreferences(): SharedPreferences
     fun retrofit(): Retrofit
-    fun activityMonitor(): ActivityMonitor
     fun friendConverter(): FriendConverter
     fun okHttpClient(): OkHttpClient
     fun context(): Context
