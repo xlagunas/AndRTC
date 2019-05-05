@@ -18,7 +18,7 @@ import cat.xlagunas.call.Call
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.landing.MainViewModel

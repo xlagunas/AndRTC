@@ -1,1 +1,1 @@
-include ':app', ':data', ':domain', ':conference', ':core', ':push', ':call'
+include ':app', ':data', ':domain', ':conference', ':core', ':push', ':call', ':contact'

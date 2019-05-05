@@ -15,7 +15,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
-import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.data.user.login.GoogleSignInDataSource.Companion.RC_SIGN_IN
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.extension.text

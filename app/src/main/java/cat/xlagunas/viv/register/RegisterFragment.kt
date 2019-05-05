@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 import com.google.android.material.snackbar.Snackbar

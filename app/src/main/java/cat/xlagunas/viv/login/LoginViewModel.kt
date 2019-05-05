@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.data.user.login.GoogleSignInDataSource
 import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
 import cat.xlagunas.domain.user.authentication.AuthenticationRepository

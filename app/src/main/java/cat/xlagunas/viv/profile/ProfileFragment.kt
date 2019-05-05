@@ -16,7 +16,7 @@ import butterknife.OnClick
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.data.OpenForTesting
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.login.InvalidLoginState
 import cat.xlagunas.viv.login.LoginState

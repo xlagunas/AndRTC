@@ -5,7 +5,7 @@ apply plugin: 'kotlin-allopen'
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
-    annotation 'cat.xlagunas.data.OpenClass'
+    annotation 'cat.xlagunas.core.OpenClass'
 }
 
 android {

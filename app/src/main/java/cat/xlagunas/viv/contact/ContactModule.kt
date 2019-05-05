@@ -3,13 +3,11 @@ package cat.xlagunas.viv.contact
 import cat.xlagunas.call.CallApi
 import cat.xlagunas.call.CallRepository
 import cat.xlagunas.call.CallRepositoryImpl
-import cat.xlagunas.data.contact.ContactCache
-import cat.xlagunas.data.contact.ContactCacheImpl
-import cat.xlagunas.data.contact.ContactRepositoryImpl
-import cat.xlagunas.data.contact.ContactsApi
-import cat.xlagunas.data.contact.PhoneContactsDataSourceImpl
-import cat.xlagunas.domain.contact.ContactRepository
-import cat.xlagunas.domain.contact.PhoneContactsDataSource
+import cat.xlagunas.contact.domain.ContactCache
+import cat.xlagunas.contact.data.ContactCacheImpl
+import cat.xlagunas.contact.domain.ContactRepository
+import cat.xlagunas.contact.data.ContactRepositoryImpl
+import cat.xlagunas.contact.data.ContactsApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -27,11 +25,6 @@ class ContactModule {
     @Provides
     fun provideContactsApi(retrofit: Retrofit): ContactsApi =
         retrofit.create(ContactsApi::class.java)
-
-    @Provides
-    fun providePhoneContactDataSource(phoneContactsDataSource: PhoneContactsDataSourceImpl): PhoneContactsDataSource {
-        return phoneContactsDataSource
-    }
 
     @Provides
     fun provideContactCache(contactCache: ContactCacheImpl): ContactCache {
