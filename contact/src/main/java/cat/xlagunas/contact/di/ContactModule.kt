@@ -45,4 +45,9 @@ class ContactModule {
     fun provideGson(): Gson {
         return GsonBuilder().create()
     }
+
+    @Provides
+    fun provideUserDao(database: VivDatabase): UserDao {
+        return database.userDao()
+    }
 }

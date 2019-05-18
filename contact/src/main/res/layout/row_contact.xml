@@ -23,16 +23,6 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:src="@android:color/darker_gray" />
 
-    <TextView
-        android:id="@+id/contact_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/contact_fullname"
-        android:layout_marginStart="72dp"
-        android:layout_marginBottom="20dp"
-        android:layout_toStartOf="@id/call_friend_button"
-        android:textSize="14sp"
-        tools:text="xlagunas" />
 
     <ImageButton
         android:id="@+id/call_friend_button"
@@ -44,5 +34,17 @@
         android:layout_marginRight="16dp"
         android:backgroundTint="@android:color/transparent"
         android:src="@drawable/ic_call" />
+
+    <TextView
+        android:id="@+id/contact_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact_fullname"
+        android:layout_marginStart="72dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toStartOf="@id/call_friend_button"
+        android:textSize="14sp"
+        tools:text="xlagunas" />
+
 
 </RelativeLayout>

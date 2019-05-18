@@ -89,9 +89,14 @@ class AuthenticationRepositoryImpl
 
     override fun logoutUser(): Completable {
         return Completable.fromAction { deleteAuthToken() }
+            .andThen(Completable.fromAction{deleteUserPreferences()})
             .andThen(Completable.fromAction { vivDatabase.clearAllTables() })
             .andThen(Completable.fromAction { sharedPreferences.edit { clear() } })
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
+    }
+
+    private fun deleteUserPreferences() {
+        return dataStore.deleteUserPreferences()
     }
 }

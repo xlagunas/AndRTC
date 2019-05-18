@@ -1,12 +1,21 @@
 package cat.xlagunas.viv.contact.viewholder
 
 import android.view.View
+import android.widget.ImageButton
+import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.contact.ContactListener
 
-class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) : FriendViewHolder(view, contactListener) {
+class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) :
+    FriendViewHolder(view, contactListener) {
+
+    @BindView(R2.id.accept_friendship_button)
+    lateinit var acceptFriendShipButton: ImageButton
+
+    @BindView(R2.id.reject_friendship_button)
+    lateinit var rejectFriendShipButton: ImageButton
 
     init {
         ButterKnife.bind(this, view)
