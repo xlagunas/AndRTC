@@ -17,4 +17,5 @@ interface AuthDataStore {
     fun updateCurrentUserId(userId: Long)
 
     fun getCurrentUserIdFlowable(): Flowable<Long>
+    fun deleteUserPreferences()
 }

@@ -11,7 +11,6 @@ import javax.inject.Inject
 class AuthPreferenceDataStore @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : AuthDataStore {
-
     companion object {
         private const val TOKEN = "token_preferences"
         private const val USER_ID = "current_user_preference"
@@ -35,5 +34,10 @@ class AuthPreferenceDataStore @Inject constructor(
 
     override fun getCurrentUserIdFlowable(): Flowable<Long> {
         return USER_ID_WRAPPER.toFlowable(BackpressureStrategy.LATEST)
+    }
+
+    override fun deleteUserPreferences() {
+        sharedPreferences.edit { remove(USER_ID) }
+        USER_ID_WRAPPER.onNext(-1)
     }
 }

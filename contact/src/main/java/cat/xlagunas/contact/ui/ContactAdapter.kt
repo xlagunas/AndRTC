@@ -3,7 +3,7 @@ package cat.xlagunas.contact.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import cat.xlagunas.contact.R2
+import cat.xlagunas.contact.R
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.FriendViewHolder
@@ -23,19 +23,19 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R2.layout.row_request_contact -> RequestFriendViewHolder(
+            R.layout.row_request_contact -> RequestFriendViewHolder(
                 holder,
                 contactListener
             )
-            R2.layout.row_pending_contact -> PendingFriendViewHolder(
+            R.layout.row_pending_contact -> PendingFriendViewHolder(
                 holder,
                 contactListener
             )
-            R2.layout.row_confirm_contact -> ConfirmFriendViewHolder(
+            R.layout.row_confirm_contact -> ConfirmFriendViewHolder(
                 holder,
                 contactListener
             )
-            R2.layout.row_contact -> CurrentFriendViewHolder(holder, contactListener)
+            R.layout.row_contact -> CurrentFriendViewHolder(holder, contactListener)
             else -> throw IllegalStateException("This should never be called")
         }
     }
@@ -56,10 +56,10 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position].relationshipStatus) {
-            NONE.name -> R2.layout.row_request_contact
-            REQUESTED.name -> R2.layout.row_pending_contact
-            ACCEPTED.name -> R2.layout.row_contact
-            PENDING.name -> R2.layout.row_confirm_contact
+            NONE.name -> R.layout.row_request_contact
+            REQUESTED.name -> R.layout.row_pending_contact
+            ACCEPTED.name -> R.layout.row_contact
+            PENDING.name -> R.layout.row_confirm_contact
             else -> throw IllegalStateException("This should never be called")
         }
     }

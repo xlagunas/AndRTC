@@ -91,6 +91,7 @@ dependencies {
     api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
     implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
