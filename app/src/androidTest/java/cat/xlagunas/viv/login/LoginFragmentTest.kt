@@ -22,7 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.runner.AndroidJUnit4
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.ViewModelUtil
+import cat.xlagunas.core.di.ViewModelUtil
 import com.google.android.material.snackbar.SnackbarContentLayout
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before

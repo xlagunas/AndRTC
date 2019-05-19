@@ -1,4 +1,4 @@
-package cat.xlagunas.contact.ui.contact
+package cat.xlagunas.contact.ui
 
 import android.os.Bundle
 import android.view.View
@@ -12,20 +12,17 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.runner.AndroidJUnit4
-import cat.xlagunas.contact.ui.ContactFragment
-import cat.xlagunas.contact.ui.ContactViewModel
-import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.push.PushTokenPresenter
-import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.ViewModelUtil
+import cat.xlagunas.contact.R
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
+import cat.xlagunas.core.di.ViewModelUtil
+import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.push.PushTokenPresenter
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
@@ -61,7 +58,7 @@ class ContactFragmentTest {
         onView(withId(R.id.recycler_view))
             .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText("FirstFriend"))))
 
-        onView(ViewMatchers.withId(R.id.recycler_view))
+        onView(withId(R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToPosition<RequestFriendViewHolder>(999))
     }
 
@@ -131,11 +128,7 @@ class ContactFragmentTest {
         contactsLiveData.postValue(listOf(friend))
 
         onView(withId(R.id.recycler_view))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<VH>(
-                    holderPosition, MyViewAction.clickChildViewWithId(actionId)
-                )
-            )
+            .perform(RecyclerViewActions.actionOnItemAtPosition(holderPosition, MyViewAction.clickChildViewWithId(actionId)))
     }
 
     private fun populateContactsList(): List<Friend> {
