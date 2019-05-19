@@ -8,15 +8,14 @@ import butterknife.OnClick
 import cat.xlagunas.contact.R2
 import cat.xlagunas.contact.ui.ContactListener
 
-class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) : FriendViewHolder(view, contactListener) {
+class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) :
+    FriendViewHolder(view, contactListener) {
 
-    //TODO REMOVE THE BINDVIEWS WHEN BUTTERKNIFE BUG IS FIXED
-    // (NOT GENERATING RIGHT R2 VALUES FOR THE ONCLICK UNLESS THIS IS PLACED)
     @BindView(R2.id.accept_friendship_button)
-    lateinit var acceptButton: ImageButton
+    lateinit var acceptFriendShipButton: ImageButton
 
     @BindView(R2.id.reject_friendship_button)
-    lateinit var rejectButton: ImageButton
+    lateinit var rejectFriendShipButton: ImageButton
 
     init {
         ButterKnife.bind(this, view)

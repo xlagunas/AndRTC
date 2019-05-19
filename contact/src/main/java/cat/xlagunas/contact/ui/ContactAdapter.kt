@@ -2,6 +2,7 @@ package cat.xlagunas.contact.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.R2
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
@@ -15,14 +16,11 @@ import cat.xlagunas.core.data.net.Relationship.REQUESTED
 import cat.xlagunas.core.domain.entity.Friend
 
 class ContactAdapter constructor(private val contactListener: ContactListener) :
-    androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = emptyList<Friend>()
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
             R2.layout.row_request_contact -> RequestFriendViewHolder(
@@ -45,7 +43,7 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(
-        holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
+        holder: RecyclerView.ViewHolder,
         position: Int
     ) {
         (holder as FriendViewHolder).bind(items[position])

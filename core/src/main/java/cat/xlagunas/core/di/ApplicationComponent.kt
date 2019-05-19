@@ -7,7 +7,6 @@ import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.data.converter.FriendConverter
 import cat.xlagunas.core.data.converter.UserConverter
 import cat.xlagunas.core.data.db.FriendDao
-import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.data.db.VivDatabase
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
@@ -26,7 +25,6 @@ import retrofit2.Retrofit
 )
 interface ApplicationComponent {
 
-    fun userDao(): UserDao
     fun friendDao(): FriendDao
     fun userConverter(): UserConverter
     fun rxSchedulers(): RxSchedulers
