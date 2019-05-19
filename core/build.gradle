@@ -30,7 +30,7 @@ android {
 
         development {
             versionNameSuffix '.local'
-            buildConfigField "String", "ENDPOINT", '"http://172.16.2.0:8080"'
+            buildConfigField "String", "ENDPOINT", '"http://192.168.0.159:8080"'
         }
     }
 
