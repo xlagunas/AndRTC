@@ -9,6 +9,7 @@ import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
+import io.reactivex.BackpressureStrategy
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -20,8 +21,13 @@ class ContactViewModel
     private val callRepository: CallRepository
 ) : DisposableViewModel() {
 
+    init {
+        Timber.d("Creating ViewModel")
+    }
+
     val contacts by lazy {
-        dataStore.getCurrentUserIdFlowable()
+        dataStore.getCurrentUserIdFlowable().toFlowable(BackpressureStrategy.BUFFER)
+            .doOnSubscribe { Timber.d("Subscribed to contacts") }
             .doOnNext { Timber.d("Next user id: $it") }
             .switchMap { contactRepository.getContacts() }.toLiveData()
     }
@@ -58,5 +64,10 @@ class ContactViewModel
 
     fun observeCall(friends: List<Friend>): LiveData<Call> {
         return callRepository.createCall(friends).toFlowable().toLiveData()
+    }
+
+    override fun onCleared() {
+        Timber.d("Calling onCleared $this")
+        super.onCleared()
     }
 }

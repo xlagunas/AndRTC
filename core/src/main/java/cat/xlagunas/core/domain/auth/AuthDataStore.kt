@@ -1,6 +1,6 @@
 package cat.xlagunas.core.domain.auth
 
-import io.reactivex.Flowable
+import io.reactivex.subjects.BehaviorSubject
 
 interface AuthDataStore {
 
@@ -16,6 +16,7 @@ interface AuthDataStore {
 
     fun updateCurrentUserId(userId: Long)
 
-    fun getCurrentUserIdFlowable(): Flowable<Long>
+    fun getCurrentUserIdFlowable(): BehaviorSubject<Long>
+
     fun deleteUserPreferences()
 }

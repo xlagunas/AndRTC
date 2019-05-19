@@ -56,16 +56,10 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
-        contactViewModel.contacts.observe(this, Observer(this::renderFriends))
-        //userViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)
-        //userViewModel.isUserLoggedIn.observe(this, Observer(this::registerPushToken))
+        contactViewModel.contacts.observe(viewLifecycleOwner, Observer(this::renderFriends))
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_contact, container, false)
     }
 

@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'androidx.navigation.safeargs'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-allopen'
 
 allOpen {
@@ -111,8 +111,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
-    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
-    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
     implementation 'androidx.room:room-runtime:2.1.0-alpha06'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.github.bumptech.glide:glide:4.8.0'
