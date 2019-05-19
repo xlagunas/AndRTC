@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.commons
+package cat.xlagunas.core.common
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable

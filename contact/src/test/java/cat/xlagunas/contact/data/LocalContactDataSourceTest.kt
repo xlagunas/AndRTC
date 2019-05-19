@@ -7,6 +7,7 @@ import cat.xlagunas.core.data.db.FriendDao
 import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.data.db.UserEntity
 import cat.xlagunas.core.data.db.VivDatabase
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.Friend
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
@@ -14,6 +15,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -33,25 +36,25 @@ class LocalContactDataSourceTest {
 
     private val friendConverter = FriendConverter()
 
+    @Mock
+    private lateinit var authDataStore: AuthDataStore
+
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        vivDatabase = Room.inMemoryDatabaseBuilder(
-            RuntimeEnvironment.application,
-            VivDatabase::class.java
-        )
+        vivDatabase = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-
-        userEntity = UserEntity(1, "username", "firstname", "lastname", "email", "url")
-
+        val fakeUserId = 1L
+        userEntity = UserEntity(fakeUserId, "username", "firstname", "lastname", "email", "url")
+        `when`(authDataStore.getCurrentUserId()).thenReturn(fakeUserId)
         friendDao = vivDatabase.friendDao()
         userDao = vivDatabase.userDao()
         userDao.insert(userEntity)
-        localContactDataSource = LocalContactDataSource(friendDao, userDao, friendConverter)
+        localContactDataSource = LocalContactDataSource(friendDao, authDataStore, friendConverter)
     }
 
     @After

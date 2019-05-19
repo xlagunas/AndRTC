@@ -3,8 +3,8 @@ package cat.xlagunas.viv.push
 import cat.xlagunas.push.MessageProcessor
 import cat.xlagunas.push.MessageType
 import cat.xlagunas.push.PushMessageProcessorKey
-import cat.xlagunas.viv.contact.CallMessageProcessor
-import cat.xlagunas.viv.contact.ContactsMessageProcessor
+import cat.xlagunas.call.CallMessageProcessor
+import cat.xlagunas.contact.ui.ContactsMessageProcessor
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

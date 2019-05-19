@@ -9,9 +9,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import cat.xlagunas.core.data.auth.AuthTokenPreferenceDataStore
+import androidx.lifecycle.ViewModelProvider
+import cat.xlagunas.core.data.auth.AuthPreferenceDataStore
 import cat.xlagunas.core.data.time.SystemTimeProvider
-import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import dagger.Module
@@ -40,8 +41,8 @@ class ApplicationModule {
     fun provideFriendMapping() = cat.xlagunas.core.data.converter.FriendConverter()
 
     @Provides
-    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthTokenDataStore =
-        AuthTokenPreferenceDataStore(sharedPreferences)
+    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore =
+        AuthPreferenceDataStore(sharedPreferences)
 
     @Provides
     fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
@@ -64,6 +65,11 @@ class ApplicationModule {
             NotificationManager.IMPORTANCE_HIGH
         )
         notificationManager.createNotificationChannel(callNotificationChannel)
+    }
+
+    @Provides
+    fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory {
+        return factory
     }
 
     companion object {

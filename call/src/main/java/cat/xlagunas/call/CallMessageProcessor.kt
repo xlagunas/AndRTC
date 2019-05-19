@@ -1,13 +1,13 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.call
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import cat.xlagunas.call.Call
-import cat.xlagunas.call.CallRepository
+import cat.xlagunas.core.common.ContactUtils
 import cat.xlagunas.core.di.ApplicationModule
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.push.Message
 import cat.xlagunas.push.MessageProcessor
 import timber.log.Timber

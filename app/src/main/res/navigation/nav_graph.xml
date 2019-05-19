@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/contactFragment"
-        android:name="cat.xlagunas.viv.contact.ContactFragment"
+        android:name="cat.xlagunas.contact.ui.ContactFragment"
         android:label="fragment_contact"
         tools:layout="@layout/fragment_contact" />
 

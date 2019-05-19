@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.contact.ui
 
 import android.annotation.SuppressLint
 import cat.xlagunas.contact.domain.ContactRepository

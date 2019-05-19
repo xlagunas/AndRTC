@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.contact.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,42 +8,37 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
-import cat.xlagunas.call.Call
+import cat.xlagunas.contact.R
+import cat.xlagunas.contact.R2
+import cat.xlagunas.contact.di.ContactViewModelFactory
+import cat.xlagunas.contact.di.DaggerContactComponent
+import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.ContactUtils
 import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.push.PushTokenPresenter
-import cat.xlagunas.viv.R
-import cat.xlagunas.viv.landing.MainViewModel
-import dagger.DaggerMonolythComponent
 import timber.log.Timber
 import javax.inject.Inject
 
 @OpenForTesting
 class ContactFragment : Fragment(), Injectable, ContactListener {
 
-    @BindView(R.id.search)
+    @BindView(R2.id.search)
     lateinit var searchView: SearchView
 
-    @BindView(R.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     lateinit var recyclerView: RecyclerView
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var pushTokenPresenter: PushTokenPresenter
+    internal lateinit var viewModelFactory: ContactViewModelFactory
 
     private lateinit var contactViewModel: ContactViewModel
-
-    private lateinit var userViewModel: MainViewModel
 
     private val contactAdapter by lazy { ContactAdapter(this) }
 
@@ -53,19 +48,17 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     protected fun inject() {
-        DaggerMonolythComponent.builder()
+        DaggerContactComponent.builder()
             .withParentComponent(VivApplication.appComponent(context!!)).build()
             .inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(this, Observer(this::renderFriends))
-        userViewModel =
-            ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)
-        userViewModel.isUserLoggedIn.observe(this, Observer(this::registerPushToken))
+        //userViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(MainViewModel::class.java)
+        //userViewModel.isUserLoggedIn.observe(this, Observer(this::registerPushToken))
     }
 
     override fun onCreateView(
@@ -135,12 +128,6 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
                     LinearLayout.VERTICAL
                 )
             )
-        }
-    }
-
-    private fun registerPushToken(isUserRegistered: Boolean) {
-        if (!pushTokenPresenter.isPushTokenRegistered() && isUserRegistered) {
-            pushTokenPresenter.registerToken()
         }
     }
 

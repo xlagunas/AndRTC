@@ -1,11 +1,11 @@
 package dagger
 
+import cat.xlagunas.contact.di.ContactModule
+import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core.di.ApplicationComponent
 import cat.xlagunas.push.PushModule
 import cat.xlagunas.user.di.UserModule
 import cat.xlagunas.viv.commons.di.ViewModelModule
-import cat.xlagunas.viv.contact.ContactFragment
-import cat.xlagunas.viv.contact.ContactModule
 import cat.xlagunas.viv.landing.MainActivity
 import cat.xlagunas.viv.login.LoginFragment
 import cat.xlagunas.viv.profile.ProfileFragment

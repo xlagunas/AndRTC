@@ -1,28 +1,28 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.contact.ui
 
 import androidx.lifecycle.LiveData
-import cat.xlagunas.call.Call
 import cat.xlagunas.call.CallRepository
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.DisposableViewModel
+import cat.xlagunas.core.common.toLiveData
+import cat.xlagunas.core.domain.auth.AuthDataStore
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.user.domain.AuthenticationRepository
-import cat.xlagunas.viv.commons.DisposableViewModel
-import cat.xlagunas.viv.commons.extension.toLiveData
 import timber.log.Timber
 import javax.inject.Inject
 
 @OpenForTesting
 class ContactViewModel
 @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository,
     private val contactRepository: ContactRepository,
+    private val dataStore: AuthDataStore,
     private val callRepository: CallRepository
 ) : DisposableViewModel() {
 
     val contacts by lazy {
-        authenticationRepository.getUser()
-            .doOnNext { Timber.d("Next user: ${it.username}") }
+        dataStore.getCurrentUserIdFlowable()
+            .doOnNext { Timber.d("Next user id: $it") }
             .switchMap { contactRepository.getContacts() }.toLiveData()
     }
 

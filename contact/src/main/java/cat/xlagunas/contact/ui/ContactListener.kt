@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.contact.ui
 
 import cat.xlagunas.core.domain.entity.Friend
 

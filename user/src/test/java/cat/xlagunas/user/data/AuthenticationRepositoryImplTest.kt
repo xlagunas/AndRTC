@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import cat.xlagunas.core.data.converter.UserConverter
 import cat.xlagunas.core.data.db.UserDao
-import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.user.domain.AuthenticationCredentials
@@ -43,7 +43,7 @@ class AuthenticationRepositoryImplTest {
     private lateinit var authenticationApi: AuthenticationApi
 
     @Mock
-    private lateinit var authTokenDataStore: AuthTokenDataStore
+    private lateinit var authDataStore: AuthDataStore
 
     @Before
     fun setUp() {
@@ -59,7 +59,7 @@ class AuthenticationRepositoryImplTest {
             userDao,
             userConverter,
             RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-            authTokenDataStore,
+            authDataStore,
             database,
             RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
@@ -106,7 +106,7 @@ class AuthenticationRepositoryImplTest {
         authenticationRepository.login(authenticationCredentials)
             .test().assertComplete()
 
-        verify(authTokenDataStore).insertAuthToken(authToken)
+        verify(authDataStore).insertAuthToken(authToken)
     }
 
     @Test
@@ -124,7 +124,7 @@ class AuthenticationRepositoryImplTest {
 
         authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
 
-        verify(authTokenDataStore, never()).insertAuthToken(ArgumentMatchers.anyString())
+        verify(authDataStore, never()).insertAuthToken(ArgumentMatchers.anyString())
     }
 
     private fun mockedUserDto() =

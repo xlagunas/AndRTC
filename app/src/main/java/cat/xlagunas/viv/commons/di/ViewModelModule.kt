@@ -2,9 +2,9 @@ package cat.xlagunas.viv.commons.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import cat.xlagunas.contact.ui.ContactViewModel
+import cat.xlagunas.core.di.ViewModelFactory
 import cat.xlagunas.core.di.ViewModelKey
-import cat.xlagunas.viv.contact.ContactViewModel
-import cat.xlagunas.viv.contact.viewholder.FriendshipViewModel
 import cat.xlagunas.viv.landing.MainViewModel
 import cat.xlagunas.viv.login.LoginViewModel
 import cat.xlagunas.viv.profile.ProfileViewModel
@@ -30,11 +30,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun provideContactViewModel(mainViewModel: MainViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(FriendshipViewModel::class)
-    abstract fun provideFriendshipViewModel(friendshipViewModel: FriendshipViewModel): ViewModel
 
     @Binds
     @IntoMap

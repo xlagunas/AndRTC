@@ -2,7 +2,7 @@ package cat.xlagunas.user.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.user.domain.AuthenticationCredentials
@@ -19,7 +19,7 @@ class AuthenticationRepositoryImpl
     private val userDao: cat.xlagunas.core.data.db.UserDao,
     private val userConverter: cat.xlagunas.core.data.converter.UserConverter,
     private val schedulers: RxSchedulers,
-    private val tokenDataStore: AuthTokenDataStore,
+    private val dataStore: AuthDataStore,
     private val vivDatabase: cat.xlagunas.core.data.db.VivDatabase,
     private val sharedPreferences: SharedPreferences
 ) : AuthenticationRepository {
@@ -65,20 +65,21 @@ class AuthenticationRepositoryImpl
             .doOnSuccess { insertAuthToken(it.token) }
             .flatMap { authenticationApi.getUser() }
             .map { userConverter.toUserEntity(it) }
-            .map(userDao::insert)
+            .doOnSuccess(userDao::insert)
+            .doOnSuccess { dataStore.updateCurrentUserId(it.id!!) }
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
             .doOnSuccess { Timber.i("Successfully logged in user") }
             .ignoreElement()
     }
 
-    override fun authToken(): String? = tokenDataStore.authToken()
+    override fun authToken(): String? = dataStore.authToken()
 
-    override fun isAuthTokenAvailable(): Boolean = tokenDataStore.isAuthTokenAvailable()
+    override fun isAuthTokenAvailable(): Boolean = dataStore.isAuthTokenAvailable()
 
-    override fun insertAuthToken(token: String) = tokenDataStore.insertAuthToken(token)
+    override fun insertAuthToken(token: String) = dataStore.insertAuthToken(token)
 
-    override fun deleteAuthToken() = tokenDataStore.deleteAuthToken()
+    override fun deleteAuthToken() = dataStore.deleteAuthToken()
 
     override fun refreshToken(): Completable {
         return authenticationApi.refreshUserToken()

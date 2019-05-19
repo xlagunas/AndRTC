@@ -1,6 +1,7 @@
 package cat.xlagunas.call
 
 import cat.xlagunas.core.data.converter.FriendConverter
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.push.CallMessage

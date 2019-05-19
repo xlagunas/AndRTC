@@ -1,11 +1,11 @@
 package cat.xlagunas.core.data.net.interceptors
 
-import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
-class AuthHeaderInterceptor @Inject constructor(private val authTokenDataStore: AuthTokenDataStore) : Interceptor {
+class AuthHeaderInterceptor @Inject constructor(private val authDataStore: AuthDataStore) : Interceptor {
 
     companion object {
         @JvmStatic
@@ -16,13 +16,13 @@ class AuthHeaderInterceptor @Inject constructor(private val authTokenDataStore: 
 
         var request = chain.request()
 
-        if (authTokenDataStore.isAuthTokenAvailable()) {
+        if (authDataStore.isAuthTokenAvailable()) {
 
             request?.header(AUTH_HEADER).isNullOrEmpty()
                 .let {
                     request = chain.request()!!
                         .newBuilder()
-                        .addHeader(AUTH_HEADER, authTokenDataStore.authToken()!!).build()
+                        .addHeader(AUTH_HEADER, authDataStore.authToken()!!).build()
                 }
         }
 

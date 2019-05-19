@@ -5,7 +5,7 @@ import cat.xlagunas.core.di.ApplicationModule
 import cat.xlagunas.core.di.DatabaseModule
 import cat.xlagunas.core.di.NetworkModule
 import cat.xlagunas.viv.commons.TestApplication
-import cat.xlagunas.viv.contact.ContactModule
+import cat.xlagunas.contact.di.ContactModule
 import cat.xlagunas.user.di.UserModule
 import dagger.BindsInstance
 import dagger.Component

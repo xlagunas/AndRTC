@@ -3,8 +3,8 @@ package cat.xlagunas.viv.profile
 import androidx.lifecycle.SingleLiveEvent
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.domain.AuthenticationRepository
-import cat.xlagunas.viv.commons.DisposableViewModel
-import cat.xlagunas.viv.commons.extension.toLiveData
+import cat.xlagunas.core.common.DisposableViewModel
+import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.viv.login.InvalidLoginState
 import cat.xlagunas.viv.login.LoginState
 import cat.xlagunas.viv.login.Logout

@@ -9,7 +9,7 @@ import cat.xlagunas.core.data.converter.UserConverter
 import cat.xlagunas.core.data.db.FriendDao
 import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.data.db.VivDatabase
-import cat.xlagunas.core.domain.auth.AuthTokenDataStore
+import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import dagger.BindsInstance
@@ -30,7 +30,7 @@ interface ApplicationComponent {
     fun friendDao(): FriendDao
     fun userConverter(): UserConverter
     fun rxSchedulers(): RxSchedulers
-    fun authTokenDataStore(): AuthTokenDataStore
+    fun authTokenDataStore(): AuthDataStore
     fun vivDabase(): VivDatabase
     fun sharedPreferences(): SharedPreferences
     fun retrofit(): Retrofit

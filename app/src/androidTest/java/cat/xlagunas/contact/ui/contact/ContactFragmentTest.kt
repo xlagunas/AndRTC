@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.contact.ui.contact
 
 import android.os.Bundle
 import android.view.View
@@ -17,13 +17,15 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.runner.AndroidJUnit4
+import cat.xlagunas.contact.ui.ContactFragment
+import cat.xlagunas.contact.ui.ContactViewModel
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.ViewModelUtil
-import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.CurrentFriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
+import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
+import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
+import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
@@ -44,7 +46,7 @@ class ContactFragmentTest {
 
     @Before
     fun setUp() {
-        testContactFactory = TestContactFragmentFactory(ViewModelUtil.createFor(contactViewModel), pushTokenPresenter)
+        testContactFactory = TestContactFragmentFactory(ViewModelUtil.createFor(contactViewModel))
 
         `when`(pushTokenPresenter.isPushTokenRegistered()).thenReturn(false)
         `when`(contactViewModel.contacts).thenReturn(contactsLiveData)
@@ -167,8 +169,7 @@ class ContactFragmentTest {
     }
 
     class TestContactFragmentFactory(
-        private val contactViewModelFactory: ViewModelProvider.Factory,
-        private val pushPresenter: PushTokenPresenter
+        private val contactViewModelFactory: ViewModelProvider.Factory
     ) : FragmentFactory() {
         override fun instantiate(
             classLoader: ClassLoader,
@@ -178,7 +179,6 @@ class ContactFragmentTest {
             return TestContactFragment()
                 .apply {
                     viewModelFactory = contactViewModelFactory
-                    pushTokenPresenter = pushPresenter
                 }
         }
     }

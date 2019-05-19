@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.commons.extension
+package cat.xlagunas.core.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams

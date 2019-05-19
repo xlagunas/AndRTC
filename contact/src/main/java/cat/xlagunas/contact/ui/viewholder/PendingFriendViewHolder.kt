@@ -1,8 +1,8 @@
-package cat.xlagunas.viv.contact.viewholder
+package cat.xlagunas.contact.ui.viewholder
 
 import android.view.View
 import butterknife.ButterKnife
-import cat.xlagunas.viv.contact.ContactListener
+import cat.xlagunas.contact.ui.ContactListener
 
 class PendingFriendViewHolder(view: View, contactListener: ContactListener) : FriendViewHolder(view, contactListener) {
 

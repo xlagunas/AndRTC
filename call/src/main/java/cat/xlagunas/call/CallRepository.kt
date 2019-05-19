@@ -1,5 +1,6 @@
 package cat.xlagunas.call
 
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.push.Message
 import io.reactivex.Completable

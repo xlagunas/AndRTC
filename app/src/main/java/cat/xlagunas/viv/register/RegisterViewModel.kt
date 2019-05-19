@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.user.domain.AuthenticationRepository
-import cat.xlagunas.viv.commons.DisposableViewModel
+import cat.xlagunas.core.common.DisposableViewModel
 import timber.log.Timber
 import javax.inject.Inject
 

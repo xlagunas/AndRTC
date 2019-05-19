@@ -1,8 +1,8 @@
-package cat.xlagunas.viv.contact
+package cat.xlagunas.core.common
 
 import android.content.Intent
 import android.net.Uri
-import cat.xlagunas.call.Call
+import cat.xlagunas.core.domain.entity.Call
 import okhttp3.HttpUrl
 
 object ContactUtils {
