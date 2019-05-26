@@ -29,7 +29,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
@@ -126,19 +125,13 @@ class LoginFragmentTest {
     }
 
     class TestLoginFragment : LoginFragment() {
-        val navController = Mockito.mock(NavController::class.java)
+        val navController = mock(NavController::class.java)
         override fun navController() = navController
-
-        override fun inject() {}
     }
 
     class TestLoginFactory(private val loginViewModelFactory: ViewModelProvider.Factory) :
         FragmentFactory() {
-        override fun instantiate(
-            classLoader: ClassLoader,
-            className: String,
-            args: Bundle?
-        ): Fragment {
+        override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
             return TestLoginFragment().apply { viewModelFactory = loginViewModelFactory }
         }
     }

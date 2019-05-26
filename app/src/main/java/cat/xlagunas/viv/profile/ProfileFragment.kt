@@ -7,24 +7,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
-import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.data.di.viewModelProviderFactory
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.login.InvalidLoginState
 import cat.xlagunas.viv.login.LoginState
 import cat.xlagunas.viv.login.Logout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import dagger.DaggerMonolythComponent
-import javax.inject.Inject
 
 @OpenForTesting
 class
@@ -45,20 +42,11 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
     @BindView(R.id.profile_lastname)
     lateinit var lastName: TextView
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var profileViewModel: ProfileViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder()
-            .withParentComponent(VivApplication.appComponent(context!!)).build().inject(this)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
+        profileViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(ProfileViewModel::class.java)
         profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
         profileViewModel.user.observe(this, Observer(this::onUserEvent))
         profileViewModel.getLoginStatus()

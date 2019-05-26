@@ -6,7 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.common.ContactUtils
-import cat.xlagunas.core.di.ApplicationModule
+import cat.xlagunas.core.common.PushUtils
 import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.push.Message
 import cat.xlagunas.push.MessageProcessor
@@ -31,7 +31,7 @@ class CallMessageProcessor @Inject constructor(
     }
 
     private fun createPriorityNotification(call: Call) {
-        val notification = NotificationCompat.Builder(context, ApplicationModule.CALL_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, PushUtils.CALL_CHANNEL_ID)
             .setContentText("New Call received")
             .setSmallIcon(android.R.drawable.ic_menu_call)
             .addAction(generateAcceptAction(call))

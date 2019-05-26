@@ -1,16 +1,22 @@
-package cat.xlagunas.core.di
+package dagger
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.core.BuildConfig
+import cat.xlagunas.core.data.di.HasViewModelFactory
 import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
-open class VivApplication : Application() {
+open class VivApplication : Application(), HasViewModelFactory {
 
-    private val appComponent: ApplicationComponent by lazy {
-        DaggerApplicationComponent.builder().withApplication(this).build()
+    override fun factory(): ViewModelProvider.Factory {
+        return appComponent.viewModelProvider()
+    }
+
+    val appComponent: ApplicationComponent by lazy {
+        initApplicationComponent()
     }
 
     override fun onCreate() {
@@ -21,8 +27,10 @@ open class VivApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+    }
 
-        appComponent(this).inject(this)
+    private fun initApplicationComponent(): ApplicationComponent {
+        return DaggerApplicationComponent.builder().withApplication(this).build()
     }
 
     companion object {

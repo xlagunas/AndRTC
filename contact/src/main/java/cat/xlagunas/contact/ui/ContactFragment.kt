@@ -15,16 +15,13 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.contact.R
 import cat.xlagunas.contact.R2
-import cat.xlagunas.contact.di.ContactViewModelFactory
-import cat.xlagunas.contact.di.DaggerContactComponent
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.ContactUtils
+import cat.xlagunas.core.data.di.viewModelProviderFactory
 import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
 import timber.log.Timber
-import javax.inject.Inject
 
 @OpenForTesting
 class ContactFragment : Fragment(), Injectable, ContactListener {
@@ -35,31 +32,22 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     @BindView(R2.id.recycler_view)
     lateinit var recyclerView: RecyclerView
 
-    @Inject
-    internal lateinit var viewModelFactory: ContactViewModelFactory
-
     private lateinit var contactViewModel: ContactViewModel
 
     private val contactAdapter by lazy { ContactAdapter(this) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        inject()
-    }
-
-    protected fun inject() {
-        DaggerContactComponent.builder()
-            .withParentComponent(VivApplication.appComponent(context!!)).build()
-            .inject(this)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, viewModelFactory).get(ContactViewModel::class.java)
+        contactViewModel = ViewModelProviders.of(this, viewModelProviderFactory())
+            .get(ContactViewModel::class.java)
         contactViewModel.contacts.observe(viewLifecycleOwner, Observer(this::renderFriends))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_contact, container, false)
     }
 

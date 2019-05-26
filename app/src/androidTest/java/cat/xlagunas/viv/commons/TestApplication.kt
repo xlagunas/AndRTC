@@ -1,6 +1,6 @@
 package cat.xlagunas.viv.commons
 
-import cat.xlagunas.core.di.VivApplication
+import dagger.VivApplication
 
 class TestApplication : VivApplication() {
 

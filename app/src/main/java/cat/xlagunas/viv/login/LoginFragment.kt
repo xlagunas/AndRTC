@@ -7,19 +7,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.data.di.viewModelProviderFactory
 import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.extension.text
 import com.google.android.material.snackbar.Snackbar
-import dagger.DaggerMonolythComponent
-import javax.inject.Inject
 
 @OpenForTesting
 class LoginFragment : Fragment(), Injectable {
@@ -36,26 +33,12 @@ class LoginFragment : Fragment(), Injectable {
     @BindView(R.id.register)
     lateinit var registerButton: Button
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var loginViewModel: LoginViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        inject()
-    }
-
-    protected fun inject() {
-        DaggerMonolythComponent.builder()
-            .withParentComponent(VivApplication.appComponent(context!!)).build()
-            .inject(this)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         loginViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+            ViewModelProviders.of(this, viewModelProviderFactory()).get(LoginViewModel::class.java)
 
         loginViewModel.onLoginStateChange()
             .observe(this, Observer(this::handleLoginResult))

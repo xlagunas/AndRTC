@@ -10,8 +10,6 @@ import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.data.db.VivDatabase
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -41,12 +39,6 @@ class ContactModule {
     @Provides
     fun provideCallApi(retrofit: Retrofit): CallApi =
         retrofit.create(CallApi::class.java)
-
-    @Provides
-    // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
-    fun provideGson(): Gson {
-        return GsonBuilder().create()
-    }
 
     @Provides
     fun provideUserDao(database: VivDatabase): UserDao {

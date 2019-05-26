@@ -6,20 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import cat.xlagunas.core.di.Injectable
-import cat.xlagunas.core.di.VivApplication
-import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.data.di.viewModelProviderFactory
+import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-import dagger.DaggerMonolythComponent
 import timber.log.Timber
-import javax.inject.Inject
 
 @OpenForTesting
 class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
@@ -28,23 +25,9 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
     private lateinit var actionButton: com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var binding: ActivityRegisterBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        inject()
-    }
-
-    protected fun inject() {
-        DaggerMonolythComponent.builder()
-            .withParentComponent(VivApplication.appComponent(context!!)).build()
-            .inject(this)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        registerViewModel = ViewModelProviders.of(this, viewModelFactory).get(RegisterViewModel::class.java)
+        registerViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(RegisterViewModel::class.java)
         registerViewModel.findUser().observe(this, Observer(this::handleUserAlreadyLoggedIn))
         registerViewModel.registrationState.observe(this, Observer(this::handleRegistration))
     }

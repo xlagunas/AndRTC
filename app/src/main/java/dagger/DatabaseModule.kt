@@ -1,11 +1,9 @@
-package cat.xlagunas.core.di
+package dagger
 
 import android.content.Context
 import androidx.room.Room
 import cat.xlagunas.core.data.db.FriendDao
 import cat.xlagunas.core.data.db.VivDatabase
-import dagger.Module
-import dagger.Provides
 
 /**
  * Created by xavier.lagunas on 27/12/17.

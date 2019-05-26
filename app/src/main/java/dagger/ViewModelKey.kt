@@ -1,4 +1,4 @@
-package cat.xlagunas.core.di
+package dagger
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

@@ -1,4 +1,4 @@
-package cat.xlagunas.core.di
+package dagger
 
 import android.app.Application
 import cat.xlagunas.core.BuildConfig

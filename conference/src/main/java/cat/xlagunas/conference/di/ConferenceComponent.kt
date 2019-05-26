@@ -1,13 +1,13 @@
 package cat.xlagunas.conference.di
 
 import cat.xlagunas.conference.ui.ConferenceActivity
-import cat.xlagunas.core.di.ApplicationComponent
+import cat.xlagunas.core.di.Feature
+import dagger.ApplicationComponent
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
 @Component(modules = [ConferenceModule::class], dependencies = [ApplicationComponent::class])
-@Singleton
+@Feature
 interface ConferenceComponent {
     @Component.Builder
     interface Builder {

@@ -2,23 +2,17 @@ package cat.xlagunas.viv.landing
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import butterknife.BindView
 import butterknife.ButterKnife
-import cat.xlagunas.core.di.VivApplication
+import cat.xlagunas.core.data.di.viewModelProviderFactory
 import cat.xlagunas.viv.R
-import dagger.DaggerMonolythComponent
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -29,13 +23,11 @@ class MainActivity : AppCompatActivity() {
 
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        DaggerMonolythComponent.builder().withParentComponent(VivApplication.appComponent(this))
-            .build().inject(this)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)
 
-        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(MainViewModel::class.java)
 
         NavigationUI.setupWithNavController(bottomNavigationView, getNavController())
     }

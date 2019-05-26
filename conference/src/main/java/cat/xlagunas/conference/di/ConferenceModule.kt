@@ -11,6 +11,7 @@ import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import cat.xlagunas.conference.ui.ConferenceActivity
+import cat.xlagunas.core.di.Feature
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -25,25 +26,24 @@ import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.audio.AudioDeviceModule
 import org.webrtc.audio.JavaAudioDeviceModule
-import javax.inject.Singleton
 
 @Module
 class ConferenceModule {
 
     @Provides
-    @Singleton
+    @Feature
     fun provideRepository(repository: ConferenceRepositoryImp): ConferenceRepository {
         return repository
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideSocketLifecycleFactory(activity: ConferenceActivity, roomId: String): SocketIoLifecycle.Factory {
         return SocketIoLifecycle.Factory(activity, roomId)
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideSocketIo(socketIoLifecycleFactory: SocketIoLifecycle.Factory, okHttpClient: OkHttpClient): Socket {
 
         IO.setDefaultOkHttpCallFactory(okHttpClient)
@@ -56,13 +56,13 @@ class ConferenceModule {
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideEglContext(): EglBase.Context {
         return EglBase.create().eglBaseContext
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun providePeerConnectionFactory(
         context: EglBase.Context,
         initOptions: PeerConnectionFactory.InitializationOptions,
@@ -127,36 +127,36 @@ class ConferenceModule {
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideWebRTCEventHandler() = WebRTCEventHandler()
 
     @Provides
-    @Singleton
+    @Feature
     fun provideConferenceeMapper(): ConferenceeMapper {
         return ConferenceeMapper()
     }
 
     @Provides
-    @Singleton
+    @Feature
     // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     fun provideGson(): Gson {
         return GsonBuilder().create()
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideUserSession(socket: Socket): UserSessionIdentifier {
         return SocketSessionIdentifier(socket)
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun provideMessageDtoMapper(gson: Gson, userSessionIdentifier: UserSessionIdentifier): MessageDtoMapper {
         return MessageDtoMapper(gson, userSessionIdentifier)
     }
 
     @Provides
-    @Singleton
+    @Feature
     fun providePeerConnectionDataSource(
         peerConnectionFactory: PeerConnectionFactory,
         webRTCEventHandler: WebRTCEventHandler,

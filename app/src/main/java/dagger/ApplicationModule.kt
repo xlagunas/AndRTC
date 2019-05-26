@@ -1,4 +1,4 @@
-package cat.xlagunas.core.di
+package dagger
 
 import android.annotation.TargetApi
 import android.app.Application
@@ -9,14 +9,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.ViewModelProvider
+import cat.xlagunas.core.common.PushUtils.CALL_CHANNEL_ID
 import cat.xlagunas.core.data.auth.AuthPreferenceDataStore
 import cat.xlagunas.core.data.time.SystemTimeProvider
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
-import dagger.Module
-import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -65,14 +63,5 @@ class ApplicationModule {
             NotificationManager.IMPORTANCE_HIGH
         )
         notificationManager.createNotificationChannel(callNotificationChannel)
-    }
-
-    @Provides
-    fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory {
-        return factory
-    }
-
-    companion object {
-        const val CALL_CHANNEL_ID = "call_channel"
     }
 }
