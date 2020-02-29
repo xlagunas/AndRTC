@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "friend")
 @ForeignKey(
     entity = UserEntity::class,
-    parentColumns = arrayOf("id"),
-    childColumns = arrayOf("user_id")
+    parentColumns = ["id"],
+    childColumns = ["user_id"]
 )
 data class FriendEntity(
     @PrimaryKey

@@ -1,16 +1,12 @@
 package cat.xlagunas.viv.login
 
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import cat.xlagunas.data.OpenForTesting
-import cat.xlagunas.data.user.login.GoogleSignInDataSource
-import cat.xlagunas.domain.user.authentication.AuthenticationCredentials
-import cat.xlagunas.domain.user.authentication.AuthenticationRepository
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
-import dagger.Lazy
+import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.push.PushTokenRepository
+import cat.xlagunas.user.domain.AuthenticationCredentials
+import cat.xlagunas.user.domain.AuthenticationRepository
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
@@ -18,29 +14,17 @@ import javax.inject.Inject
 
 @OpenForTesting
 class LoginViewModel @Inject constructor(
-    private val googleSignInDataSource: Lazy<GoogleSignInDataSource>,
-    private val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository,
+    private val pushTokenRepository: PushTokenRepository
 ) : ViewModel() {
 
     private val liveData: MutableLiveData<LoginState> = MutableLiveData()
     private val disposable = CompositeDisposable()
 
-    fun registerGoogle(): LifecycleObserver = googleSignInDataSource.get()
-
-    fun initGoogleSignIn() {
-        googleSignInDataSource.get().signIn()
-    }
-
-    fun handleLoginResult(task: Task<GoogleSignInAccount>) {
-        disposable.add(googleSignInDataSource.get().handleSignInResult(task)
-            .flatMapCompletable { authenticationRepository.registerUser(it) }
-            .doOnComplete { Timber.d("Successfully registered in database") }
-            .subscribe(this::onSuccessfullyLogged, this::handleErrorState))
-    }
-
     fun login(username: String, password: String) {
         disposable.add(
             authenticationRepository.login(AuthenticationCredentials(username, password))
+                .andThen(pushTokenRepository.registerPushToken())
                 .subscribe(this::onSuccessfullyLogged, this::handleErrorState)
         )
     }
