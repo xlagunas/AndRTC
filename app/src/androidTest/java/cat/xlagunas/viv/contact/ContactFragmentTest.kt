@@ -28,6 +28,7 @@ import cat.xlagunas.core.data.net.Relationship.REQUESTED
 import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.test_utils.ViewModelUtil
+import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
@@ -46,7 +47,7 @@ class ContactFragmentTest {
     @Before
     fun setUp() {
         val application =
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as cat.xlagunas.viv.commons.di.TestApplication
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
         application.setViewModelProviderFactory(ViewModelUtil.createFor(contactViewModel))
         `when`(contactViewModel.contacts).thenReturn(contactsLiveData)
 

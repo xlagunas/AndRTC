@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.commons.di
+package cat.xlagunas.viv.commons
 
 import androidx.lifecycle.ViewModelProvider
 import dagger.VivApplication
