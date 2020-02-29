@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cat.xlagunas.core.di
+package cat.xlagunas.test_utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

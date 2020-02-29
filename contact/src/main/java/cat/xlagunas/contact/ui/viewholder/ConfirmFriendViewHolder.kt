@@ -1,33 +1,23 @@
 package cat.xlagunas.contact.ui.viewholder
 
 import android.view.View
-import android.widget.ImageButton
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import cat.xlagunas.contact.R2
+import cat.xlagunas.contact.databinding.RowConfirmContactBinding
 import cat.xlagunas.contact.ui.ContactListener
+import cat.xlagunas.core.domain.entity.Friend
 
 class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {
 
-    @BindView(R2.id.accept_friendship_button)
-    lateinit var acceptFriendShipButton: ImageButton
-
-    @BindView(R2.id.reject_friendship_button)
-    lateinit var rejectFriendShipButton: ImageButton
+    private var _bind: RowConfirmContactBinding? = null
+    private val bind get() = _bind!!
 
     init {
-        ButterKnife.bind(this, view)
+        _bind = RowConfirmContactBinding.bind(view)
     }
 
-    @OnClick(R2.id.accept_friendship_button)
-    fun acceptFriendRequest() {
-        contactListener.onContactAccepted(friend)
-    }
-
-    @OnClick(R2.id.reject_friendship_button)
-    fun rejectFriendshipRequest() {
-        contactListener.onContactRejected(friend)
+    override fun bind(friend: Friend) {
+        setupView(bind.contactBase, friend)
+        bind.acceptFriendshipButton.setOnClickListener { contactListener.onContactAccepted(friend) }
+        bind.rejectFriendshipButton.setOnClickListener { contactListener.onContactRejected(friend) }
     }
 }

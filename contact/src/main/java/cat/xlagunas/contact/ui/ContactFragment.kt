@@ -6,40 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
-import butterknife.ButterKnife
-import cat.xlagunas.contact.R
-import cat.xlagunas.contact.R2
+import cat.xlagunas.contact.databinding.FragmentContactBinding
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.BaseFragment
 import cat.xlagunas.core.common.ContactUtils
-import cat.xlagunas.core.data.di.viewModelProviderFactory
-import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
 import timber.log.Timber
 
 @OpenForTesting
-class ContactFragment : Fragment(), Injectable, ContactListener {
+class ContactFragment : BaseFragment(), ContactListener {
 
-    @BindView(R2.id.search)
-    lateinit var searchView: SearchView
+    private var _binding: FragmentContactBinding? = null
+    private val binding get() = _binding!!
 
-    @BindView(R2.id.recycler_view)
-    lateinit var recyclerView: RecyclerView
-
-    private lateinit var contactViewModel: ContactViewModel
-
+    internal lateinit var contactViewModel: ContactViewModel
     private val contactAdapter by lazy { ContactAdapter(this) }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel = ViewModelProviders.of(this, viewModelProviderFactory())
-            .get(ContactViewModel::class.java)
+        contactViewModel = viewModel(ContactViewModel::class.java)
         contactViewModel.contacts.observe(viewLifecycleOwner, Observer(this::renderFriends))
     }
 
@@ -48,12 +37,12 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_contact, container, false)
+        _binding = FragmentContactBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
         setUpRecyclerView()
         setupSearchView()
     }
@@ -80,7 +69,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     private fun setupSearchView() {
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 query.isNotEmpty().let {
                     contactViewModel.findContact(query)
@@ -97,7 +86,7 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     private fun setUpRecyclerView() {
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
                 activity,
                 RecyclerView.VERTICAL,
@@ -118,4 +107,9 @@ class ContactFragment : Fragment(), Injectable, ContactListener {
     }
 
     fun navController() = findNavController()
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 }

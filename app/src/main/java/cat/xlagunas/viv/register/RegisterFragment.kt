@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.data.di.viewModelProviderFactory
-import cat.xlagunas.core.di.Injectable
+import di.Injectable
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding

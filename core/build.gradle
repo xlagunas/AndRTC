@@ -17,8 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
     }
 
     flavorDimensions "version"
@@ -67,9 +66,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
-    kapt 'androidx.room:room-compiler:2.1.0-alpha06'
-    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
-    implementation 'androidx.room:room-rxjava2:2.1.0-alpha06'
+    kapt 'androidx.room:room-compiler:2.1.0-beta01'
+    implementation 'androidx.room:room-runtime:2.1.0-beta01'
+    implementation 'androidx.room:room-rxjava2:2.1.0-beta01'
+
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
 
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -94,7 +96,7 @@ dependencies {
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
 
-    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.core:core-ktx:1.0.2'
 
     compileOnly('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true

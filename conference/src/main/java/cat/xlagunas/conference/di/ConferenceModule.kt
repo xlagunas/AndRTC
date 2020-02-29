@@ -11,11 +11,11 @@ import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
 import cat.xlagunas.conference.ui.ConferenceActivity
-import cat.xlagunas.core.di.Feature
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import di.Feature
 import io.socket.client.IO
 import io.socket.client.Socket
 import okhttp3.OkHttpClient

@@ -5,21 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.data.di.viewModelProviderFactory
-import cat.xlagunas.core.di.Injectable
+import cat.xlagunas.core.common.BaseFragment
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.extension.text
 import com.google.android.material.snackbar.Snackbar
 
 @OpenForTesting
-class LoginFragment : Fragment(), Injectable {
+class LoginFragment : BaseFragment() {
 
     @BindView(R.id.username_input_layout)
     lateinit var usernameInputLayout: com.google.android.material.textfield.TextInputLayout
@@ -33,12 +30,11 @@ class LoginFragment : Fragment(), Injectable {
     @BindView(R.id.register)
     lateinit var registerButton: Button
 
-    private lateinit var loginViewModel: LoginViewModel
+    lateinit var loginViewModel: LoginViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loginViewModel =
-            ViewModelProviders.of(this, viewModelProviderFactory()).get(LoginViewModel::class.java)
+        loginViewModel = viewModel(LoginViewModel::class.java)
 
         loginViewModel.onLoginStateChange()
             .observe(this, Observer(this::handleLoginResult))
@@ -54,7 +50,12 @@ class LoginFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ButterKnife.bind(this, view)
-        loginButton.setOnClickListener { loginViewModel.login(usernameInputLayout.text(), passwordInputLayout.text()) }
+        loginButton.setOnClickListener {
+            loginViewModel.login(
+                usernameInputLayout.text(),
+                passwordInputLayout.text()
+            )
+        }
         registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
     }
 
@@ -63,7 +64,7 @@ class LoginFragment : Fragment(), Injectable {
             is SuccessLoginState -> {
                 navController().popBackStack()
             }
-            is InvalidLoginState -> com.google.android.material.snackbar.Snackbar.make(
+            is InvalidLoginState -> Snackbar.make(
                 view!!, loginState.errorMessage, Snackbar.LENGTH_SHORT
             ).show()
             is ValidationError -> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cat.xlagunas.core.di
+package di
 
 /**
  * Marks an activity / fragment injectable.

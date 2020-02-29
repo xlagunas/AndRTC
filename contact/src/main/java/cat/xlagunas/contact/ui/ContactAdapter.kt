@@ -4,6 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.R
+import cat.xlagunas.contact.databinding.RowConfirmContactBinding
+import cat.xlagunas.contact.databinding.RowContactBinding
+import cat.xlagunas.contact.databinding.RowPendingContactBinding
+import cat.xlagunas.contact.databinding.RowRequestContactBinding
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.FriendViewHolder
@@ -21,21 +25,24 @@ class ContactAdapter constructor(private val contactListener: ContactListener) :
     private var items = emptyList<Friend>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val holder = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             R.layout.row_request_contact -> RequestFriendViewHolder(
-                holder,
+                RowRequestContactBinding.inflate(layoutInflater, parent, false).root,
                 contactListener
             )
             R.layout.row_pending_contact -> PendingFriendViewHolder(
-                holder,
+                RowPendingContactBinding.inflate(layoutInflater, parent, false).root,
                 contactListener
             )
             R.layout.row_confirm_contact -> ConfirmFriendViewHolder(
-                holder,
+                RowConfirmContactBinding.inflate(layoutInflater, parent, false).root,
                 contactListener
             )
-            R.layout.row_contact -> CurrentFriendViewHolder(holder, contactListener)
+            R.layout.row_contact -> CurrentFriendViewHolder(
+                RowContactBinding.inflate(layoutInflater, parent, false).root,
+                contactListener
+            )
             else -> throw IllegalStateException("This should never be called")
         }
     }

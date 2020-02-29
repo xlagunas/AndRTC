@@ -1,25 +1,23 @@
 package cat.xlagunas.contact.ui.viewholder
 
 import android.view.View
-import android.widget.ImageButton
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
-import cat.xlagunas.contact.R2
+import cat.xlagunas.contact.databinding.RowRequestContactBinding
 import cat.xlagunas.contact.ui.ContactListener
+import cat.xlagunas.core.domain.entity.Friend
 
 class RequestFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {
 
-    @BindView(R2.id.add_friend_button)
-    lateinit var addFriendButton: ImageButton
+    private var _bind: RowRequestContactBinding? = null
+    private val bind get() = _bind!!
 
     init {
-        ButterKnife.bind(this, view)
+        _bind = RowRequestContactBinding.bind(view)
     }
 
-    @OnClick(R2.id.add_friend_button)
-    fun addFriend() {
-        contactListener.onContactRequested(friend)
+    override fun bind(friend: Friend) {
+        bind.addFriendButton.setOnClickListener {
+            contactListener.onContactRequested(friend)
+        }
     }
 }

@@ -14,7 +14,6 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.data.di.viewModelProviderFactory
-import cat.xlagunas.core.di.Injectable
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.login.InvalidLoginState
@@ -22,6 +21,7 @@ import cat.xlagunas.viv.login.LoginState
 import cat.xlagunas.viv.login.Logout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import di.Injectable
 
 @OpenForTesting
 class

@@ -12,8 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
     }
 
     buildTypes {
@@ -47,21 +46,21 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':core')
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    api 'com.google.firebase:firebase-messaging:17.5.0'
+    api 'com.google.firebase:firebase-messaging:18.0.0'
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'androidx.room:room-runtime:2.1.0-alpha06'
-    implementation 'androidx.room:room-rxjava2:2.1.0-alpha06'
+    implementation 'androidx.room:room-runtime:2.1.0-beta01'
+    implementation 'androidx.room:room-rxjava2:2.1.0-beta01'
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api 'com.squareup.retrofit2:retrofit:2.5.0'
     api 'com.squareup.retrofit2:converter-gson:2.5.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
-    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.core:core-ktx:1.0.2'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
@@ -69,7 +68,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.2'
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'androidx.arch.core:core-testing:2.0.1'
-    testImplementation 'androidx.room:room-testing:2.1.0-alpha06'
+    testImplementation 'androidx.room:room-testing:2.1.0-beta01'
 
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

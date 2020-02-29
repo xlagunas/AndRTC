@@ -1,11 +1,8 @@
 package cat.xlagunas.viv.register
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -15,10 +12,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
-import cat.xlagunas.core.di.ViewModelUtil
+import cat.xlagunas.viv.commons.di.TestApplication
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,13 +32,13 @@ class RegisterFragmentTest {
     private val registerViewModel = mock(RegisterViewModel::class.java)
     private val user = MutableLiveData<User>()
     private val registrationState = MutableLiveData<RegistrationState>()
-    private lateinit var registerFragmentFactory: FragmentFactory
 
     @Before
     fun setUp() {
+        val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
+        application.setViewModelProviderFactory(cat.xlagunas.test_utils.ViewModelUtil.createFor(registerViewModel))
         `when`(registerViewModel.findUser()).thenReturn(user)
         `when`(registerViewModel.registrationState).thenReturn(registrationState)
-        registerFragmentFactory = TestRegisterFragmentFactory(ViewModelUtil.createFor(registerViewModel))
     }
 
     @Test
@@ -51,7 +49,7 @@ class RegisterFragmentTest {
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
 
-        val scenario = launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar, registerFragmentFactory)
+        val scenario = launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar)
 
         onView(withId(R.id.first_name_et)).perform(typeText("Anna Maria"))
         onView(withId(R.id.last_name)).perform(typeText("Calpe Valls"))
@@ -73,7 +71,7 @@ class RegisterFragmentTest {
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
 
-        launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar, registerFragmentFactory)
+        launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar)
 
         onView(withId(R.id.first_name_et)).perform(typeText("Anna Maria"))
         onView(withId(R.id.last_name)).perform(typeText("Calpe Valls"))
@@ -99,11 +97,4 @@ class RegisterFragmentTest {
 class TestRegisterFragment : RegisterFragment() {
     val navController = Mockito.mock(NavController::class.java)
     override fun navController() = navController
-    override fun inject() {}
-}
-
-class TestRegisterFragmentFactory(private val registerViewModelFactory: ViewModelProvider.Factory) : FragmentFactory() {
-    override fun instantiate(classLoader: ClassLoader, className: String, args: Bundle?): Fragment {
-        return TestRegisterFragment().apply { viewModelFactory = registerViewModelFactory }
-    }
 }

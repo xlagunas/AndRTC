@@ -13,7 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
 
     }
 
@@ -49,7 +49,7 @@ dependencies {
     implementation project(path: ':core')
     implementation project(path: ':push')
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    api 'com.google.firebase:firebase-messaging:17.5.0'
+    api 'com.google.firebase:firebase-messaging:18.0.0'
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
@@ -60,7 +60,7 @@ dependencies {
     api 'com.squareup.retrofit2:converter-gson:2.5.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
-    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.core:core-ktx:1.0.2'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }

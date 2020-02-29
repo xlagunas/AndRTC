@@ -1,4 +1,4 @@
-package cat.xlagunas.core.di
+package di
 
 import javax.inject.Scope
 
