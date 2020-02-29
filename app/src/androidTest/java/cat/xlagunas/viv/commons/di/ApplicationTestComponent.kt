@@ -1,15 +1,14 @@
 package cat.xlagunas.viv.commons.di
 
 import android.app.Application
-import cat.xlagunas.core.di.ApplicationModule
-import cat.xlagunas.core.di.DatabaseModule
-import cat.xlagunas.core.di.NetworkModule
+import cat.xlagunas.contact.di.ContactModule
+import cat.xlagunas.user.di.UserModule
 import cat.xlagunas.viv.commons.TestApplication
-import cat.xlagunas.viv.contact.ContactModule
-import cat.xlagunas.viv.login.LoginModule
-import cat.xlagunas.viv.register.RegisterModule
+import dagger.ApplicationModule
 import dagger.BindsInstance
 import dagger.Component
+import dagger.DatabaseModule
+import dagger.NetworkModule
 import org.jetbrains.annotations.NotNull
 import javax.inject.Singleton
 
@@ -18,7 +17,7 @@ import javax.inject.Singleton
         ApplicationModule::class,
         NetworkModule::class,
         ViewModelModule::class,
-        DatabaseModule::class, RegisterModule::class, LoginModule::class, ContactModule::class]
+        DatabaseModule::class, UserModule::class, ContactModule::class]
 )
 @Singleton
 interface ApplicationTestComponent {

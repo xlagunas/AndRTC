@@ -2,9 +2,9 @@ package cat.xlagunas.viv.landing
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SingleLiveEvent
-import cat.xlagunas.domain.user.authentication.AuthenticationRepository
-import cat.xlagunas.viv.commons.DisposableViewModel
-import cat.xlagunas.viv.commons.extension.toLiveData
+import cat.xlagunas.user.domain.AuthenticationRepository
+import cat.xlagunas.core.common.DisposableViewModel
+import cat.xlagunas.core.common.toLiveData
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository) :
@@ -15,7 +15,6 @@ class MainViewModel @Inject constructor(private val authenticationRepository: Au
     val isUserLoggedIn: LiveData<Boolean>
         get() = authenticationRepository
             .isUserLoggedIn()
-            .filter { !it }
             .toLiveData()
 
     init {

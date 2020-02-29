@@ -2,12 +2,10 @@ package cat.xlagunas.viv.contact
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -16,14 +14,21 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import cat.xlagunas.contact.R
+import cat.xlagunas.contact.ui.ContactFragment
+import cat.xlagunas.contact.ui.ContactViewModel
+import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
+import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
+import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
+import cat.xlagunas.core.data.net.Relationship.ACCEPTED
+import cat.xlagunas.core.data.net.Relationship.PENDING
+import cat.xlagunas.core.data.net.Relationship.REQUESTED
+import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.ViewModelUtil
-import cat.xlagunas.viv.contact.viewholder.ConfirmFriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.CurrentFriendViewHolder
-import cat.xlagunas.viv.contact.viewholder.RequestFriendViewHolder
-import cat.xlagunas.viv.push.PushTokenPresenter
+import cat.xlagunas.test_utils.ViewModelUtil
+import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Test
@@ -37,19 +42,16 @@ import org.mockito.Mockito.verify
 class ContactFragmentTest {
 
     private val contactViewModel = mock(ContactViewModel::class.java)
-    private val pushTokenPresenter = mock(PushTokenPresenter::class.java)
     private val contactsLiveData = MutableLiveData<List<Friend>>()
-
-    private lateinit var testContactFactory: TestContactFragmentFactory
 
     @Before
     fun setUp() {
-        testContactFactory = TestContactFragmentFactory(ViewModelUtil.createFor(contactViewModel), pushTokenPresenter)
-
-        `when`(pushTokenPresenter.isPushTokenRegistered()).thenReturn(false)
+        val application =
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
+        application.setViewModelProviderFactory(ViewModelUtil.createFor(contactViewModel))
         `when`(contactViewModel.contacts).thenReturn(contactsLiveData)
 
-        launchFragmentInContainer<TestContactFragment>(Bundle(), R.style.AppTheme_NoActionBar, testContactFactory)
+        launchFragmentInContainer<ContactFragment>(Bundle(), R.style.AppTheme_NoActionBar)
     }
 
     @Test
@@ -59,7 +61,7 @@ class ContactFragmentTest {
         onView(withId(R.id.recycler_view))
             .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText("FirstFriend"))))
 
-        onView(ViewMatchers.withId(R.id.recycler_view))
+        onView(withId(R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToPosition<RequestFriendViewHolder>(999))
     }
 
@@ -71,7 +73,7 @@ class ContactFragmentTest {
             "First friend name",
             null,
             "first@gmail.com",
-            cat.xlagunas.core.data.net.Relationship.PENDING.name
+            PENDING.name
         )
 
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(
@@ -91,7 +93,7 @@ class ContactFragmentTest {
             "First friend name",
             null,
             "first@gmail.com",
-            cat.xlagunas.core.data.net.Relationship.PENDING.name
+            PENDING.name
         )
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(
             friend,
@@ -110,18 +112,22 @@ class ContactFragmentTest {
             "First friend name",
             null,
             "first@gmail.com",
-            cat.xlagunas.core.data.net.Relationship.ACCEPTED.name
+            ACCEPTED.name
         )
+        Mockito.doAnswer {
+            MutableLiveData<Call>().apply { value = Call("123456") }
+        }
+            .`when`(contactViewModel).observeCall(listOf(friend))
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(
             friend,
             R.id.call_friend_button,
             0
         )
 
-        verify(contactViewModel).callFriend(friend)
+        verify(contactViewModel).observeCall(listOf(friend))
     }
 
-    private fun <VH : androidx.recyclerview.widget.RecyclerView.ViewHolder> setupFriendRelationshipAndViewHolderType(
+    private fun <VH : ViewHolder> setupFriendRelationshipAndViewHolderType(
         friend: Friend,
         actionId: Int,
         holderPosition: Int
@@ -130,8 +136,11 @@ class ContactFragmentTest {
 
         onView(withId(R.id.recycler_view))
             .perform(
-                RecyclerViewActions.actionOnItemAtPosition<VH>(
-                    holderPosition, MyViewAction.clickChildViewWithId(actionId)
+                RecyclerViewActions.actionOnItemAtPosition<ViewHolder>(
+                    holderPosition,
+                    MyViewAction.clickChildViewWithId(
+                        actionId
+                    )
                 )
             )
     }
@@ -143,7 +152,7 @@ class ContactFragmentTest {
             "First friend name",
             null,
             "first@gmail.com",
-            cat.xlagunas.core.data.net.Relationship.REQUESTED.name
+            REQUESTED.name
         )
         val friendList = ArrayList<Friend>(1000)
         friendList += friend
@@ -160,27 +169,8 @@ class ContactFragmentTest {
     }
 
     class TestContactFragment : ContactFragment() {
-        val navController = Mockito.mock(NavController::class.java)
+        val navController = mock(NavController::class.java)
         override fun navController() = navController
-
-        override fun inject() {}
-    }
-
-    class TestContactFragmentFactory(
-        private val contactViewModelFactory: ViewModelProvider.Factory,
-        private val pushPresenter: PushTokenPresenter
-    ) : FragmentFactory() {
-        override fun instantiate(
-            classLoader: ClassLoader,
-            className: String,
-            args: Bundle?
-        ): Fragment {
-            return TestContactFragment()
-                .apply {
-                    viewModelFactory = contactViewModelFactory
-                    pushTokenPresenter = pushPresenter
-                }
-        }
     }
 
     object MyViewAction {

@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.conference.R
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
-import cat.xlagunas.core.di.VivApplication
+import dagger.VivApplication
 import com.google.android.material.snackbar.Snackbar
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
