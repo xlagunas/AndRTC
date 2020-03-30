@@ -22,14 +22,10 @@ class ConferenceViewModel @Inject constructor(
 
     private val jobs = mutableListOf<Job>()
 
-    private val peerConnectionConstraints = MediaConstraints().apply {
-        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveAudio", "true"))
-        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveVideo", "true"))
-    }
-
     val conferenceAttendees by lazy { MutableLiveData<Int>() }
     val localStream by lazy { MutableLiveData<ProxyVideoSink>() }
     val remoteStream by lazy { MutableLiveData<ProxyVideoSink>() }
+    val requestedMedia = MutableLiveData<MediaConstraints>()
 
     private val totalConnectedUsers = AtomicInteger()
 
@@ -37,7 +33,7 @@ class ConferenceViewModel @Inject constructor(
         return eglContext
     }
 
-    fun onStart() {
+    fun onStart(peerConnectionConstraints: MediaConstraints) {
         conferenceRepository.joinRoom(peerConnectionConstraints)
 
         jobs += GlobalScope.launch(Dispatchers.IO) {

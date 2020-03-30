@@ -24,6 +24,10 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
         onNewMessage()
     }
 
+    fun sendMessage(messageType: String, message: MessageDto) {
+        socket.emit(messageType, gson.toJson(message))
+    }
+
     private fun onNewMessage() {
         socket.on("DIRECT_MESSAGE") { content ->
             GlobalScope.launch {
@@ -57,7 +61,4 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
         }
     }
 
-    fun sendMessage(messageType: String, message: MessageDto) {
-        socket.emit(messageType, gson.toJson(message))
-    }
 }
