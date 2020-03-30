@@ -33,20 +33,17 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
             GlobalScope.launch {
 
                 val message = content
-                        .map { it as String }
-                        .map { data -> gson.fromJson(data, MessageDto::class.java) }.first()
+                    .map { it as String }
+                    .map { data -> gson.fromJson(data, MessageDto::class.java) }.first()
 
                 when (message.type) {
-                    MessageType.OFFER -> {
-                        val session = gson.fromJson(message.data, SessionMessage::class.java)
-                        observeSessionStream.send(Pair(session, message.type))
-                    }
-                    MessageType.ANSWER -> {
+                    MessageType.OFFER, MessageType.ANSWER -> {
                         val session = gson.fromJson(message.data, SessionMessage::class.java)
                         observeSessionStream.send(Pair(session, message.type))
                     }
                     MessageType.ICE_CANDIDATE -> {
-                        val iceCandidate = gson.fromJson(message.data, IceCandidateMessage::class.java)
+                        val iceCandidate =
+                            gson.fromJson(message.data, IceCandidateMessage::class.java)
                         observeIceCandidateStream.send(iceCandidate)
                     }
                 }
@@ -56,9 +53,9 @@ class WsMessagingWrapper @Inject constructor(private val socket: Socket, private
 
     private fun onNewJoiner() {
         socket.on("NEW_USER") { user ->
-            val attendingUsers = user.map { it as String }.map { userId -> ConnectedUser(userId) }.first()
+            val attendingUsers =
+                user.map { it as String }.map { userId -> ConnectedUser(userId) }.first()
             GlobalScope.launch { getNewJoiners.send(attendingUsers) }
         }
     }
-
 }

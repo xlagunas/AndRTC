@@ -81,10 +81,8 @@ class ConferenceRepositoryImp @Inject constructor(
         GlobalScope.launch(Dispatchers.IO) {
             webRTCEventHandler.iceCandidateHandler
                 .consumeEach {
-                    messagingApiWrapper.sendMessage(
-                        "DIRECT_MESSAGE",
-                        messageDtoMapper.createIceCandidateMessage(it.second, it.first)
-                    )
+                    val iceCandidateDto = messageDtoMapper.createIceCandidateMessage(it.second, it.first)
+                    messagingApiWrapper.sendMessage("DIRECT_MESSAGE", iceCandidateDto)
                 }
         }
     }
@@ -119,9 +117,9 @@ class ConferenceRepositoryImp @Inject constructor(
         peerConnectionDataSource.createOffer(userId, mediaConstraints) { sessionDescription ->
             val sessionMessage =
                 SessionMessage(sessionDescription, userSessionIdentifier.getUserId())
-            val messageDto =
+            val offerDto =
                 messageDtoMapper.createMessageDto(sessionMessage, MessageType.OFFER, userId)
-            messagingApiWrapper.sendMessage("DIRECT_MESSAGE", messageDto)
+            messagingApiWrapper.sendMessage("DIRECT_MESSAGE", offerDto)
         }
     }
 

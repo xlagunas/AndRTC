@@ -8,12 +8,12 @@ import org.webrtc.PeerConnection
 
 interface ConferenceRepository {
 
+    fun joinRoom(onReceiveOfferMediaConstraints: MediaConstraints)
+    suspend fun registerUser()
     suspend fun onNewUser(): ReceiveChannel<ConnectedUser>
+    fun logoutRoom()
     fun createPeerConnection(userId: String): PeerConnection?
     fun createOffer(userId: String, mediaConstraints: MediaConstraints)
-    suspend fun registerUser()
-    fun logoutRoom()
     fun getLocalRenderer(): ProxyVideoSink
     fun getRemoteRenderer(): ProxyVideoSink
-    fun joinRoom(onReceiveOfferMediaConstraints: MediaConstraints)
 }
