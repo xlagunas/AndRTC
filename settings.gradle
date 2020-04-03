@@ -1,2 +1,3 @@
-include ':test-utils'
-include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user'
+include ':ws-messaging'
+include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user',':test-utils'
+

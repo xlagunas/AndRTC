@@ -16,7 +16,6 @@ import cat.xlagunas.ws_messaging.model.Session
 import io.socket.client.IO
 import io.socket.client.Socket
 import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,8 +30,8 @@ class WebSocketController @Inject constructor(
     private val socket: Socket by lazy { IO.socket("https://wss.viv.cat") }
     private val localSession: UserSession by lazy { UserSession(socket.id()) }
 
-    val receivedMessageChannel = BroadcastChannel<Message>(Channel.BUFFERED)
-    val participantsChannel: BroadcastChannel<Session> = BroadcastChannel(Channel.BUFFERED)
+    val receivedMessageChannel = BroadcastChannel<Message>(100)
+    val participantsChannel: BroadcastChannel<Session> = BroadcastChannel(10)
 
     init {
         Timber.d("Binding Socket.IO lifecycle to activity")

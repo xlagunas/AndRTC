@@ -5,7 +5,7 @@ import org.webrtc.SessionDescription
 import timber.log.Timber
 
 abstract class VivSdpObserver(
-    internal val contactId: String
+    private val contactId: String
 ) : SdpObserver {
 
     override fun onSetFailure(p0: String) {

@@ -4,20 +4,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
+import cat.xlagunas.ws_messaging.SignalingProtocol
+import cat.xlagunas.ws_messaging.model.AnswerMessage
+import cat.xlagunas.ws_messaging.model.IceCandidateMessage
+import cat.xlagunas.ws_messaging.model.OfferMessage
+import cat.xlagunas.ws_messaging.model.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
 import org.webrtc.MediaConstraints
-import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 class ConferenceViewModel @Inject constructor(
     private val conferenceRepository: ConferenceRepository,
-    private val eglContext: EglBase.Context
+    private val eglContext: EglBase.Context,
+    private val signaling: SignalingProtocol
 ) : ViewModel() {
 
     private val jobs = mutableListOf<Job>()
@@ -33,21 +39,64 @@ class ConferenceViewModel @Inject constructor(
         return eglContext
     }
 
-    fun onStart(peerConnectionConstraints: MediaConstraints) {
-        conferenceRepository.joinRoom(peerConnectionConstraints)
+    fun onStart(userConstraints: MediaConstraints) {
+        conferenceRepository.joinRoom(userConstraints)
 
         jobs += GlobalScope.launch(Dispatchers.IO) {
-            conferenceRepository.onNewUser().consumeEach {
-                conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
-                val peerConnection = conferenceRepository.createPeerConnection(it.userId)
-                if (peerConnection != null) {
-                    conferenceRepository.createOffer(it.userId, peerConnectionConstraints)
-                } else Timber.w("Couldn't create peer connection, aborting offer sending")
-            }
+            conferenceRepository.onNewUser()
+                .onEach { session -> createPeerConnection(session) }
+                .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
+                .onEach {
+                    conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
+                    signaling.sendOffer(OfferMessage(it.first, it.second))
+                }
+            handleIncomingOfferRequests(userConstraints)
+            handleIncomingAnswerRequests()
+            handleIncomingIceCandidateRequests()
         }
 
         localStream.postValue(conferenceRepository.getLocalRenderer())
         remoteStream.postValue(conferenceRepository.getRemoteRenderer())
+    }
+
+    private fun handleIncomingAnswerRequests() {
+        signaling.onReceiveAnswer()
+            .onEach {
+                conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
+                    //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
+                    //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
+                }
+            }
+    }
+
+    private fun handleIncomingIceCandidateRequests() {
+        signaling.onReceiveIceCandidate()
+            .onEach {
+                conferenceRepository.addIceCandidate(it.receiver, it.iceCandidate)
+            }
+    }
+
+    private fun handleIncomingOfferRequests(userConstraints: MediaConstraints) {
+        signaling.onReceiveOffer()
+            .onEach { offer -> createPeerConnection(offer.receiver) }
+            .flatMapMerge {
+                conferenceRepository.handleRemoteOffer(
+                    it.receiver,
+                    userConstraints,
+                    it.offer
+                )
+            }
+            .onEach {
+                //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
+                //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
+                signaling.sendAnswer(AnswerMessage(it.first, it.second))
+            }
+    }
+
+    private fun createPeerConnection(session: Session) {
+        conferenceRepository.createPeerConnection(session) {
+            signaling.sendIceCandidate(IceCandidateMessage(it.first, it.second))
+        }
     }
 
     override fun onCleared() {

@@ -51,6 +51,7 @@ tasks.withType(Test) {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':app')
+    implementation project(':ws-messaging')
     kapt 'com.google.dagger:dagger-compiler:2.21'
 
     implementation 'com.google.dagger:dagger:2.21'

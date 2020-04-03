@@ -3,7 +3,8 @@ package cat.xlagunas.conference.domain
 import cat.xlagunas.conference.data.NoOPVivSdpObserver
 import cat.xlagunas.conference.data.VivPeerConnectionObserver
 import cat.xlagunas.conference.data.VivSdpObserver
-import cat.xlagunas.conference.data.WebRTCEventHandler
+import cat.xlagunas.ws_messaging.model.Session
+import org.webrtc.IceCandidate
 import org.webrtc.Logging
 import org.webrtc.MediaConstraints
 import org.webrtc.PeerConnection
@@ -15,10 +16,7 @@ import javax.inject.Inject
 
 class PeerConnectionDataSource @Inject constructor(
     private val peerConnectionFactory: PeerConnectionFactory,
-    private val webRTCEventHandler: WebRTCEventHandler,
-    private val rtcConfiguration: PeerConnection.RTCConfiguration
-) {
-
+    private val rtcConfiguration: PeerConnection.RTCConfiguration) {
     private val peerConnectionMap = ConcurrentHashMap<String, PeerConnection>()
 
     fun getPeerConnection(userId: String): PeerConnection? {
@@ -26,15 +24,15 @@ class PeerConnectionDataSource @Inject constructor(
     }
 
     fun addPeerConnection(userId: String, peerConnection: PeerConnection) {
-        peerConnectionMap.put(userId, peerConnection)
+        peerConnectionMap[userId] = peerConnection
     }
 
-    fun createPeerConnection(userId: String): PeerConnection? {
-        Timber.d("Creating peer connection per $userId")
-        val peerObserver = VivPeerConnectionObserver(userId, webRTCEventHandler)
+    fun createPeerConnection(user: Session, onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit): PeerConnection? {
+        Timber.d("Creating peer connection per ${user.getId()}")
+        val peerObserver = VivPeerConnectionObserver(user, onIceCandidate)
         return peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)?.apply {
             Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO)
-            addPeerConnection(userId, this)
+            addPeerConnection(user.getId(), this)
         }
     }
 

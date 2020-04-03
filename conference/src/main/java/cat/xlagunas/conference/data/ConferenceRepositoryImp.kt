@@ -1,19 +1,13 @@
 package cat.xlagunas.conference.data
 
 import cat.xlagunas.conference.data.MediaDataSourceImp.Companion.VIDEO_TRACK_ID
-import cat.xlagunas.conference.data.dto.ConnectedUser
-import cat.xlagunas.conference.data.dto.mapper.MessageDtoMapper
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
-import cat.xlagunas.conference.domain.model.MessageType
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
-import cat.xlagunas.conference.domain.model.SessionMessage
-import cat.xlagunas.conference.domain.utils.UserSessionIdentifier
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
+import cat.xlagunas.ws_messaging.WsSignalingProtocol
+import cat.xlagunas.ws_messaging.model.Session
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import org.webrtc.MediaStreamTrack
@@ -24,50 +18,18 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ConferenceRepositoryImp @Inject constructor(
-    private val messagingApiWrapper: WsMessagingWrapper,
-    private val webRTCEventHandler: WebRTCEventHandler,
-    private val userSessionIdentifier: UserSessionIdentifier,
-    private val messageDtoMapper: MessageDtoMapper,
     private val peerConnectionDataSource: PeerConnectionDataSource,
-    private val mediaSourceDataSource: MediaDataSourceImp
+    private val mediaSourceDataSource: MediaDataSourceImp,
+    private val signaling: WsSignalingProtocol
 
 ) : ConferenceRepository {
 
     override fun joinRoom(onReceiveOfferMediaConstraints: MediaConstraints) {
-        messagingApiWrapper.setupWebSocketListeners()
-        observeRemoteSessions(onReceiveOfferMediaConstraints)
+        //TODO I DONT THINK WE NEED THIS NOW
     }
 
-    override suspend fun onNewUser(): ReceiveChannel<ConnectedUser> {
-        return messagingApiWrapper.getNewJoiners.openSubscription()
-    }
-
-    private fun observeRemoteIceCandidates() {
-        GlobalScope.launch(Dispatchers.IO) {
-            messagingApiWrapper.observeIceCandidateStream
-                .consumeEach { message ->
-                    Timber.d("New message received: $message.data")
-                    addIceCandidate(message.receiver, message.iceCandidate)
-                }
-        }
-    }
-
-    private fun observeRemoteSessions(offeredMediaConstraints: MediaConstraints) {
-        GlobalScope.launch(Dispatchers.IO) {
-            messagingApiWrapper.observeSessionStream
-                .consumeEach { message ->
-                    if (message.second == MessageType.OFFER) {
-                        createPeerConnection(message.first.receiver)
-                        handleRemoteOffer(
-                            message.first.receiver,
-                            offeredMediaConstraints,
-                            message.first.sessionDescription
-                        )
-                    } else {
-                        handleRemoteAnswer(message.first.receiver, message.first.sessionDescription)
-                    }
-                }
-        }
+    override suspend fun onNewUser(): Flow<Session> {
+        return signaling.onNewSession()
     }
 
     override suspend fun registerUser() {
@@ -77,23 +39,16 @@ class ConferenceRepositoryImp @Inject constructor(
         Timber.d("Logging out room!")
     }
 
-    private fun emitGeneratedIceCandidates() {
-        GlobalScope.launch(Dispatchers.IO) {
-            webRTCEventHandler.iceCandidateHandler
-                .consumeEach {
-                    val iceCandidateDto = messageDtoMapper.createIceCandidateMessage(it.second, it.first)
-                    messagingApiWrapper.sendMessage("DIRECT_MESSAGE", iceCandidateDto)
-                }
-        }
+    override fun addIceCandidate(contact: Session, iceCandidate: IceCandidate) {
+        Timber.d("Adding Ice candidate for ${contact.getId()}")
+        peerConnectionDataSource.getPeerConnection(contact.getId())?.addIceCandidate(iceCandidate)
     }
 
-    private fun addIceCandidate(contactId: String, iceCandidate: IceCandidate) {
-        Timber.d("Adding Ice candidate for $contactId")
-        peerConnectionDataSource.getPeerConnection(contactId)?.addIceCandidate(iceCandidate)
-    }
-
-    override fun createPeerConnection(userId: String): PeerConnection? {
-        val peer = peerConnectionDataSource.createPeerConnection(userId)
+    override fun createPeerConnection(
+        user: Session,
+        onIceCandidateGenerated: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
+    ): PeerConnection? {
+        val peer = peerConnectionDataSource.createPeerConnection(user, onIceCandidateGenerated)
         val videoCapturer =
             mediaSourceDataSource.createLocalVideoCapturer(mediaSourceDataSource.getCameraEnumerator())
         val localVideoTrack = mediaSourceDataSource.createVideoTrack(videoCapturer!!)
@@ -113,40 +68,47 @@ class ConferenceRepositoryImp @Inject constructor(
         remoteVideoTrack.addSink(mediaSourceDataSource.remoteLocalVideoSink)
     }
 
-    override fun createOffer(userId: String, mediaConstraints: MediaConstraints) {
-        peerConnectionDataSource.createOffer(userId, mediaConstraints) { sessionDescription ->
-            val sessionMessage =
-                SessionMessage(sessionDescription, userSessionIdentifier.getUserId())
-            val offerDto =
-                messageDtoMapper.createMessageDto(sessionMessage, MessageType.OFFER, userId)
-            messagingApiWrapper.sendMessage("DIRECT_MESSAGE", offerDto)
+    override fun createOffer(
+        user: Session,
+        mediaConstraints: MediaConstraints
+    ): Flow<Pair<Session, SessionDescription>> {
+        return callbackFlow {
+            peerConnectionDataSource.createOffer(
+                user.getId(),
+                mediaConstraints
+            ) { sessionDescription ->
+                if (sessionDescription != null) {
+                    offer(Pair(user, sessionDescription))
+                } else {
+                    Timber.e("Attempted to create offer for user ${user.getId()} but returned null")
+                }
+            }
         }
     }
 
-    private fun handleRemoteOffer(
-        contactId: String,
+    override fun handleRemoteOffer(
+        contact: Session,
         mediaConstraints: MediaConstraints,
         sessionDescription: SessionDescription
-    ) {
-        peerConnectionDataSource.handleRemoteOffer(
-            contactId,
-            sessionDescription,
-            mediaConstraints
-        ) { answer ->
-            Timber.d("Sending answer message to $contactId")
-            val sessionMessage = SessionMessage(answer, userSessionIdentifier.getUserId())
-            val answerDto =
-                messageDtoMapper.createMessageDto(sessionMessage, MessageType.ANSWER, contactId)
-            messagingApiWrapper.sendMessage("DIRECT_MESSAGE", answerDto)
-            observeRemoteIceCandidates()
-            emitGeneratedIceCandidates()
+    ): Flow<Pair<Session, SessionDescription>> {
+        return callbackFlow {
+            peerConnectionDataSource.handleRemoteOffer(
+                contact.getId(),
+                sessionDescription,
+                mediaConstraints
+            ) { answer ->
+                offer(Pair(contact, answer))
+            }
         }
     }
 
-    private fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription) {
-        peerConnectionDataSource.handleRemoteAnswer(contactId, sessionDescription) {
-            observeRemoteIceCandidates()
-            emitGeneratedIceCandidates()
+    override fun handleRemoteAnswer(
+        contact: Session,
+        sessionDescription: SessionDescription,
+        onComplete: () -> Unit
+    ) {
+        peerConnectionDataSource.handleRemoteAnswer(contact.getId(), sessionDescription) {
+            onComplete.invoke()
         }
     }
 
