@@ -16,7 +16,7 @@ class WsSignalingProtocol @Inject constructor(
 ) : SignalingProtocol {
 
     override fun joinConference(conferenceId: String) {
-        //TODO analyse if needed
+        webSocketController.joinConference(conferenceId)
     }
 
     override fun onNewSession(): Flow<Session> {

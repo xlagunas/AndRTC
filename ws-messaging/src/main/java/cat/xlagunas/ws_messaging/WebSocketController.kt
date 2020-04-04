@@ -1,9 +1,6 @@
 package cat.xlagunas.ws_messaging
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import cat.xlagunas.ws_messaging.data.MessageDto
 import cat.xlagunas.ws_messaging.data.UserSession
 import cat.xlagunas.ws_messaging.model.AnswerMessage
@@ -13,30 +10,24 @@ import cat.xlagunas.ws_messaging.model.MessageMapper
 import cat.xlagunas.ws_messaging.model.MessageType
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
-import io.socket.client.IO
-import io.socket.client.Socket
+import cat.xlagunas.ws_messaging.model.SessionMapper
 import kotlinx.coroutines.channels.BroadcastChannel
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import javax.inject.Inject
 
 class WebSocketController @Inject constructor(
-    activity: AppCompatActivity,
-    okHttpClient: OkHttpClient,
     private val messageMapper: MessageMapper,
-    private val roomId: String
+    private val sessionMapper: SessionMapper,
+    private val webSocketProvider: WebSocketEmitterProvider
 ) : LifecycleObserver {
 
-    private val socket: Socket by lazy { IO.socket("https://wss.viv.cat") }
-    private val localSession: UserSession by lazy { UserSession(socket.id()) }
-
+    private val localSession by lazy { UserSession(webSocketProvider.getId()) }
     val receivedMessageChannel = BroadcastChannel<Message>(100)
     val participantsChannel: BroadcastChannel<Session> = BroadcastChannel(10)
 
-    init {
-        Timber.d("Binding Socket.IO lifecycle to activity")
-        activity.lifecycle.addObserver(this)
-        IO.setDefaultOkHttpCallFactory(okHttpClient)
+    fun joinConference(conferenceId: String) {
+        setDirectMessageListener()
+        setParticipantsListener()
+        webSocketProvider.getEmitter().emit("JOIN_ROOM", conferenceId)
     }
 
     fun sendMessage(message: Message) {
@@ -60,38 +51,20 @@ class WebSocketController @Inject constructor(
                 messageMapper.serializeMessage(message)
             )
         }
-        socket.emit("DIRECT_MESSAGE", messageDto)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun start() {
-        if (!socket.connected()) {
-            socket.connect()
-            setDirectMessageListener()
-            setParticipantsListener()
-            socket.emit("JOIN_ROOM", roomId)
-            Timber.d("Connecting Socket.IO instance")
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stop() {
-        socket.disconnect()
-        Timber.d("Disconnecting Socket.IO instance")
+        webSocketProvider.getEmitter().emit("DIRECT_MESSAGE", messageDto)
     }
 
     private fun setDirectMessageListener() {
-        socket.on("DIRECT_MESSAGE") { receivedMsg ->
-            receivedMsg.map { it as String }
-                .map { messageMapper.convertMessage(it) }
+        webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
+            receivedMsg.map { messageMapper.convertMessage(it) }
                 .forEach { message -> receivedMessageChannel.offer(message) }
         }
     }
 
     private fun setParticipantsListener() {
-        socket.on("NEW_USER") { message ->
+        webSocketProvider.getEmitter().on("NEW_USER") { message ->
             message.map { it as String }
-                .map { userId -> UserSession(userId) }
+                .map { userId -> sessionMapper.convertSession(userId) }
                 .forEach { participantsChannel.offer(it) }
         }
     }
