@@ -15,7 +15,8 @@ class LifecycleAwareWebSocketProvider @Inject constructor(
     okHttpClient: OkHttpClient
 ) : LifecycleObserver, WebSocketEmitterProvider {
     //TODO MOVE URL TO FLAVOR
-    private val socket = IO.socket("https://wss.viv.cat")
+//    private val socket = IO.socket("https://wss.viv.cat")
+    private val socket = IO.socket("http://192.168.1.130:3000")
 
     init {
         IO.setDefaultOkHttpWebSocketFactory(okHttpClient)

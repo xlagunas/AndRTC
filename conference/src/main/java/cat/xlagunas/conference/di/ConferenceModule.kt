@@ -5,10 +5,15 @@ import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.ui.ConferenceActivity
+import cat.xlagunas.ws_messaging.LifecycleAwareWebSocketProvider
 import cat.xlagunas.ws_messaging.SignalingProtocol
 import cat.xlagunas.ws_messaging.WebSocketController
+import cat.xlagunas.ws_messaging.WebSocketEmitterProvider
 import cat.xlagunas.ws_messaging.WsSignalingProtocol
+import cat.xlagunas.ws_messaging.data.SessionAdapter
 import cat.xlagunas.ws_messaging.model.MessageMapper
+import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.ws_messaging.model.SessionMapper
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -41,18 +46,32 @@ class ConferenceModule {
     @Provides
     @Feature
     fun provideWebSocketController(
-        activity: ConferenceActivity,
-        okHttpClient: OkHttpClient,
         messageMapper: MessageMapper,
-        roomId: String
+        sessionMapper: SessionMapper,
+        webSocketEmitterProvider: WebSocketEmitterProvider
     ): WebSocketController {
-        return WebSocketController(activity, okHttpClient, messageMapper, roomId)
+        return WebSocketController(messageMapper, sessionMapper, webSocketEmitterProvider)
+    }
+
+    @Provides
+    @Feature
+    fun provideWebSocketEmitterProvider(
+        activity: ConferenceActivity,
+        okHttpClient: OkHttpClient
+    ): WebSocketEmitterProvider {
+        return LifecycleAwareWebSocketProvider(activity, okHttpClient)
     }
 
     @Provides
     @Feature
     fun provideMessageMapper(gson: Gson): MessageMapper {
         return MessageMapper(gson)
+    }
+
+    @Provides
+    @Feature
+    fun provideSessionMapper(gson: Gson): SessionMapper {
+        return SessionMapper(gson)
     }
 
     @Provides
@@ -94,7 +113,8 @@ class ConferenceModule {
     @Provides
     fun providePeerConnectionFactoryInitialisingOptions(application: Application): PeerConnectionFactory.InitializationOptions {
         return PeerConnectionFactory.InitializationOptions.builder(application)
-            .setEnableInternalTracer(true)
+//            TODO THIS NEEDS TO BE REENABLED OR IT CRASHES!
+//            .setEnableInternalTracer(true)
             .createInitializationOptions()
     }
 
@@ -152,7 +172,7 @@ class ConferenceModule {
     @Feature
     // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     fun provideGson(): Gson {
-        return GsonBuilder().create()
+        return GsonBuilder().registerTypeAdapter(Session::class.java, SessionAdapter()).create()
     }
 
     @Provides

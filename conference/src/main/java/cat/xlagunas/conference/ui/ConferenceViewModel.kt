@@ -12,18 +12,23 @@ import cat.xlagunas.ws_messaging.model.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
 import org.webrtc.MediaConstraints
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 class ConferenceViewModel @Inject constructor(
     private val conferenceRepository: ConferenceRepository,
     private val eglContext: EglBase.Context,
-    private val signaling: SignalingProtocol
+    private val signaling: SignalingProtocol,
+    private val roomId: String
 ) : ViewModel() {
 
     private val jobs = mutableListOf<Job>()
@@ -40,28 +45,37 @@ class ConferenceViewModel @Inject constructor(
     }
 
     fun onStart(userConstraints: MediaConstraints) {
-        conferenceRepository.joinRoom(userConstraints)
-
         jobs += GlobalScope.launch(Dispatchers.IO) {
+            launch { handleIncomingOfferRequests(userConstraints) }
+            launch { handleIncomingAnswerRequests() }
+            launch { handleIncomingIceCandidateRequests() }
+
             conferenceRepository.onNewUser()
-                .onEach { session -> createPeerConnection(session) }
-                .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
+                .onStart { Timber.d("Subscribed new joiner") }
+                .onEach { session ->
+                    Timber.d("Attempting to create a peer connection")
+                    createPeerConnection(session)
+                }
+                .flatMapMerge {
+                    conferenceRepository.createOffer(it, userConstraints)
+                        .onStart { Timber.d("Trying to create offer") }
+                }
                 .onEach {
                     conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
                     signaling.sendOffer(OfferMessage(it.first, it.second))
                 }
-            handleIncomingOfferRequests(userConstraints)
-            handleIncomingAnswerRequests()
-            handleIncomingIceCandidateRequests()
+                .launchIn(this)
+
+            conferenceRepository.joinRoom(roomId)
         }
 
         localStream.postValue(conferenceRepository.getLocalRenderer())
         remoteStream.postValue(conferenceRepository.getRemoteRenderer())
     }
 
-    private fun handleIncomingAnswerRequests() {
+    private suspend fun handleIncomingAnswerRequests() {
         signaling.onReceiveAnswer()
-            .onEach {
+            .collect {
                 conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
                     //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
                     //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
@@ -69,24 +83,20 @@ class ConferenceViewModel @Inject constructor(
             }
     }
 
-    private fun handleIncomingIceCandidateRequests() {
+    private suspend fun handleIncomingIceCandidateRequests() {
         signaling.onReceiveIceCandidate()
-            .onEach {
+            .collect {
                 conferenceRepository.addIceCandidate(it.receiver, it.iceCandidate)
             }
     }
 
-    private fun handleIncomingOfferRequests(userConstraints: MediaConstraints) {
+    private suspend fun handleIncomingOfferRequests(userConstraints: MediaConstraints) {
         signaling.onReceiveOffer()
             .onEach { offer -> createPeerConnection(offer.receiver) }
             .flatMapMerge {
-                conferenceRepository.handleRemoteOffer(
-                    it.receiver,
-                    userConstraints,
-                    it.offer
-                )
+                conferenceRepository.handleRemoteOffer(it.receiver, userConstraints, it.offer)
             }
-            .onEach {
+            .collect {
                 //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
                 //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
                 signaling.sendAnswer(AnswerMessage(it.first, it.second))

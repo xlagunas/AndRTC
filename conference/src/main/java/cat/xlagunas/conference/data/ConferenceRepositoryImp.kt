@@ -6,8 +6,10 @@ import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
 import cat.xlagunas.ws_messaging.WsSignalingProtocol
 import cat.xlagunas.ws_messaging.model.Session
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import org.webrtc.MediaStreamTrack
@@ -21,11 +23,10 @@ class ConferenceRepositoryImp @Inject constructor(
     private val peerConnectionDataSource: PeerConnectionDataSource,
     private val mediaSourceDataSource: MediaDataSourceImp,
     private val signaling: WsSignalingProtocol
-
 ) : ConferenceRepository {
 
-    override fun joinRoom(onReceiveOfferMediaConstraints: MediaConstraints) {
-        //TODO I DONT THINK WE NEED THIS NOW
+    override fun joinRoom(roomId: String) {
+        signaling.joinConference(roomId)
     }
 
     override suspend fun onNewUser(): Flow<Session> {
@@ -71,19 +72,14 @@ class ConferenceRepositoryImp @Inject constructor(
     override fun createOffer(
         user: Session,
         mediaConstraints: MediaConstraints
-    ): Flow<Pair<Session, SessionDescription>> {
-        return callbackFlow {
-            peerConnectionDataSource.createOffer(
-                user.getId(),
-                mediaConstraints
-            ) { sessionDescription ->
-                if (sessionDescription != null) {
-                    offer(Pair(user, sessionDescription))
-                } else {
-                    Timber.e("Attempted to create offer for user ${user.getId()} but returned null")
-                }
-            }
+    ): Flow<Pair<Session, SessionDescription>> = callbackFlow {
+        peerConnectionDataSource.createOffer(
+            user.getId(),
+            mediaConstraints
+        ) { sessionDescription ->
+            launch { send(Pair(user, sessionDescription)) }
         }
+        awaitClose()
     }
 
     override fun handleRemoteOffer(
@@ -99,6 +95,7 @@ class ConferenceRepositoryImp @Inject constructor(
             ) { answer ->
                 offer(Pair(contact, answer))
             }
+            awaitClose()
         }
     }
 

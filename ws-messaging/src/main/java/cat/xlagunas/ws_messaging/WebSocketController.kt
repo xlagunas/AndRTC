@@ -11,7 +11,9 @@ import cat.xlagunas.ws_messaging.model.MessageType
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
 import cat.xlagunas.ws_messaging.model.SessionMapper
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WebSocketController @Inject constructor(
@@ -51,13 +53,17 @@ class WebSocketController @Inject constructor(
                 messageMapper.serializeMessage(message)
             )
         }
-        webSocketProvider.getEmitter().emit("DIRECT_MESSAGE", messageDto)
+        webSocketProvider.getEmitter().emit("DIRECT_MESSAGE", messageMapper.serializeMessageDto(messageDto))
     }
 
     private fun setDirectMessageListener() {
-        webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
-            receivedMsg.map { messageMapper.convertMessage(it) }
-                .forEach { message -> receivedMessageChannel.offer(message) }
+        val emitter = webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
+            receivedMsg
+                .map { it as String }
+                .map { messageMapper.convertMessageDto(it) }
+                .forEach { message ->
+                    GlobalScope.launch { receivedMessageChannel.offer(message) }
+                }
         }
     }
 
@@ -65,7 +71,9 @@ class WebSocketController @Inject constructor(
         webSocketProvider.getEmitter().on("NEW_USER") { message ->
             message.map { it as String }
                 .map { userId -> sessionMapper.convertSession(userId) }
-                .forEach { participantsChannel.offer(it) }
+                .forEach {
+                    GlobalScope.launch { participantsChannel.send(it) }
+                }
         }
     }
 }

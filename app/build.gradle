@@ -98,6 +98,7 @@ dependencies {
     implementation project(':contact')
     implementation project(':user')
     implementation project(':core')
+    implementation project(':ws-messaging')
     androidTestImplementation project(':test-utils')
 
 

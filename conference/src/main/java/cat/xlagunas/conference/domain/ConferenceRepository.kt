@@ -10,7 +10,7 @@ import org.webrtc.SessionDescription
 
 interface ConferenceRepository {
 
-    fun joinRoom(onReceiveOfferMediaConstraints: MediaConstraints)
+    fun joinRoom(roomId: String)
     suspend fun registerUser()
     suspend fun onNewUser(): Flow<Session>
     fun logoutRoom()
