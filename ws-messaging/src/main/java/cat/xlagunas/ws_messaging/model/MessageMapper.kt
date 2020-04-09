@@ -6,10 +6,7 @@ import javax.inject.Inject
 
 class MessageMapper @Inject constructor(private val gson: Gson) {
 
-    fun convertMessage(serializedMessage: String): Message {
-        val messageDto =
-            gson.fromJson(serializedMessage, MessageDto::class.java)
-
+    private fun convertMessage(messageDto: MessageDto): Message {
         return when (messageDto.type) {
             MessageType.OFFER -> gson.fromJson(messageDto.data, OfferMessage::class.java)
             MessageType.ANSWER -> gson.fromJson(messageDto.data, AnswerMessage::class.java)
@@ -23,7 +20,7 @@ class MessageMapper @Inject constructor(private val gson: Gson) {
 
     fun convertMessageDto(serializedMessage: String): Message {
         val messageDto = gson.fromJson(serializedMessage, MessageDto::class.java)
-        return convertMessage(messageDto.data)
+        return convertMessage(messageDto)
     }
 
     fun serializeMessageDto(messageDto: MessageDto): String = gson.toJson(messageDto)

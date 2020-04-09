@@ -7,6 +7,17 @@ sealed class Message {
     abstract val receiver: Session
 }
 
-data class OfferMessage(override val receiver: Session, val offer: SessionDescription) : Message()
-data class AnswerMessage(override val receiver: Session, val answer: SessionDescription) : Message()
-data class IceCandidateMessage(override val receiver: Session, val iceCandidate: IceCandidate) : Message()
+data class OfferMessage(
+    override val receiver: Session,
+    val offer: SessionDescription
+) : Message()
+
+data class AnswerMessage(
+    override val receiver: Session,
+    val answer: SessionDescription
+) : Message()
+
+data class IceCandidateMessage(
+    override val receiver: Session,
+    val iceCandidate: IceCandidate
+) : Message()

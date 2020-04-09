@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 class WsSignalingProtocol @Inject constructor(
@@ -24,14 +25,17 @@ class WsSignalingProtocol @Inject constructor(
     }
 
     override fun sendOffer(offer: OfferMessage) {
+        Timber.d("Sending offer message")
         webSocketController.sendMessage(offer)
     }
 
     override fun sendAnswer(answer: AnswerMessage) {
+        Timber.d("Sending answer message")
         webSocketController.sendMessage(answer)
     }
 
     override fun sendIceCandidate(iceCandidate: IceCandidateMessage) {
+        Timber.d("Sending iceCandidate message")
         webSocketController.sendMessage(iceCandidate)
     }
 

@@ -45,10 +45,7 @@ class ConferenceRepositoryImp @Inject constructor(
         peerConnectionDataSource.getPeerConnection(contact.getId())?.addIceCandidate(iceCandidate)
     }
 
-    override fun createPeerConnection(
-        user: Session,
-        onIceCandidateGenerated: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
-    ): PeerConnection? {
+    override fun createPeerConnection(user: Session, onIceCandidateGenerated: (iceCandidate: Pair<Session, IceCandidate>) -> Unit): PeerConnection? {
         val peer = peerConnectionDataSource.createPeerConnection(user, onIceCandidateGenerated)
         val videoCapturer =
             mediaSourceDataSource.createLocalVideoCapturer(mediaSourceDataSource.getCameraEnumerator())
@@ -88,12 +85,9 @@ class ConferenceRepositoryImp @Inject constructor(
         sessionDescription: SessionDescription
     ): Flow<Pair<Session, SessionDescription>> {
         return callbackFlow {
-            peerConnectionDataSource.handleRemoteOffer(
-                contact.getId(),
-                sessionDescription,
-                mediaConstraints
-            ) { answer ->
-                offer(Pair(contact, answer))
+            Timber.d("Setting up remote offer to peer connection")
+            peerConnectionDataSource.handleRemoteOffer(contact.getId(), sessionDescription, mediaConstraints) {
+                    answer -> launch {  offer(Pair(contact, answer))}
             }
             awaitClose()
         }
@@ -104,6 +98,7 @@ class ConferenceRepositoryImp @Inject constructor(
         sessionDescription: SessionDescription,
         onComplete: () -> Unit
     ) {
+        Timber.d("Setting up remote answer to peer connection")
         peerConnectionDataSource.handleRemoteAnswer(contact.getId(), sessionDescription) {
             onComplete.invoke()
         }

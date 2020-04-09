@@ -16,11 +16,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
 import org.webrtc.MediaConstraints
-import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -48,18 +46,10 @@ class ConferenceViewModel @Inject constructor(
         jobs += GlobalScope.launch(Dispatchers.IO) {
             launch { handleIncomingOfferRequests(userConstraints) }
             launch { handleIncomingAnswerRequests() }
-            launch { handleIncomingIceCandidateRequests() }
 
             conferenceRepository.onNewUser()
-                .onStart { Timber.d("Subscribed new joiner") }
-                .onEach { session ->
-                    Timber.d("Attempting to create a peer connection")
-                    createPeerConnection(session)
-                }
-                .flatMapMerge {
-                    conferenceRepository.createOffer(it, userConstraints)
-                        .onStart { Timber.d("Trying to create offer") }
-                }
+                .onEach { session -> createPeerConnection(session) }
+                .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
                 .onEach {
                     conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
                     signaling.sendOffer(OfferMessage(it.first, it.second))
@@ -79,6 +69,7 @@ class ConferenceViewModel @Inject constructor(
                 conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
                     //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
                     //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
+                    GlobalScope.launch { handleIncomingIceCandidateRequests() }
                 }
             }
     }
@@ -94,11 +85,16 @@ class ConferenceViewModel @Inject constructor(
         signaling.onReceiveOffer()
             .onEach { offer -> createPeerConnection(offer.receiver) }
             .flatMapMerge {
-                conferenceRepository.handleRemoteOffer(it.receiver, userConstraints, it.offer)
+                conferenceRepository.handleRemoteOffer(
+                    it.receiver,
+                    userConstraints,
+                    it.offer
+                )
             }
             .collect {
                 //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
                 //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
+                GlobalScope.launch { handleIncomingIceCandidateRequests() }
                 signaling.sendAnswer(AnswerMessage(it.first, it.second))
             }
     }

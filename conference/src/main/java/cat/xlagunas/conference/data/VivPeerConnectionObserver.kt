@@ -11,8 +11,7 @@ import timber.log.Timber
 class VivPeerConnectionObserver(
     private val user: Session,
     private val onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
-) :
-    PeerConnection.Observer {
+) : PeerConnection.Observer {
 
     override fun onIceCandidate(p0: IceCandidate) {
         Timber.i("New ice candidate gathered for ${user.getId()}")

@@ -113,16 +113,12 @@ class ConferenceModule {
     @Provides
     fun providePeerConnectionFactoryInitialisingOptions(application: Application): PeerConnectionFactory.InitializationOptions {
         return PeerConnectionFactory.InitializationOptions.builder(application)
-//            TODO THIS NEEDS TO BE REENABLED OR IT CRASHES!
-//            .setEnableInternalTracer(true)
+            .setEnableInternalTracer(true)
             .createInitializationOptions()
     }
 
     @Provides
     fun provideRTCConfiguration(): PeerConnection.RTCConfiguration {
-
-//        val server = listOf(
-//                PeerConnection.IceServer("turn:xlagunas.cat", "Hercules", "X4v1"))
 
         return PeerConnection.RTCConfiguration(provideGoogleTurnServers())
             .also {
@@ -138,34 +134,36 @@ class ConferenceModule {
     }
 
     private fun provideGoogleTurnServers(): List<PeerConnection.IceServer> {
-        return listOf(
-            PeerConnection.IceServer.builder("stun:[2a00:1450:400c:c06::7f]:19302")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer(),
-            PeerConnection.IceServer.builder("stun:66.102.1.127:19302")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer(),
-            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=udp")
-                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer(),
-            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=udp")
-                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer(),
-            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=tcp")
-                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer(),
-            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=tcp")
-                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
-                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer()
-        )
+//        return listOf(
+//            PeerConnection.IceServer.builder("stun:[2a00:1450:400c:c06::7f]:19302")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer(),
+//            PeerConnection.IceServer.builder("stun:66.102.1.127:19302")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer(),
+//            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=udp")
+//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer(),
+//            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=udp")
+//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer(),
+//            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=tcp")
+//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer(),
+//            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=tcp")
+//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
+//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+//                .createIceServer()
+//        )
+
+        return listOf(PeerConnection.IceServer.builder("stun:66.102.1.127:19302").createIceServer())
     }
 
     @Provides

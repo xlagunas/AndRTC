@@ -14,6 +14,7 @@ import cat.xlagunas.ws_messaging.model.SessionMapper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class WebSocketController @Inject constructor(
@@ -38,31 +39,31 @@ class WebSocketController @Inject constructor(
                 localSession.getId(),
                 message.receiver.getId(),
                 MessageType.OFFER,
-                messageMapper.serializeMessage(message)
+                messageMapper.serializeMessage(message.copy(receiver = localSession))
             )
             is AnswerMessage -> MessageDto(
                 localSession.getId(),
                 message.receiver.getId(),
                 MessageType.ANSWER,
-                messageMapper.serializeMessage(message)
+                messageMapper.serializeMessage(message.copy(receiver = localSession))
             )
             is IceCandidateMessage -> MessageDto(
                 localSession.getId(),
                 message.receiver.getId(),
                 MessageType.ICE_CANDIDATE,
-                messageMapper.serializeMessage(message)
+                messageMapper.serializeMessage(message.copy(receiver = localSession))
             )
         }
         webSocketProvider.getEmitter().emit("DIRECT_MESSAGE", messageMapper.serializeMessageDto(messageDto))
     }
 
     private fun setDirectMessageListener() {
-        val emitter = webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
-            receivedMsg
-                .map { it as String }
+       webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
+            receivedMsg.map { it as String }
                 .map { messageMapper.convertMessageDto(it) }
                 .forEach { message ->
-                    GlobalScope.launch { receivedMessageChannel.offer(message) }
+                    Timber.v("received direct message of type ${message.javaClass.canonicalName}")
+                    GlobalScope.launch { receivedMessageChannel.send(message) }
                 }
         }
     }

@@ -16,18 +16,22 @@ import javax.inject.Inject
 
 class PeerConnectionDataSource @Inject constructor(
     private val peerConnectionFactory: PeerConnectionFactory,
-    private val rtcConfiguration: PeerConnection.RTCConfiguration) {
+    private val rtcConfiguration: PeerConnection.RTCConfiguration
+) {
     private val peerConnectionMap = ConcurrentHashMap<String, PeerConnection>()
 
     fun getPeerConnection(userId: String): PeerConnection? {
         return peerConnectionMap[userId]
     }
 
-    fun addPeerConnection(userId: String, peerConnection: PeerConnection) {
+    private fun addPeerConnection(userId: String, peerConnection: PeerConnection) {
         peerConnectionMap[userId] = peerConnection
     }
 
-    fun createPeerConnection(user: Session, onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit): PeerConnection? {
+    fun createPeerConnection(
+        user: Session,
+        onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
+    ): PeerConnection? {
         Timber.d("Creating peer connection per ${user.getId()}")
         val peerObserver = VivPeerConnectionObserver(user, onIceCandidate)
         return peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)?.apply {
@@ -52,7 +56,11 @@ class PeerConnectionDataSource @Inject constructor(
         getPeerConnection(userId)?.createOffer(sdpObserver, peerConnectionConstraints)
     }
 
-    fun handleRemoteAnswer(contactId: String, sessionDescription: SessionDescription, block: (() -> Unit)) {
+    fun handleRemoteAnswer(
+        contactId: String,
+        sessionDescription: SessionDescription,
+        block: (() -> Unit)
+    ) {
         Timber.d("Handling remote answer for $contactId")
         val peerConnection = getPeerConnection(contactId)
         val sdpObserver = object : VivSdpObserver(contactId) {
@@ -65,11 +73,10 @@ class PeerConnectionDataSource @Inject constructor(
     }
 
     fun handleRemoteOffer(
-        contactId: String,
-        sessionDescription: SessionDescription,
-        peerConnectionConstraints: MediaConstraints,
+        contactId: String, sessionDescription: SessionDescription, constraints: MediaConstraints,
         block: (sessionDescription: SessionDescription) -> Unit
     ) {
+
         Timber.d("Handling remote offer from $contactId")
         val peerConnection = getPeerConnection(contactId)
         peerConnection?.setRemoteDescription(NoOPVivSdpObserver(contactId), sessionDescription)
@@ -81,6 +88,6 @@ class PeerConnectionDataSource @Inject constructor(
                 block(sessionDescription)
             }
         }
-        peerConnection?.createAnswer(sdpObserver, peerConnectionConstraints)
+        peerConnection?.createAnswer(sdpObserver, constraints)
     }
 }
