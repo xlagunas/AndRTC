@@ -11,10 +11,8 @@ import cat.xlagunas.ws_messaging.model.MessageType
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
 import cat.xlagunas.ws_messaging.model.SessionMapper
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class WebSocketController @Inject constructor(
@@ -24,12 +22,8 @@ class WebSocketController @Inject constructor(
 ) : LifecycleObserver {
 
     private val localSession by lazy { UserSession(webSocketProvider.getId()) }
-    val receivedMessageChannel = BroadcastChannel<Message>(100)
-    val participantsChannel: BroadcastChannel<Session> = BroadcastChannel(10)
 
     fun joinConference(conferenceId: String) {
-        setDirectMessageListener()
-        setParticipantsListener()
         webSocketProvider.getEmitter().emit("JOIN_ROOM", conferenceId)
     }
 
@@ -54,27 +48,17 @@ class WebSocketController @Inject constructor(
                 messageMapper.serializeMessage(message.copy(receiver = localSession))
             )
         }
-        webSocketProvider.getEmitter().emit("DIRECT_MESSAGE", messageMapper.serializeMessageDto(messageDto))
+        webSocketProvider.getEmitter()
+            .emit("DIRECT_MESSAGE", messageMapper.serializeMessageDto(messageDto))
     }
 
-    private fun setDirectMessageListener() {
-       webSocketProvider.getEmitter().on("DIRECT_MESSAGE") { receivedMsg ->
-            receivedMsg.map { it as String }
-                .map { messageMapper.convertMessageDto(it) }
-                .forEach { message ->
-                    Timber.v("received direct message of type ${message.javaClass.canonicalName}")
-                    GlobalScope.launch { receivedMessageChannel.send(message) }
-                }
-        }
+    fun observeDirectMessages(): Flow<Message> {
+        return webSocketProvider.getEmitter().on("DIRECT_MESSAGE")
+            .map { messageMapper.convertMessageDto(it) }
     }
 
-    private fun setParticipantsListener() {
-        webSocketProvider.getEmitter().on("NEW_USER") { message ->
-            message.map { it as String }
-                .map { userId -> sessionMapper.convertSession(userId) }
-                .forEach {
-                    GlobalScope.launch { participantsChannel.send(it) }
-                }
-        }
+    fun observeParticipants(): Flow<Session> {
+        return webSocketProvider.getEmitter().on("NEW_USER")
+            .map { sessionMapper.convertSession(it) }
     }
 }

@@ -6,7 +6,6 @@ import cat.xlagunas.ws_messaging.model.Message
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -21,7 +20,7 @@ class WsSignalingProtocol @Inject constructor(
     }
 
     override fun onNewSession(): Flow<Session> {
-        return webSocketController.participantsChannel.asFlow()
+        return webSocketController.observeParticipants()
     }
 
     override fun sendOffer(offer: OfferMessage) {
@@ -40,19 +39,19 @@ class WsSignalingProtocol @Inject constructor(
     }
 
     override fun onReceiveOffer(): Flow<OfferMessage> {
-        return webSocketController.receivedMessageChannel.asFlow()
+        return webSocketController.observeDirectMessages()
             .filter { it is OfferMessage }
             .map { value: Message -> value as OfferMessage }
     }
 
     override fun onReceiveAnswer(): Flow<AnswerMessage> {
-        return webSocketController.receivedMessageChannel.asFlow()
+        return webSocketController.observeDirectMessages()
             .filter { it is AnswerMessage }
             .map { value: Message -> value as AnswerMessage }
     }
 
     override fun onReceiveIceCandidate(): Flow<IceCandidateMessage> {
-        return webSocketController.receivedMessageChannel.asFlow()
+        return webSocketController.observeDirectMessages()
             .filter { it is IceCandidateMessage }
             .map { value: Message -> value as IceCandidateMessage }
     }
