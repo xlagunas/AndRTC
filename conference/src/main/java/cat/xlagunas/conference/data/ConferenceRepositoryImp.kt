@@ -29,7 +29,7 @@ class ConferenceRepositoryImp @Inject constructor(
         signaling.joinConference(roomId)
     }
 
-    override suspend fun onNewUser(): Flow<Session> {
+    override fun onNewUser(): Flow<Session> {
         return signaling.onNewSession()
     }
 

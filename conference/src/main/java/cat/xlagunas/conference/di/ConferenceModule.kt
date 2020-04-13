@@ -103,10 +103,8 @@ class ConferenceModule {
     fun provideAudioDeviceModule(application: Application): AudioDeviceModule {
         return JavaAudioDeviceModule.builder(application)
 //                .setSamplesReadyCallback(saveRecordedAudioToFile)
-//                .setUseHardwareAcousticEchoCanceler(!peerConnectionParameters.disableBuiltInAEC)
-//                .setUseHardwareNoiseSuppressor(!peerConnectionParameters.disableBuiltInNS)
-//                .setAudioRecordErrorCallback(audioRecordErrorCallback)
-//                .setAudioTrackErrorCallback(audioTrackErrorCallback)
+                .setUseHardwareAcousticEchoCanceler(true)
+                .setUseHardwareNoiseSuppressor(true)
             .createAudioDeviceModule()
     }
 
@@ -134,36 +132,34 @@ class ConferenceModule {
     }
 
     private fun provideGoogleTurnServers(): List<PeerConnection.IceServer> {
-//        return listOf(
-//            PeerConnection.IceServer.builder("stun:[2a00:1450:400c:c06::7f]:19302")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer(),
-//            PeerConnection.IceServer.builder("stun:66.102.1.127:19302")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer(),
-//            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=udp")
-//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer(),
-//            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=udp")
-//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer(),
-//            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=tcp")
-//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer(),
-//            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=tcp")
-//                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
-//                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
-//                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-//                .createIceServer()
-//        )
-
-        return listOf(PeerConnection.IceServer.builder("stun:66.102.1.127:19302").createIceServer())
+        return listOf(
+            PeerConnection.IceServer.builder("stun:[2a00:1450:400c:c06::7f]:19302")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer(),
+            PeerConnection.IceServer.builder("stun:66.102.1.127:19302")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer(),
+            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=udp")
+                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer(),
+            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=udp")
+                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4=")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer(),
+            PeerConnection.IceServer.builder("turn:74.125.140.127:19305?transport=tcp")
+                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer(),
+            PeerConnection.IceServer.builder("turn:[2a00:1450:400c:c08::7f]:19305?transport=tcp")
+                .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
+                .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
+                .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
+                .createIceServer()
+        )
     }
 
     @Provides

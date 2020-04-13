@@ -12,7 +12,7 @@ interface ConferenceRepository {
 
     fun joinRoom(roomId: String)
     suspend fun registerUser()
-    suspend fun onNewUser(): Flow<Session>
+    fun onNewUser(): Flow<Session>
     fun logoutRoom()
     fun createPeerConnection(user: Session, onIceCandidateGenerated: (onIceCandidateGenerated: Pair<Session,IceCandidate>) -> Unit) :PeerConnection?
     fun createOffer(user: Session, mediaConstraints: MediaConstraints): Flow<Pair<Session, SessionDescription>>

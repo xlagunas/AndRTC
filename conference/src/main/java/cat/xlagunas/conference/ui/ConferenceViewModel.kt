@@ -2,6 +2,7 @@ package cat.xlagunas.conference.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
 import cat.xlagunas.ws_messaging.SignalingProtocol
@@ -10,15 +11,16 @@ import cat.xlagunas.ws_messaging.model.IceCandidateMessage
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
 import org.webrtc.MediaConstraints
+import timber.log.Timber
+import java.lang.Thread.sleep
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -28,8 +30,6 @@ class ConferenceViewModel @Inject constructor(
     private val signaling: SignalingProtocol,
     private val roomId: String
 ) : ViewModel() {
-
-    private val jobs = mutableListOf<Job>()
 
     val conferenceAttendees by lazy { MutableLiveData<Int>() }
     val localStream by lazy { MutableLiveData<ProxyVideoSink>() }
@@ -43,7 +43,7 @@ class ConferenceViewModel @Inject constructor(
     }
 
     fun onStart(userConstraints: MediaConstraints) {
-        jobs += GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             launch { handleIncomingOfferRequests(userConstraints) }
             launch { handleIncomingAnswerRequests() }
 
@@ -54,6 +54,7 @@ class ConferenceViewModel @Inject constructor(
                     conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
                     signaling.sendOffer(OfferMessage(it.first, it.second))
                 }
+                .catch { Timber.e(it) }
                 .launchIn(this)
 
             conferenceRepository.joinRoom(roomId)
@@ -63,54 +64,51 @@ class ConferenceViewModel @Inject constructor(
         remoteStream.postValue(conferenceRepository.getRemoteRenderer())
     }
 
-    private suspend fun handleIncomingAnswerRequests() {
+    private suspend fun handleIncomingAnswerRequests() = coroutineScope {
         signaling.onReceiveAnswer()
-            .collect {
+            .onEach {
                 conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
                     //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
                     //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
-                    GlobalScope.launch { handleIncomingIceCandidateRequests() }
+                    launch { handleIncomingIceCandidateRequests() }
                 }
-            }
+            }.launchIn(this)
     }
 
-    private suspend fun handleIncomingIceCandidateRequests() {
+    private suspend fun handleIncomingIceCandidateRequests() = coroutineScope {
         signaling.onReceiveIceCandidate()
-            .collect {
+            .onEach {
                 conferenceRepository.addIceCandidate(it.receiver, it.iceCandidate)
-            }
+            }.launchIn(this)
     }
 
-    private suspend fun handleIncomingOfferRequests(userConstraints: MediaConstraints) {
-        signaling.onReceiveOffer()
-            .onEach { offer -> createPeerConnection(offer.receiver) }
-            .flatMapMerge {
-                conferenceRepository.handleRemoteOffer(
-                    it.receiver,
-                    userConstraints,
-                    it.offer
-                )
-            }
-            .collect {
-                //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
-                //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
-                GlobalScope.launch { handleIncomingIceCandidateRequests() }
-                signaling.sendAnswer(AnswerMessage(it.first, it.second))
-            }
-    }
+    private suspend fun handleIncomingOfferRequests(userConstraints: MediaConstraints) =
+        coroutineScope {
+            signaling.onReceiveOffer()
+                .onEach { offer -> createPeerConnection(offer.receiver) }
+                .flatMapMerge {
+                    conferenceRepository.handleRemoteOffer(
+                        it.receiver,
+                        userConstraints,
+                        it.offer
+                    )
+                }
+                .onEach {
+                    //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
+                    //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
+                    launch{handleIncomingIceCandidateRequests()}
+                    signaling.sendAnswer(AnswerMessage(it.first, it.second))
+                }.launchIn(this)
+        }
 
     private fun createPeerConnection(session: Session) {
         conferenceRepository.createPeerConnection(session) {
+            sleep(100)
             signaling.sendIceCandidate(IceCandidateMessage(it.first, it.second))
         }
     }
 
     override fun onCleared() {
         conferenceRepository.logoutRoom()
-        jobs.forEach {
-            if (it.isActive) {
-                it.cancel()
-            }
-        }
     }
 }
