@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.launchIn
@@ -38,29 +37,24 @@ class ConferenceViewModel @Inject constructor(
     val localStream by lazy { MutableLiveData<ProxyVideoSink>() }
     val remoteStream by lazy { MutableLiveData<ProxyVideoSink>() }
     val requestedMedia = MutableLiveData<MediaConstraints>()
+    fun getEGLContext(): EglBase.Context {
+        return eglContext
+    }
 
     private val totalConnectedUsers = AtomicInteger()
 
     private val iceCandidateChannel = Channel<Pair<Session, IceCandidate>>(0)
 
-    fun getEGLContext(): EglBase.Context {
-        return eglContext
-    }
+
 
     fun onStart(userConstraints: MediaConstraints) {
         viewModelScope.launch(Dispatchers.IO) {
-            launch { handleIncomingOfferRequests(userConstraints) }
-            launch { handleIncomingAnswerRequests() }
 
-            conferenceRepository.onNewUser()
-                .onEach { session -> createPeerConnection(session) }
-                .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
-                .onEach {
-                    conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
-                    signaling.sendOffer(OfferMessage(it.first, it.second))
-                }
-                .catch { Timber.e(it) }
-                .launchIn(this)
+            handleIncomingOfferRequests(userConstraints)
+
+            handleIncomingAnswerRequests()
+
+            handleIncomingUsers(userConstraints)
 
             conferenceRepository.joinRoom(roomId)
         }
@@ -69,40 +63,50 @@ class ConferenceViewModel @Inject constructor(
         remoteStream.postValue(conferenceRepository.getRemoteRenderer())
     }
 
-    private suspend fun handleIncomingAnswerRequests() = coroutineScope {
+    private fun CoroutineScope.handleIncomingUsers(userConstraints: MediaConstraints) {
+        conferenceRepository.onNewUser()
+            .onEach { session -> createPeerConnection(session) }
+            .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
+            .onEach {
+                conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
+                signaling.sendOffer(OfferMessage(it.first, it.second))
+            }
+            .catch { Timber.e(it) }
+            .launchIn(this)
+    }
+
+    private fun CoroutineScope.handleIncomingAnswerRequests() {
         signaling.onReceiveAnswer()
             .onEach {
                 conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
-                    launch { handleIncomingIceCandidateRequests() }
+                    handleIncomingIceCandidateRequests()
                     consumeIceCandidates()
                 }
             }.launchIn(this)
     }
 
-    private suspend fun handleIncomingIceCandidateRequests() = coroutineScope {
+    private fun CoroutineScope.handleIncomingIceCandidateRequests() {
         signaling.onReceiveIceCandidate()
             .onEach {
                 conferenceRepository.addIceCandidate(it.receiver, it.iceCandidate)
             }.launchIn(this)
     }
 
-    private suspend fun handleIncomingOfferRequests(userConstraints: MediaConstraints) =
-        coroutineScope {
-            signaling.onReceiveOffer()
-                .onEach { offer -> createPeerConnection(offer.receiver) }
-                .flatMapMerge {
-                    conferenceRepository.handleRemoteOffer(
-                        it.receiver,
-                        userConstraints,
-                        it.offer
-                    )
-                }
-                .onEach {
-                    signaling.sendAnswer(AnswerMessage(it.first, it.second))
-                    launch { handleIncomingIceCandidateRequests() }
-                    consumeIceCandidates()
-                }.launchIn(this)
-        }
+    private fun CoroutineScope.handleIncomingOfferRequests(userConstraints: MediaConstraints) {
+        signaling.onReceiveOffer()
+            .onEach { offer -> createPeerConnection(offer.receiver) }
+            .flatMapMerge {
+                conferenceRepository.handleRemoteOffer(
+                    it.receiver,
+                    userConstraints,
+                    it.offer
+                )
+            }
+            .onEach { signaling.sendAnswer(AnswerMessage(it.first, it.second)) }
+            .onEach { handleIncomingIceCandidateRequests() }
+            .onEach { consumeIceCandidates() }
+            .launchIn(this)
+    }
 
     private fun CoroutineScope.createPeerConnection(session: Session) {
         conferenceRepository.createPeerConnection(session) {
