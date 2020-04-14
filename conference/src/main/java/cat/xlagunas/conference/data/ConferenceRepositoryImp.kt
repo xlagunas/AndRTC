@@ -66,10 +66,7 @@ class ConferenceRepositoryImp @Inject constructor(
         remoteVideoTrack.addSink(mediaSourceDataSource.remoteLocalVideoSink)
     }
 
-    override fun createOffer(
-        user: Session,
-        mediaConstraints: MediaConstraints
-    ): Flow<Pair<Session, SessionDescription>> = callbackFlow {
+    override fun createOffer(user: Session, mediaConstraints: MediaConstraints): Flow<Pair<Session, SessionDescription>> = callbackFlow {
         peerConnectionDataSource.createOffer(
             user.getId(),
             mediaConstraints
@@ -87,7 +84,7 @@ class ConferenceRepositoryImp @Inject constructor(
         return callbackFlow {
             Timber.d("Setting up remote offer to peer connection")
             peerConnectionDataSource.handleRemoteOffer(contact.getId(), sessionDescription, mediaConstraints) {
-                    answer -> launch {  offer(Pair(contact, answer))}
+                    answer -> launch {  send(Pair(contact, answer))}
             }
             awaitClose()
         }

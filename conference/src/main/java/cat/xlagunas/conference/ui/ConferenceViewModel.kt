@@ -10,7 +10,10 @@ import cat.xlagunas.ws_messaging.model.AnswerMessage
 import cat.xlagunas.ws_messaging.model.IceCandidateMessage
 import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapMerge
@@ -18,9 +21,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.webrtc.EglBase
+import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import timber.log.Timber
-import java.lang.Thread.sleep
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -37,6 +40,8 @@ class ConferenceViewModel @Inject constructor(
     val requestedMedia = MutableLiveData<MediaConstraints>()
 
     private val totalConnectedUsers = AtomicInteger()
+
+    private val iceCandidateChannel = Channel<Pair<Session, IceCandidate>>(0)
 
     fun getEGLContext(): EglBase.Context {
         return eglContext
@@ -68,9 +73,8 @@ class ConferenceViewModel @Inject constructor(
         signaling.onReceiveAnswer()
             .onEach {
                 conferenceRepository.handleRemoteAnswer(it.receiver, it.answer) {
-                    //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
-                    //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
                     launch { handleIncomingIceCandidateRequests() }
+                    consumeIceCandidates()
                 }
             }.launchIn(this)
     }
@@ -94,17 +98,23 @@ class ConferenceViewModel @Inject constructor(
                     )
                 }
                 .onEach {
-                    //TODO CHECK IF THIS CAN BE MOVED observeRemoteIceCandidates()
-                    //TODO CHECK IF THIS CAN BE MOVED emitGeneratedIceCandidates()
-                    launch{handleIncomingIceCandidateRequests()}
                     signaling.sendAnswer(AnswerMessage(it.first, it.second))
+                    launch { handleIncomingIceCandidateRequests() }
+                    consumeIceCandidates()
                 }.launchIn(this)
         }
 
-    private fun createPeerConnection(session: Session) {
+    private fun CoroutineScope.createPeerConnection(session: Session) {
         conferenceRepository.createPeerConnection(session) {
-            sleep(100)
-            signaling.sendIceCandidate(IceCandidateMessage(it.first, it.second))
+            launch { iceCandidateChannel.send(it) }
+        }
+    }
+
+    private fun CoroutineScope.consumeIceCandidates() {
+        launch {
+            iceCandidateChannel.consumeEach {
+                signaling.sendIceCandidate(IceCandidateMessage(it.first, it.second))
+            }
         }
     }
 

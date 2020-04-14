@@ -55,7 +55,4 @@ class VivPeerConnectionObserver(
         Timber.i("received onAddTrack message")
     }
 
-    enum class MediaStreamState {
-        ADDED, REMOVED
-    }
 }

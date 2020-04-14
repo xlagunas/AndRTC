@@ -28,10 +28,7 @@ class PeerConnectionDataSource @Inject constructor(
         peerConnectionMap[userId] = peerConnection
     }
 
-    fun createPeerConnection(
-        user: Session,
-        onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
-    ): PeerConnection? {
+    fun createPeerConnection(user: Session, onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit): PeerConnection? {
         Timber.d("Creating peer connection per ${user.getId()}")
         val peerObserver = VivPeerConnectionObserver(user, onIceCandidate)
         return peerConnectionFactory.createPeerConnection(rtcConfiguration, peerObserver)?.apply {
