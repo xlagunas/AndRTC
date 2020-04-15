@@ -1,5 +1,9 @@
 package cat.xlagunas.ws_messaging
 
+import cat.xlagunas.ws_messaging.TestUtils.fakeAnswerSessionMessage
+import cat.xlagunas.ws_messaging.TestUtils.fakeIceCandidateMessage
+import cat.xlagunas.ws_messaging.TestUtils.fakeLocalSession
+import cat.xlagunas.ws_messaging.TestUtils.fakeOfferSessionMessage
 import cat.xlagunas.ws_messaging.data.SessionAdapter
 import cat.xlagunas.ws_messaging.model.AnswerMessage
 import cat.xlagunas.ws_messaging.model.IceCandidateMessage
@@ -12,7 +16,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions
-import org.junit.Before
 import org.junit.Test
 
 class WsSignalingProtocolTest {
@@ -27,11 +30,6 @@ class WsSignalingProtocolTest {
     )
     private val signalingProtocol = WsSignalingProtocol(webSocketController)
 
-    @Before
-    fun setUp() {
-        signalingProtocol.joinConference("1234")
-    }
-
     @Test
     fun onNewSession() = runBlockingTest {
         val values = mutableListOf<Session>()
@@ -40,28 +38,20 @@ class WsSignalingProtocolTest {
             signalingProtocol.onNewSession()
                 .collect { values.add(it) }
         }
-        fakeEmitter.getEmitter().emit("NEW_USER", WebSocketControllerTest.fakeLocalSession.getId())
+        fakeEmitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
 
         Assertions.assertThat(values[0])
-            .usingRecursiveComparison().isEqualTo(WebSocketControllerTest.fakeLocalSession)
+            .usingRecursiveComparison().isEqualTo(fakeLocalSession())
         job.cancel()
     }
 
     @Test
     fun onReceiveOffer() = runBlockingTest {
         val values = mutableListOf<OfferMessage>()
-        val expectedOfferMessage = OfferMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeOfferSessionDescription
-        )
-        val expectedAnswerMessage = AnswerMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeAnswerSessionDescription
-        )
-        val expectedIceCandidateMessage = IceCandidateMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeIceCandidate
-        )
+        val expectedOfferMessage = fakeOfferSessionMessage()
+        val expectedAnswerMessage = fakeAnswerSessionMessage()
+        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+
         val job = launch {
             signalingProtocol.onReceiveOffer().collect { values.add(it) }
         }
@@ -77,18 +67,10 @@ class WsSignalingProtocolTest {
     @Test
     fun onReceiveAnswer() = runBlockingTest {
         val values = mutableListOf<AnswerMessage>()
-        val expectedOfferMessage = OfferMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeOfferSessionDescription
-        )
-        val expectedAnswerMessage = AnswerMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeAnswerSessionDescription
-        )
-        val expectedIceCandidateMessage = IceCandidateMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeIceCandidate
-        )
+        val expectedOfferMessage = fakeOfferSessionMessage()
+        val expectedAnswerMessage = fakeAnswerSessionMessage()
+        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+
         val job = launch {
             signalingProtocol.onReceiveAnswer().collect { values.add(it) }
         }
@@ -102,20 +84,12 @@ class WsSignalingProtocolTest {
     }
 
     @Test
-    fun onReceiveIceCandidate() = runBlockingTest{
+    fun onReceiveIceCandidate() = runBlockingTest {
         val values = mutableListOf<IceCandidateMessage>()
-        val expectedOfferMessage = OfferMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeOfferSessionDescription
-        )
-        val expectedAnswerMessage = AnswerMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeAnswerSessionDescription
-        )
-        val expectedIceCandidateMessage = IceCandidateMessage(
-            WebSocketControllerTest.fakeLocalSession,
-            WebSocketControllerTest.fakeIceCandidate
-        )
+        val expectedOfferMessage = fakeOfferSessionMessage()
+        val expectedAnswerMessage = fakeAnswerSessionMessage()
+        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+
         val job = launch {
             signalingProtocol.onReceiveIceCandidate().collect { values.add(it) }
         }
@@ -123,7 +97,8 @@ class WsSignalingProtocolTest {
         webSocketController.sendMessage(expectedOfferMessage)
         webSocketController.sendMessage(expectedIceCandidateMessage)
 
-        Assertions.assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedIceCandidateMessage)
+        Assertions.assertThat(values[0]).usingRecursiveComparison()
+            .isEqualTo(expectedIceCandidateMessage)
         Assertions.assertThat(values).hasSize(1)
         job.cancel()
     }

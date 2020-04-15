@@ -1,25 +1,22 @@
 package cat.xlagunas.ws_messaging
 
+import cat.xlagunas.ws_messaging.TestUtils.fakeAnswerSessionMessage
+import cat.xlagunas.ws_messaging.TestUtils.fakeIceCandidateMessage
+import cat.xlagunas.ws_messaging.TestUtils.fakeLocalSession
+import cat.xlagunas.ws_messaging.TestUtils.fakeOfferSessionMessage
 import cat.xlagunas.ws_messaging.data.SessionAdapter
-import cat.xlagunas.ws_messaging.data.UserSession
-import cat.xlagunas.ws_messaging.model.AnswerMessage
-import cat.xlagunas.ws_messaging.model.IceCandidateMessage
 import cat.xlagunas.ws_messaging.model.Message
 import cat.xlagunas.ws_messaging.model.MessageMapper
-import cat.xlagunas.ws_messaging.model.OfferMessage
 import cat.xlagunas.ws_messaging.model.Session
 import cat.xlagunas.ws_messaging.model.SessionMapper
 import com.google.gson.GsonBuilder
 import io.socket.emitter.Emitter
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.webrtc.IceCandidate
-import org.webrtc.SessionDescription
 
 class WebSocketControllerTest {
 
@@ -36,15 +33,15 @@ class WebSocketControllerTest {
 
     @Test
     fun getReceivedMessageChannel() = runBlockingTest {
-        val expectedOfferMessage = OfferMessage(fakeLocalSession, fakeOfferSessionDescription)
-        val expectedAnswerMessage = AnswerMessage(fakeLocalSession, fakeAnswerSessionDescription)
-        val expectedIceCandidateMessage = IceCandidateMessage(fakeLocalSession, fakeIceCandidate)
+        val expectedOfferMessage = fakeOfferSessionMessage()
+        val expectedAnswerMessage = fakeAnswerSessionMessage()
+        val expectedIceCandidateMessage = fakeIceCandidateMessage()
 
         val values = mutableListOf<Message>()
 
         webSocketController.joinConference("1234")
         val job = launch {
-            webSocketController.receivedMessageChannel.asFlow()
+            webSocketController.observeDirectMessages()
                 .collect { values.add(it) }
         }
         webSocketController.sendMessage(expectedOfferMessage)
@@ -63,12 +60,12 @@ class WebSocketControllerTest {
         val values = mutableListOf<Session>()
 
         val job = launch {
-            webSocketController.participantsChannel.asFlow()
+            webSocketController.observeParticipants()
                 .collect { values.add(it) }
         }
-        emitter.getEmitter().emit("NEW_USER", fakeLocalSession.getId())
+        emitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
 
-        assertThat(values[0]).usingRecursiveComparison().isEqualTo(fakeLocalSession)
+        assertThat(values[0]).usingRecursiveComparison().isEqualTo(fakeLocalSession())
         job.cancel()
     }
 
@@ -80,18 +77,7 @@ class WebSocketControllerTest {
         }
 
         override fun getId(): String {
-            return fakeLocalSession.getId()
+            return fakeLocalSession().getId()
         }
-    }
-
-    companion object {
-        val fakeLocalSession: Session = UserSession("1234")
-        val fakeOfferSessionDescription =
-            SessionDescription(SessionDescription.Type.OFFER, "fake offer description")
-        val fakeAnswerSessionDescription =
-            SessionDescription(SessionDescription.Type.ANSWER, "fake answer description")
-        val fakeIceCandidate =
-            IceCandidate("fakeSdpMid", 1024, "fakeSdp for ice candidate string")
-
     }
 }
