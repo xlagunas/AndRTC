@@ -1,6 +1,7 @@
 package cat.xlagunas.conference.di
 
 import android.app.Application
+import cat.xlagunas.conference.ConferenceSettings
 import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
@@ -19,6 +20,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import di.Feature
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
@@ -57,10 +59,15 @@ class ConferenceModule {
     @Feature
     fun provideWebSocketEmitterProvider(
         activity: ConferenceActivity,
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
+        webSocketUrl: HttpUrl
     ): WebSocketEmitterProvider {
-        return LifecycleAwareWebSocketProvider(activity, okHttpClient)
+        return LifecycleAwareWebSocketProvider(activity, okHttpClient, webSocketUrl)
     }
+
+    @Provides
+    @Feature
+    fun provideWebSocketURL(): HttpUrl = HttpUrl.get(ConferenceSettings.WEBSOCKET_URL)
 
     @Provides
     @Feature
@@ -103,8 +110,8 @@ class ConferenceModule {
     fun provideAudioDeviceModule(application: Application): AudioDeviceModule {
         return JavaAudioDeviceModule.builder(application)
 //                .setSamplesReadyCallback(saveRecordedAudioToFile)
-                .setUseHardwareAcousticEchoCanceler(true)
-                .setUseHardwareNoiseSuppressor(true)
+            .setUseHardwareAcousticEchoCanceler(true)
+            .setUseHardwareNoiseSuppressor(true)
             .createAudioDeviceModule()
     }
 

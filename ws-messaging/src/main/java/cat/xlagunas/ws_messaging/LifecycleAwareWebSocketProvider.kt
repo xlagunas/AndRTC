@@ -6,17 +6,17 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.socket.client.IO
 import io.socket.emitter.Emitter
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 
 class LifecycleAwareWebSocketProvider @Inject constructor(
     activity: AppCompatActivity,
-    okHttpClient: OkHttpClient
+    okHttpClient: OkHttpClient,
+    webSocketUrl: HttpUrl
 ) : LifecycleObserver, WebSocketEmitterProvider {
-    //TODO MOVE URL TO FLAVOR
-    private val socket = IO.socket("https://wss.viv.cat")
-    // private val socket = IO.socket("http://192.168.1.139:3000")
+    private val socket = IO.socket(webSocketUrl.toString())
 
     init {
         IO.setDefaultOkHttpWebSocketFactory(okHttpClient)
