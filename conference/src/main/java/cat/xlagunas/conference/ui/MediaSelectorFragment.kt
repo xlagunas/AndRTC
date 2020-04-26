@@ -22,7 +22,7 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
             android.R.layout.simple_list_item_1,
             arrayOf("Camera and audio", "Camera only", "Audio only")
         )
-        val viewmodel = ViewModelProviders.of(requireActivity()).get(ConferenceViewModel::class.java)
+        val viewModel = ViewModelProviders.of(requireActivity()).get(ConferenceViewModel::class.java)
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val selection = when (position) {
@@ -31,7 +31,7 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
                 2 -> generatePeerConnectionConstraints(video = false, audio = true)
                 else -> generatePeerConnectionConstraints(video = false, audio = false)
             }
-            viewmodel.requestedMedia.postValue(selection)
+            viewModel.requestedMedia.postValue(selection)
             dismiss()
         }
         return listView
