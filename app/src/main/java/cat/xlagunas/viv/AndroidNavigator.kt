@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import cat.xlagunas.call.CallConfirmationDialog
 import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core_navigation.Navigator
 import cat.xlagunas.viv.login.LoginFragment
@@ -38,6 +39,11 @@ class AndroidNavigator @Inject constructor(private val activityProvider: TopActi
 
     override fun navigateToRegistration() {
         navigateToFragment(RegisterFragment::class, true)
+    }
+
+    override fun requestCall(userId: Long, contactName: String){
+        val dialog = CallConfirmationDialog.newInstance(userId, contactName)
+        dialog.show(activityProvider.topActivity?.supportFragmentManager!!, "CallConfirmationDialog")
     }
 
     private fun navigateToFragment(

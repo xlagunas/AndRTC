@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
+import cat.xlagunas.call.CallModule
 import cat.xlagunas.contact.di.ContactModule
 import cat.xlagunas.core.data.converter.FriendConverter
 import cat.xlagunas.core.data.converter.UserConverter
@@ -33,7 +34,8 @@ import javax.inject.Singleton
         UserModule::class,
         PushModule::class,
         ContactModule::class,
-        PushMessageProcessorsModule::class]
+        PushMessageProcessorsModule::class,
+        CallModule::class]
 )
 @Singleton
 interface ApplicationComponent {

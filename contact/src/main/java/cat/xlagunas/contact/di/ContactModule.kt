@@ -1,8 +1,5 @@
 package cat.xlagunas.contact.di
 
-import cat.xlagunas.call.CallApi
-import cat.xlagunas.call.CallRepository
-import cat.xlagunas.call.CallRepositoryImpl
 import cat.xlagunas.contact.data.ContactCacheImpl
 import cat.xlagunas.contact.data.ContactRepositoryImpl
 import cat.xlagunas.contact.data.ContactsApi
@@ -30,15 +27,6 @@ class ContactModule {
     fun provideContactCache(contactCache: ContactCacheImpl): ContactCache {
         return contactCache
     }
-
-    @Provides
-    fun provideCallRepository(callRepository: CallRepositoryImpl): CallRepository {
-        return callRepository
-    }
-
-    @Provides
-    fun provideCallApi(retrofit: Retrofit): CallApi =
-        retrofit.create(CallApi::class.java)
 
     @Provides
     fun provideUserDao(database: VivDatabase): UserDao {
