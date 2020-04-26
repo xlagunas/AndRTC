@@ -17,11 +17,10 @@ import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import di.Injectable
 
 @OpenForTesting
 class
-ProfileFragment : Fragment(), Injectable {
+ProfileFragment : Fragment() {
 
     @BindView(R.id.profile_image)
     lateinit var thumbnail: ImageView
