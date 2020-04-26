@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core_navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.domain.AuthenticationCredentials
 import cat.xlagunas.user.domain.AuthenticationRepository
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @OpenForTesting
 class LoginViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
-    private val pushTokenRepository: PushTokenRepository
+    private val pushTokenRepository: PushTokenRepository,
+    private val navigator: Navigator
 ) : ViewModel() {
 
     private val liveData: MutableLiveData<LoginState> = MutableLiveData()
@@ -30,7 +32,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onSuccessfullyLogged() {
-        liveData.postValue(SuccessLoginState)
+        navigator.navigateToProfile()
     }
 
     private fun handleErrorState(throwable: Throwable) {
@@ -50,5 +52,9 @@ class LoginViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         disposable.dispose()
+    }
+
+    fun navigateToRegistration() {
+        navigator.navigateToRegistration()
     }
 }

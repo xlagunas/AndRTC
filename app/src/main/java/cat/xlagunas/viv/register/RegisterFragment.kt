@@ -5,34 +5,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.data.di.viewModelProviderFactory
-import di.Injectable
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.databinding.ActivityRegisterBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import timber.log.Timber
 
 @OpenForTesting
-class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
+class RegisterFragment : Fragment() {
 
     private lateinit var registerViewModel: RegisterViewModel
-    private lateinit var actionButton: com.google.android.material.floatingactionbutton.FloatingActionButton
+    private lateinit var actionButton: FloatingActionButton
     private lateinit var binding: ActivityRegisterBinding
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         registerViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(RegisterViewModel::class.java)
-        registerViewModel.findUser().observe(this, Observer(this::handleUserAlreadyLoggedIn))
-        registerViewModel.registrationState.observe(this, Observer(this::handleRegistration))
+        registerViewModel.findUser().observe(viewLifecycleOwner, Observer(this::handleUserAlreadyLoggedIn))
+        registerViewModel.onRegistrationError.observe(viewLifecycleOwner,
+            Observer(this::handleRegistrationError)
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
         binding.user = RegisterUserBinder()
         return binding.root
@@ -46,28 +52,18 @@ class RegisterFragment : androidx.fragment.app.Fragment(), Injectable {
         }
     }
 
-    private fun handleNavigationSuccess() {
-        Snackbar.make(binding.root, "User registered ", LENGTH_LONG).show()
-        navController().navigate(R.id.action_register_successful)
-    }
-
     private fun handleUserAlreadyLoggedIn(user: User?) {
         Timber.d("User logged in ${user?.username}")
     }
 
-    private fun handleRegistration(registrationState: RegistrationState?) {
-        when (registrationState) {
-            is RegistrationError -> handleError(registrationState.message)
-            is Success -> handleNavigationSuccess()
-        }
+    private fun handleRegistrationError(registrationState: RegistrationError) {
+        handleError(registrationState.message)
         actionButton.isEnabled = true
     }
 
     private fun handleError(message: String?) {
         val errorMsg = "Error registering user $message"
         Timber.e(errorMsg)
-        Snackbar.make(binding.root, errorMsg, LENGTH_LONG).show()
+        Snackbar.make(binding.root, errorMsg, BaseTransientBottomBar.LENGTH_LONG).show()
     }
-
-    fun navController() = findNavController()
 }

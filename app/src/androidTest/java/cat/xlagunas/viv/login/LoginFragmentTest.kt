@@ -5,7 +5,6 @@ import android.widget.EditText
 import androidx.annotation.IdRes
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
@@ -40,36 +39,10 @@ class LoginFragmentTest {
 
     @Before
     fun setUp() {
-        val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
+        val application =
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
         application.setViewModelProviderFactory(ViewModelUtil.createFor(loginViewModel))
         `when`(loginViewModel.onLoginStateChange()).thenReturn(loginState)
-    }
-
-    @Test
-    fun givenValidCredentials_whenUserLogsIn_thenLoggedUserFragment() {
-        doAnswer {
-            loginState.postValue(SuccessLoginState)
-            Unit
-        }.`when`(loginViewModel).login(anyString(), anyString())
-
-        val scenario = launchFragmentInContainer<TestLoginFragment>(
-            Bundle(),
-            R.style.AppTheme_NoActionBar
-        ) {TestLoginFragment()}
-
-
-        onEditTextWithinTilWithId(R.id.username_input_layout).perform(
-            typeText("aRandomValidUsername"),
-            closeSoftKeyboard()
-        )
-        onEditTextWithinTilWithId(R.id.password_text_input).perform(
-            typeText("aRandomValidPassword"),
-            closeSoftKeyboard()
-        )
-
-        onView(withId(R.id.login_button)).perform(click())
-
-        scenario.onFragment { verify(it.navController).popBackStack() }
     }
 
     @Test
@@ -79,7 +52,7 @@ class LoginFragmentTest {
             Unit
         }.`when`(loginViewModel).login(anyString(), anyString())
 
-        launchFragmentInContainer<TestLoginFragment>(
+        launchFragmentInContainer<LoginFragment>(
             Bundle(),
             R.style.AppTheme_NoActionBar
         )
@@ -99,14 +72,14 @@ class LoginFragmentTest {
 
     @Test
     fun whenUserClickRegister_thenNavigateToRegister() {
-        val scenario = launchFragmentInContainer<TestLoginFragment>(
+        val scenario = launchFragmentInContainer<LoginFragment>(
             Bundle(),
             R.style.AppTheme_NoActionBar
         )
 
         onView(withId(R.id.register)).perform(click())
 
-        scenario.onFragment { verify(it.navController).navigate(R.id.action_login_to_register) }
+        scenario.onFragment { verify(loginViewModel).navigateToRegistration() }
     }
 
     private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {
@@ -119,10 +92,4 @@ class LoginFragmentTest {
             )
         )
     }
-
-     class TestLoginFragment : LoginFragment() {
-        val navController = mock(NavController::class.java)
-        override fun navController() = navController
-    }
-
 }

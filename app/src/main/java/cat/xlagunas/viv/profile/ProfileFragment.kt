@@ -6,26 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.data.di.viewModelProviderFactory
+import cat.xlagunas.core.common.viewModel
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.login.InvalidLoginState
-import cat.xlagunas.viv.login.LoginState
-import cat.xlagunas.viv.login.Logout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import di.Injectable
 
 @OpenForTesting
 class
-ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
+ProfileFragment : Fragment(), Injectable {
 
     @BindView(R.id.profile_image)
     lateinit var thumbnail: ImageView
@@ -46,10 +42,8 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(ProfileViewModel::class.java)
-        profileViewModel.loginDataEvent.observe(this, Observer(this::userLoggedInStatus))
-        profileViewModel.user.observe(this, Observer(this::onUserEvent))
-        profileViewModel.getLoginStatus()
+        profileViewModel = viewModel(ProfileViewModel::class.java)
+        profileViewModel.user.observe(viewLifecycleOwner, Observer(this::onUserEvent))
     }
 
     override fun onCreateView(
@@ -63,13 +57,6 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ButterKnife.bind(this, view)
-    }
-
-    private fun userLoggedInStatus(loggedInStatus: LoginState?) {
-        when (loggedInStatus) {
-            is InvalidLoginState -> navController().navigate(R.id.action_login)
-            is Logout -> navController().popBackStack()
-        }
     }
 
     private fun onUserEvent(user: User?) {
@@ -92,6 +79,4 @@ ProfileFragment : androidx.fragment.app.Fragment(), Injectable {
     fun logout() {
         profileViewModel.logout()
     }
-
-    fun navController() = findNavController()
 }

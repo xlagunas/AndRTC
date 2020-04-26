@@ -15,8 +15,12 @@ import cat.xlagunas.core.data.time.SystemTimeProvider
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
+import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.viv.AndroidNavigator
+import cat.xlagunas.viv.TopActivityProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Singleton
 
 @Module
 class ApplicationModule {
@@ -51,6 +55,20 @@ class ApplicationModule {
             createNotificationChannel(context)
         }
         return NotificationManagerCompat.from(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTopActivity(application: Application): TopActivityProvider {
+        val topActivityProvider = TopActivityProvider()
+        application.registerActivityLifecycleCallbacks(topActivityProvider)
+        return topActivityProvider
+    }
+
+    @Provides
+    @Singleton
+    fun provideNavigator(topActivityProvider: TopActivityProvider): Navigator {
+        return AndroidNavigator(topActivityProvider)
     }
 
     @TargetApi(26)

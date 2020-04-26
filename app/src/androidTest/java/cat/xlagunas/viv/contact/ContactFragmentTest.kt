@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -166,11 +165,6 @@ class ContactFragmentTest {
             )
         }
         return friendList
-    }
-
-    class TestContactFragment : ContactFragment() {
-        val navController = mock(NavController::class.java)
-        override fun navController() = navController
     }
 
     object MyViewAction {

@@ -1,3 +1,4 @@
+include ':core-navigation'
 include ':ws-messaging'
 include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user',':test-utils'
 
