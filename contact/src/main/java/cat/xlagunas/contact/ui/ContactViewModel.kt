@@ -1,15 +1,18 @@
 package cat.xlagunas.contact.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import cat.xlagunas.call.Call
 import cat.xlagunas.call.CallRepository
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.core_navigation.Navigator
 import io.reactivex.BackpressureStrategy
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,7 +21,8 @@ class ContactViewModel
 @Inject constructor(
     private val contactRepository: ContactRepository,
     private val dataStore: AuthDataStore,
-    private val callRepository: CallRepository
+    private val callRepository: CallRepository,
+    private val navigator: Navigator
 ) : DisposableViewModel() {
 
     init {
@@ -62,8 +66,15 @@ class ContactViewModel
         )
     }
 
-    fun observeCall(friends: List<Friend>): LiveData<Call> {
-        return callRepository.createCall(friends).toFlowable().toLiveData()
+    fun createCall(friends: List<Friend>) {
+        viewModelScope.launch {
+            val call = callRepository.createCall(friends.map { it.friendId })
+            navigator.startCall(call.id)
+        }
+    }
+
+    fun joinCall(call: Call) {
+        navigator.startCall(call.id)
     }
 
     override fun onCleared() {

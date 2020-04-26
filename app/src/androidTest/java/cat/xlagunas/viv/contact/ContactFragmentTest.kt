@@ -118,14 +118,14 @@ class ContactFragmentTest {
                 Call("123456")
             }
         }
-            .`when`(contactViewModel).observeCall(listOf(friend))
+            .`when`(contactViewModel).createCall(listOf(friend))
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(
             friend,
             R.id.call_friend_button,
             0
         )
 
-        verify(contactViewModel).observeCall(listOf(friend))
+        verify(contactViewModel).createCall(listOf(friend))
     }
 
     private fun <VH : ViewHolder> setupFriendRelationshipAndViewHolderType(

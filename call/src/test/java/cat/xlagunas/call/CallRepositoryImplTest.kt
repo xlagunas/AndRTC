@@ -1,12 +1,8 @@
 package cat.xlagunas.call
 
-import cat.xlagunas.core.data.converter.FriendConverter
-import cat.xlagunas.core.domain.entity.Call
-import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import com.google.gson.Gson
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -17,39 +13,22 @@ class CallRepositoryImplTest {
 
     @Mock
     lateinit var callApi: CallApi
-
     private lateinit var callRepository: CallRepository
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val schedulers =
-            RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
-
-        callRepository =
-            CallRepositoryImpl(
-                callApi,
-                FriendConverter(),
-                CallConverter(Gson()),
-                schedulers
-            )
+        callRepository = CallRepositoryImpl(callApi, CallConverter(Gson()))
     }
 
     @Test
-    fun whenCreateCall_thenCreateCallRequest() {
+    fun whenCreateCall_thenCreateCallRequest() = runBlocking {
         val fakeCallDto = CallDto("theRoomId")
         val fakeCall = Call(fakeCallDto.roomId)
         val callParticipants = CallParticipantsDto(listOf(CallParticipantDto(5)))
+        `when`(callApi.createCall(callParticipants)).thenReturn(fakeCallDto)
 
-        `when`(callApi.createCall(callParticipants)).thenReturn(Single.just(fakeCallDto))
-
-        callRepository.createCall(listOf(generateFakeFriend(5)))
-            .test()
-            .assertValue(fakeCall)
-            .assertComplete()
-    }
-
-    private fun generateFakeFriend(friendId: Long): Friend {
-        return Friend(friendId, "aUsername", "aName", null, "anEmail@email.com", "ACCEPTED")
+        val call = callRepository.createCall(listOf(5))
+        assertThat(call).isEqualToComparingFieldByField(fakeCall)
     }
 }

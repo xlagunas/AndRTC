@@ -11,11 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.databinding.FragmentContactBinding
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.common.ContactUtils
 import cat.xlagunas.core.common.viewModel
-import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.core.domain.entity.Friend
-import timber.log.Timber
 
 @OpenForTesting
 class ContactFragment : Fragment(), ContactListener {
@@ -60,12 +57,7 @@ class ContactFragment : Fragment(), ContactListener {
     }
 
     override fun onContactCalled(friend: Friend) {
-        contactViewModel.observeCall(listOf(friend)).observe(this, Observer(this::handleCall))
-    }
-
-    fun handleCall(call: Call) {
-        Timber.d("Call Successfully created with id: ${call.id}")
-        requireActivity().startActivity(ContactUtils.generateRoomIntent(call))
+        contactViewModel.createCall(listOf(friend))
     }
 
     private fun setupSearchView() {
