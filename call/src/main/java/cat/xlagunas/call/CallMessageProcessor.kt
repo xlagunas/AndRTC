@@ -48,7 +48,15 @@ class CallMessageProcessor @Inject constructor(
     private fun getConferenceIntent(call: Call) = PendingIntent.getActivity(
         context,
         1000,
-        ContactUtils.generateRoomIntent(call),
+        generateRoomIntent(call),
         PendingIntent.FLAG_ONE_SHOT
     )
+
+    private fun generateRoomIntent(call: Call): Intent {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=${call.id}").toString())
+        )
+        return intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 }

@@ -24,7 +24,7 @@ import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
 import cat.xlagunas.core.data.net.Relationship.ACCEPTED
 import cat.xlagunas.core.data.net.Relationship.PENDING
 import cat.xlagunas.core.data.net.Relationship.REQUESTED
-import cat.xlagunas.core.domain.entity.Call
+import cat.xlagunas.call.Call
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.test_utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
@@ -114,7 +114,9 @@ class ContactFragmentTest {
             ACCEPTED.name
         )
         Mockito.doAnswer {
-            MutableLiveData<Call>().apply { value = Call("123456") }
+            MutableLiveData<Call>().apply { value =
+                Call("123456")
+            }
         }
             .`when`(contactViewModel).observeCall(listOf(friend))
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(
