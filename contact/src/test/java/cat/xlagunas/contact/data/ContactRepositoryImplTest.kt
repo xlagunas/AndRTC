@@ -1,8 +1,5 @@
 package cat.xlagunas.contact.data
 
-import cat.xlagunas.contact.data.ContactRepositoryImpl
-import cat.xlagunas.contact.data.LocalContactDataSource
-import cat.xlagunas.contact.data.RemoteContactDataSource
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.domain.entity.Friend
