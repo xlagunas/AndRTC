@@ -30,5 +30,6 @@ class CallRepositoryImplTest {
 
         val call = callRepository.createCall(listOf(5))
         assertThat(call).isEqualToComparingFieldByField(fakeCall)
+        return@runBlocking
     }
 }
