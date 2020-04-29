@@ -1,21 +1,15 @@
 package cat.xlagunas.viv.push
 
+import cat.xlagunas.contact.ui.ContactsMessageProcessor
 import cat.xlagunas.push.MessageProcessor
 import cat.xlagunas.push.MessageType
 import cat.xlagunas.push.PushMessageProcessorKey
-import cat.xlagunas.call.CallMessageProcessor
-import cat.xlagunas.contact.ui.ContactsMessageProcessor
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
 abstract class PushMessageProcessorsModule {
-
-    @Binds
-    @IntoMap
-    @PushMessageProcessorKey(MessageType.CREATE_CALL)
-    abstract fun provideCallsMessageProcessor(callMessageProcessor: CallMessageProcessor): MessageProcessor
 
     @Binds
     @IntoMap
