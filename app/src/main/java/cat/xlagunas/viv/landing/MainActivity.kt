@@ -35,9 +35,12 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(callbacks, false)
 
-        supportFragmentManager.commit {
-            add<ContactFragment>(R.id.my_nav_host_fragment, ContactFragment::class.simpleName)
+        if (supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) == null) {
+            supportFragmentManager.commit {
+                add<ContactFragment>(R.id.my_nav_host_fragment, ContactFragment::class.simpleName)
+            }
         }
+
         mainViewModel =
             ViewModelProviders.of(this, viewModelProviderFactory()).get(MainViewModel::class.java)
 
