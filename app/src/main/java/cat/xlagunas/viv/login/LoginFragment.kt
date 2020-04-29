@@ -5,18 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.common.BaseFragment
+import cat.xlagunas.core.common.viewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.extension.text
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 @OpenForTesting
-class LoginFragment : BaseFragment() {
+class LoginFragment : Fragment() {
 
     @BindView(R.id.username_input_layout)
     lateinit var usernameInputLayout: com.google.android.material.textfield.TextInputLayout
@@ -35,9 +36,8 @@ class LoginFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         loginViewModel = viewModel(LoginViewModel::class.java)
-
         loginViewModel.onLoginStateChange()
-            .observe(this, Observer(this::handleLoginResult))
+            .observe(viewLifecycleOwner, Observer(this::handleLoginResult))
     }
 
     override fun onCreateView(
@@ -56,16 +56,15 @@ class LoginFragment : BaseFragment() {
                 passwordInputLayout.text()
             )
         }
-        registerButton.setOnClickListener { navController().navigate(R.id.action_login_to_register) }
+        registerButton.setOnClickListener { loginViewModel.navigateToRegistration() }
     }
 
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
-            is SuccessLoginState -> {
-                navController().popBackStack()
-            }
             is InvalidLoginState -> Snackbar.make(
-                view!!, loginState.errorMessage, Snackbar.LENGTH_SHORT
+                requireView(),
+                loginState.errorMessage,
+                BaseTransientBottomBar.LENGTH_SHORT
             ).show()
             is ValidationError -> {
                 usernameInputLayout.error = "Username can't be empty"
@@ -73,6 +72,4 @@ class LoginFragment : BaseFragment() {
             }
         }
     }
-
-    fun navController() = findNavController()
 }

@@ -3,7 +3,6 @@ package cat.xlagunas.viv.register
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -15,52 +14,30 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.test_utils.ViewModelUtil
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class RegisterFragmentTest {
 
     private val registerViewModel = mock(RegisterViewModel::class.java)
     private val user = MutableLiveData<User>()
-    private val registrationState = MutableLiveData<RegistrationState>()
+    private val registrationState = MutableLiveData<RegistrationError>()
 
     @Before
     fun setUp() {
-        val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
-        application.setViewModelProviderFactory(cat.xlagunas.test_utils.ViewModelUtil.createFor(registerViewModel))
+        val application =
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
+        application.setViewModelProviderFactory(ViewModelUtil.createFor(registerViewModel))
         `when`(registerViewModel.findUser()).thenReturn(user)
-        `when`(registerViewModel.registrationState).thenReturn(registrationState)
-    }
-
-    @Test
-    fun givenRegisteredUser_WhenRegistering_ThenSuccess() {
-
-        doAnswer {
-            registrationState.postValue(Success)
-            Unit
-        }.`when`(registerViewModel).register(getFakeUser())
-
-        val scenario = launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar)
-
-        onView(withId(R.id.first_name_et)).perform(typeText("Anna Maria"))
-        onView(withId(R.id.last_name)).perform(typeText("Calpe Valls"))
-        onView(withId(R.id.email)).perform(typeText("anna.calpe@gmail.com"))
-        onView(withId(R.id.username)).perform(typeText("acalpe"))
-        onView(withId(R.id.password)).perform(typeText("123456"), closeSoftKeyboard())
-        onView(withId(R.id.fab)).perform(click())
-
-        scenario.onFragment {
-            verify(it.navController()).navigate(R.id.action_register_successful)
-        }
+        `when`(registerViewModel.onRegistrationError).thenReturn(registrationState)
     }
 
     @Test
@@ -71,7 +48,7 @@ class RegisterFragmentTest {
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
 
-        launchFragmentInContainer<TestRegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar)
+        launchFragmentInContainer<RegisterFragment>(Bundle(), R.style.AppTheme_NoActionBar)
 
         onView(withId(R.id.first_name_et)).perform(typeText("Anna Maria"))
         onView(withId(R.id.last_name)).perform(typeText("Calpe Valls"))
@@ -92,9 +69,4 @@ class RegisterFragmentTest {
             "",
             "123456"
         )
-}
-
-class TestRegisterFragment : RegisterFragment() {
-    val navController = Mockito.mock(NavController::class.java)
-    override fun navController() = navController
 }

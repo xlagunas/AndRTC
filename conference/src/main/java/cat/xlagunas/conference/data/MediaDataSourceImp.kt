@@ -30,6 +30,8 @@ class MediaDataSourceImp @Inject constructor(
     }
 
     fun createLocalVideoCapturer(cameraEnumerator: CameraEnumerator): VideoCapturer? {
+        if (cameraEnumerator.deviceNames.isEmpty()) return null
+
         if (cameraEnumerator.deviceNames.size == 1) {
             return cameraEnumerator.createCapturer(cameraEnumerator.deviceNames[0], null)
         }
@@ -38,7 +40,8 @@ class MediaDataSourceImp @Inject constructor(
                 return cameraEnumerator.createCapturer(it, null)
             }
         }
-        return null
+        //TODO REFINE THIS pick first camera and create capturer as best effort
+        return cameraEnumerator.createCapturer(cameraEnumerator.deviceNames[0], null)
     }
 
     fun createVideoTrack(capturer: VideoCapturer): VideoTrack {

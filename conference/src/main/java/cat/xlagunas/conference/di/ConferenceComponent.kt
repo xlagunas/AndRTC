@@ -1,10 +1,10 @@
 package cat.xlagunas.conference.di
 
 import cat.xlagunas.conference.ui.ConferenceActivity
-import di.Feature
 import dagger.ApplicationComponent
 import dagger.BindsInstance
 import dagger.Component
+import di.Feature
 
 @Component(modules = [ConferenceModule::class], dependencies = [ApplicationComponent::class])
 @Feature

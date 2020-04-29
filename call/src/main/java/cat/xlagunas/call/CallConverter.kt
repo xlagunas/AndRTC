@@ -1,19 +1,17 @@
 package cat.xlagunas.call
 
-import cat.xlagunas.core.data.net.FriendDto
-import cat.xlagunas.core.domain.entity.Call
 import cat.xlagunas.push.CallMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import javax.inject.Inject
 
 class CallConverter @Inject constructor(private val gson: Gson) {
-    fun toCallParticipantsDto(friendParticipantsList: List<FriendDto>): CallParticipantsDto {
+    fun toCallParticipantsDto(friendParticipantsList: List<Long>): CallParticipantsDto {
         return CallParticipantsDto(friendParticipantsList.map(this::toCallParticipantDto).toList())
     }
 
-    private fun toCallParticipantDto(friendParticipant: FriendDto): CallParticipantDto {
-        return CallParticipantDto(friendParticipant.id)
+    private fun toCallParticipantDto(friendParticipantId: Long): CallParticipantDto {
+        return CallParticipantDto(friendParticipantId)
     }
 
     fun toCall(callDto: CallDto): Call {

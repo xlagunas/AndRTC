@@ -2,13 +2,32 @@ package cat.xlagunas.viv.landing
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SingleLiveEvent
-import cat.xlagunas.user.domain.AuthenticationRepository
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
+import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.user.domain.AuthenticationRepository
+import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(private val authenticationRepository: AuthenticationRepository) :
+class MainViewModel @Inject constructor(
+    private val authenticationRepository: AuthenticationRepository,
+    private val navigator: Navigator
+) :
     DisposableViewModel() {
+
+    fun navigateToContacts() {
+        navigator.navigateToContacts()
+    }
+
+    fun navigateToProfile() {
+        disposable += authenticationRepository.isUserLoggedIn()
+            .subscribe {
+                when (it) {
+                    true -> navigator.navigateToProfile()
+                    false -> navigator.navigateToLogin()
+                }
+            }
+    }
 
     private val userLoggedInEvent = SingleLiveEvent<Boolean>()
 
@@ -18,11 +37,10 @@ class MainViewModel @Inject constructor(private val authenticationRepository: Au
             .toLiveData()
 
     init {
-        disposable.add(
+        disposable +=
             authenticationRepository
                 .isUserLoggedIn()
                 .filter { !it }
                 .subscribe { loggedIn -> userLoggedInEvent.value = loggedIn }
-        )
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -25,7 +24,7 @@ import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
 import cat.xlagunas.core.data.net.Relationship.ACCEPTED
 import cat.xlagunas.core.data.net.Relationship.PENDING
 import cat.xlagunas.core.data.net.Relationship.REQUESTED
-import cat.xlagunas.core.domain.entity.Call
+import cat.xlagunas.call.Call
 import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.test_utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
@@ -115,16 +114,18 @@ class ContactFragmentTest {
             ACCEPTED.name
         )
         Mockito.doAnswer {
-            MutableLiveData<Call>().apply { value = Call("123456") }
+            MutableLiveData<Call>().apply { value =
+                Call("123456")
+            }
         }
-            .`when`(contactViewModel).observeCall(listOf(friend))
+            .`when`(contactViewModel).createCall(listOf(friend))
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(
             friend,
             R.id.call_friend_button,
             0
         )
 
-        verify(contactViewModel).observeCall(listOf(friend))
+        verify(contactViewModel).createCall(listOf(friend))
     }
 
     private fun <VH : ViewHolder> setupFriendRelationshipAndViewHolderType(
@@ -166,11 +167,6 @@ class ContactFragmentTest {
             )
         }
         return friendList
-    }
-
-    class TestContactFragment : ContactFragment() {
-        val navController = mock(NavController::class.java)
-        override fun navController() = navController
     }
 
     object MyViewAction {

@@ -6,19 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.databinding.FragmentContactBinding
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.common.BaseFragment
-import cat.xlagunas.core.common.ContactUtils
-import cat.xlagunas.core.domain.entity.Call
+import cat.xlagunas.core.common.viewModel
 import cat.xlagunas.core.domain.entity.Friend
-import timber.log.Timber
 
 @OpenForTesting
-class ContactFragment : BaseFragment(), ContactListener {
+class ContactFragment : Fragment(), ContactListener {
 
     private var _binding: FragmentContactBinding? = null
     private val binding get() = _binding!!
@@ -60,12 +57,7 @@ class ContactFragment : BaseFragment(), ContactListener {
     }
 
     override fun onContactCalled(friend: Friend) {
-        contactViewModel.observeCall(listOf(friend)).observe(this, Observer(this::handleCall))
-    }
-
-    fun handleCall(call: Call) {
-        Timber.d("Call Successfully created with id: ${call.id}")
-        requireActivity().startActivity(ContactUtils.generateRoomIntent(call))
+        contactViewModel.createCall(listOf(friend))
     }
 
     private fun setupSearchView() {
@@ -105,8 +97,6 @@ class ContactFragment : BaseFragment(), ContactListener {
     private fun renderFriends(items: List<Friend>?) {
         contactAdapter.updateAdapter(items!!)
     }
-
-    fun navController() = findNavController()
 
     override fun onDestroyView() {
         _binding = null

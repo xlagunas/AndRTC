@@ -21,4 +21,10 @@ class PushModule {
     fun providePushTokenApi(retrofit: Retrofit): PushTokenApi {
         return retrofit.create(PushTokenApi::class.java)
     }
+
+    @Provides
+    @ChannelId
+    fun provideNotificationChannelId(): String {
+        return "CALL_CHANNEL_ID"
+    }
 }
