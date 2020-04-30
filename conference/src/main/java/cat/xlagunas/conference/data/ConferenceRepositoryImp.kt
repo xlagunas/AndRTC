@@ -84,7 +84,7 @@ class ConferenceRepositoryImp @Inject constructor(
         return callbackFlow {
             Timber.d("Setting up remote offer to peer connection")
             peerConnectionDataSource.handleRemoteOffer(contact.getId(), sessionDescription, mediaConstraints) {
-                    answer -> launch {  send(Pair(contact, answer))}
+                    answer -> launch { send(Pair(contact, answer)) }
             }
             awaitClose()
         }

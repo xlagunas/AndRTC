@@ -70,7 +70,9 @@ class PeerConnectionDataSource @Inject constructor(
     }
 
     fun handleRemoteOffer(
-        contactId: String, sessionDescription: SessionDescription, constraints: MediaConstraints,
+        contactId: String,
+        sessionDescription: SessionDescription,
+        constraints: MediaConstraints,
         block: (sessionDescription: SessionDescription) -> Unit
     ) {
 

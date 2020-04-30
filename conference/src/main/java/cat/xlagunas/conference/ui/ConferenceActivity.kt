@@ -112,7 +112,7 @@ class ConferenceActivity : AppCompatActivity() {
                 if (permission.granted) {
                     conference.onStart(mediaConstraints)
                 } else if (permission.shouldShowRequestPermissionRationale) {
-                    //TODO At least one denied permission without ask never again
+                    // TODO At least one denied permission without ask never again
                 } else {
                     // TODO At least one denied permission with ask never again Need to go to the settings
                 }

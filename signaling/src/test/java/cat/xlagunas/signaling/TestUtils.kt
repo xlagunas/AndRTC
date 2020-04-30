@@ -8,7 +8,7 @@ import cat.xlagunas.signaling.domain.Session
 import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 
-object TestUtils{
+object TestUtils {
     fun fakeLocalSession(): Session =
         UserSession("1234")
     fun fakeOfferSessionDescription() =
