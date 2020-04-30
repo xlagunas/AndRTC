@@ -6,15 +6,15 @@ import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.ui.ConferenceActivity
-import cat.xlagunas.ws_messaging.LifecycleAwareWebSocketProvider
-import cat.xlagunas.ws_messaging.SignalingProtocol
-import cat.xlagunas.ws_messaging.WebSocketController
-import cat.xlagunas.ws_messaging.WebSocketEmitterProvider
-import cat.xlagunas.ws_messaging.WsSignalingProtocol
-import cat.xlagunas.ws_messaging.data.SessionAdapter
-import cat.xlagunas.ws_messaging.model.MessageMapper
-import cat.xlagunas.ws_messaging.model.Session
-import cat.xlagunas.ws_messaging.model.SessionMapper
+import cat.xlagunas.signaling.Signaling
+import cat.xlagunas.signaling.SocketIOSignaling
+import cat.xlagunas.signaling.controller.SocketIOController
+import cat.xlagunas.signaling.data.LifecycleAwareSocketIOProvider
+import cat.xlagunas.signaling.data.SessionAdapter
+import cat.xlagunas.signaling.data.SocketIOEmitterProvider
+import cat.xlagunas.signaling.data.mapper.MessageMapper
+import cat.xlagunas.signaling.data.mapper.SessionMapper
+import cat.xlagunas.signaling.domain.Session
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -41,8 +41,10 @@ class ConferenceModule {
 
     @Provides
     @Feature
-    fun provideSignaling(websocketController: WebSocketController): SignalingProtocol {
-        return WsSignalingProtocol(websocketController)
+    fun provideSignaling(websocketIOController: SocketIOController): Signaling {
+        return SocketIOSignaling(
+            websocketIOController
+        )
     }
 
     @Provides
@@ -50,9 +52,13 @@ class ConferenceModule {
     fun provideWebSocketController(
         messageMapper: MessageMapper,
         sessionMapper: SessionMapper,
-        webSocketEmitterProvider: WebSocketEmitterProvider
-    ): WebSocketController {
-        return WebSocketController(messageMapper, sessionMapper, webSocketEmitterProvider)
+        socketIOEmitterProvider: SocketIOEmitterProvider
+    ): SocketIOController {
+        return SocketIOController(
+            messageMapper,
+            sessionMapper,
+            socketIOEmitterProvider
+        )
     }
 
     @Provides
@@ -61,8 +67,12 @@ class ConferenceModule {
         activity: ConferenceActivity,
         okHttpClient: OkHttpClient,
         webSocketUrl: HttpUrl
-    ): WebSocketEmitterProvider {
-        return LifecycleAwareWebSocketProvider(activity, okHttpClient, webSocketUrl)
+    ): SocketIOEmitterProvider {
+        return LifecycleAwareSocketIOProvider(
+            activity,
+            okHttpClient,
+            webSocketUrl
+        )
     }
 
     @Provides
@@ -173,7 +183,10 @@ class ConferenceModule {
     @Feature
     // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     fun provideGson(): Gson {
-        return GsonBuilder().registerTypeAdapter(Session::class.java, SessionAdapter()).create()
+        return GsonBuilder().registerTypeAdapter(
+            Session::class.java,
+            SessionAdapter()
+        ).create()
     }
 
     @Provides

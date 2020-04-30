@@ -4,8 +4,8 @@ import cat.xlagunas.conference.data.MediaDataSourceImp.Companion.VIDEO_TRACK_ID
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
-import cat.xlagunas.ws_messaging.WsSignalingProtocol
-import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.signaling.SocketIOSignaling
+import cat.xlagunas.signaling.domain.Session
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class ConferenceRepositoryImp @Inject constructor(
     private val peerConnectionDataSource: PeerConnectionDataSource,
     private val mediaSourceDataSource: MediaDataSourceImp,
-    private val signaling: WsSignalingProtocol
+    private val signaling: SocketIOSignaling
 ) : ConferenceRepository {
 
     override fun joinRoom(roomId: String) {

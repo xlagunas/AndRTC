@@ -3,7 +3,7 @@ package cat.xlagunas.conference.domain
 import cat.xlagunas.conference.data.NoOPVivSdpObserver
 import cat.xlagunas.conference.data.VivPeerConnectionObserver
 import cat.xlagunas.conference.data.VivSdpObserver
-import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.signaling.domain.Session
 import org.webrtc.IceCandidate
 import org.webrtc.Logging
 import org.webrtc.MediaConstraints

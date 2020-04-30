@@ -101,7 +101,7 @@ dependencies {
     implementation project(':contact')
     implementation project(':user')
     implementation project(':core')
-    implementation project(':ws-messaging')
+    implementation project(':signaling')
     implementation project(':core-navigation')
     androidTestImplementation project(':test-utils')
 

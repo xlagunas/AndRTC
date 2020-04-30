@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
-import cat.xlagunas.ws_messaging.SignalingProtocol
-import cat.xlagunas.ws_messaging.model.AnswerMessage
-import cat.xlagunas.ws_messaging.model.IceCandidateMessage
-import cat.xlagunas.ws_messaging.model.OfferMessage
-import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.signaling.domain.AnswerMessage
+import cat.xlagunas.signaling.domain.IceCandidateMessage
+import cat.xlagunas.signaling.domain.Session
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -29,7 +27,7 @@ import javax.inject.Inject
 class ConferenceViewModel @Inject constructor(
     private val conferenceRepository: ConferenceRepository,
     private val eglContext: EglBase.Context,
-    private val signaling: SignalingProtocol,
+    private val signaling: cat.xlagunas.signaling.Signaling,
     private val roomId: String
 ) : ViewModel() {
 
@@ -44,8 +42,6 @@ class ConferenceViewModel @Inject constructor(
     private val totalConnectedUsers = AtomicInteger()
 
     private val iceCandidateChannel = Channel<Pair<Session, IceCandidate>>(0)
-
-
 
     fun onStart(userConstraints: MediaConstraints) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -69,7 +65,12 @@ class ConferenceViewModel @Inject constructor(
             .flatMapMerge { conferenceRepository.createOffer(it, userConstraints) }
             .onEach {
                 conferenceAttendees.postValue(totalConnectedUsers.incrementAndGet())
-                signaling.sendOffer(OfferMessage(it.first, it.second))
+                signaling.sendOffer(
+                    cat.xlagunas.signaling.domain.OfferMessage(
+                        it.first,
+                        it.second
+                    )
+                )
             }
             .catch { Timber.e(it) }
             .launchIn(this)
@@ -102,7 +103,14 @@ class ConferenceViewModel @Inject constructor(
                     it.offer
                 )
             }
-            .onEach { signaling.sendAnswer(AnswerMessage(it.first, it.second)) }
+            .onEach {
+                signaling.sendAnswer(
+                    AnswerMessage(
+                        it.first,
+                        it.second
+                    )
+                )
+            }
             .onEach { handleIncomingIceCandidateRequests() }
             .onEach { consumeIceCandidates() }
             .launchIn(this)
@@ -117,7 +125,12 @@ class ConferenceViewModel @Inject constructor(
     private fun CoroutineScope.consumeIceCandidates() {
         launch {
             iceCandidateChannel.consumeEach {
-                signaling.sendIceCandidate(IceCandidateMessage(it.first, it.second))
+                signaling.sendIceCandidate(
+                    IceCandidateMessage(
+                        it.first,
+                        it.second
+                    )
+                )
             }
         }
     }
