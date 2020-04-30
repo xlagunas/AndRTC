@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.domain.AuthenticationCredentials
 import cat.xlagunas.user.domain.AuthenticationRepository

@@ -23,5 +23,5 @@ abstract class FriendViewHolder(view: View, internal val contactListener: Contac
             .into(binding.contactThumbnail)
     }
 
-    open fun bind(friend: Friend){}
+    open fun bind(friend: Friend) {}
 }

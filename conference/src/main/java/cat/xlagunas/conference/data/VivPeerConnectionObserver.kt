@@ -1,6 +1,6 @@
 package cat.xlagunas.conference.data
 
-import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.signaling.domain.Session
 import org.webrtc.DataChannel
 import org.webrtc.IceCandidate
 import org.webrtc.MediaStream
@@ -54,5 +54,4 @@ class VivPeerConnectionObserver(
     override fun onAddTrack(p0: RtpReceiver, p1: Array<out MediaStream>) {
         Timber.i("received onAddTrack message")
     }
-
 }

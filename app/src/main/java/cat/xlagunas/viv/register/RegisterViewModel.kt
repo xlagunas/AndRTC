@@ -6,14 +6,15 @@ import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.user.domain.AuthenticationRepository
 import cat.xlagunas.core.common.DisposableViewModel
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import timber.log.Timber
 import javax.inject.Inject
 
 @OpenForTesting
 class RegisterViewModel @Inject constructor(
     private val userRepository: AuthenticationRepository,
-    private val navigator: Navigator) :
+    private val navigator: Navigator
+) :
     DisposableViewModel() {
 
     private val user: MutableLiveData<User> = MutableLiveData()

@@ -2,7 +2,6 @@ package cat.xlagunas.contact.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import cat.xlagunas.contact.data.ContactCacheImpl
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.core.domain.time.TimeProvider
 import org.assertj.core.api.Assertions.assertThat

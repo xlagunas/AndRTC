@@ -2,7 +2,7 @@ package cat.xlagunas.call
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch

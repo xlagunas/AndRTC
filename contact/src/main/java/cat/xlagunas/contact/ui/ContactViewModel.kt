@@ -7,7 +7,7 @@ import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import io.reactivex.BackpressureStrategy
 import timber.log.Timber
 import javax.inject.Inject
@@ -62,8 +62,8 @@ class ContactViewModel
     }
 
     fun createCall(friends: List<Friend>) {
-        val (id, name) = friends.first()
-        navigator.requestCall(id, name)
+        val (id, username) = friends.first()
+        navigator.requestCall(id, username)
     }
 
     override fun onCleared() {

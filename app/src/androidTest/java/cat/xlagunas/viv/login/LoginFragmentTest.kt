@@ -17,7 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import cat.xlagunas.test_utils.ViewModelUtil
+import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import com.google.android.material.snackbar.SnackbarContentLayout

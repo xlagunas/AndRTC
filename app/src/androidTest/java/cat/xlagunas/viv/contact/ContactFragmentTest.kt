@@ -26,7 +26,7 @@ import cat.xlagunas.core.data.net.Relationship.PENDING
 import cat.xlagunas.core.data.net.Relationship.REQUESTED
 import cat.xlagunas.call.Call
 import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.test_utils.ViewModelUtil
+import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher
 import org.junit.Before

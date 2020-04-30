@@ -8,5 +8,3 @@ import cat.xlagunas.core.data.di.viewModelProviderFactory
 fun <T : ViewModel> Fragment.viewModel(model: Class<T>): T {
     return ViewModelProviders.of(this, viewModelProviderFactory()).get(model)
 }
-
-

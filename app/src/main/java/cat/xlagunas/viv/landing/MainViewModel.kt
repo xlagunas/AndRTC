@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SingleLiveEvent
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.user.domain.AuthenticationRepository
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject

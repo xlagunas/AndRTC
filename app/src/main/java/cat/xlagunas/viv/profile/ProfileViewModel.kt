@@ -2,7 +2,7 @@ package cat.xlagunas.viv.profile
 
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.domain.AuthenticationRepository
 import io.reactivex.rxkotlin.plusAssign

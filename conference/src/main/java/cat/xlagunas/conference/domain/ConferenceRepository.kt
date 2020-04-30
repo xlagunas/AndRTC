@@ -1,7 +1,7 @@
 package cat.xlagunas.conference.domain
 
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
-import cat.xlagunas.ws_messaging.model.Session
+import cat.xlagunas.signaling.domain.Session
 import kotlinx.coroutines.flow.Flow
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
@@ -14,10 +14,28 @@ interface ConferenceRepository {
     suspend fun registerUser()
     fun onNewUser(): Flow<Session>
     fun logoutRoom()
-    fun createPeerConnection(user: Session, onIceCandidateGenerated: (onIceCandidateGenerated: Pair<Session,IceCandidate>) -> Unit) :PeerConnection?
-    fun createOffer(user: Session, mediaConstraints: MediaConstraints): Flow<Pair<Session, SessionDescription>>
-    fun handleRemoteOffer(contact: Session, mediaConstraints: MediaConstraints, sessionDescription: SessionDescription): Flow<Pair<Session, SessionDescription>>
-    fun handleRemoteAnswer(contact: Session, sessionDescription: SessionDescription, onComplete: () -> Unit)
+    fun createPeerConnection(
+        user: Session,
+        onIceCandidateGenerated: (onIceCandidateGenerated: Pair<Session, IceCandidate>) -> Unit
+    ): PeerConnection?
+
+    fun createOffer(
+        user: Session,
+        mediaConstraints: MediaConstraints
+    ): Flow<Pair<Session, SessionDescription>>
+
+    fun handleRemoteOffer(
+        contact: Session,
+        mediaConstraints: MediaConstraints,
+        sessionDescription: SessionDescription
+    ): Flow<Pair<Session, SessionDescription>>
+
+    fun handleRemoteAnswer(
+        contact: Session,
+        sessionDescription: SessionDescription,
+        onComplete: () -> Unit
+    )
+
     fun addIceCandidate(contact: Session, iceCandidate: IceCandidate)
     fun getLocalRenderer(): ProxyVideoSink
     fun getRemoteRenderer(): ProxyVideoSink

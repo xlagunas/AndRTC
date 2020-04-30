@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import cat.xlagunas.call.CallConfirmationDialog
 import cat.xlagunas.contact.ui.ContactFragment
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.viv.login.LoginFragment
 import cat.xlagunas.viv.profile.ProfileFragment
 import cat.xlagunas.viv.register.RegisterFragment
@@ -20,7 +20,7 @@ class AndroidNavigator @Inject constructor(private val activityProvider: TopActi
     override fun startCall(roomId: String) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://viv.cat/conference?roomId=${roomId}")
+            Uri.parse("https://viv.cat/conference?roomId=$roomId")
         ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         activityProvider.topActivity?.startActivity(intent)
     }
@@ -41,7 +41,7 @@ class AndroidNavigator @Inject constructor(private val activityProvider: TopActi
         navigateToFragment(RegisterFragment::class, true)
     }
 
-    override fun requestCall(userId: Long, contactName: String){
+    override fun requestCall(userId: Long, contactName: String) {
         val dialog = CallConfirmationDialog.newInstance(userId, contactName)
         dialog.show(activityProvider.topActivity?.supportFragmentManager!!, "CallConfirmationDialog")
     }

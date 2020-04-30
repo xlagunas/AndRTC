@@ -14,7 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.test_utils.ViewModelUtil
+import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import org.junit.Before

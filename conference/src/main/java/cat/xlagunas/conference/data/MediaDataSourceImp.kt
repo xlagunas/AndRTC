@@ -40,7 +40,7 @@ class MediaDataSourceImp @Inject constructor(
                 return cameraEnumerator.createCapturer(it, null)
             }
         }
-        //TODO REFINE THIS pick first camera and create capturer as best effort
+        // TODO REFINE THIS pick first camera and create capturer as best effort
         return cameraEnumerator.createCapturer(cameraEnumerator.deviceNames[0], null)
     }
 
