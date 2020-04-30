@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import cat.xlagunas.call.CallConfirmationDialog
 import cat.xlagunas.contact.ui.ContactFragment
-import cat.xlagunas.core_navigation.Navigator
+import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.viv.login.LoginFragment
 import cat.xlagunas.viv.profile.ProfileFragment
 import cat.xlagunas.viv.register.RegisterFragment

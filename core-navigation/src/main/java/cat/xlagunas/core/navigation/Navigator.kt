@@ -1,4 +1,4 @@
-package cat.xlagunas.core_navigation
+package cat.xlagunas.core.navigation
 
 interface Navigator {
     fun requestCall(userId: Long, contactName: String)
