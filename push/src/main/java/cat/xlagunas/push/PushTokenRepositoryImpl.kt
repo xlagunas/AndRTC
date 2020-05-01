@@ -39,7 +39,7 @@ class PushTokenRepositoryImpl @Inject constructor(
     }
 
     private fun requestTokenRegistration(token: String): Completable {
-        return addPushToken(cat.xlagunas.push.PushTokenDto(token))
+        return addPushToken(PushTokenDto(token))
             .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
             .doOnComplete { Timber.d("Push token successfully registered") }
             .doOnSubscribe { Timber.d("Starting token registration") }
