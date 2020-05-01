@@ -64,7 +64,7 @@ class CallMessageProcessor @Inject constructor(
     private fun generateRoomIntent(callId: String): Intent {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=${callId}").toString())
+            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=$callId").toString())
         )
         return intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
