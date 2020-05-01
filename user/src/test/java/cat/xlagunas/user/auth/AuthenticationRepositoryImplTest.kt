@@ -1,4 +1,4 @@
-package cat.xlagunas.user.data
+package cat.xlagunas.user.auth
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -8,8 +8,6 @@ import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.user.domain.AuthenticationCredentials
-import cat.xlagunas.user.domain.AuthenticationRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -54,16 +52,21 @@ class AuthenticationRepositoryImplTest {
             .allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
-        authenticationRepository = AuthenticationRepositoryImpl(
-            authenticationApi,
-            userDao,
-            userConverter,
-            RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline()),
-            authDataStore,
-            database,
-            RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        authenticationRepository =
+            AuthenticationRepositoryImpl(
+                authenticationApi,
+                userDao,
+                userConverter,
+                RxSchedulers(
+                    Schedulers.trampoline(),
+                    Schedulers.trampoline(),
+                    Schedulers.trampoline()
+                ),
+                authDataStore,
+                database,
+                RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
-        )
+            )
     }
 
     @Test
@@ -92,7 +95,8 @@ class AuthenticationRepositoryImplTest {
     @Test
     fun givenSuccessfulAuthentication_thenTokenPersisted() {
         val authToken = "thisIsTheAuthTokenKeyReturnedByTheServer"
-        val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
+        val authenticationCredentials =
+            AuthenticationCredentials("aUser", "aPass")
         `when`(
             authenticationApi.loginUser(
                 AuthDto(
@@ -111,7 +115,8 @@ class AuthenticationRepositoryImplTest {
 
     @Test
     fun givenInvalidAuthentication_thenTokenNotPersisted() {
-        val authenticationCredentials = AuthenticationCredentials("aUser", "aPass")
+        val authenticationCredentials =
+            AuthenticationCredentials("aUser", "aPass")
 
         `when`(
             authenticationApi.loginUser(

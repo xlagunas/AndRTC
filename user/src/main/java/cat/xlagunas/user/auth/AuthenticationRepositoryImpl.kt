@@ -1,12 +1,10 @@
-package cat.xlagunas.user.data
+package cat.xlagunas.user.auth
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.user.domain.AuthenticationCredentials
-import cat.xlagunas.user.domain.AuthenticationRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe

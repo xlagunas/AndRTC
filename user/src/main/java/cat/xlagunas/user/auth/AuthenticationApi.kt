@@ -1,4 +1,4 @@
-package cat.xlagunas.user.data
+package cat.xlagunas.user.auth
 
 import io.reactivex.Completable
 import io.reactivex.Single
