@@ -2,8 +2,7 @@ package cat.xlagunas.viv.push
 
 import cat.xlagunas.call.CallMessageProcessor
 import cat.xlagunas.contact.ui.ContactsMessageProcessor
-import cat.xlagunas.push.MessageProcessor
-import cat.xlagunas.push.MessageType
+import cat.xlagunas.core.push.MessageType
 import cat.xlagunas.push.PushMessageProcessorKey
 import dagger.Binds
 import dagger.Module
@@ -16,20 +15,20 @@ abstract class PushMessageProcessorsModule {
     @Binds
     @IntoMap
     @PushMessageProcessorKey(MessageType.REQUEST_FRIENDSHIP)
-    abstract fun provideContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): MessageProcessor
+    abstract fun provideContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): cat.xlagunas.core.push.MessageProcessor
 
     @Binds
     @IntoMap
     @PushMessageProcessorKey(MessageType.ACCEPT_FRIENDSHIP)
-    abstract fun provideAcceptedContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): MessageProcessor
+    abstract fun provideAcceptedContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): cat.xlagunas.core.push.MessageProcessor
 
     @Binds
     @IntoMap
     @PushMessageProcessorKey(MessageType.REJECT_FRIENDSHIP)
-    abstract fun provideRejectContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): MessageProcessor
+    abstract fun provideRejectContactsMessageProcessor(contactsMessageProcessor: ContactsMessageProcessor): cat.xlagunas.core.push.MessageProcessor
 
     @Binds
     @IntoMap
     @PushMessageProcessorKey(MessageType.CREATE_CALL)
-    abstract fun provideCallsMessageProcessor(callMessageProcessor: CallMessageProcessor): MessageProcessor
+    abstract fun provideCallsMessageProcessor(callMessageProcessor: CallMessageProcessor): cat.xlagunas.core.push.MessageProcessor
 }

@@ -1,6 +1,6 @@
 package cat.xlagunas.call
 
-import cat.xlagunas.push.CallMessage
+import cat.xlagunas.core.push.CallMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import javax.inject.Inject
