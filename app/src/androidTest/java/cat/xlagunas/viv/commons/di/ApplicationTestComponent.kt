@@ -2,7 +2,7 @@ package cat.xlagunas.viv.commons.di
 
 import android.app.Application
 import cat.xlagunas.contact.di.ContactModule
-import cat.xlagunas.user.di.UserModule
+import cat.xlagunas.user.UserModule
 import cat.xlagunas.viv.commons.TestApplication
 import dagger.ApplicationModule
 import dagger.BindsInstance

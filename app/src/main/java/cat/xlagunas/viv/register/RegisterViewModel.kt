@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.user.domain.AuthenticationRepository
+import cat.xlagunas.user.auth.AuthenticationRepository
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.navigation.Navigator
 import timber.log.Timber

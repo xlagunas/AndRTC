@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
-import cat.xlagunas.user.domain.AuthenticationCredentials
-import cat.xlagunas.user.domain.AuthenticationRepository
+import cat.xlagunas.user.auth.AuthenticationCredentials
+import cat.xlagunas.user.auth.AuthenticationRepository
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
@@ -25,7 +25,12 @@ class LoginViewModel @Inject constructor(
 
     fun login(username: String, password: String) {
         disposable.add(
-            authenticationRepository.login(AuthenticationCredentials(username, password))
+            authenticationRepository.login(
+                AuthenticationCredentials(
+                    username,
+                    password
+                )
+            )
                 .andThen(pushTokenRepository.registerPushToken())
                 .subscribe(this::onSuccessfullyLogged, this::handleErrorState)
         )

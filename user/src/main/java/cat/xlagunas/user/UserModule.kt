@@ -1,8 +1,8 @@
-package cat.xlagunas.user.di
+package cat.xlagunas.user
 
-import cat.xlagunas.user.data.AuthenticationApi
-import cat.xlagunas.user.data.AuthenticationRepositoryImpl
-import cat.xlagunas.user.domain.AuthenticationRepository
+import cat.xlagunas.user.auth.AuthenticationApi
+import cat.xlagunas.user.auth.AuthenticationRepositoryImpl
+import cat.xlagunas.user.auth.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
