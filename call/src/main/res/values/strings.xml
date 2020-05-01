@@ -1,2 +1,4 @@
 <resources>
+    <string name="notification_message">New call received</string>
+    <string name="notification_action_btn">Accept</string>
 </resources>

@@ -14,10 +14,6 @@ class CallRepositoryImpl @Inject constructor(
         return callConverter.toCall(callDto)
     }
 
-    override suspend fun getCallDetails(message: Message): Call {
-        return callConverter.toCall(message as CallMessage)
-    }
-
     override suspend fun acceptCall(callId: Long) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }

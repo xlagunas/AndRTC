@@ -7,9 +7,12 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import cat.xlagunas.push.CallMessage
 import cat.xlagunas.push.ChannelId
 import cat.xlagunas.push.Message
 import cat.xlagunas.push.MessageProcessor
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
@@ -18,51 +21,57 @@ import javax.inject.Inject
 
 class CallMessageProcessor @Inject constructor(
     private val context: Context,
-    private val callRepository: CallRepository,
     private val notificationManager: NotificationManagerCompat,
-    @ChannelId private val channelId: String
+    @ChannelId private val channelId: String,
+    private val gson: Gson
 ) :
     MessageProcessor {
     @SuppressLint("CheckResult")
     override fun processMessage(message: Message) {
-        Timber.d("Processing Call push message for room $")
         GlobalScope.launch {
-            val call = callRepository.getCallDetails(message)
-            startConference(call)
+            val callId = extractRoomId((message as CallMessage).params)
+            Timber.d("Processing Call push message for room $callId")
+            startConference(callId)
         }
     }
 
-    private fun startConference(call: Call) {
-        createPriorityNotification(call)
+    private fun startConference(callId: String) {
+        createPriorityNotification(callId)
     }
 
-    private fun createPriorityNotification(call: Call) {
+    private fun createPriorityNotification(callId: String) {
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentText("New Call received")
+            .setContentText(context.getString(R.string.notification_message))
             .setSmallIcon(android.R.drawable.ic_menu_call)
-            .addAction(generateAcceptAction(call))
+            .addAction(generateAcceptAction(callId))
             .build()
         notificationManager.notify(0, notification)
     }
 
-    private fun generateAcceptAction(call: Call) = NotificationCompat.Action(
+    private fun generateAcceptAction(callId: String) = NotificationCompat.Action(
         android.R.drawable.ic_menu_call,
-        "Accept",
-        getConferenceIntent(call)
+        context.getString(R.string.notification_action_btn),
+        getConferenceIntent(callId)
     )
 
-    private fun getConferenceIntent(call: Call) = PendingIntent.getActivity(
+    private fun getConferenceIntent(callId: String) = PendingIntent.getActivity(
         context,
         1000,
-        generateRoomIntent(call),
+        generateRoomIntent(callId),
         PendingIntent.FLAG_ONE_SHOT
     )
 
-    private fun generateRoomIntent(call: Call): Intent {
+    private fun generateRoomIntent(callId: String): Intent {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=${call.id}").toString())
+            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=${callId}").toString())
         )
         return intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
+
+    private fun extractRoomId(jsonString: String): String {
+        val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
+            .getAsJsonObject("content")
+        return jsonObject["callId"].asString
     }
 }

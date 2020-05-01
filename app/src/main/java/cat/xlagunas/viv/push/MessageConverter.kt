@@ -17,8 +17,7 @@ class MessageConverter @Inject constructor() {
         val messageKey = remoteMessage.data["eventType"] ?: return null
 
         return try {
-            val messageType = valueOf(messageKey)
-            when (messageType) {
+            when (valueOf(messageKey)) {
                 CREATE_CALL -> CallMessage(CREATE_CALL, remoteMessage.data["params"]!!)
                 ACCEPT_CALL -> TODO("Accept call flow still not implemented")
                 REJECT_CALL -> TODO("Reject call flow still not implemented")
