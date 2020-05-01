@@ -1,7 +1,5 @@
 package cat.xlagunas.call
 
-import cat.xlagunas.push.CallMessage
-import cat.xlagunas.push.Message
 import javax.inject.Inject
 
 class CallRepositoryImpl @Inject constructor(
