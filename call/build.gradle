@@ -43,6 +43,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':push')
     implementation project(path: ':core')
+    implementation project(path: ':core-push')
     implementation project(path: ':core-navigation')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.1.0'

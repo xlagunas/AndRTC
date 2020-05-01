@@ -45,6 +45,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':core')
+    implementation project(path: ':core-push')
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
     api 'com.google.firebase:firebase-messaging:17.5.0'
     kapt 'com.google.dagger:dagger-compiler:2.21'
