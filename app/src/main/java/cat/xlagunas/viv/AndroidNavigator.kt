@@ -10,7 +10,7 @@ import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.viv.login.LoginFragment
 import cat.xlagunas.viv.profile.ProfileFragment
-import cat.xlagunas.viv.register.RegisterFragment
+import cat.xlagunas.user.register.RegisterFragment
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.reflect.KClass

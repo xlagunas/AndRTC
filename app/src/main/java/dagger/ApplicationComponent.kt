@@ -9,7 +9,7 @@ import cat.xlagunas.call.CallComponent
 import cat.xlagunas.call.CallModule
 import cat.xlagunas.contact.di.ContactModule
 import cat.xlagunas.core.data.converter.FriendConverter
-import cat.xlagunas.core.data.converter.UserConverter
+import cat.xlagunas.user.UserConverter
 import cat.xlagunas.core.data.db.FriendDao
 import cat.xlagunas.core.data.db.VivDatabase
 import cat.xlagunas.core.domain.auth.AuthDataStore

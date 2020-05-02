@@ -16,6 +16,7 @@ import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.push.ChannelId
+import cat.xlagunas.user.UserConverter
 import cat.xlagunas.viv.AndroidNavigator
 import cat.xlagunas.viv.TopActivityProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,7 @@ class ApplicationModule {
         RxSchedulers(Schedulers.io(), AndroidSchedulers.mainThread(), Schedulers.computation())
 
     @Provides
-    fun provideUserMapping() = cat.xlagunas.core.data.converter.UserConverter()
+    fun provideUserMapping() = UserConverter()
 
     @Provides
     fun provideFriendMapping() = cat.xlagunas.core.data.converter.FriendConverter()

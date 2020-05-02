@@ -1,6 +1,6 @@
 package cat.xlagunas.user.auth
 
-import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.user.User
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe

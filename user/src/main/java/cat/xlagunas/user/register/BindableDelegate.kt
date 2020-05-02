@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.commons.binding
+package cat.xlagunas.user.register
 
 import androidx.databinding.BaseObservable
 import kotlin.reflect.KProperty

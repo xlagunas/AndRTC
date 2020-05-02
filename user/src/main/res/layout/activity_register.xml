@@ -6,7 +6,7 @@
 
         <variable
             name="user"
-            type="cat.xlagunas.viv.register.RegisterUserBinder" />
+            type="cat.xlagunas.user.register.RegisterUserBinder" />
     </data>
 
     <LinearLayout
