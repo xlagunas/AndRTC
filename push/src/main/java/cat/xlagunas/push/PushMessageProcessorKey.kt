@@ -1,9 +1,10 @@
 package cat.xlagunas.push
 
+import cat.xlagunas.core.push.MessageType
 import dagger.MapKey
 
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
-annotation class PushMessageProcessorKey(val value: cat.xlagunas.core.push.MessageType)
+annotation class PushMessageProcessorKey(val value: MessageType)

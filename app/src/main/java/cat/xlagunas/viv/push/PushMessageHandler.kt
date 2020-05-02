@@ -4,12 +4,12 @@ import cat.xlagunas.core.push.MessageProcessor
 import cat.xlagunas.core.push.MessageType
 import cat.xlagunas.push.MessageConverter
 import cat.xlagunas.push.PushTokenPresenter
+import cat.xlagunas.viv.dagger.VivApplication
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import cat.xlagunas.viv.dagger.VivApplication
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
+import timber.log.Timber
 
 class PushMessageHandler : FirebaseMessagingService() {
 

@@ -2,15 +2,15 @@ package cat.xlagunas.contact.ui
 
 import androidx.lifecycle.LiveData
 import cat.xlagunas.contact.domain.ContactRepository
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
-import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.persistence.AuthDataStore
 import io.reactivex.BackpressureStrategy
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @OpenForTesting
 class ContactViewModel

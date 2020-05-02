@@ -7,24 +7,24 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.call.CallComponent
 import cat.xlagunas.call.CallModule
-import cat.xlagunas.contact.di.ContactModule
 import cat.xlagunas.contact.data.FriendConverter
-import cat.xlagunas.user.UserConverter
+import cat.xlagunas.contact.di.ContactModule
+import cat.xlagunas.contact.domain.TimeProvider
+import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.persistence.db.FriendDao
 import cat.xlagunas.core.persistence.db.VivDatabase
-import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.scheduler.RxSchedulers
-import cat.xlagunas.contact.domain.TimeProvider
 import cat.xlagunas.push.PushModule
+import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.UserModule
 import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.push.PushMessageProcessorsModule
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
-import javax.inject.Singleton
 
 @Component(
     modules = [

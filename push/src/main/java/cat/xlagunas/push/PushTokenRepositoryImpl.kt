@@ -3,8 +3,8 @@ package cat.xlagunas.push
 import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class PushTokenRepositoryImpl @Inject constructor(
     private val pushTokenProvider: PushTokenProvider,

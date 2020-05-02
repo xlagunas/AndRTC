@@ -32,7 +32,6 @@ allprojects {
         maven { url "https://jitpack.io" }
 
     }
-    apply from: "$rootDir/ktlint.gradle"
 }
 
 repositories {
@@ -53,7 +52,7 @@ compileTestKotlin {
 spotless {
     kotlin {
         target "**/*.kt"
-        ktlint('0.24.0')
+        ktlint('0.36.0')
     }
 }
 

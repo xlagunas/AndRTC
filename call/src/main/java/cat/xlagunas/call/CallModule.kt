@@ -1,10 +1,10 @@
 package cat.xlagunas.call
 
 import androidx.lifecycle.ViewModel
+import cat.xlagunas.core.di.ViewModelKey
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import cat.xlagunas.core.di.ViewModelKey
 import retrofit2.Retrofit
 
 @Module

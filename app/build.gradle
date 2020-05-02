@@ -97,13 +97,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':push')
-    implementation project(':core-push')
     implementation project(':call')
     implementation project(':contact')
     implementation project(':user')
     implementation project(':core')
     implementation project(':signaling')
-    implementation project(':core-navigation')
+
     androidTestImplementation project(':test-utils')
 
     kapt 'com.google.dagger:dagger-compiler:2.21'

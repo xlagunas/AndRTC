@@ -9,8 +9,8 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class ContactRepositoryImpl
 @Inject constructor(

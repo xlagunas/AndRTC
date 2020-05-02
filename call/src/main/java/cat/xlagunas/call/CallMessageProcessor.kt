@@ -10,13 +10,14 @@ import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.push.CallMessage
 import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.core.push.Message
+import cat.xlagunas.core.push.MessageProcessor
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import javax.inject.Inject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
 import timber.log.Timber
-import javax.inject.Inject
 
 class CallMessageProcessor @Inject constructor(
     private val context: Context,
@@ -24,7 +25,7 @@ class CallMessageProcessor @Inject constructor(
     @ChannelId private val channelId: String,
     private val gson: Gson
 ) :
-    cat.xlagunas.core.push.MessageProcessor {
+    MessageProcessor {
     @SuppressLint("CheckResult")
     override fun processMessage(message: Message) {
         GlobalScope.launch {

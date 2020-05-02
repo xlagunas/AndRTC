@@ -17,8 +17,8 @@ package androidx.lifecycle
  */
 
 import androidx.annotation.MainThread
-import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
+import timber.log.Timber
 
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like

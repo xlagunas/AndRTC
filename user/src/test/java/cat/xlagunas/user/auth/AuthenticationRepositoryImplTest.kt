@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import cat.xlagunas.core.persistence.AuthDataStore
-import cat.xlagunas.user.UserConverter
 import cat.xlagunas.core.persistence.db.UserDao
-import cat.xlagunas.user.User
 import cat.xlagunas.core.scheduler.RxSchedulers
+import cat.xlagunas.user.User
+import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.UserDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import java.io.IOException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +25,6 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import java.io.IOException
 
 @RunWith(RobolectricTestRunner::class)
 class AuthenticationRepositoryImplTest {

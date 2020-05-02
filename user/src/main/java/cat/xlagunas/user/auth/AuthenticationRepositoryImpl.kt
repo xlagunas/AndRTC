@@ -3,14 +3,14 @@ package cat.xlagunas.user.auth
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import cat.xlagunas.core.persistence.AuthDataStore
-import cat.xlagunas.user.User
 import cat.xlagunas.core.scheduler.RxSchedulers
+import cat.xlagunas.user.User
 import cat.xlagunas.user.UserConverter
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class AuthenticationRepositoryImpl
 @Inject constructor(

@@ -1,11 +1,11 @@
 package cat.xlagunas.signaling.controller
 
-import cat.xlagunas.signaling.data.SocketIOEmitterProvider
 import cat.xlagunas.signaling.TestUtils.fakeAnswerSessionMessage
 import cat.xlagunas.signaling.TestUtils.fakeIceCandidateMessage
 import cat.xlagunas.signaling.TestUtils.fakeLocalSession
 import cat.xlagunas.signaling.TestUtils.fakeOfferSessionMessage
 import cat.xlagunas.signaling.data.SessionAdapter
+import cat.xlagunas.signaling.data.SocketIOEmitterProvider
 import cat.xlagunas.signaling.data.mapper.MessageMapper
 import cat.xlagunas.signaling.data.mapper.SessionMapper
 import cat.xlagunas.signaling.domain.Message

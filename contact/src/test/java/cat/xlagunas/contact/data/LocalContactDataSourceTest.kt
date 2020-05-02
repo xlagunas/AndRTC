@@ -2,12 +2,12 @@ package cat.xlagunas.contact.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.persistence.db.FriendDao
 import cat.xlagunas.core.persistence.db.UserDao
 import cat.xlagunas.core.persistence.db.UserEntity
 import cat.xlagunas.core.persistence.db.VivDatabase
-import cat.xlagunas.contact.domain.Friend
-import cat.xlagunas.core.persistence.AuthDataStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before

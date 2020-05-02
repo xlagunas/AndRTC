@@ -47,7 +47,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':core')
-    implementation project(path: ':core-navigation')
     implementation project(path: ':push')
 
     implementation 'androidx.appcompat:appcompat:1.0.2'

@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModelProviderFactory
-import cat.xlagunas.user.User
 import cat.xlagunas.user.R
+import cat.xlagunas.user.User
 import cat.xlagunas.user.databinding.ActivityRegisterBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar

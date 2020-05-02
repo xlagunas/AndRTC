@@ -11,9 +11,9 @@ import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.user.login.LoginFragment
 import cat.xlagunas.user.profile.ProfileFragment
 import cat.xlagunas.user.register.RegisterFragment
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.reflect.KClass
+import timber.log.Timber
 
 class AndroidNavigator @Inject constructor(private val activityProvider: TopActivityProvider) :
     Navigator {
