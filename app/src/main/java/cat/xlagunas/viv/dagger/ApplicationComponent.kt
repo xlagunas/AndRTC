@@ -1,4 +1,4 @@
-package dagger
+package cat.xlagunas.viv.dagger
 
 import android.app.Application
 import android.content.Context
@@ -19,6 +19,8 @@ import cat.xlagunas.push.PushModule
 import cat.xlagunas.user.UserModule
 import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.push.PushMessageProcessorsModule
+import dagger.BindsInstance
+import dagger.Component
 import okhttp3.OkHttpClient
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit

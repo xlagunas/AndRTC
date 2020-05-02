@@ -1,7 +1,7 @@
 package cat.xlagunas.conference.di
 
 import cat.xlagunas.conference.ui.ConferenceActivity
-import dagger.ApplicationComponent
+import cat.xlagunas.viv.dagger.ApplicationComponent
 import dagger.BindsInstance
 import dagger.Component
 import di.Feature

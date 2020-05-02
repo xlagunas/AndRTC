@@ -21,7 +21,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="dagger.VivApplication"
+        android:name="cat.xlagunas.viv.dagger.VivApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"

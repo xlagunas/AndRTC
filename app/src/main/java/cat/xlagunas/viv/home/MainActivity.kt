@@ -1,4 +1,4 @@
-package home
+package cat.xlagunas.viv.home
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
