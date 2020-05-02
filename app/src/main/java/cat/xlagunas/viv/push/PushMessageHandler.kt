@@ -6,6 +6,7 @@ import cat.xlagunas.push.MessageConverter
 import cat.xlagunas.push.PushTokenPresenter
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.VivApplication
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
@@ -22,7 +23,7 @@ class PushMessageHandler : FirebaseMessagingService() {
     lateinit var messageConverter: MessageConverter
 
     override fun onCreate() {
-        // TODO Maybe move it to a factory approach mimicing viewmodelprovider
+        VivApplication.appComponent(this).inject(this)
         super.onCreate()
     }
 

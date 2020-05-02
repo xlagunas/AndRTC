@@ -1,8 +1,0 @@
-{
-  "timestamp": 1520780165728,
-  "status": 401,
-  "error": "Unauthorized",
-  "exception": "org.springframework.security.authentication.BadCredentialsException",
-  "message": "Unauthorized",
-  "path": "/auth/"
-}

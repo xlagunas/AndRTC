@@ -1,11 +1,10 @@
-package cat.xlagunas.viv.profile
+package cat.xlagunas.user.profile
 
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.auth.AuthenticationRepository
-import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -16,11 +15,10 @@ class ProfileViewModel @Inject constructor(
     val user = this.authenticationRepository.getUser().toLiveData()
 
     fun logout() {
-        disposable +=
-            pushTokenRepository.invalidatePushToken()
-                .andThen(authenticationRepository.logoutUser())
-                .subscribe {
-                    navigator.navigateToLogin()
-                }
+        pushTokenRepository.invalidatePushToken()
+            .andThen(authenticationRepository.logoutUser())
+            .subscribe {
+                navigator.navigateToLogin()
+            }.apply { disposable.addAll(this) }
     }
 }
