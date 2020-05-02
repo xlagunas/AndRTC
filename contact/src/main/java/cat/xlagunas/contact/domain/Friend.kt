@@ -1,4 +1,4 @@
-package cat.xlagunas.core.domain.entity
+package cat.xlagunas.contact.domain
 
 data class Friend(
     val friendId: Long,

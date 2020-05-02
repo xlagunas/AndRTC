@@ -1,4 +1,4 @@
-package cat.xlagunas.core.domain.time
+package cat.xlagunas.contact.domain
 
 interface TimeProvider {
 

@@ -3,11 +3,12 @@ package cat.xlagunas.user.auth
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.user.UserConverter
-import cat.xlagunas.core.data.db.UserDao
-import cat.xlagunas.core.domain.auth.AuthDataStore
+import cat.xlagunas.core.persistence.db.UserDao
 import cat.xlagunas.user.User
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.scheduler.RxSchedulers
+import cat.xlagunas.user.UserDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -47,7 +48,7 @@ class AuthenticationRepositoryImplTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         val database = Room.inMemoryDatabaseBuilder(
-            RuntimeEnvironment.application, cat.xlagunas.core.data.db.VivDatabase::class.java
+            RuntimeEnvironment.application, cat.xlagunas.core.persistence.db.VivDatabase::class.java
         )
             .allowMainThreadQueries().build()
         userDao = database.userDao()
@@ -147,7 +148,15 @@ class AuthenticationRepositoryImplTest {
     }
 
     private fun mockedUserDto() =
-        cat.xlagunas.core.data.net.UserDto(10, "fakeUser", "Name", "Surname", "email@email.com", null, null)
+        UserDto(
+            10,
+            "fakeUser",
+            "Name",
+            "Surname",
+            "email@email.com",
+            null,
+            null
+        )
 
     @Test
     fun reactive_insert() {

@@ -21,11 +21,11 @@ import cat.xlagunas.contact.ui.ContactViewModel
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
-import cat.xlagunas.core.data.net.Relationship.ACCEPTED
-import cat.xlagunas.core.data.net.Relationship.PENDING
-import cat.xlagunas.core.data.net.Relationship.REQUESTED
+import cat.xlagunas.contact.data.Relationship.ACCEPTED
+import cat.xlagunas.contact.data.Relationship.PENDING
+import cat.xlagunas.contact.data.Relationship.REQUESTED
 import cat.xlagunas.call.Call
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher

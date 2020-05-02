@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import cat.xlagunas.contact.ui.ContactFragment
-import cat.xlagunas.core.data.di.viewModelProviderFactory
+import cat.xlagunas.core.common.viewModelProviderFactory
 import cat.xlagunas.viv.R
 import cat.xlagunas.user.login.LoginFragment
 import cat.xlagunas.user.profile.ProfileFragment

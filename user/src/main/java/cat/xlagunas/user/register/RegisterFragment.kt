@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.data.di.viewModelProviderFactory
+import cat.xlagunas.core.common.viewModelProviderFactory
 import cat.xlagunas.user.User
 import cat.xlagunas.user.R
 import cat.xlagunas.user.databinding.ActivityRegisterBinding

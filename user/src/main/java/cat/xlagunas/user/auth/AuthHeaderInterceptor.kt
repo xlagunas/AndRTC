@@ -1,6 +1,6 @@
-package cat.xlagunas.core.data.net.interceptors
+package cat.xlagunas.user.auth
 
-import cat.xlagunas.core.domain.auth.AuthDataStore
+import cat.xlagunas.core.persistence.AuthDataStore
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

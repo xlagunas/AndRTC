@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.databinding.FragmentContactBinding
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModel
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 
 @OpenForTesting
 class ContactFragment : Fragment(), ContactListener {

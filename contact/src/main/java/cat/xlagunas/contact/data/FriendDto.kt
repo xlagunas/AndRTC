@@ -1,4 +1,4 @@
-package cat.xlagunas.core.data.net
+package cat.xlagunas.contact.data
 
 import com.google.gson.annotations.SerializedName
 

@@ -3,7 +3,7 @@ package cat.xlagunas.contact.data
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import cat.xlagunas.contact.domain.ContactCache
-import cat.xlagunas.core.domain.time.TimeProvider
+import cat.xlagunas.contact.domain.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

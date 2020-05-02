@@ -1,6 +1,6 @@
 package cat.xlagunas.push
 
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import timber.log.Timber

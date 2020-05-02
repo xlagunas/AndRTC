@@ -10,7 +10,7 @@ import retrofit2.http.Path
 interface ContactsApi {
 
     @GET("/contact/search/{filter}")
-    fun searchContact(@Path("filter") query: String): Single<List<cat.xlagunas.core.data.net.FriendDto>>
+    fun searchContact(@Path("filter") query: String): Single<List<FriendDto>>
 
     @PUT("/contact/{contactId}")
     fun addContact(@Path("contactId") contactId: Long): Completable
@@ -22,5 +22,5 @@ interface ContactsApi {
     fun rejectContact(@Path("contactId") contactId: Long): Completable
 
     @GET("/contact/list")
-    fun listContacts(): Single<List<cat.xlagunas.core.data.net.FriendDto>>
+    fun listContacts(): Single<List<FriendDto>>
 }

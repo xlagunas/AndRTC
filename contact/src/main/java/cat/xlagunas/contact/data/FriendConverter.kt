@@ -1,10 +1,8 @@
-package cat.xlagunas.core.data.converter
+package cat.xlagunas.contact.data
 
-import cat.xlagunas.core.data.db.FriendEntity
-import cat.xlagunas.core.data.db.UserEntity
-import cat.xlagunas.core.data.net.FriendDto
-import cat.xlagunas.core.data.net.Relationship
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.core.persistence.db.FriendEntity
+import cat.xlagunas.core.persistence.db.UserEntity
+import cat.xlagunas.contact.domain.Friend
 import java.util.function.BiFunction
 
 class FriendConverter {

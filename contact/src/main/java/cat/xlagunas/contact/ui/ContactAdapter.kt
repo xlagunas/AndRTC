@@ -13,11 +13,11 @@ import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.FriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.PendingFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
-import cat.xlagunas.core.data.net.Relationship.ACCEPTED
-import cat.xlagunas.core.data.net.Relationship.NONE
-import cat.xlagunas.core.data.net.Relationship.PENDING
-import cat.xlagunas.core.data.net.Relationship.REQUESTED
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.data.Relationship.ACCEPTED
+import cat.xlagunas.contact.data.Relationship.NONE
+import cat.xlagunas.contact.data.Relationship.PENDING
+import cat.xlagunas.contact.data.Relationship.REQUESTED
+import cat.xlagunas.contact.domain.Friend
 
 class ContactAdapter constructor(private val contactListener: ContactListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

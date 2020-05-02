@@ -2,8 +2,7 @@ package cat.xlagunas.contact.data
 
 import cat.xlagunas.contact.domain.ContactDataSource
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.data.converter.FriendConverter
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

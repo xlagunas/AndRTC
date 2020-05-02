@@ -1,4 +1,4 @@
-package cat.xlagunas.core.data.db
+package cat.xlagunas.core.persistence.db
 
 import androidx.room.Dao
 import androidx.room.Delete

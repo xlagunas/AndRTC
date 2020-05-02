@@ -7,9 +7,8 @@ import cat.xlagunas.call.CallComponent
 import cat.xlagunas.call.CallComponentProvider
 import cat.xlagunas.call.CallModule
 import cat.xlagunas.core.BuildConfig
-import cat.xlagunas.core.data.di.HasViewModelFactory
+import cat.xlagunas.core.di.HasViewModelFactory
 import com.crashlytics.android.Crashlytics
-import dagger.DaggerApplicationComponent
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
