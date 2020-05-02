@@ -1,4 +1,4 @@
-package dagger
+package cat.xlagunas.viv.dagger
 
 import android.annotation.TargetApi
 import android.app.Application
@@ -19,6 +19,8 @@ import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.user.UserConverter
 import cat.xlagunas.viv.AndroidNavigator
 import cat.xlagunas.viv.TopActivityProvider
+import dagger.Module
+import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Singleton

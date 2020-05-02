@@ -6,7 +6,7 @@ import cat.xlagunas.push.MessageConverter
 import cat.xlagunas.push.PushTokenPresenter
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.VivApplication
+import cat.xlagunas.viv.dagger.VivApplication
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider

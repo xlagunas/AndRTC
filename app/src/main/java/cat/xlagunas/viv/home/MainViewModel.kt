@@ -1,4 +1,4 @@
-package home
+package cat.xlagunas.viv.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SingleLiveEvent

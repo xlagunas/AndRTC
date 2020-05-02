@@ -1,4 +1,4 @@
-package cat.xlagunas.user.register
+package cat.xlagunas.viv.register
 
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -15,6 +15,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import cat.xlagunas.user.User
 import cat.xlagunas.test.utils.ViewModelUtil
+import cat.xlagunas.user.register.RegisterFragment
+import cat.xlagunas.user.register.RegisterViewModel
+import cat.xlagunas.user.register.RegistrationError
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import org.junit.Before
@@ -44,7 +47,11 @@ class RegisterFragmentTest {
     fun givenRegisteredUser_WhenRegistering_ThenError() {
 
         doAnswer {
-            registrationState.postValue(RegistrationError("Invalid account data"))
+            registrationState.postValue(
+                RegistrationError(
+                    "Invalid account data"
+                )
+            )
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
 

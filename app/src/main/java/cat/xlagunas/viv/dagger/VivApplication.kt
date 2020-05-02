@@ -1,4 +1,4 @@
-package dagger
+package cat.xlagunas.viv.dagger
 
 import android.app.Application
 import android.content.Context
@@ -9,6 +9,7 @@ import cat.xlagunas.call.CallModule
 import cat.xlagunas.core.BuildConfig
 import cat.xlagunas.core.data.di.HasViewModelFactory
 import com.crashlytics.android.Crashlytics
+import dagger.DaggerApplicationComponent
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 

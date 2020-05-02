@@ -1,15 +1,14 @@
-package cat.xlagunas.viv.commons.di
+package cat.xlagunas.viv.commons
 
 import android.app.Application
 import cat.xlagunas.contact.di.ContactModule
 import cat.xlagunas.user.UserModule
-import cat.xlagunas.viv.commons.TestApplication
-import dagger.ApplicationModule
+import cat.xlagunas.viv.dagger.ApplicationModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.DatabaseModule
-import dagger.NetworkModule
-import dagger.ViewModelModule
+import cat.xlagunas.viv.dagger.DatabaseModule
+import cat.xlagunas.viv.dagger.NetworkModule
+import cat.xlagunas.viv.dagger.ViewModelModule
 import org.jetbrains.annotations.NotNull
 import javax.inject.Singleton
 
