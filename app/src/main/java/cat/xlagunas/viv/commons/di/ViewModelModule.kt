@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.contact.ui.ContactViewModel
 import cat.xlagunas.viv.landing.MainViewModel
 import cat.xlagunas.viv.login.LoginViewModel
-import cat.xlagunas.viv.profile.ProfileViewModel
+import cat.xlagunas.user.profile.ProfileViewModel
 import cat.xlagunas.user.register.RegisterViewModel
 import dagger.Binds
 import dagger.Module

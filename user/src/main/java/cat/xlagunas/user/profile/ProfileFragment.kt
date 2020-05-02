@@ -1,41 +1,24 @@
-package cat.xlagunas.viv.profile
+package cat.xlagunas.user.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModel
+import cat.xlagunas.user.R
 import cat.xlagunas.user.User
-import cat.xlagunas.viv.R
+import cat.xlagunas.user.databinding.ContentProfileBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 @OpenForTesting
 class
 ProfileFragment : Fragment() {
-
-    @BindView(R.id.profile_image)
-    lateinit var thumbnail: ImageView
-
-    @BindView(R.id.profile_email)
-    lateinit var email: TextView
-
-    @BindView(R.id.profile_username)
-    lateinit var username: TextView
-
-    @BindView(R.id.profile_firstname)
-    lateinit var firstName: TextView
-
-    @BindView(R.id.profile_lastname)
-    lateinit var lastName: TextView
+    private var _binding: ContentProfileBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var profileViewModel: ProfileViewModel
 
@@ -50,12 +33,9 @@ ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.content_profile, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
+        _binding = ContentProfileBinding.inflate(layoutInflater, container, false)
+        binding.logoutButton.setOnClickListener { profileViewModel.logout() }
+        return binding.root
     }
 
     private fun onUserEvent(user: User?) {
@@ -66,16 +46,16 @@ ProfileFragment : Fragment() {
         Glide.with(this)
             .load(user.imageUrl)
             .apply(RequestOptions.placeholderOf(R.drawable.profile_placeholder))
-            .into(thumbnail)
+            .into(binding.profileImage)
 
-        email.text = user.email
-        username.text = user.username
-        firstName.text = user.firstName
-        lastName.text = user.lastName
+        binding.profileEmail.text = user.email
+        binding.profileUsername.text = user.username
+        binding.profileFirstname.text = user.firstName
+        binding.profileLastname.text = user.lastName
     }
 
-    @OnClick(R.id.logout_button)
-    fun logout() {
-        profileViewModel.logout()
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

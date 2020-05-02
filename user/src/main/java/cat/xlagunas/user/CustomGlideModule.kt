@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.commons
+package cat.xlagunas.user
 
 import android.content.Context
 import com.bumptech.glide.Glide
