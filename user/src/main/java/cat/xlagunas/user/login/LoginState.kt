@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.login
+package cat.xlagunas.user.login
 
 sealed class LoginState
 object SuccessLoginState : LoginState()

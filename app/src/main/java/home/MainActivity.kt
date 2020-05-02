@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.landing
+package home
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
@@ -13,7 +13,7 @@ import butterknife.ButterKnife
 import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core.data.di.viewModelProviderFactory
 import cat.xlagunas.viv.R
-import cat.xlagunas.viv.login.LoginFragment
+import cat.xlagunas.user.login.LoginFragment
 import cat.xlagunas.user.profile.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*

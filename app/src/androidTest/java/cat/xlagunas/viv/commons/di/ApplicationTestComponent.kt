@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.DatabaseModule
 import dagger.NetworkModule
+import dagger.ViewModelModule
 import org.jetbrains.annotations.NotNull
 import javax.inject.Singleton
 

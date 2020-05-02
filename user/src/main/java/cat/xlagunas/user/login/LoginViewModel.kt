@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.login
+package cat.xlagunas.user.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +8,8 @@ import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.auth.AuthenticationCredentials
 import cat.xlagunas.user.auth.AuthenticationRepository
+import cat.xlagunas.user.login.InvalidLoginState
+import cat.xlagunas.user.login.LoginState
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
@@ -44,10 +46,22 @@ class LoginViewModel @Inject constructor(
         Timber.e(throwable, "Error registering user")
         if (throwable is HttpException) {
             when (throwable.code()) {
-                409 -> liveData.postValue(InvalidLoginState("User already registered"))
-                401 -> liveData.postValue(InvalidLoginState("Authentication error"))
+                409 -> liveData.postValue(
+                    InvalidLoginState(
+                        "User already registered"
+                    )
+                )
+                401 -> liveData.postValue(
+                    InvalidLoginState(
+                        "Authentication error"
+                    )
+                )
             }
-        } else liveData.postValue(InvalidLoginState(throwable.message ?: "Something went wrong"))
+        } else liveData.postValue(
+            InvalidLoginState(
+                throwable.message ?: "Something went wrong"
+            )
+        )
     }
 
     fun onLoginStateChange(): LiveData<LoginState> {
