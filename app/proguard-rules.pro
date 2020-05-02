@@ -67,9 +67,6 @@
    long consumerIndex;
 }
 
--keep class io.fabric.sdk.android.** { *; }
--dontwarn io.fabric.sdk.android.**
-
 -dontwarn com.google.android.gms.internal.*
 
 # OkHttp
