@@ -2,8 +2,8 @@ package cat.xlagunas.contact.ui.viewholder
 
 import android.view.View
 import cat.xlagunas.contact.databinding.RowConfirmContactBinding
-import cat.xlagunas.contact.ui.ContactListener
 import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.contact.ui.ContactListener
 
 class ConfirmFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {

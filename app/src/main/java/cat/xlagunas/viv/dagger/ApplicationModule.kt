@@ -10,14 +10,14 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.contact.data.FriendConverter
-import cat.xlagunas.user.auth.AuthPreferenceDataStore
 import cat.xlagunas.contact.data.SystemTimeProvider
-import cat.xlagunas.core.persistence.AuthDataStore
-import cat.xlagunas.core.scheduler.RxSchedulers
 import cat.xlagunas.contact.domain.TimeProvider
 import cat.xlagunas.core.navigation.Navigator
+import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.push.ChannelId
+import cat.xlagunas.core.scheduler.RxSchedulers
 import cat.xlagunas.user.UserConverter
+import cat.xlagunas.user.auth.AuthPreferenceDataStore
 import cat.xlagunas.viv.AndroidNavigator
 import cat.xlagunas.viv.TopActivityProvider
 import dagger.Module

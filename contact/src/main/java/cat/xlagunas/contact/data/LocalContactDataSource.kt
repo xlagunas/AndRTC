@@ -1,13 +1,13 @@
 package cat.xlagunas.contact.data
 
-import cat.xlagunas.contact.domain.ContactDataSource
-import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.persistence.db.FriendEntity
 import cat.xlagunas.contact.data.Relationship.ACCEPTED
 import cat.xlagunas.contact.data.Relationship.REQUESTED
+import cat.xlagunas.contact.domain.ContactDataSource
 import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.persistence.db.FriendDao
+import cat.xlagunas.core.persistence.db.FriendEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

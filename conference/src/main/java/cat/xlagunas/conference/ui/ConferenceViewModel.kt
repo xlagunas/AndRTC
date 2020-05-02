@@ -8,6 +8,8 @@ import cat.xlagunas.conference.domain.model.ProxyVideoSink
 import cat.xlagunas.signaling.domain.AnswerMessage
 import cat.xlagunas.signaling.domain.IceCandidateMessage
 import cat.xlagunas.signaling.domain.Session
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -21,8 +23,6 @@ import org.webrtc.EglBase
 import org.webrtc.IceCandidate
 import org.webrtc.MediaConstraints
 import timber.log.Timber
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 
 class ConferenceViewModel @Inject constructor(
     private val conferenceRepository: ConferenceRepository,

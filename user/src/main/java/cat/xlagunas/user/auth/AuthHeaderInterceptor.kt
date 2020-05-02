@@ -1,9 +1,9 @@
 package cat.xlagunas.user.auth
 
 import cat.xlagunas.core.persistence.AuthDataStore
+import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
-import javax.inject.Inject
 
 class AuthHeaderInterceptor @Inject constructor(private val authDataStore: AuthDataStore) : Interceptor {
 

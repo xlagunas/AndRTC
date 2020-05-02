@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleObserver
 import cat.xlagunas.signaling.data.MessageDto
 import cat.xlagunas.signaling.data.SocketIOEmitterProvider
 import cat.xlagunas.signaling.data.UserSession
+import cat.xlagunas.signaling.data.extensions.on
 import cat.xlagunas.signaling.data.mapper.MessageMapper
 import cat.xlagunas.signaling.data.mapper.SessionMapper
 import cat.xlagunas.signaling.domain.AnswerMessage
@@ -12,10 +13,9 @@ import cat.xlagunas.signaling.domain.Message
 import cat.xlagunas.signaling.domain.MessageType
 import cat.xlagunas.signaling.domain.OfferMessage
 import cat.xlagunas.signaling.domain.Session
-import cat.xlagunas.signaling.data.extensions.on
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class SocketIOController @Inject constructor(
     private val messageMapper: MessageMapper,

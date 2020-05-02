@@ -9,9 +9,9 @@ import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.auth.AuthenticationCredentials
 import cat.xlagunas.user.auth.AuthenticationRepository
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 import retrofit2.HttpException
 import timber.log.Timber
-import javax.inject.Inject
 
 @OpenForTesting
 class LoginViewModel @Inject constructor(

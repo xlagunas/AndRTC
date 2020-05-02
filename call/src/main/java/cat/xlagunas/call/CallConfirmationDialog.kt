@@ -5,10 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cat.xlagunas.core.di.ViewModelFactory
-import timber.log.Timber
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import javax.inject.Inject
+import timber.log.Timber
 
 class CallConfirmationDialog : DialogFragment() {
 

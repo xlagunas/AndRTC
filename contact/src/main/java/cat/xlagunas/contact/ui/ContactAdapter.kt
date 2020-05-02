@@ -4,20 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.R
+import cat.xlagunas.contact.data.Relationship.ACCEPTED
+import cat.xlagunas.contact.data.Relationship.NONE
+import cat.xlagunas.contact.data.Relationship.PENDING
+import cat.xlagunas.contact.data.Relationship.REQUESTED
 import cat.xlagunas.contact.databinding.RowConfirmContactBinding
 import cat.xlagunas.contact.databinding.RowContactBinding
 import cat.xlagunas.contact.databinding.RowPendingContactBinding
 import cat.xlagunas.contact.databinding.RowRequestContactBinding
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.FriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.PendingFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
-import cat.xlagunas.contact.data.Relationship.ACCEPTED
-import cat.xlagunas.contact.data.Relationship.NONE
-import cat.xlagunas.contact.data.Relationship.PENDING
-import cat.xlagunas.contact.data.Relationship.REQUESTED
-import cat.xlagunas.contact.domain.Friend
 
 class ContactAdapter constructor(private val contactListener: ContactListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

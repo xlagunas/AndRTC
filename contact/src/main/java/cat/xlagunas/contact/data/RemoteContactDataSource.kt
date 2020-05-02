@@ -1,8 +1,8 @@
 package cat.xlagunas.contact.data
 
 import cat.xlagunas.contact.domain.ContactDataSource
-import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.OpenForTesting
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

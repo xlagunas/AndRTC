@@ -3,14 +3,14 @@ package cat.xlagunas.viv.dagger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.contact.ui.ContactViewModel
-import cat.xlagunas.viv.home.MainViewModel
+import cat.xlagunas.core.di.ViewModelFactory
+import cat.xlagunas.core.di.ViewModelKey
 import cat.xlagunas.user.login.LoginViewModel
 import cat.xlagunas.user.profile.ProfileViewModel
 import cat.xlagunas.user.register.RegisterViewModel
+import cat.xlagunas.viv.home.MainViewModel
 import dagger.Binds
 import dagger.Module
-import cat.xlagunas.core.di.ViewModelFactory
-import cat.xlagunas.core.di.ViewModelKey
 import dagger.multibindings.IntoMap
 
 @Module

@@ -2,6 +2,7 @@ package cat.xlagunas.conference.data
 
 import android.app.Application
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
+import javax.inject.Inject
 import org.webrtc.Camera1Enumerator
 import org.webrtc.Camera2Enumerator
 import org.webrtc.CameraEnumerator
@@ -10,7 +11,6 @@ import org.webrtc.PeerConnectionFactory
 import org.webrtc.SurfaceTextureHelper
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoTrack
-import javax.inject.Inject
 
 class MediaDataSourceImp @Inject constructor(
     private val application: Application,
