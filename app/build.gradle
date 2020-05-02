@@ -51,6 +51,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -101,21 +102,16 @@ dependencies {
     implementation project(':contact')
     implementation project(':user')
     implementation project(':core')
-    implementation project(':signaling')
-
-    androidTestImplementation project(':test-utils')
 
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
-    kapt 'com.jakewharton:butterknife-compiler:10.1.0'
-    implementation 'com.jakewharton:butterknife:10.1.0'
+
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.media:media:1.0.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
+
     implementation 'androidx.room:room-runtime:2.1.0-beta01'
     implementation "androidx.fragment:fragment-ktx:1.2.4"
 
@@ -135,13 +131,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation('com.github.tomakehurst:wiremock:2.8.0') {
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-        exclude group: 'asm', module: 'asm'
-        exclude group: 'org.json', module: 'json'
-    }
-    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.21'
-    kaptTest 'com.google.dagger:dagger-compiler:2.21'
+
+    androidTestImplementation project(':test-utils')
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.1.1'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
@@ -154,11 +145,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha09'
-
-
 }
 
 static def isMinifyEnabledForBuild() {

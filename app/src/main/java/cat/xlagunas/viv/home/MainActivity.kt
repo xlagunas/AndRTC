@@ -8,30 +8,25 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
-import butterknife.BindView
-import butterknife.ButterKnife
 import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core.common.viewModelProviderFactory
 import cat.xlagunas.user.login.LoginFragment
 import cat.xlagunas.user.profile.ProfileFragment
 import cat.xlagunas.viv.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
+import cat.xlagunas.viv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mainViewModel: MainViewModel
-
-    @BindView(R.id.bottom_bar)
-    lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        ButterKnife.bind(this)
-        setSupportActionBar(toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(callbacks, false)
 
@@ -44,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel =
             ViewModelProviders.of(this, viewModelProviderFactory()).get(MainViewModel::class.java)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener {
+        binding.content.bottomBar.setOnNavigationItemSelectedListener {
             ifNotSelected(it.itemId) { itemId ->
                 when (itemId) {
                     R.id.action_contact -> mainViewModel.navigateToContacts()
@@ -64,13 +59,13 @@ class MainActivity : AppCompatActivity() {
             }
             if (nextItem < 0) return
             ifNotSelected(nextItem) {
-                bottomNavigationView.selectedItemId = nextItem
+                binding.content.bottomBar.selectedItemId = nextItem
             }
         }
     }
 
     private fun ifNotSelected(@LayoutRes menuId: Int, action: (Int) -> Unit) {
-        if (bottomNavigationView.selectedItemId != menuId) {
+        if (binding.content.bottomBar.selectedItemId != menuId) {
             action.invoke(menuId)
         }
     }
