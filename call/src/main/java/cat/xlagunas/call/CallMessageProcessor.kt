@@ -8,8 +8,8 @@ import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.core.push.CallMessage
+import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.core.push.Message
-import cat.xlagunas.push.ChannelId
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope

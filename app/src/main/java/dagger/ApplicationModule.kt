@@ -15,7 +15,7 @@ import cat.xlagunas.core.domain.auth.AuthDataStore
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import cat.xlagunas.core.navigation.Navigator
-import cat.xlagunas.push.ChannelId
+import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.viv.AndroidNavigator
 import cat.xlagunas.viv.TopActivityProvider
 import io.reactivex.android.schedulers.AndroidSchedulers

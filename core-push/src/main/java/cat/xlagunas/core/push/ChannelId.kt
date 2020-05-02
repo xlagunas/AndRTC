@@ -1,4 +1,4 @@
-package cat.xlagunas.push
+package cat.xlagunas.core.push
 
 import javax.inject.Qualifier
 
