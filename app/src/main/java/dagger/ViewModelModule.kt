@@ -1,10 +1,10 @@
-package cat.xlagunas.viv.commons.di
+package dagger
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.contact.ui.ContactViewModel
-import cat.xlagunas.viv.landing.MainViewModel
-import cat.xlagunas.viv.login.LoginViewModel
+import home.MainViewModel
+import cat.xlagunas.user.login.LoginViewModel
 import cat.xlagunas.user.profile.ProfileViewModel
 import cat.xlagunas.user.register.RegisterViewModel
 import dagger.Binds

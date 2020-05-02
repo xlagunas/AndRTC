@@ -17,7 +17,6 @@ import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import cat.xlagunas.core.domain.time.TimeProvider
 import cat.xlagunas.push.PushModule
 import cat.xlagunas.user.UserModule
-import cat.xlagunas.viv.commons.di.ViewModelModule
 import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.push.PushMessageProcessorsModule
 import okhttp3.OkHttpClient

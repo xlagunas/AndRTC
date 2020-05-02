@@ -1,35 +1,22 @@
-package cat.xlagunas.viv.login
+package cat.xlagunas.user.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import butterknife.BindView
-import butterknife.ButterKnife
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModel
-import cat.xlagunas.viv.R
-import cat.xlagunas.viv.commons.extension.text
+import cat.xlagunas.user.databinding.FragmentLoginBinding
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 @OpenForTesting
 class LoginFragment : Fragment() {
 
-    @BindView(R.id.username_input_layout)
-    lateinit var usernameInputLayout: com.google.android.material.textfield.TextInputLayout
-
-    @BindView(R.id.password_text_input)
-    lateinit var passwordInputLayout: com.google.android.material.textfield.TextInputLayout
-
-    @BindView(R.id.login_button)
-    lateinit var loginButton: Button
-
-    @BindView(R.id.register)
-    lateinit var registerButton: Button
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
 
     lateinit var loginViewModel: LoginViewModel
 
@@ -45,18 +32,16 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        ButterKnife.bind(this, view)
-        loginButton.setOnClickListener {
+        binding.loginButton.setOnClickListener {
             loginViewModel.login(
-                usernameInputLayout.text(),
-                passwordInputLayout.text()
+                binding.usernameInputLayout.text(),
+                binding.passwordTextInput.text()
             )
         }
-        registerButton.setOnClickListener { loginViewModel.navigateToRegistration() }
+        binding.register.setOnClickListener { loginViewModel.navigateToRegistration() }
+        return binding.root
     }
 
     private fun handleLoginResult(loginState: LoginState?) {
@@ -67,8 +52,8 @@ class LoginFragment : Fragment() {
                 BaseTransientBottomBar.LENGTH_SHORT
             ).show()
             is ValidationError -> {
-                usernameInputLayout.error = "Username can't be empty"
-                passwordInputLayout.error = "Password can't be empty"
+                binding.usernameInputLayout.error = "Username can't be empty"
+                binding.passwordTextInput.error = "Password can't be empty"
             }
         }
     }
