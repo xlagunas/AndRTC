@@ -13,7 +13,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModel
-import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.user.User
 import cat.xlagunas.viv.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions

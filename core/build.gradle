@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -52,8 +53,6 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-
-    dataBinding { enabled = true }
 }
 
 kapt {

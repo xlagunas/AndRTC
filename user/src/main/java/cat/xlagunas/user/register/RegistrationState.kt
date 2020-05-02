@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.register
+package cat.xlagunas.user.register
 
 sealed class RegistrationState
     object Success : RegistrationState()

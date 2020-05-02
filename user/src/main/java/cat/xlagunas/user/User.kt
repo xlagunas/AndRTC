@@ -1,4 +1,4 @@
-package cat.xlagunas.core.domain.entity
+package cat.xlagunas.user
 
 data class User(
     val id: Long?,

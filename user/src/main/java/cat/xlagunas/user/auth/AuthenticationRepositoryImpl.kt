@@ -3,8 +3,9 @@ package cat.xlagunas.user.auth
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.user.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.user.UserConverter
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -15,7 +16,7 @@ class AuthenticationRepositoryImpl
 @Inject constructor(
     private val authenticationApi: AuthenticationApi,
     private val userDao: cat.xlagunas.core.data.db.UserDao,
-    private val userConverter: cat.xlagunas.core.data.converter.UserConverter,
+    private val userConverter: UserConverter,
     private val schedulers: RxSchedulers,
     private val dataStore: AuthDataStore,
     private val vivDatabase: cat.xlagunas.core.data.db.VivDatabase,

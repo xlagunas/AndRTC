@@ -49,6 +49,10 @@ android {
         }
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -67,10 +71,6 @@ android {
             manifestPlaceholders = ["appName": '@string/app_name_dev']
         }
 
-    }
-
-    dataBinding {
-        enabled = true
     }
 
     testOptions {

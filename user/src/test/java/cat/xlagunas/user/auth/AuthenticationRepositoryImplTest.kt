@@ -3,10 +3,10 @@ package cat.xlagunas.user.auth
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import cat.xlagunas.core.data.converter.UserConverter
+import cat.xlagunas.user.UserConverter
 import cat.xlagunas.core.data.db.UserDao
 import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.User
+import cat.xlagunas.user.User
 import cat.xlagunas.core.domain.schedulers.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -71,7 +71,14 @@ class AuthenticationRepositoryImplTest {
 
     @Test
     fun whenSuccessfullyRegistered_thenUserPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
+        val user = User(
+            "Xavier",
+            "Lagunas",
+            "Calpe",
+            "xlagunas@gmail.com",
+            "image@gmail.com",
+            "123456"
+        )
         `when`(authenticationApi.registerUser(userConverter.toUserDto(user)))
             .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
 
@@ -82,7 +89,14 @@ class AuthenticationRepositoryImplTest {
 
     @Test
     fun whenErrorRegisteringUser_thenUserNotPersisted() {
-        val user = User("Xavier", "Lagunas", "Calpe", "xlagunas@gmail.com", "image@gmail.com", "123456")
+        val user = User(
+            "Xavier",
+            "Lagunas",
+            "Calpe",
+            "xlagunas@gmail.com",
+            "image@gmail.com",
+            "123456"
+        )
         `when`(authenticationApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
 
         authenticationRepository.registerUser(user)

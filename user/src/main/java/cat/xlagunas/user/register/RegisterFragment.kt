@@ -1,4 +1,4 @@
-package cat.xlagunas.viv.register
+package cat.xlagunas.user.register
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,9 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.data.di.viewModelProviderFactory
-import cat.xlagunas.core.domain.entity.User
-import cat.xlagunas.viv.R
-import cat.xlagunas.viv.databinding.ActivityRegisterBinding
+import cat.xlagunas.user.User
+import cat.xlagunas.user.R
+import cat.xlagunas.user.databinding.ActivityRegisterBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
