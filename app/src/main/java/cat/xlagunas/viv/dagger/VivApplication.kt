@@ -8,8 +8,6 @@ import cat.xlagunas.call.CallComponentProvider
 import cat.xlagunas.call.CallModule
 import cat.xlagunas.core.BuildConfig
 import cat.xlagunas.core.di.HasViewModelFactory
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
 open class VivApplication : Application(), HasViewModelFactory, CallComponentProvider {
@@ -24,9 +22,6 @@ open class VivApplication : Application(), HasViewModelFactory, CallComponentPro
 
     override fun onCreate() {
         super.onCreate()
-
-        Fabric.with(this, Crashlytics())
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
