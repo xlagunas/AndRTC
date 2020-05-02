@@ -1,4 +1,4 @@
-package cat.xlagunas.core.data.db
+package cat.xlagunas.core.persistence.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

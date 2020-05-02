@@ -1,8 +1,8 @@
-package cat.xlagunas.core.data.auth
+package cat.xlagunas.user.auth
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import cat.xlagunas.core.domain.auth.AuthDataStore
+import cat.xlagunas.core.persistence.AuthDataStore
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
@@ -21,7 +21,8 @@ class AuthPreferenceDataStore @Inject constructor(
 
     override fun isAuthTokenAvailable(): Boolean = sharedPreferences.contains(TOKEN)
 
-    override fun insertAuthToken(token: String) = sharedPreferences.edit { putString(TOKEN, token) }
+    override fun insertAuthToken(token: String) = sharedPreferences.edit { putString(
+        TOKEN, token) }
 
     override fun deleteAuthToken() = sharedPreferences.edit { remove(TOKEN) }
 

@@ -29,7 +29,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
+        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
 
         buildFeatures {
             viewBinding {

@@ -2,12 +2,12 @@ package cat.xlagunas.contact.data
 
 import cat.xlagunas.contact.domain.ContactDataSource
 import cat.xlagunas.core.OpenForTesting
-import cat.xlagunas.core.data.db.FriendEntity
-import cat.xlagunas.core.data.net.Relationship
-import cat.xlagunas.core.data.net.Relationship.ACCEPTED
-import cat.xlagunas.core.data.net.Relationship.REQUESTED
-import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.core.persistence.db.FriendEntity
+import cat.xlagunas.contact.data.Relationship.ACCEPTED
+import cat.xlagunas.contact.data.Relationship.REQUESTED
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.persistence.AuthDataStore
+import cat.xlagunas.core.persistence.db.FriendDao
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -15,9 +15,9 @@ import javax.inject.Inject
 
 @OpenForTesting
 class LocalContactDataSource @Inject constructor(
-    private val friendDao: cat.xlagunas.core.data.db.FriendDao,
+    private val friendDao: FriendDao,
     private val dataStore: AuthDataStore,
-    private val friendConverter: cat.xlagunas.core.data.converter.FriendConverter
+    private val friendConverter: FriendConverter
 ) : ContactDataSource {
 
     override fun requestFriendship(friend: Friend): Completable {

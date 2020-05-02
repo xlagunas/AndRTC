@@ -2,8 +2,8 @@ package cat.xlagunas.contact.data
 
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
-import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -34,7 +34,11 @@ class ContactRepositoryImplTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         val schedulers =
-            RxSchedulers(Schedulers.trampoline(), Schedulers.trampoline(), Schedulers.trampoline())
+            RxSchedulers(
+                Schedulers.trampoline(),
+                Schedulers.trampoline(),
+                Schedulers.trampoline()
+            )
         contactRepository = ContactRepositoryImpl(
             localContactDataSource,
             remoteContactDataSource,
@@ -45,7 +49,14 @@ class ContactRepositoryImplTest {
 
     @Test
     fun requestFriendship() {
-        val friend = Friend(10, "aUsername", "aName", "aUserImage", "anEmail", "status")
+        val friend = Friend(
+            10,
+            "aUsername",
+            "aName",
+            "aUserImage",
+            "anEmail",
+            "status"
+        )
         `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
         `when`(localContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
         contactRepository.requestFriendship(friend)

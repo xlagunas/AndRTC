@@ -3,7 +3,7 @@ package cat.xlagunas.contact.ui.viewholder
 import android.view.View
 import cat.xlagunas.contact.databinding.RowContactBinding
 import cat.xlagunas.contact.ui.ContactListener
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 
 class CurrentFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {

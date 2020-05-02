@@ -9,11 +9,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import cat.xlagunas.core.data.auth.AuthPreferenceDataStore
-import cat.xlagunas.core.data.time.SystemTimeProvider
-import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
-import cat.xlagunas.core.domain.time.TimeProvider
+import cat.xlagunas.contact.data.FriendConverter
+import cat.xlagunas.user.auth.AuthPreferenceDataStore
+import cat.xlagunas.contact.data.SystemTimeProvider
+import cat.xlagunas.core.persistence.AuthDataStore
+import cat.xlagunas.core.scheduler.RxSchedulers
+import cat.xlagunas.contact.domain.TimeProvider
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.user.UserConverter
@@ -37,20 +38,25 @@ class ApplicationModule {
 
     @Provides
     fun provideRxSchedulers() =
-        RxSchedulers(Schedulers.io(), AndroidSchedulers.mainThread(), Schedulers.computation())
+        RxSchedulers(
+            Schedulers.io(),
+            AndroidSchedulers.mainThread(),
+            Schedulers.computation()
+        )
 
     @Provides
     fun provideUserMapping() = UserConverter()
 
     @Provides
-    fun provideFriendMapping() = cat.xlagunas.core.data.converter.FriendConverter()
+    fun provideFriendMapping() = FriendConverter()
 
     @Provides
     fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore =
         AuthPreferenceDataStore(sharedPreferences)
 
     @Provides
-    fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
+    fun provideTimeProvider(): TimeProvider =
+        SystemTimeProvider()
 
     @Provides
     fun provideNotificationManager(

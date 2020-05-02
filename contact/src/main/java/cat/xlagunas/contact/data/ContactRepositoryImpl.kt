@@ -3,8 +3,8 @@ package cat.xlagunas.contact.data
 import android.annotation.SuppressLint
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
-import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe

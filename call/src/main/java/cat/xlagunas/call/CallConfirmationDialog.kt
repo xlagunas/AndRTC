@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import di.ViewModelFactory
+import cat.xlagunas.core.di.ViewModelFactory
 import timber.log.Timber
 import javax.inject.Inject
 

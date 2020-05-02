@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import di.ViewModelKey
+import cat.xlagunas.core.di.ViewModelKey
 import retrofit2.Retrofit
 
 @Module

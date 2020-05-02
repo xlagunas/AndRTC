@@ -9,8 +9,8 @@ import cat.xlagunas.user.profile.ProfileViewModel
 import cat.xlagunas.user.register.RegisterViewModel
 import dagger.Binds
 import dagger.Module
-import di.ViewModelFactory
-import di.ViewModelKey
+import cat.xlagunas.core.di.ViewModelFactory
+import cat.xlagunas.core.di.ViewModelKey
 import dagger.multibindings.IntoMap
 
 @Module

@@ -19,7 +19,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import di.Feature
+import cat.xlagunas.core.di.Feature
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.webrtc.DefaultVideoDecoderFactory

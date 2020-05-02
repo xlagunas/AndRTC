@@ -2,8 +2,8 @@ package cat.xlagunas.viv.dagger
 
 import android.content.Context
 import androidx.room.Room
-import cat.xlagunas.core.data.db.FriendDao
-import cat.xlagunas.core.data.db.VivDatabase
+import cat.xlagunas.core.persistence.db.FriendDao
+import cat.xlagunas.core.persistence.db.VivDatabase
 import dagger.Module
 import dagger.Provides
 

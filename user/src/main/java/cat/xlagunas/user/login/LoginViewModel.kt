@@ -8,8 +8,6 @@ import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.auth.AuthenticationCredentials
 import cat.xlagunas.user.auth.AuthenticationRepository
-import cat.xlagunas.user.login.InvalidLoginState
-import cat.xlagunas.user.login.LoginState
 import io.reactivex.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber

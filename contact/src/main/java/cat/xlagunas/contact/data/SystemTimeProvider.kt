@@ -1,6 +1,6 @@
-package cat.xlagunas.core.data.time
+package cat.xlagunas.contact.data
 
-import cat.xlagunas.core.domain.time.TimeProvider
+import cat.xlagunas.contact.domain.TimeProvider
 
 class SystemTimeProvider : TimeProvider {
 

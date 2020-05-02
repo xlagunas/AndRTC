@@ -1,12 +1,10 @@
 package cat.xlagunas.user
 
-import cat.xlagunas.core.data.db.UserEntity
-import cat.xlagunas.core.data.net.UserDto
-import cat.xlagunas.user.User
+import cat.xlagunas.core.persistence.db.UserEntity
 
 class UserConverter {
-    fun toUser(userEntity: UserEntity): cat.xlagunas.user.User =
-        cat.xlagunas.user.User(
+    fun toUser(userEntity: UserEntity): User =
+        User(
             id = userEntity.id,
             username = userEntity.username,
             firstName = userEntity.firstName,
@@ -17,7 +15,7 @@ class UserConverter {
             password = null
         )
 
-    fun toUserEntity(user: cat.xlagunas.user.User): UserEntity =
+    fun toUserEntity(user: User): UserEntity =
         UserEntity(
             id = user.id,
             username = user.username,
@@ -37,7 +35,7 @@ class UserConverter {
             imageUrl = userDto.profilePic
         )
 
-    fun toUserDto(user: cat.xlagunas.user.User): UserDto =
+    fun toUserDto(user: User): UserDto =
         UserDto(
             id = user.id,
             username = user.username,

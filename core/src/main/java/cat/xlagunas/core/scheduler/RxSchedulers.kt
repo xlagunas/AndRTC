@@ -1,4 +1,4 @@
-package cat.xlagunas.core.domain.schedulers
+package cat.xlagunas.core.scheduler
 
 import io.reactivex.Scheduler
 

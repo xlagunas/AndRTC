@@ -5,9 +5,9 @@ import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
-import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.core.navigation.Navigator
+import cat.xlagunas.core.persistence.AuthDataStore
 import io.reactivex.BackpressureStrategy
 import timber.log.Timber
 import javax.inject.Inject

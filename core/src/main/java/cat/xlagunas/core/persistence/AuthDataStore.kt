@@ -1,4 +1,4 @@
-package cat.xlagunas.core.domain.auth
+package cat.xlagunas.core.persistence
 
 import io.reactivex.subjects.BehaviorSubject
 

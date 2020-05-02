@@ -18,7 +18,7 @@ android {
         targetSdkVersion 28
         versionCode rootProject.gitCommitCount
         versionName rootProject.gitTag
-        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
+        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
         multiDexEnabled true
     }
 
