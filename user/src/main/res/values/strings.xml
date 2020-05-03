@@ -1,2 +1,4 @@
 <resources>
+    <string name="registration_successful">%s successfully registered, please log in</string>
+    <string name="login_successful">"Welcome back, %s"</string>
 </resources>

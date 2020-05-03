@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.displayMessage
 import cat.xlagunas.core.common.viewModel
+import cat.xlagunas.user.R
 import cat.xlagunas.user.databinding.FragmentLoginBinding
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 
 @OpenForTesting
 class LoginFragment : Fragment() {
@@ -46,11 +46,13 @@ class LoginFragment : Fragment() {
 
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
-            is InvalidLoginState -> Snackbar.make(
-                requireView(),
-                loginState.errorMessage,
-                BaseTransientBottomBar.LENGTH_SHORT
-            ).show()
+            is SuccessLoginState -> displayMessage(
+                requireContext().getString(
+                    R.string.login_successful,
+                    binding.usernameInputLayout.text()
+                )
+            )
+            is InvalidLoginState -> displayMessage(loginState.errorMessage)
             is ValidationError -> {
                 binding.usernameInputLayout.error = "Username can't be empty"
                 binding.passwordTextInput.error = "Password can't be empty"

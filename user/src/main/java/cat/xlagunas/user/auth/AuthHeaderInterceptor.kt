@@ -5,7 +5,8 @@ import javax.inject.Inject
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthHeaderInterceptor @Inject constructor(private val authDataStore: AuthDataStore) : Interceptor {
+class AuthHeaderInterceptor @Inject constructor(private val authDataStore: AuthDataStore) :
+    Interceptor {
 
     companion object {
         @JvmStatic
@@ -18,14 +19,12 @@ class AuthHeaderInterceptor @Inject constructor(private val authDataStore: AuthD
 
         if (authDataStore.isAuthTokenAvailable()) {
 
-            request?.header(AUTH_HEADER).isNullOrEmpty()
-                .let {
-                    request = chain.request()!!
-                        .newBuilder()
-                        .addHeader(AUTH_HEADER, authDataStore.authToken()!!).build()
-                }
+            if (request.header(AUTH_HEADER).isNullOrEmpty()) {
+                request = chain.request()
+                    .newBuilder()
+                    .addHeader(AUTH_HEADER, authDataStore.authToken()!!).build()
+            }
         }
-
-        return chain.proceed(request)!!
+        return chain.proceed(request)
     }
 }

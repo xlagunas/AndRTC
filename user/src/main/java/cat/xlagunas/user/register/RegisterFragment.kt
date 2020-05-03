@@ -9,13 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.displayMessage
 import cat.xlagunas.core.common.viewModelProviderFactory
 import cat.xlagunas.user.R
 import cat.xlagunas.user.User
 import cat.xlagunas.user.databinding.ActivityRegisterBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 @OpenForTesting
@@ -27,10 +26,11 @@ class RegisterFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        registerViewModel = ViewModelProviders.of(this, viewModelProviderFactory()).get(RegisterViewModel::class.java)
-        registerViewModel.findUser().observe(viewLifecycleOwner, Observer(this::handleUserAlreadyLoggedIn))
-        registerViewModel.onRegistrationError.observe(viewLifecycleOwner,
-            Observer(this::handleRegistrationError)
+        registerViewModel = ViewModelProviders.of(this, viewModelProviderFactory())
+            .get(RegisterViewModel::class.java)
+        registerViewModel.onRegistration.observe(
+            viewLifecycleOwner,
+            Observer(this::handleRegistration)
         )
     }
 
@@ -56,14 +56,23 @@ class RegisterFragment : Fragment() {
         Timber.d("User logged in ${user?.username}")
     }
 
-    private fun handleRegistrationError(registrationState: RegistrationError) {
-        handleError(registrationState.message)
+    private fun handleRegistration(registrationState: RegistrationState) {
+        when (registrationState) {
+
+            is RegistrationError -> handleError(registrationState.message)
+            is Success -> displayMessage(
+                requireContext().getString(
+                    R.string.registration_successful,
+                    binding.user?.username
+                )
+            )
+        }
         actionButton.isEnabled = true
     }
 
     private fun handleError(message: String?) {
         val errorMsg = "Error registering user $message"
         Timber.e(errorMsg)
-        Snackbar.make(binding.root, errorMsg, BaseTransientBottomBar.LENGTH_LONG).show()
+        displayMessage(errorMsg)
     }
 }

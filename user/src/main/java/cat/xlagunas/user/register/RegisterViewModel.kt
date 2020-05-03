@@ -1,6 +1,5 @@
 package cat.xlagunas.user.register
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.DisposableViewModel
@@ -8,7 +7,6 @@ import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.user.User
 import cat.xlagunas.user.auth.AuthenticationRepository
 import javax.inject.Inject
-import timber.log.Timber
 
 @OpenForTesting
 class RegisterViewModel @Inject constructor(
@@ -17,22 +15,16 @@ class RegisterViewModel @Inject constructor(
 ) :
     DisposableViewModel() {
 
-    private val user: MutableLiveData<User> = MutableLiveData()
-    val onRegistrationError: MutableLiveData<RegistrationError> = MutableLiveData()
+    val onRegistration: MutableLiveData<RegistrationState> = MutableLiveData()
 
     fun register(user: User) {
         disposable.add(
             userRepository.registerUser(user).subscribe(
-                { navigator.navigateToProfile() },
-                { error -> onRegistrationError.value = RegistrationError(error.message) })
+                {
+                    onRegistration.value = Success
+                    navigator.navigateToLogin()
+                },
+                { error -> onRegistration.value = RegistrationError(error.message) })
         )
-    }
-
-    fun findUser(): LiveData<User> {
-        disposable.add(
-            userRepository.findUser()
-                .subscribe(user::postValue, Timber::e)
-        )
-        return user
     }
 }

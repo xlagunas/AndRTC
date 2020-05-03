@@ -16,6 +16,7 @@ class RequestFriendViewHolder(view: View, contactListener: ContactListener) :
     }
 
     override fun bind(friend: Friend) {
+        setupView(bind.contactBase, friend)
         bind.addFriendButton.setOnClickListener {
             contactListener.onContactRequested(friend)
         }

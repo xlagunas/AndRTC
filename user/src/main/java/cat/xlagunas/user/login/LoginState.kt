@@ -4,4 +4,3 @@ sealed class LoginState
 object SuccessLoginState : LoginState()
 data class InvalidLoginState(val errorMessage: String) : LoginState()
 object ValidationError : LoginState()
-object Logout : LoginState()

@@ -24,15 +24,21 @@ class ContactViewModel
         Timber.d("Creating ViewModel")
     }
 
-    val contacts by lazy {
+    val contacts: LiveData<Result<List<Friend>>> by lazy {
         dataStore.getCurrentUserIdFlowable().toFlowable(BackpressureStrategy.BUFFER)
             .doOnSubscribe { Timber.d("Subscribed to contacts") }
             .doOnNext { Timber.d("Next user id: $it") }
-            .switchMap { contactRepository.getContacts() }.toLiveData()
+            .switchMap { contactRepository.getContacts() }
+            .map { friends -> Result.success(friends) }
+            .onErrorReturn { Result.failure(it) }
+            .toLiveData()
     }
 
-    fun findContact(searchTerm: String): LiveData<List<Friend>> {
-        return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
+    fun findContact(searchTerm: String): LiveData<Result<List<Friend>>> {
+        return contactRepository.searchContact(searchTerm).toFlowable()
+            .map { searchElements -> Result.success(searchElements) }
+            .onErrorReturn { Result.failure(it) }
+            .toLiveData()
     }
 
     fun addContact(friend: Friend) {

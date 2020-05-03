@@ -46,10 +46,8 @@ class AuthenticationRepositoryImpl
 
     override fun registerUser(user: User): Completable {
         val userDto = userConverter.toUserDto(user)
-        val userEntity = userConverter.toUserEntity(user)
 
         return authenticationApi.registerUser(userDto)
-            .andThen(Completable.fromAction { userDao.insert(userEntity) })
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
     }

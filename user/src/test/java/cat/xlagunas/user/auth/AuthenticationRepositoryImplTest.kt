@@ -6,10 +6,8 @@ import androidx.room.Room
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.persistence.db.UserDao
 import cat.xlagunas.core.scheduler.RxSchedulers
-import cat.xlagunas.user.User
 import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.UserDto
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.io.IOException
@@ -68,43 +66,6 @@ class AuthenticationRepositoryImplTest {
                 RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
             )
-    }
-
-    @Test
-    fun whenSuccessfullyRegistered_thenUserPersisted() {
-        val user = User(
-            "Xavier",
-            "Lagunas",
-            "Calpe",
-            "xlagunas@gmail.com",
-            "image@gmail.com",
-            "123456"
-        )
-        `when`(authenticationApi.registerUser(userConverter.toUserDto(user)))
-            .thenReturn(Completable.fromAction { userConverter.toUserEntity(user) })
-
-        authenticationRepository.registerUser(user).test()
-
-        userDao.loadAll().test().assertValueCount(1)
-    }
-
-    @Test
-    fun whenErrorRegisteringUser_thenUserNotPersisted() {
-        val user = User(
-            "Xavier",
-            "Lagunas",
-            "Calpe",
-            "xlagunas@gmail.com",
-            "image@gmail.com",
-            "123456"
-        )
-        `when`(authenticationApi.registerUser(userConverter.toUserDto(user))).thenReturn(Completable.error(IOException("Error")))
-
-        authenticationRepository.registerUser(user)
-            .test().assertError(IOException::class.java)
-
-        userDao.loadAll().test()
-            .assertValueCount(0)
     }
 
     @Test
