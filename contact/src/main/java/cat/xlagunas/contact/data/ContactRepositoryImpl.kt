@@ -31,18 +31,13 @@ class ContactRepositoryImpl
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
 
-    @SuppressLint("CheckResult")
     override fun getContacts(): Flowable<List<Friend>> {
-        cacheNeedsRefresh()
+        return cacheNeedsRefresh()
             .flatMapCompletable {
                 remoteContactDataSource.getContactsAsSingle()
                     .flatMapCompletable(this::updateContacts)
             }
-            .observeOn(schedulers.mainThread)
-            .subscribeOn(schedulers.io)
-            .subscribe({}, Timber::e)
-
-        return localContactDataSource.getContacts()
+            .andThen(localContactDataSource.getContacts())
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
     }
