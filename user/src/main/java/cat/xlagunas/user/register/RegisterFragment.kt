@@ -22,7 +22,9 @@ class RegisterFragment : Fragment() {
 
     private lateinit var registerViewModel: RegisterViewModel
     private lateinit var actionButton: FloatingActionButton
-    private lateinit var binding: ActivityRegisterBinding
+    private var _binding: ActivityRegisterBinding? = null
+    private val binding: ActivityRegisterBinding
+        get() = _binding!!
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -39,7 +41,7 @@ class RegisterFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.activity_register, container, false)
         binding.user = RegisterUserBinder()
         return binding.root
     }
@@ -74,5 +76,10 @@ class RegisterFragment : Fragment() {
         val errorMsg = "Error registering user $message"
         Timber.e(errorMsg)
         displayMessage(errorMsg)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
