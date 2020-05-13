@@ -18,6 +18,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import cat.xlagunas.test.utils.ViewModelUtil
+import cat.xlagunas.user.login.InvalidLoginState
+import cat.xlagunas.user.login.LoginFragment
+import cat.xlagunas.user.login.LoginState
+import cat.xlagunas.user.login.LoginViewModel
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import com.google.android.material.snackbar.SnackbarContentLayout

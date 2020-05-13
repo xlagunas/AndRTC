@@ -1,7 +1,5 @@
 package cat.xlagunas.call
 
-import cat.xlagunas.push.CallMessage
-import cat.xlagunas.push.Message
 import javax.inject.Inject
 
 class CallRepositoryImpl @Inject constructor(
@@ -12,10 +10,6 @@ class CallRepositoryImpl @Inject constructor(
         val callParticipantsDto = callConverter.toCallParticipantsDto(contacts)
         val callDto = callApi.createCall(callParticipantsDto)
         return callConverter.toCall(callDto)
-    }
-
-    override suspend fun getCallDetails(message: Message): Call {
-        return callConverter.toCall(message as CallMessage)
     }
 
     override suspend fun acceptCall(callId: Long) {

@@ -1,13 +1,10 @@
 package cat.xlagunas.call
 
 import androidx.lifecycle.ViewModel
-import cat.xlagunas.push.MessageProcessor
-import cat.xlagunas.push.MessageType
-import cat.xlagunas.push.PushMessageProcessorKey
+import cat.xlagunas.core.di.ViewModelKey
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import di.ViewModelKey
 import retrofit2.Retrofit
 
 @Module
@@ -27,10 +24,4 @@ class CallModule {
     fun provideProfileViewModel(callViewModel: CallViewModel): ViewModel {
         return callViewModel
     }
-
-    @Provides
-    @IntoMap
-    @PushMessageProcessorKey(MessageType.CREATE_CALL)
-    fun provideCallsMessageProcessor(callMessageProcessor: CallMessageProcessor): MessageProcessor =
-        callMessageProcessor
 }

@@ -6,11 +6,11 @@ import cat.xlagunas.signaling.domain.IceCandidateMessage
 import cat.xlagunas.signaling.domain.Message
 import cat.xlagunas.signaling.domain.OfferMessage
 import cat.xlagunas.signaling.domain.Session
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import javax.inject.Inject
 
 class SocketIOSignaling @Inject constructor(
     private val socketIOController: SocketIOController

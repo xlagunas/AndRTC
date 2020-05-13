@@ -10,9 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import cat.xlagunas.contact.databinding.FragmentContactBinding
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.viewModel
-import cat.xlagunas.core.domain.entity.Friend
+import timber.log.Timber
 
 @OpenForTesting
 class ContactFragment : Fragment(), ContactListener {
@@ -67,7 +68,7 @@ class ContactFragment : Fragment(), ContactListener {
                     contactViewModel.findContact(query)
                         .observe(
                             this@ContactFragment,
-                            Observer(this@ContactFragment::renderFriends)
+                            Observer { renderFriends(it) }
                         )
                     return true
                 }
@@ -94,8 +95,8 @@ class ContactFragment : Fragment(), ContactListener {
         }
     }
 
-    private fun renderFriends(items: List<Friend>?) {
-        contactAdapter.updateAdapter(items!!)
+    private fun renderFriends(items: Result<List<Friend>>) {
+        items.fold(contactAdapter::updateAdapter, Timber::e)
     }
 
     override fun onDestroyView() {

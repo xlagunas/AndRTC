@@ -1,15 +1,15 @@
 package cat.xlagunas.viv.push
 
+import cat.xlagunas.core.push.MessageProcessor
+import cat.xlagunas.core.push.MessageType
 import cat.xlagunas.push.MessageConverter
-import cat.xlagunas.push.MessageProcessor
-import cat.xlagunas.push.MessageType
 import cat.xlagunas.push.PushTokenPresenter
+import cat.xlagunas.viv.dagger.VivApplication
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.VivApplication
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
+import timber.log.Timber
 
 class PushMessageHandler : FirebaseMessagingService() {
 
@@ -23,7 +23,6 @@ class PushMessageHandler : FirebaseMessagingService() {
     lateinit var messageConverter: MessageConverter
 
     override fun onCreate() {
-        // TODO Maybe move it to a factory approach mimicing viewmodelprovider
         VivApplication.appComponent(this).inject(this)
         super.onCreate()
     }
@@ -37,7 +36,7 @@ class PushMessageHandler : FirebaseMessagingService() {
         messageProcessors[message.messageType]?.get()?.processMessage(message)
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(p0: String) {
         if (pushTokenPresenter.isPushTokenRegistered()) {
             pushTokenPresenter.clearPushToken()
         }

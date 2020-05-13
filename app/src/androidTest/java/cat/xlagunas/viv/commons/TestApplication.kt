@@ -1,7 +1,7 @@
 package cat.xlagunas.viv.commons
 
 import androidx.lifecycle.ViewModelProvider
-import dagger.VivApplication
+import cat.xlagunas.viv.dagger.VivApplication
 
 class TestApplication : VivApplication() {
 

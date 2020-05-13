@@ -1,6 +1,6 @@
 package cat.xlagunas.contact.ui
 
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
 
 interface ContactListener {
 

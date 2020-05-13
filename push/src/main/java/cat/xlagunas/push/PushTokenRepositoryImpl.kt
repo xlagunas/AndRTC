@@ -1,10 +1,10 @@
 package cat.xlagunas.push
 
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Maybe
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class PushTokenRepositoryImpl @Inject constructor(
     private val pushTokenProvider: PushTokenProvider,
@@ -39,7 +39,7 @@ class PushTokenRepositoryImpl @Inject constructor(
     }
 
     private fun requestTokenRegistration(token: String): Completable {
-        return addPushToken(cat.xlagunas.push.PushTokenDto(token))
+        return addPushToken(PushTokenDto(token))
             .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
             .doOnComplete { Timber.d("Push token successfully registered") }
             .doOnSubscribe { Timber.d("Starting token registration") }

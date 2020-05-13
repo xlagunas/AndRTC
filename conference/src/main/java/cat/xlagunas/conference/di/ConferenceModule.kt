@@ -6,6 +6,7 @@ import cat.xlagunas.conference.data.ConferenceRepositoryImp
 import cat.xlagunas.conference.domain.ConferenceRepository
 import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.ui.ConferenceActivity
+import cat.xlagunas.core.di.Feature
 import cat.xlagunas.signaling.Signaling
 import cat.xlagunas.signaling.SocketIOSignaling
 import cat.xlagunas.signaling.controller.SocketIOController
@@ -19,7 +20,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import di.Feature
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.webrtc.DefaultVideoDecoderFactory

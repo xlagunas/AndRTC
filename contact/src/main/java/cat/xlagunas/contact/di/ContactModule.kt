@@ -5,8 +5,8 @@ import cat.xlagunas.contact.data.ContactRepositoryImpl
 import cat.xlagunas.contact.data.ContactsApi
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
-import cat.xlagunas.core.data.db.UserDao
-import cat.xlagunas.core.data.db.VivDatabase
+import cat.xlagunas.core.persistence.db.UserDao
+import cat.xlagunas.core.persistence.db.VivDatabase
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

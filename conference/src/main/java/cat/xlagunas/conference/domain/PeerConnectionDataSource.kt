@@ -4,6 +4,8 @@ import cat.xlagunas.conference.data.NoOPVivSdpObserver
 import cat.xlagunas.conference.data.VivPeerConnectionObserver
 import cat.xlagunas.conference.data.VivSdpObserver
 import cat.xlagunas.signaling.domain.Session
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
 import org.webrtc.IceCandidate
 import org.webrtc.Logging
 import org.webrtc.MediaConstraints
@@ -11,8 +13,6 @@ import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.SessionDescription
 import timber.log.Timber
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
 
 class PeerConnectionDataSource @Inject constructor(
     private val peerConnectionFactory: PeerConnectionFactory,

@@ -6,10 +6,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.socket.client.IO
 import io.socket.emitter.Emitter
+import javax.inject.Inject
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
 
 class LifecycleAwareSocketIOProvider @Inject constructor(
     activity: AppCompatActivity,

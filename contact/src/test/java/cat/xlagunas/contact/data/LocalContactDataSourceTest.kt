@@ -2,13 +2,12 @@ package cat.xlagunas.contact.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import cat.xlagunas.core.data.converter.FriendConverter
-import cat.xlagunas.core.data.db.FriendDao
-import cat.xlagunas.core.data.db.UserDao
-import cat.xlagunas.core.data.db.UserEntity
-import cat.xlagunas.core.data.db.VivDatabase
-import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.Friend
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.persistence.AuthDataStore
+import cat.xlagunas.core.persistence.db.FriendDao
+import cat.xlagunas.core.persistence.db.UserDao
+import cat.xlagunas.core.persistence.db.UserEntity
+import cat.xlagunas.core.persistence.db.VivDatabase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -112,14 +111,21 @@ class LocalContactDataSourceTest {
     @Test
     fun givenNonExistingContact_whenAdded_thenRelationshipMatchesPending() {
         val oldFriendStatus = generateFriend()
-        assert(oldFriendStatus.relationshipStatus == cat.xlagunas.core.data.net.Relationship.NONE.name)
+        assert(oldFriendStatus.relationshipStatus == Relationship.NONE.name)
 
         localContactDataSource.requestFriendship(oldFriendStatus).test()
 
         val contact = localContactDataSource.getContacts().blockingFirst()
 
-        assertThat(contact.first().relationshipStatus).isEqualToIgnoringCase(cat.xlagunas.core.data.net.Relationship.REQUESTED.name)
+        assertThat(contact.first().relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
     }
 
-    private fun generateFriend() = Friend(10, "aContact", "aName", "anImage", "anEmail", "NONE")
+    private fun generateFriend() = Friend(
+        10,
+        "aContact",
+        "aName",
+        "anImage",
+        "anEmail",
+        "NONE"
+    )
 }

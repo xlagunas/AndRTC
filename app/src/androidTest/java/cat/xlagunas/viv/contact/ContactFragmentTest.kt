@@ -15,17 +15,17 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import cat.xlagunas.call.Call
 import cat.xlagunas.contact.R
+import cat.xlagunas.contact.data.Relationship.ACCEPTED
+import cat.xlagunas.contact.data.Relationship.PENDING
+import cat.xlagunas.contact.data.Relationship.REQUESTED
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.contact.ui.ContactViewModel
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
-import cat.xlagunas.core.data.net.Relationship.ACCEPTED
-import cat.xlagunas.core.data.net.Relationship.PENDING
-import cat.xlagunas.core.data.net.Relationship.REQUESTED
-import cat.xlagunas.call.Call
-import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher
@@ -41,7 +41,7 @@ import org.mockito.Mockito.verify
 class ContactFragmentTest {
 
     private val contactViewModel = mock(ContactViewModel::class.java)
-    private val contactsLiveData = MutableLiveData<List<Friend>>()
+    private val contactsLiveData = MutableLiveData<Result<List<Friend>>>()
 
     @Before
     fun setUp() {
@@ -55,7 +55,7 @@ class ContactFragmentTest {
 
     @Test
     fun givenWithContacts_whenContactInits_thenContacts() {
-        contactsLiveData.postValue(populateContactsList())
+        contactsLiveData.postValue(Result.success(populateContactsList()))
 
         onView(withId(R.id.recycler_view))
             .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText("FirstFriend"))))
@@ -114,8 +114,9 @@ class ContactFragmentTest {
             ACCEPTED.name
         )
         Mockito.doAnswer {
-            MutableLiveData<Call>().apply { value =
-                Call("123456")
+            MutableLiveData<Call>().apply {
+                value =
+                    Call("123456")
             }
         }
             .`when`(contactViewModel).createCall(listOf(friend))
@@ -133,7 +134,7 @@ class ContactFragmentTest {
         actionId: Int,
         holderPosition: Int
     ) {
-        contactsLiveData.postValue(listOf(friend))
+        contactsLiveData.postValue(Result.success(listOf(friend)))
 
         onView(withId(R.id.recycler_view))
             .perform(

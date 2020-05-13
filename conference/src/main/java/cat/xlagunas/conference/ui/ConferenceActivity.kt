@@ -11,14 +11,14 @@ import androidx.lifecycle.ViewModelProviders
 import cat.xlagunas.conference.R
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
+import cat.xlagunas.viv.dagger.VivApplication
 import com.google.android.material.snackbar.Snackbar
 import com.tbruyelle.rxpermissions2.RxPermissions
-import dagger.VivApplication
+import javax.inject.Inject
 import org.webrtc.MediaConstraints
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import timber.log.Timber
-import javax.inject.Inject
 
 class ConferenceActivity : AppCompatActivity() {
 

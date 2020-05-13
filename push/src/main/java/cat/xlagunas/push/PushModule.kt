@@ -1,5 +1,6 @@
 package cat.xlagunas.push
 
+import cat.xlagunas.core.push.ChannelId
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

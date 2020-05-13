@@ -1,8 +1,8 @@
 package cat.xlagunas.push
 
 import android.annotation.SuppressLint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class PushTokenPresenter @Inject
 constructor(private val pushTokenRepository: PushTokenRepository) {

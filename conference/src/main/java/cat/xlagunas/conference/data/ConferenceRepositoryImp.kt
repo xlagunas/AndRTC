@@ -6,6 +6,7 @@ import cat.xlagunas.conference.domain.PeerConnectionDataSource
 import cat.xlagunas.conference.domain.model.ProxyVideoSink
 import cat.xlagunas.signaling.SocketIOSignaling
 import cat.xlagunas.signaling.domain.Session
+import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -17,7 +18,6 @@ import org.webrtc.PeerConnection
 import org.webrtc.SessionDescription
 import org.webrtc.VideoTrack
 import timber.log.Timber
-import javax.inject.Inject
 
 class ConferenceRepositoryImp @Inject constructor(
     private val peerConnectionDataSource: PeerConnectionDataSource,

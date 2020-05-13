@@ -1,4 +1,3 @@
-include ':core-navigation'
 include ':signaling'
 include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user',':test-utils'
 

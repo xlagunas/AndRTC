@@ -2,8 +2,8 @@ package cat.xlagunas.contact.ui.viewholder
 
 import android.view.View
 import cat.xlagunas.contact.databinding.RowRequestContactBinding
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.contact.ui.ContactListener
-import cat.xlagunas.core.domain.entity.Friend
 
 class RequestFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {
@@ -16,6 +16,7 @@ class RequestFriendViewHolder(view: View, contactListener: ContactListener) :
     }
 
     override fun bind(friend: Friend) {
+        setupView(bind.contactBase, friend)
         bind.addFriendButton.setOnClickListener {
             contactListener.onContactRequested(friend)
         }

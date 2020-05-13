@@ -13,15 +13,10 @@ buildscript {
         mavenCentral()
         google()
     }
-
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.1.0'
-    }
 }
 
 android {
     compileSdkVersion 28
-
 
     defaultConfig {
         minSdkVersion 21
@@ -29,18 +24,15 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "cat.xlagunas.viv.commons.di.MockTestRunner"
+        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
 
         buildFeatures {
-            viewBinding {
-                enabled = true
-            }
+            viewBinding = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -57,7 +49,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -67,18 +58,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':core')
-    implementation project(path: ':push')
-    implementation project(path: ':core-navigation')
-    androidTestImplementation project(path: ':test-utils')
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    api 'com.google.firebase:firebase-messaging:18.0.0'
+
     kapt 'com.google.dagger:dagger-compiler:2.21'
-
     implementation 'com.google.dagger:dagger:2.21'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
@@ -90,6 +75,8 @@ dependencies {
     api 'com.squareup.retrofit2:retrofit:2.5.0'
     api 'com.squareup.retrofit2:converter-gson:2.5.0'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
 
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.room:room-runtime:2.1.0-beta01'
@@ -108,8 +95,7 @@ dependencies {
     androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha09'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha09'
+    androidTestImplementation project(path: ':test-utils')
 
     androidTestImplementation 'androidx.core:core:1.0.2'
-
-
 }

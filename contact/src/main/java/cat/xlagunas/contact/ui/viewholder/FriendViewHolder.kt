@@ -3,8 +3,8 @@ package cat.xlagunas.contact.ui.viewholder
 import android.view.View
 import cat.xlagunas.contact.R
 import cat.xlagunas.contact.databinding.RowBaseBinding
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.contact.ui.ContactListener
-import cat.xlagunas.core.domain.entity.Friend
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 

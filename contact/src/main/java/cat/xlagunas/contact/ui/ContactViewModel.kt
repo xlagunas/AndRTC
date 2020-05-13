@@ -2,15 +2,15 @@ package cat.xlagunas.contact.ui
 
 import androidx.lifecycle.LiveData
 import cat.xlagunas.contact.domain.ContactRepository
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
-import cat.xlagunas.core.domain.auth.AuthDataStore
-import cat.xlagunas.core.domain.entity.Friend
 import cat.xlagunas.core.navigation.Navigator
+import cat.xlagunas.core.persistence.AuthDataStore
 import io.reactivex.BackpressureStrategy
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @OpenForTesting
 class ContactViewModel
@@ -24,15 +24,21 @@ class ContactViewModel
         Timber.d("Creating ViewModel")
     }
 
-    val contacts by lazy {
+    val contacts: LiveData<Result<List<Friend>>> by lazy {
         dataStore.getCurrentUserIdFlowable().toFlowable(BackpressureStrategy.BUFFER)
             .doOnSubscribe { Timber.d("Subscribed to contacts") }
             .doOnNext { Timber.d("Next user id: $it") }
-            .switchMap { contactRepository.getContacts() }.toLiveData()
+            .switchMap { contactRepository.getContacts() }
+            .map { friends -> Result.success(friends) }
+            .onErrorReturn { Result.failure(it) }
+            .toLiveData()
     }
 
-    fun findContact(searchTerm: String): LiveData<List<Friend>> {
-        return contactRepository.searchContact(searchTerm).toFlowable().toLiveData()
+    fun findContact(searchTerm: String): LiveData<Result<List<Friend>>> {
+        return contactRepository.searchContact(searchTerm).toFlowable()
+            .map { searchElements -> Result.success(searchElements) }
+            .onErrorReturn { Result.failure(it) }
+            .toLiveData()
     }
 
     fun addContact(friend: Friend) {

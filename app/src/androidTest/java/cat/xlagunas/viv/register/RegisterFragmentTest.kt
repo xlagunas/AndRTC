@@ -13,8 +13,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import cat.xlagunas.core.domain.entity.User
 import cat.xlagunas.test.utils.ViewModelUtil
+import cat.xlagunas.user.User
+import cat.xlagunas.user.register.RegisterFragment
+import cat.xlagunas.user.register.RegisterViewModel
+import cat.xlagunas.user.register.RegistrationError
+import cat.xlagunas.user.register.RegistrationState
 import cat.xlagunas.viv.R
 import cat.xlagunas.viv.commons.TestApplication
 import org.junit.Before
@@ -28,23 +32,25 @@ import org.mockito.Mockito.mock
 class RegisterFragmentTest {
 
     private val registerViewModel = mock(RegisterViewModel::class.java)
-    private val user = MutableLiveData<User>()
-    private val registrationState = MutableLiveData<RegistrationError>()
+    private val registrationState = MutableLiveData<RegistrationState>()
 
     @Before
     fun setUp() {
         val application =
             InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
         application.setViewModelProviderFactory(ViewModelUtil.createFor(registerViewModel))
-        `when`(registerViewModel.findUser()).thenReturn(user)
-        `when`(registerViewModel.onRegistrationError).thenReturn(registrationState)
+        `when`(registerViewModel.onRegistration).thenReturn(registrationState)
     }
 
     @Test
     fun givenRegisteredUser_WhenRegistering_ThenError() {
 
         doAnswer {
-            registrationState.postValue(RegistrationError("Invalid account data"))
+            registrationState.postValue(
+                RegistrationError(
+                    "Invalid account data"
+                )
+            )
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
 

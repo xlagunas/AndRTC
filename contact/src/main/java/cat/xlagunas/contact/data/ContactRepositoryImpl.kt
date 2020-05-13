@@ -3,14 +3,14 @@ package cat.xlagunas.contact.data
 import android.annotation.SuppressLint
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
-import cat.xlagunas.core.domain.entity.Friend
-import cat.xlagunas.core.domain.schedulers.RxSchedulers
+import cat.xlagunas.contact.domain.Friend
+import cat.xlagunas.core.scheduler.RxSchedulers
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class ContactRepositoryImpl
 @Inject constructor(
@@ -31,18 +31,13 @@ class ContactRepositoryImpl
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
 
-    @SuppressLint("CheckResult")
     override fun getContacts(): Flowable<List<Friend>> {
-        cacheNeedsRefresh()
+        return cacheNeedsRefresh()
             .flatMapCompletable {
                 remoteContactDataSource.getContactsAsSingle()
                     .flatMapCompletable(this::updateContacts)
             }
-            .observeOn(schedulers.mainThread)
-            .subscribeOn(schedulers.io)
-            .subscribe({}, Timber::e)
-
-        return localContactDataSource.getContacts()
+            .andThen(localContactDataSource.getContacts())
             .observeOn(schedulers.mainThread)
             .subscribeOn(schedulers.io)
     }
