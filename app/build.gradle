@@ -98,6 +98,8 @@ dependencies {
     implementation project(':user')
     implementation project(':core')
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+
     kapt 'com.google.dagger:dagger-compiler:2.21'
     implementation 'com.google.dagger:dagger:2.21'
 
