@@ -16,7 +16,8 @@ import cat.xlagunas.user.databinding.FragmentLoginBinding
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentLoginBinding
+        get() = _binding!!
 
     lateinit var loginViewModel: LoginViewModel
 
@@ -58,5 +59,10 @@ class LoginFragment : Fragment() {
                 binding.passwordTextInput.error = "Password can't be empty"
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
