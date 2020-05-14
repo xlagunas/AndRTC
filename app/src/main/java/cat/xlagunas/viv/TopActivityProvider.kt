@@ -11,7 +11,7 @@ class TopActivityProvider : Application.ActivityLifecycleCallbacks {
         private set
 
     override fun onActivityResumed(activity: Activity) {
-        topActivity = activity as AppCompatActivity
+        if (activity is AppCompatActivity) topActivity = activity
     }
 
     override fun onActivityPaused(activity: Activity) {
