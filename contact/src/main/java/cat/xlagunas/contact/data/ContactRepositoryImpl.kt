@@ -1,6 +1,5 @@
 package cat.xlagunas.contact.data
 
-import android.annotation.SuppressLint
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.ContactRepository
 import cat.xlagunas.contact.domain.Friend
@@ -10,7 +9,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
-import timber.log.Timber
 
 class ContactRepositoryImpl
 @Inject constructor(
