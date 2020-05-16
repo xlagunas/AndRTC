@@ -20,6 +20,6 @@ jobs:
     - name: Decode google-services.json
       env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-          run: echo $GOOGLE_SERVICES > app/google-services.json
+      run: echo $GOOGLE_SERVICES > app/google-services.json
     - name: Build with Gradle
       run: ./gradlew build
