@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ kotlin ]
+    branches: [ kotlin, feature_github_actions ]
   pull_request:
-    branches: [ kotlin ]
+    branches: [ kotlin, feature_github_actions ]
 
 jobs:
   build:
