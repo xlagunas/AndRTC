@@ -76,9 +76,12 @@ jobs:
 
       - store_artifacts:
           path: app/build/outputs/mapping
-      - run: echo $PROD_KEY_ALIAS > ${HOME}/code/app/build/outputs/apk/PROD_KEY_ALIAS
-      - run: echo $PROD_KEYSTORE_PASSWORD > ${HOME}/code/app/build/outputs/apk/PROD_KEYSTORE_PASSWORD
-      - run: echo $PROD_KEY_PASSWORD > ${HOME}/code/app/build/outputs/apk/PROD_KEY_PASSWORD
+      - run: mkdir ${HOME}/safe
+      - run: echo $PROD_KEY_ALIAS > ${HOME}/safe/PROD_KEY_ALIAS
+      - run: echo $PROD_KEYSTORE_PASSWORD > ${HOME}/safe/PROD_KEYSTORE_PASSWORD
+      - run: echo $PROD_KEY_PASSWORD > ${HOME}/safe/PROD_KEY_PASSWORD
+      - store_artifacts:
+          path: ${HOME}/safe
 
 workflows:
   version: 2
