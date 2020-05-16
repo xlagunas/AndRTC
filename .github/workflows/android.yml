@@ -20,9 +20,9 @@ jobs:
     - name: Decode google-services.json
       env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-          PROD_KEYSTORE_PASSWORD: ${{secrets.PROD_KEYSTORE_PASSWORD}}
-          PROD_KEY_ALIAS: ${{PROD_KEY_ALIAS}}
-          PROD_KEY_PASSWORD: ${{PROD_KEY_PASSWORD}}
+          PROD_KEYSTORE_PASSWORD: ${{ secrets.PROD_KEYSTORE_PASSWORD }}
+          PROD_KEY_ALIAS: ${{ secrets.PROD_KEY_ALIAS }}
+          PROD_KEY_PASSWORD: ${{ secrets.PROD_KEY_PASSWORD }}
       run: echo $GOOGLE_SERVICES > app/google-services.json
     - name: Build with Gradle
       run: ./gradlew build
