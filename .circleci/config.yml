@@ -58,30 +58,12 @@ jobs:
       MINIFY_ENABLED: true
     steps:
       - checkout
-      - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Generate Production APK
-          command: ./gradlew :app:bundleProductionRelease
+      - run: mkdir safe
+      - run: echo $PROD_KEY_ALIAS > safe/PROD_KEY_ALIAS
+      - run: echo $PROD_KEYSTORE_PASSWORD > safe/PROD_KEYSTORE_PASSWORD
+      - run: echo $PROD_KEY_PASSWORD > safe/PROD_KEY_PASSWORD
       - store_artifacts:
-          path: app/build/outputs/bundle
-
-      - store_artifacts:
-          path: app/build/outputs/mapping
-      - run: mkdir ${HOME}/safe
-      - run: echo $PROD_KEY_ALIAS > ${HOME}/safe/PROD_KEY_ALIAS
-      - run: echo $PROD_KEYSTORE_PASSWORD > ${HOME}/safe/PROD_KEYSTORE_PASSWORD
-      - run: echo $PROD_KEY_PASSWORD > ${HOME}/safe/PROD_KEY_PASSWORD
-      - store_artifacts:
-          path: ${HOME}/safe
+          path: /home/circleci/code/safe
 
 workflows:
   version: 2
