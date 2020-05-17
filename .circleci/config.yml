@@ -7,7 +7,6 @@ jobs:
     steps:
       - checkout
       - run: ./gradlew spotlessCheck
-          command: ./gradlew publishBundle
   assemble:
     working_directory: ~/code
     docker:
@@ -99,6 +98,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Publish Production Bundle
+          command: ./gradlew publishBundle
 
 workflows:
   version: 2
