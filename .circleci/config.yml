@@ -118,7 +118,11 @@ workflows:
           requires:
             - junit_tests
             - ui_tests
-          type: approval
+          filters:
+            tags:
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+              branches:
+                ignore: /.*/
 
   nightly_build:
     triggers:
@@ -139,12 +143,3 @@ workflows:
       - ui_tests:
           requires:
             - assemble
-
-  build_from_tag:
-    jobs:
-      - deploy_bundle:
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-            branches:
-              ignore: /.*/
