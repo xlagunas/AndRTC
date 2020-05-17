@@ -102,36 +102,36 @@ jobs:
 
 workflows:
   version: 2
-  assemble-and-test:
+  assemble-test-and-deploy:
     jobs:
-      - checkstyle
+      - checkstyle:
+          filters:
+            tags:
+              only: /.*/
       - assemble:
+          filters:
+            tags:
+              only: /.*/
           requires:
             - checkstyle
       - junit_tests:
+          filters:
+            tags:
+              only: /.*/
           requires:
             - assemble
       - ui_tests:
-          requires:
-            - assemble
-  deploy_from_tag:
-    jobs:
-      - checkstyle
-      - assemble:
-          requires:
-            - checkstyle
-      - junit_tests:
-          requires:
-            - assemble
-      - ui_tests:
+          filters:
+            tags:
+              only: /.*/
           requires:
             - assemble
       - deploy_bundle:
           requires:
-            - ui_tests
             - junit_tests
-    filters:
-      tags:
-        only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-      branches:
-        ignore: /.*/
+            - ui_tests
+          filters:
+            tags:
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+              branches:
+                ignore: /.*/
