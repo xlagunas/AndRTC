@@ -62,6 +62,7 @@ jobs:
       - run: echo $PROD_KEY_ALIAS > safe/PROD_KEY_ALIAS
       - run: echo $PROD_KEYSTORE_PASSWORD > safe/PROD_KEYSTORE_PASSWORD
       - run: echo $PROD_KEY_PASSWORD > safe/PROD_KEY_PASSWORD
+      - run: echo $GOOGLE_SERVICES_JSON_KEY > safe/GOOGLE_SERVICES_JSON_KEY
       - store_artifacts:
           path: /home/circleci/code/safe
 
