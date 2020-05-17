@@ -109,23 +109,23 @@ workflows:
             tags:
               only: /.*/
       - assemble:
-          filters:
-            tags:
-              only: /.*/
           requires:
             - checkstyle
+          filters:
+            tags:
+              only: /.*/
       - junit_tests:
+          requires:
+            - assemble
           filters:
             tags:
               only: /.*/
-          requires:
-            - assemble
       - ui_tests:
+          requires:
+            - assemble
           filters:
             tags:
               only: /.*/
-          requires:
-            - assemble
       - deploy_bundle:
           requires:
             - junit_tests
