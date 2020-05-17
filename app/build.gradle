@@ -1,9 +1,14 @@
+plugins{
+    id "com.github.triplet.play" version "2.7.5"
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-allopen'
+
 
 allOpen {
     annotation 'cat.xlagunas.core.OpenClass'
@@ -88,6 +93,20 @@ android {
     }
 
     dynamicFeatures = [":conference"]
+
+
+    playConfigs{
+        developmentRelease{
+            enabled = false
+        }
+    }
+}
+
+
+play{
+    serviceAccountCredentials = file("publish_creds.json")
+    track = "alpha"
+    defaultToAppBundles = true
 }
 
 dependencies {
