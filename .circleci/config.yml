@@ -107,25 +107,25 @@ workflows:
       - checkstyle:
           filters:
             tags:
-              only: /.*/
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
       - assemble:
           requires:
             - checkstyle
           filters:
             tags:
-              only: /.*/
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
       - junit_tests:
           requires:
             - assemble
           filters:
             tags:
-              only: /.*/
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
       - ui_tests:
           requires:
             - assemble
           filters:
             tags:
-              only: /.*/
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
       - deploy_bundle:
           requires:
             - junit_tests
