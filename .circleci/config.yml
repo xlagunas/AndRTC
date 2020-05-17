@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  junit_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -27,7 +27,7 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
-  android_test:
+  ui_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -50,7 +50,7 @@ jobs:
           command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
-  publish_apk:
+  deploy_bundle:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -72,14 +72,55 @@ jobs:
       - run:
           name: Publish Production Bundle
           command: ./gradlew publishBundle
+  checkstyle:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    steps:
+      - checkout
+      - run: ./gradlew spotlessCheck
+  assemble:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    environment:
+      JVM_OPTS: -Xmx3200m
+      MINIFY_ENABLED: true
+    steps:
+      - checkout
+      - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run: ./gradlew assembleDevelopmentDebug
 
 workflows:
   version: 2
-  run_tests:
+  assemble-test-and-deploy:
     jobs:
-      - build
+      - checkstyle
+      - assemble:
+          requires:
+            - checkstyle
+      - junit_tests:
+          requires:
+            - assemble
+      - ui_tests:
+          requires:
+            - assemble
+      - deploy_bundle:
+          requires:
+            - junit_tests
+            - ui_tests
+          type: approval
 
-  compile_and_test:
+  nightly_build:
     triggers:
       - schedule:
           cron: "0 0 * * *"
@@ -88,14 +129,20 @@ workflows:
               only:
                 - kotlin
     jobs:
-      - build
-      - android_test:
+      - checkstyle
+      - assemble:
           requires:
-            - build
+            - checkstyle
+      - junit_tests:
+          requires:
+            - assemble
+      - ui_tests:
+          requires:
+            - assemble
 
-  generate_prod_apk:
+  build_from_tag:
     jobs:
-      - publish_apk:
+      - deploy_bundle:
           filters:
             tags:
               only:
