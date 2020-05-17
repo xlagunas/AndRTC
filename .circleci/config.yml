@@ -114,20 +114,19 @@ workflows:
       - ui_tests:
           requires:
             - assemble
-
   deploy_from_tag:
     jobs:
       - checkstyle
-      - assemble:
-      requires:
-        - checkstyle
-        - junit_tests:
-          requires:
-            - assemble
-        - ui_tests:
-          requires:
-            - assemble
+      - junit_tests:
+        requires:
+          - assemble
+      - ui_tests:
+        requires:
+          - assemble
       - deploy_bundle:
+          requires:
+            - ui_tests
+            - junit_tests
           filters:
             tags:
               only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
