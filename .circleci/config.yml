@@ -50,7 +50,7 @@ jobs:
           command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
-  release_apk:
+  publish_apk:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -59,6 +59,7 @@ jobs:
     steps:
       - checkout
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - run: echo $PLAY_STORE_PUBLISHING_ACCOUNT > ${HOME}/code/app/publish_credentials.json
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
@@ -69,13 +70,8 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Generate Production APK
-          command: ./gradlew :app:bundleProductionRelease
-      - store_artifacts:
-          path: app/build/outputs/bundle
-
-      - store_artifacts:
-          path: app/build/outputs/mapping
+          name: Publish Production Bundle
+          command: ./gradlew publishBundle
 
 workflows:
   version: 2
@@ -99,7 +95,7 @@ workflows:
 
   generate_prod_apk:
     jobs:
-      - release_apk:
+      - publish_apk:
           filters:
             tags:
               only:

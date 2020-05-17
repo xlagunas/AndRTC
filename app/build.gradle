@@ -104,7 +104,7 @@ android {
 
 
 play{
-    serviceAccountCredentials = file("publish_creds.json")
+    serviceAccountCredentials = file("publish_credentials.json")
     track = "alpha"
     defaultToAppBundles = true
 }
