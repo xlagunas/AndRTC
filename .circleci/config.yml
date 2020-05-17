@@ -102,7 +102,7 @@ jobs:
 
 workflows:
   version: 2
-  assemble-test-and-deploy:
+  assemble-and-test:
     jobs:
       - checkstyle
       - assemble:
@@ -112,34 +112,24 @@ workflows:
           requires:
             - assemble
       - ui_tests:
+          requires:
+            - assemble
+
+  deploy_from_tag:
+    jobs:
+      - checkstyle
+      - assemble:
+      requires:
+        - checkstyle
+        - junit_tests:
+          requires:
+            - assemble
+        - ui_tests:
           requires:
             - assemble
       - deploy_bundle:
-          requires:
-            - junit_tests
-            - ui_tests
           filters:
             tags:
               only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-              branches:
-                ignore: /.*/
-
-  nightly_build:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
             branches:
-              only:
-                - kotlin
-    jobs:
-      - checkstyle
-      - assemble:
-          requires:
-            - checkstyle
-      - junit_tests:
-          requires:
-            - assemble
-      - ui_tests:
-          requires:
-            - assemble
+              ignore: /.*/
