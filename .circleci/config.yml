@@ -1,5 +1,33 @@
 version: 2
 jobs:
+  checkstyle:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    steps:
+      - checkout
+      - run: ./gradlew spotlessCheck
+          command: ./gradlew publishBundle
+  assemble:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    environment:
+      JVM_OPTS: -Xmx3200m
+      MINIFY_ENABLED: true
+    steps:
+      - checkout
+      - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run: ./gradlew assembleDevelopmentDebug
   junit_tests:
     working_directory: ~/code
     docker:
@@ -71,34 +99,6 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Publish Production Bundle
-          command: ./gradlew publishBundle
-  checkstyle:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    steps:
-      - checkout
-      - run: ./gradlew spotlessCheck
-  assemble:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-      MINIFY_ENABLED: true
-    steps:
-      - checkout
-      - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run: ./gradlew assembleDevelopmentDebug
 
 workflows:
   version: 2
@@ -143,7 +143,6 @@ workflows:
   build_from_tag:
     jobs:
       - deploy_bundle:
-          type: approval
           filters:
             tags:
               only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
