@@ -118,14 +118,14 @@ workflows:
     jobs:
       - checkstyle
       - assemble:
-         requires:
-           - checkstyle
+          requires:
+            - checkstyle
       - junit_tests:
-        requires:
-          - assemble
+          requires:
+            - assemble
       - ui_tests:
-        requires:
-          - assemble
+          requires:
+            - assemble
       - deploy_bundle:
           requires:
             - ui_tests
