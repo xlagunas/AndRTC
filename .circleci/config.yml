@@ -133,5 +133,5 @@ workflows:
           filters:
             tags:
               only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-              branches:
-                ignore: /.*/
+            branches:
+              ignore: /.*/
