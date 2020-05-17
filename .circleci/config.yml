@@ -115,6 +115,11 @@ workflows:
           requires:
             - assemble
   deploy_from_tag:
+    filters:
+      tags:
+        only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+      branches:
+        ignore: /.*/
     jobs:
       - checkstyle
       - assemble:
@@ -130,8 +135,3 @@ workflows:
           requires:
             - ui_tests
             - junit_tests
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-            branches:
-              ignore: /.*/
