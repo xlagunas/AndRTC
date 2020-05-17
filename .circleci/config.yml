@@ -143,8 +143,8 @@ workflows:
   build_from_tag:
     jobs:
       - deploy_bundle:
+          type: approval
           filters:
             tags:
-              only:
-                /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
 
