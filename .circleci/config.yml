@@ -117,6 +117,9 @@ workflows:
   deploy_from_tag:
     jobs:
       - checkstyle
+      - assemble:
+         requires:
+           - checkstyle
       - junit_tests:
         requires:
           - assemble
