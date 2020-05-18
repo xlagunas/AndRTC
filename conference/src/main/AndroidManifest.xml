@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="cat.xlagunas.conference">
+        xmlns:dist="http://schemas.android.com/apk/distribution"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="cat.xlagunas.conference">
 
     <dist:module
-        dist:instant="false"
-        dist:onDemand="false"
-        dist:title="@string/title_conference">
+            dist:instant="false"
+            dist:onDemand="false"
+            dist:title="@string/title_conference">
         <dist:fusing dist:include="true" />
     </dist:module>
 
@@ -17,32 +17,32 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission
-        android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
-        tools:ignore="ProtectedPermissions" />
+            android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
+            tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="cat.xlagunas.viv.dagger.VivApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="${appName}"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+            android:name="cat.xlagunas.viv.dagger.VivApplication"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="${appName}"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true">
         <activity
-            android:name="cat.xlagunas.conference.ui.ConferenceActivity"
-            android:label="@string/title_activity_main">
-            <intent-filter>
+                android:name="cat.xlagunas.conference.ui.ConferenceActivity"
+                android:label="@string/title_activity_main">
+            <tools:validation testUrl="https://viv.cat/conference" />
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
-                    android:host="viv.cat"
-                    android:path="/conference"
-                    android:pathPattern="/.*" />
+                        android:scheme="https"
+                        android:host="viv.cat"
+                        android:path="/conference" />
             </intent-filter>
         </activity>
     </application>
