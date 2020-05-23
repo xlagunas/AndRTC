@@ -17,7 +17,7 @@
 
         <include
             layout="@layout/content_register"
-            app:layout_anchor="@id/toolbar"
+            app:layout_anchor="@+id/toolbar"
             app:layout_anchorGravity="bottom"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:user="@{user}" />
