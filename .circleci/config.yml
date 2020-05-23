@@ -94,6 +94,9 @@ jobs:
           environment:
             GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
           command: ./gradlew assembleProductionRelease appDistributionUploadProductionRelease
+      - store_artifacts:
+          path: ${HOME}/
+
   deploy_bundle:
     working_directory: ~/code
     docker:
