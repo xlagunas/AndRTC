@@ -77,6 +77,22 @@ jobs:
           command: bash .circleci/firebase_script.sh
       - store_artifacts:
           path: app/build/outputs/apk
+  distribute_release:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28
+    environment:
+      MINIFY_ENABLED: true
+    steps:
+      - checkout
+      - run: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+      - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run: export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud-service-key.json
+      - run:
+          name: Distribute app for test
+          command: ./gradlew assembleProductionRelease appDistributionUploadProductionRelease
   deploy_bundle:
     working_directory: ~/code
     docker:
@@ -102,36 +118,39 @@ jobs:
 
 workflows:
   version: 2
-  assemble-test-and-deploy:
+  distribute-app:
     jobs:
-      - checkstyle:
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-      - assemble:
-          requires:
-            - checkstyle
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-      - junit_tests:
-          requires:
-            - assemble
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-      - ui_tests:
-          requires:
-            - assemble
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-      - deploy_bundle:
-          requires:
-            - junit_tests
-            - ui_tests
-          filters:
-            tags:
-              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
-            branches:
-              ignore: /.*/
+      - distribute_release
+#  assemble-test-and-deploy:
+#    jobs:
+#      - checkstyle:
+#          filters:
+#            tags:
+#              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+#      - assemble:
+#          requires:
+#            - checkstyle
+#          filters:
+#            tags:
+#              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+#      - junit_tests:
+#          requires:
+#            - assemble
+#          filters:
+#            tags:
+#              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+#      - ui_tests:
+#          requires:
+#            - assemble
+#          filters:
+#            tags:
+#              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+#      - deploy_bundle:
+#          requires:
+#            - junit_tests
+#            - ui_tests
+#          filters:
+#            tags:
+#              only: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(alpha|beta))?/
+#            branches:
+#              ignore: /.*/

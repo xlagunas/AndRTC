@@ -7,6 +7,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.appdistribution'
+
 apply plugin: 'kotlin-allopen'
 
 
@@ -33,11 +35,18 @@ android {
             keyPassword 'android'
         }
 
+//        release {
+//            storeFile file('../buildsystem/production.keystore')
+//            storePassword System.getenv("PROD_KEYSTORE_PASSWORD")
+//            keyAlias System.getenv("PROD_KEY_ALIAS")
+//            keyPassword System.getenv("PROD_KEY_PASSWORD")
+//        }
+
         release {
-            storeFile file('../buildsystem/production.keystore')
-            storePassword System.getenv("PROD_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("PROD_KEY_ALIAS")
-            keyPassword System.getenv("PROD_KEY_PASSWORD")
+            storeFile file('../buildsystem/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
         }
     }
 
@@ -63,10 +72,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = ["appName": '@string/app_name']
+            firebaseAppDistribution {
+                groups="viv-testers"
+            }
+
         }
 
         debug {
-            minifyEnabled isMinifyEnabledForBuild()
+//            minifyEnabled isMinifyEnabledForBuild()
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.dev'
             versionNameSuffix '.dev'
