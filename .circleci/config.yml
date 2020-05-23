@@ -85,17 +85,18 @@ jobs:
       MINIFY_ENABLED: true
     steps:
       - checkout
-      - run: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+      - run: mkdir ${HOME}/firebase
+      - run: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/firebase/gcloud-service-key.json
       - run: echo $GOOGLE_SERVICES_JSON_KEY | base64 --decode --ignore-garbage > ${HOME}/code/app/google-services.json
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Distribute app for test
           environment:
-            GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
+            GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/firebase/gcloud-service-key.json
           command: ./gradlew assembleProductionRelease appDistributionUploadProductionRelease
       - store_artifacts:
-          path: ${HOME}/
+          path: ${HOME}/firebase
 
   deploy_bundle:
     working_directory: ~/code
