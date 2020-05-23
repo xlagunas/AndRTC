@@ -93,7 +93,7 @@ jobs:
       - run:
           name: Distribute app for test
           environment:
-            GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/firebase/gcloud-service-key.json
+            GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/firebase/gcloud-service-key.json
           command: ./gradlew assembleProductionRelease appDistributionUploadProductionRelease
 
   deploy_bundle:
