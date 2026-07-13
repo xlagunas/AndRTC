@@ -1,6 +1,8 @@
-plugins{
-    id "com.github.triplet.play" version "2.7.5"
-}
+// TODO(probe): triplet-play 2.7.5 is incompatible with AGP 8; disabled for build probe.
+// Re-enable with a 3.x bump + DSL migration when restoring Play publishing.
+// plugins{
+//     id "com.github.triplet.play" version "2.7.5"
+// }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -15,7 +17,8 @@ allOpen {
 }
 
 android {
-    compileSdkVersion 28
+    namespace 'cat.xlagunas.viv'
+    compileSdk 34
     defaultConfig {
         applicationId "cat.xlagunas.viv"
         minSdkVersion 21
@@ -55,6 +58,7 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -63,6 +67,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = ["appName": '@string/app_name']
+            // Mapping-file upload is a credentialed CI/release concern; disable so local/dev
+            // configuration doesn't require the Crashlytics upload task to resolve.
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
         }
 
         debug {
@@ -93,47 +102,44 @@ android {
     }
 
     dynamicFeatures = [":conference"]
-
-
-    playConfigs{
-        developmentRelease{
-            enabled = false
-        }
-    }
 }
 
 
-play{
-    serviceAccountCredentials = file("publish_credentials.json")
-    track = "alpha"
-    defaultToAppBundles = true
-}
+// TODO(probe): Play publishing config disabled with the triplet-play plugin (see top of file).
+// play{
+//     serviceAccountCredentials = file("publish_credentials.json")
+//     track = "alpha"
+//     defaultToAppBundles = true
+// }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':push')
-    implementation project(':call')
-    implementation project(':contact')
-    implementation project(':user')
-    implementation project(':core')
+    // Exposed as api so the :conference dynamic feature (which depends on :app's
+    // ApplicationComponent) can resolve these modules' Dagger @Modules at kapt time.
+    // AGP 8 enforces stricter classpath isolation than AGP 4, which previously leaked these.
+    api project(':push')
+    api project(':call')
+    api project(':contact')
+    api project(':user')
+    api project(':core')
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
 
-    kapt 'com.google.dagger:dagger-compiler:2.21'
-    implementation 'com.google.dagger:dagger:2.21'
+    kapt 'com.google.dagger:dagger-compiler:2.51.1'
+    implementation 'com.google.dagger:dagger:2.51.1'
 
     implementation 'com.google.android.material:material:1.1.0'
 
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
-    implementation 'androidx.room:room-runtime:2.1.0-beta01'
+    implementation 'androidx.room:room-runtime:2.6.1'
     implementation "androidx.fragment:fragment-ktx:1.2.4"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'com.google.firebase:firebase-perf:19.0.7'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation 'com.google.firebase:firebase-perf:21.0.1'
+    implementation 'com.google.firebase:firebase-crashlytics:19.0.3'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'

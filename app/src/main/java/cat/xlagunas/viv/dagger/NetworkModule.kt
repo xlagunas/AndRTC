@@ -5,7 +5,7 @@ import cat.xlagunas.core.BuildConfig
 import cat.xlagunas.user.auth.AuthHeaderInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -42,7 +42,7 @@ class NetworkModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .addInterceptor(ChuckInterceptor(application))
+            .addInterceptor(ChuckerInterceptor.Builder(application).build())
             .addInterceptor(authInterceptor)
             .build()
     }

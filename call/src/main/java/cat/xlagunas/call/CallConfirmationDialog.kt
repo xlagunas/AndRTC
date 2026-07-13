@@ -24,7 +24,7 @@ class CallConfirmationDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val viewModel = ViewModelProviders.of(this, factory)[CallViewModel::class.java]
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle("Call confirmation")
             .setMessage("Do you want to call ${arguments?.getString("name")}?")
             .setPositiveButton("Yes") { _, _ ->

@@ -58,6 +58,9 @@ class LoginFragment : Fragment() {
                 binding.usernameInputLayout.error = "Username can't be empty"
                 binding.passwordTextInput.error = "Password can't be empty"
             }
+            else -> {
+                // no-op for null / other states
+            }
         }
     }
 

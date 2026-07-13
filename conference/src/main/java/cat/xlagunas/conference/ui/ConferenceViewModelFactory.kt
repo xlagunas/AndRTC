@@ -10,7 +10,7 @@ internal class ConferenceViewModelFactory @Inject constructor() : ViewModelProvi
     lateinit var conferenceViewModel: ConferenceViewModel
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(ConferenceViewModel::class.java)) {
             conferenceViewModel as T
         } else {

@@ -16,9 +16,9 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val listView = ListView(this.context)
+        val listView = ListView(requireContext())
         listView.adapter = ArrayAdapter<String>(
-            this.context,
+            requireContext(),
             android.R.layout.simple_list_item_1,
             arrayOf("Camera and audio", "Camera only", "Audio only")
         )

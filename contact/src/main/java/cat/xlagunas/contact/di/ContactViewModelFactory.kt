@@ -11,7 +11,7 @@ internal class ContactViewModelFactory @Inject constructor() : ViewModelProvider
     lateinit var contactViewModel: ContactViewModel
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(ContactViewModel::class.java)) {
             contactViewModel as T
         } else {
