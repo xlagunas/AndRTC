@@ -28,7 +28,7 @@ android {
 
     productFlavors {
         production {
-            buildConfigField "String", "ENDPOINT", '"https://api.viv.cat"'
+            buildConfigField "String", "ENDPOINT", '"https://api.viv.xlagunas.dev"'
         }
 
         development {
