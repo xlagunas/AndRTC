@@ -14,7 +14,8 @@ import com.google.gson.GsonBuilder
 import io.socket.emitter.Emitter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +40,7 @@ class SocketIOControllerTest {
     }
 
     @Test
-    fun getReceivedMessageChannel() = runBlockingTest {
+    fun getReceivedMessageChannel() = runTest(UnconfinedTestDispatcher()) {
         val expectedOfferMessage = fakeOfferSessionMessage()
         val expectedAnswerMessage = fakeAnswerSessionMessage()
         val expectedIceCandidateMessage = fakeIceCandidateMessage()
@@ -62,7 +63,7 @@ class SocketIOControllerTest {
     }
 
     @Test
-    fun getParticipantsChannel() = runBlockingTest {
+    fun getParticipantsChannel() = runTest(UnconfinedTestDispatcher()) {
         webSocketController.joinConference("1234")
         val values = mutableListOf<Session>()
 
