@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.core.di.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class CallConfirmationDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val viewModel = ViewModelProviders.of(this, factory)[CallViewModel::class.java]
+        val viewModel = ViewModelProvider(this, factory)[CallViewModel::class.java]
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle("Call confirmation")
             .setMessage("Do you want to call ${arguments?.getString("name")}?")

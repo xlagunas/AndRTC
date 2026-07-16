@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.webrtc.MediaConstraints
 
@@ -22,7 +22,7 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
             android.R.layout.simple_list_item_1,
             arrayOf("Camera and audio", "Camera only", "Audio only")
         )
-        val viewModel = ViewModelProviders.of(requireActivity()).get(ConferenceViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(ConferenceViewModel::class.java)
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val selection = when (position) {

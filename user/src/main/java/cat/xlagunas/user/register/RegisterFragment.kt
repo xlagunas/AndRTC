@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.core.OpenForTesting
 import cat.xlagunas.core.common.displayMessage
 import cat.xlagunas.core.common.viewModelProviderFactory
@@ -28,7 +28,7 @@ class RegisterFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        registerViewModel = ViewModelProviders.of(this, viewModelProviderFactory())
+        registerViewModel = ViewModelProvider(this, viewModelProviderFactory())
             .get(RegisterViewModel::class.java)
         registerViewModel.onRegistration.observe(
             viewLifecycleOwner,
