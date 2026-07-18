@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-allopen'
 
 allOpen {
@@ -61,18 +61,16 @@ android {
     }
 }
 
-kapt {
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas".toString())
-    }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas".toString())
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    kapt 'com.google.dagger:dagger-compiler:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.51.1'
     implementation 'com.google.dagger:dagger:2.51.1'
 
-    kapt 'androidx.room:room-compiler:2.6.1'
+    ksp 'androidx.room:room-compiler:2.6.1'
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.room:room-rxjava2:2.6.1'
 
