@@ -22,7 +22,7 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
             android.R.layout.simple_list_item_1,
             arrayOf("Camera and audio", "Camera only", "Audio only")
         )
-        val viewModel = ViewModelProvider(this).get(ConferenceViewModel::class.java)
+        val viewModel = ViewModelProvider(requireActivity()).get(ConferenceViewModel::class.java)
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val selection = when (position) {
