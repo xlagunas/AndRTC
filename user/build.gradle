@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-allopen'
 
@@ -28,7 +27,7 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
+        dataBinding = false
         viewBinding = true
     }
 
