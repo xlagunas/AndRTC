@@ -73,7 +73,7 @@ dependencies {
     compileOnly 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     //TODO once this is propagated implement right version
-    implementation('io.socket:socket.io-client:1.0.0') {
+    implementation('io.socket:socket.io-client:2.1.2') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
