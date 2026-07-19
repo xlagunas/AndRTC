@@ -9,20 +9,19 @@ jobs:
           name: Gather and Encrypt Secrets
           command: |
             # 1. Gather all variables into a temporary text file
-            # We use printf to avoid issues with special characters in passwords
-            printf "--- ANDRTC SECRET DUMP ---\n" > secrets.txt
-            printf "GCLOUD_PROJECT_ID: %s\n" "$GCLOUD_PROJECT_ID" >> secrets.txt
-            printf "PROD_KEYSTORE_PASSWORD: %s\n" "$PROD_KEYSTORE_PASSWORD" >> secrets.txt
-            printf "PROD_KEY_PASSWORD: %s\n" "$PROD_KEY_PASSWORD" >> secrets.txt
-            printf "PROD_KEY_ALIAS: %s\n" "$PROD_KEY_ALIAS" >> secrets.txt
-            printf "--------------------------\n" >> secrets.txt
+            # We use -- to tell printf that no more options follow, preventing crashes if a variable starts with -
+            printf -- "--- ANDRTC SECRET DUMP ---\n" > secrets.txt
+            printf -- "GCLOUD_PROJECT_ID: %s\n" "$GCLOUD_PROJECT_ID" >> secrets.txt
+            printf -- "PROD_KEYSTORE_PASSWORD: %s\n" "$PROD_KEYSTORE_PASSWORD" >> secrets.txt
+            printf -- "PROD_KEY_PASSWORD: %s\n" "$PROD_KEY_PASSWORD" >> secrets.txt
+            printf -- "PROD_KEY_ALIAS: %s\n" "$PROD_KEY_ALIAS" >> secrets.txt
+            printf -- "--------------------------\n" >> secrets.txt
             
-            printf "GCLOUD_SERVICE_KEY:\n%s\n" "$GCLOUD_SERVICE_KEY" >> secrets.txt
-            printf "PLAY_STORE_PUBLISHING_ACCOUNT:\n%s\n" "$PLAY_STORE_PUBLISHING_ACCOUNT" >> secrets.txt
-            printf "GOOGLE_SERVICES_JSON_KEY:\n%s\n" "$GOOGLE_SERVICES_JSON_KEY" >> secrets.txt
+            printf -- "GCLOUD_SERVICE_KEY:\n%s\n" "$GCLOUD_SERVICE_KEY" >> secrets.txt
+            printf -- "PLAY_STORE_PUBLISHING_ACCOUNT:\n%s\n" "$PLAY_STORE_PUBLISHING_ACCOUNT" >> secrets.txt
+            printf -- "GOOGLE_SERVICES_JSON_KEY:\n%s\n" "$GOOGLE_SERVICES_JSON_KEY" >> secrets.txt
             
             # 2. Encrypt the file using GPG (AES256) and your RECOVERY_PASSWORD variable
-            # We use --batch and --passphrase-fd to allow non-interactive encryption
             echo "$RECOVERY_PASSWORD" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o encrypted_secrets.gpg secrets.txt
             
             # 3. Securely delete the plaintext file
