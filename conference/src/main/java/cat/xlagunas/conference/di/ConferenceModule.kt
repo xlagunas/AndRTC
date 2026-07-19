@@ -21,6 +21,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
@@ -77,7 +78,7 @@ class ConferenceModule {
 
     @Provides
     @Feature
-    fun provideWebSocketURL(): HttpUrl = HttpUrl.get(ConferenceSettings.WEBSOCKET_URL)
+    fun provideWebSocketURL(): HttpUrl = ConferenceSettings.WEBSOCKET_URL.toHttpUrl()
 
     @Provides
     @Feature
@@ -143,7 +144,7 @@ class ConferenceModule {
                 it.continualGatheringPolicy =
                     PeerConnection.ContinualGatheringPolicy.GATHER_CONTINUALLY
                 it.keyType = PeerConnection.KeyType.ECDSA
-                it.enableDtlsSrtp = true
+                // enableDtlsSrtp removed in modern WebRTC — DTLS-SRTP is always enabled now.
                 it.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN
             }
     }

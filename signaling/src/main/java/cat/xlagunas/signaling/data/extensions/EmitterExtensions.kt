@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.callbackFlow
 fun Emitter.on(eventType: String): Flow<String> = callbackFlow<String> {
     val listener = Emitter.Listener { message ->
         val stringMessage = message.map { it as String }
-        offer(stringMessage.first())
+        trySend(stringMessage.first())
     }
 
     on(eventType, listener)

@@ -5,11 +5,15 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "friend")
-@ForeignKey(
-    entity = UserEntity::class,
-    parentColumns = ["id"],
-    childColumns = ["user_id"]
+@Entity(
+    tableName = "friend",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"]
+        )
+    ]
 )
 data class FriendEntity(
     @PrimaryKey

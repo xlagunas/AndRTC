@@ -1,10 +1,12 @@
-plugins{
-    id "com.github.triplet.play" version "2.7.5"
-}
+// TODO(probe): triplet-play 2.7.5 is incompatible with AGP 8; disabled for build probe.
+// Re-enable with a 3.x bump + DSL migration when restoring Play publishing.
+// plugins{
+//     id "com.github.triplet.play" version "2.7.5"
+// }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-allopen'
@@ -15,7 +17,8 @@ allOpen {
 }
 
 android {
-    compileSdkVersion 28
+    namespace 'cat.xlagunas.viv'
+    compileSdk 34
     defaultConfig {
         applicationId "cat.xlagunas.viv"
         minSdkVersion 21
@@ -53,8 +56,9 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
+        dataBinding = false
         viewBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -63,6 +67,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = ["appName": '@string/app_name']
+            // Mapping-file upload is a credentialed CI/release concern; disable so local/dev
+            // configuration doesn't require the Crashlytics upload task to resolve.
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
         }
 
         debug {
@@ -84,81 +93,77 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     dynamicFeatures = [":conference"]
-
-
-    playConfigs{
-        developmentRelease{
-            enabled = false
-        }
-    }
 }
 
 
-play{
-    serviceAccountCredentials = file("publish_credentials.json")
-    track = "alpha"
-    defaultToAppBundles = true
-}
+// TODO(probe): Play publishing config disabled with the triplet-play plugin (see top of file).
+// play{
+//     serviceAccountCredentials = file("publish_credentials.json")
+//     track = "alpha"
+//     defaultToAppBundles = true
+// }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':push')
-    implementation project(':call')
-    implementation project(':contact')
-    implementation project(':user')
-    implementation project(':core')
+    // Exposed as api so the :conference dynamic feature (which depends on :app's
+    // ApplicationComponent) can resolve these modules' Dagger @Modules at kapt time.
+    // AGP 8 enforces stricter classpath isolation than AGP 4, which previously leaked these.
+    api project(':push')
+    api project(':call')
+    api project(':contact')
+    api project(':user')
+    api project(':core')
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 
-    kapt 'com.google.dagger:dagger-compiler:2.21'
-    implementation 'com.google.dagger:dagger:2.21'
+    ksp 'com.google.dagger:dagger-compiler:2.51.1'
+    implementation 'com.google.dagger:dagger:2.51.1'
 
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.12.0'
 
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.7'
 
-    implementation 'androidx.room:room-runtime:2.1.0-beta01'
-    implementation "androidx.fragment:fragment-ktx:1.2.4"
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation "androidx.fragment:fragment-ktx:1.8.5"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation 'com.google.firebase:firebase-perf:19.0.7'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+    implementation 'com.google.firebase:firebase-perf:21.0.1'
+    implementation 'com.google.firebase:firebase-crashlytics:19.0.3'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 
     androidTestImplementation project(':test-utils')
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test:rules:1.7.0'
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
-    androidTestImplementation 'androidx.arch.core:core-testing:2.0.1'
-    androidTestImplementation 'org.mockito:mockito-core:2.19.0', { exclude group: 'net.bytebuddy' }
-    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.7.0'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
+    androidTestImplementation 'org.mockito:mockito-core:5.23.0', { exclude group: 'net.bytebuddy' }
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.28.6'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha09'
+    debugImplementation 'androidx.fragment:fragment-testing:1.8.5'
+    debugImplementation 'androidx.fragment:fragment-testing-manifest:1.8.5'
+    debugImplementation 'androidx.test:core:1.7.0'
 }
 
 static def isMinifyEnabledForBuild() {
@@ -173,6 +178,11 @@ project.tasks.whenTaskAdded {
     if (it.name == "testReleaseUnitTest") {
         it.enabled = false
     }
+}
+
+configurations.configureEach {
+    //androidTestDevelopmentDebugRuntimeClasspath still pulls com.google.protobuf:protobuf-lite:3.0.1 transitively through the (now-bumped) espresso-idling-resource:3.7.0, while the main app runtime carries protobuf-javalite:3.21.11 (from firebase-perf). Both land in the merged test APK → the old GeneratedMessageLite shadows the new one → NoSuchMethodError at Firebase-Perf init, same failure mode as before, just via a different transitive path now.
+    exclude group: 'com.google.protobuf', module: 'protobuf-lite'
 }
 
 apply plugin: 'com.google.gms.google-services'

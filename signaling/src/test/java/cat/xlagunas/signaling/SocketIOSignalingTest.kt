@@ -16,7 +16,8 @@ import cat.xlagunas.signaling.domain.Session
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
@@ -37,7 +38,7 @@ class SocketIOSignalingTest {
         SocketIOSignaling(webSocketController)
 
     @Test
-    fun onNewSession() = runBlockingTest {
+    fun onNewSession() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<Session>()
 
         val job = launch {
@@ -52,7 +53,7 @@ class SocketIOSignalingTest {
     }
 
     @Test
-    fun onReceiveOffer() = runBlockingTest {
+    fun onReceiveOffer() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<OfferMessage>()
         val expectedOfferMessage = fakeOfferSessionMessage()
         val expectedAnswerMessage = fakeAnswerSessionMessage()
@@ -71,7 +72,7 @@ class SocketIOSignalingTest {
     }
 
     @Test
-    fun onReceiveAnswer() = runBlockingTest {
+    fun onReceiveAnswer() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<AnswerMessage>()
         val expectedOfferMessage = fakeOfferSessionMessage()
         val expectedAnswerMessage = fakeAnswerSessionMessage()
@@ -90,7 +91,7 @@ class SocketIOSignalingTest {
     }
 
     @Test
-    fun onReceiveIceCandidate() = runBlockingTest {
+    fun onReceiveIceCandidate() = runTest(UnconfinedTestDispatcher()) {
         val values = mutableListOf<IceCandidateMessage>()
         val expectedOfferMessage = fakeOfferSessionMessage()
         val expectedAnswerMessage = fakeAnswerSessionMessage()

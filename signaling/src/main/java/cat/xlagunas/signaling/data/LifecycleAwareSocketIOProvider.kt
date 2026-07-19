@@ -1,21 +1,20 @@
 package cat.xlagunas.signaling.data
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import io.socket.client.IO
 import io.socket.emitter.Emitter
-import javax.inject.Inject
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import javax.inject.Inject
 
 class LifecycleAwareSocketIOProvider @Inject constructor(
     activity: AppCompatActivity,
     okHttpClient: OkHttpClient,
     webSocketUrl: HttpUrl
-) : LifecycleObserver, SocketIOEmitterProvider {
+) : DefaultLifecycleObserver, SocketIOEmitterProvider {
     private val socket = IO.socket(webSocketUrl.toString())
 
     init {
@@ -32,16 +31,14 @@ class LifecycleAwareSocketIOProvider @Inject constructor(
         return socket.id()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun start() {
+    override fun onResume(owner: LifecycleOwner) {
         if (!socket.connected()) {
             socket.connect()
             Timber.d("Connecting Socket.IO instance")
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stop() {
+    override fun onPause(owner: LifecycleOwner) {
         socket.disconnect()
         Timber.d("Disconnecting Socket.IO instance")
     }

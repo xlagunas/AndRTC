@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.conference.R
 import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
@@ -36,7 +36,7 @@ class ConferenceActivity : AppCompatActivity() {
         setContentView(R.layout.activity_conference)
 
         conference =
-            ViewModelProviders.of(this, viewModelFactory).get(ConferenceViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory).get(ConferenceViewModel::class.java)
         MediaSelectorFragment().show(supportFragmentManager, "MediaSelector")
 
         conference.requestedMedia.observe(this, Observer { mediaConstraints ->

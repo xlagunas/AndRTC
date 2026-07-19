@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.core.common.viewModelProviderFactory
 import cat.xlagunas.user.login.LoginFragment
@@ -36,8 +36,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel =
-            ViewModelProviders.of(this, viewModelProviderFactory()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(this, viewModelProviderFactory()).get(MainViewModel::class.java)
 
         binding.content.bottomBar.setOnNavigationItemSelectedListener {
             ifNotSelected(it.itemId) { itemId ->

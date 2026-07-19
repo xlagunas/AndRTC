@@ -16,7 +16,7 @@ import com.google.gson.JsonObject
 import javax.inject.Inject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import timber.log.Timber
 
 class CallMessageProcessor @Inject constructor(
@@ -64,7 +64,7 @@ class CallMessageProcessor @Inject constructor(
     private fun generateRoomIntent(callId: String): Intent {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(HttpUrl.get("https://viv.cat/conference?roomId=$callId").toString())
+            Uri.parse("https://viv.cat/conference?roomId=$callId".toHttpUrl().toString())
         )
         return intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
