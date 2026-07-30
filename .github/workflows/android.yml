@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ kotlin, feature_github_actions ]
+    branches: [ kotlin, add_github_actions ]
   pull_request:
-    branches: [ kotlin, feature_github_actions ]
+    branches: [ kotlin, add_github_actions ]
 
 jobs:
   build:
@@ -20,6 +20,10 @@ jobs:
     - name: Decode google-services.json
       env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-          run: echo $GOOGLE_SERVICES > app/google-services.json
-    - name: Build with Gradle
-      run: ./gradlew build
+      run: echo $GOOGLE_SERVICES > app/google-services.json
+    - name: Run unit tests
+      env:
+          PROD_KEYSTORE_PASSWORD: ${{ secrets.PROD_KEYSTORE_PASSWORD }}
+          PROD_KEY_ALIAS: ${{ secrets.PROD_KEY_ALIAS }}
+          PROD_KEY_PASSWORD: ${{ secrets.PROD_KEY_PASSWORD }}
+      run: ./gradlew testDevelopmentDebug
