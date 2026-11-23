@@ -8,17 +8,16 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.io.IOException
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import java.io.IOException
 
 class ContactRepositoryImplTest {
-
     lateinit var contactRepository: ContactRepository
 
     @Mock
@@ -37,26 +36,28 @@ class ContactRepositoryImplTest {
             RxSchedulers(
                 Schedulers.trampoline(),
                 Schedulers.trampoline(),
-                Schedulers.trampoline()
+                Schedulers.trampoline(),
             )
-        contactRepository = ContactRepositoryImpl(
-            localContactDataSource,
-            remoteContactDataSource,
-            cache,
-            schedulers
-        )
+        contactRepository =
+            ContactRepositoryImpl(
+                localContactDataSource,
+                remoteContactDataSource,
+                cache,
+                schedulers,
+            )
     }
 
     @Test
     fun requestFriendship() {
-        val friend = Friend(
-            10,
-            "aUsername",
-            "aName",
-            "aUserImage",
-            "anEmail",
-            "status"
-        )
+        val friend =
+            Friend(
+                10,
+                "aUsername",
+                "aName",
+                "aUserImage",
+                "anEmail",
+                "status",
+            )
         `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
         `when`(localContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
         contactRepository.requestFriendship(friend)

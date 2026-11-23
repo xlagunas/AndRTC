@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [UserEntity::class, FriendEntity::class], version = 2)
 abstract class VivDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+
     abstract fun friendDao(): FriendDao
     // abstract fun callDao(): CallDao
 }

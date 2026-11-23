@@ -33,13 +33,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class ContactFragmentTest {
-
     private val contactViewModel = mock(ContactViewModel::class.java)
     private val contactsLiveData = MutableLiveData<Result<List<Friend>>>()
 
@@ -66,19 +65,20 @@ class ContactFragmentTest {
 
     @Test
     fun givenRequestedContact_whenAcceptingContact_thenAcceptCall() {
-        val friend = Friend(
-            0,
-            "FirstFriend",
-            "First friend name",
-            null,
-            "first@gmail.com",
-            PENDING.name
-        )
+        val friend =
+            Friend(
+                0,
+                "FirstFriend",
+                "First friend name",
+                null,
+                "first@gmail.com",
+                PENDING.name,
+            )
 
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(
             friend,
             R.id.accept_friendship_button,
-            0
+            0,
         )
 
         verify(contactViewModel).acceptContactRequest(friend)
@@ -86,18 +86,19 @@ class ContactFragmentTest {
 
     @Test
     fun givenRequestedContact_whenRejectedContact_thenRejectCall() {
-        val friend = Friend(
-            0,
-            "FirstFriend",
-            "First friend name",
-            null,
-            "first@gmail.com",
-            PENDING.name
-        )
+        val friend =
+            Friend(
+                0,
+                "FirstFriend",
+                "First friend name",
+                null,
+                "first@gmail.com",
+                PENDING.name,
+            )
         setupFriendRelationshipAndViewHolderType<ConfirmFriendViewHolder>(
             friend,
             R.id.reject_friendship_button,
-            0
+            0,
         )
 
         verify(contactViewModel).rejectContactRequest(friend)
@@ -105,14 +106,15 @@ class ContactFragmentTest {
 
     @Test
     fun givenAcceptedContact_whenClicked_thenCall() {
-        val friend = Friend(
-            0,
-            "FirstFriend",
-            "First friend name",
-            null,
-            "first@gmail.com",
-            ACCEPTED.name
-        )
+        val friend =
+            Friend(
+                0,
+                "FirstFriend",
+                "First friend name",
+                null,
+                "first@gmail.com",
+                ACCEPTED.name,
+            )
         Mockito.doAnswer {
             MutableLiveData<Call>().apply {
                 value =
@@ -123,7 +125,7 @@ class ContactFragmentTest {
         setupFriendRelationshipAndViewHolderType<CurrentFriendViewHolder>(
             friend,
             R.id.call_friend_button,
-            0
+            0,
         )
 
         verify(contactViewModel).createCall(listOf(friend))
@@ -132,7 +134,7 @@ class ContactFragmentTest {
     private fun <VH : ViewHolder> setupFriendRelationshipAndViewHolderType(
         friend: Friend,
         actionId: Int,
-        holderPosition: Int
+        holderPosition: Int,
     ) {
         contactsLiveData.postValue(Result.success(listOf(friend)))
 
@@ -141,37 +143,38 @@ class ContactFragmentTest {
                 RecyclerViewActions.actionOnItemAtPosition<ViewHolder>(
                     holderPosition,
                     MyViewAction.clickChildViewWithId(
-                        actionId
-                    )
-                )
+                        actionId,
+                    ),
+                ),
             )
     }
 
     private fun populateContactsList(): List<Friend> {
-        val friend = Friend(
-            0,
-            "FirstFriend",
-            "First friend name",
-            null,
-            "first@gmail.com",
-            REQUESTED.name
-        )
+        val friend =
+            Friend(
+                0,
+                "FirstFriend",
+                "First friend name",
+                null,
+                "first@gmail.com",
+                REQUESTED.name,
+            )
         val friendList = ArrayList<Friend>(1000)
         friendList += friend
 
         for (i in 1..1000) {
-            friendList += friend.copy(
-                friendId = 1,
-                username = "Secondfriend",
-                name = "Second Friend name",
-                email = "second@gmail.com"
-            )
+            friendList +=
+                friend.copy(
+                    friendId = 1,
+                    username = "Secondfriend",
+                    name = "Second Friend name",
+                    email = "second@gmail.com",
+                )
         }
         return friendList
     }
 
     object MyViewAction {
-
         fun clickChildViewWithId(id: Int): ViewAction {
             return object : ViewAction {
                 override fun getConstraints(): Matcher<View>? {
@@ -182,7 +185,10 @@ class ContactFragmentTest {
                     return "Click on a child view with specified id."
                 }
 
-                override fun perform(uiController: UiController, view: View) {
+                override fun perform(
+                    uiController: UiController,
+                    view: View,
+                ) {
                     val v = view.findViewById(id) as View
                     v.performClick()
                 }

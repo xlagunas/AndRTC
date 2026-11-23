@@ -2,24 +2,85 @@ name: Android CI
 
 on:
   push:
-    branches: [ kotlin, feature_github_actions ]
+    branches: [ kotlin ]
   pull_request:
-    branches: [ kotlin, feature_github_actions ]
+    branches: [ kotlin ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-
+  checkstyle:
+    name: Checkstyle (spotless)
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v2
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    - name: Decode google-services.json
-      env:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # build.gradle reads git tags and commit count for versioning
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Run spotless
+        run: ./gradlew spotlessCheck
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # build.gradle reads git tags and commit count for versioning
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Write google-services.json
+        env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-          run: echo $GOOGLE_SERVICES > app/google-services.json
-    - name: Build with Gradle
-      run: ./gradlew build
+        run: |
+          if [ -z "$GOOGLE_SERVICES" ]; then
+            echo "::error::Missing repository secret GOOGLE_SERVICES (app/google-services.json, raw JSON or base64)"
+            exit 1
+          fi
+          # Accept the secret either as raw JSON or base64-encoded JSON
+          if printf '%s' "$GOOGLE_SERVICES" | tr -d '[:space:]' | head -c1 | grep -q '{'; then
+            printf '%s' "$GOOGLE_SERVICES" > app/google-services.json
+          else
+            printf '%s' "$GOOGLE_SERVICES" | base64 --decode --ignore-garbage > app/google-services.json
+          fi
+          if ! jq -e '.project_info and .client' app/google-services.json > /dev/null; then
+            echo "::error::GOOGLE_SERVICES secret does not decode to a valid google-services.json"
+            exit 1
+          fi
+
+      - name: Assemble debug
+        run: ./gradlew assembleDevelopmentDebug
+
+      - name: Run unit tests
+        run: ./gradlew testDevelopmentDebugUnitTest --continue
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+          retention-days: 7

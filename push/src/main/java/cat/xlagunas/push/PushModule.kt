@@ -7,7 +7,6 @@ import retrofit2.Retrofit
 
 @Module
 class PushModule {
-
     @Provides
     fun providePushTokenRepository(pushTokenRepository: PushTokenRepositoryImpl): PushTokenRepository {
         return pushTokenRepository

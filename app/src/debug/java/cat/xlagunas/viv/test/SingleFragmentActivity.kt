@@ -13,13 +13,15 @@ import cat.xlagunas.viv.R
 class SingleFragmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val content = FrameLayout(this).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            id = R.id.container
-        }
+        val content =
+            FrameLayout(this).apply {
+                layoutParams =
+                    FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                    )
+                id = R.id.container
+            }
         setContentView(content)
     }
 

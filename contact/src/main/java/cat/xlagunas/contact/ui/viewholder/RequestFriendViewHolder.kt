@@ -7,7 +7,6 @@ import cat.xlagunas.contact.ui.ContactListener
 
 class RequestFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {
-
     private var _bind: RowRequestContactBinding? = null
     private val bind get() = _bind!!
 

@@ -7,15 +7,14 @@ data class User(
     val lastName: String,
     val email: String,
     val imageUrl: String,
-    val password: String?
+    val password: String?,
 ) {
-
     constructor(
         username: String,
         firstName: String,
         lastName: String,
         email: String,
         imageUrl: String,
-        password: String?
+        password: String?,
     ) : this(null, username, firstName, lastName, email, imageUrl, password)
 }

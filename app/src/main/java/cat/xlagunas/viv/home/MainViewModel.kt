@@ -9,38 +9,41 @@ import cat.xlagunas.user.auth.AuthenticationRepository
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository,
-    private val navigator: Navigator
-) :
+class MainViewModel
+    @Inject
+    constructor(
+        private val authenticationRepository: AuthenticationRepository,
+        private val navigator: Navigator,
+    ) :
     DisposableViewModel() {
+        fun navigateToContacts() {
+            navigator.navigateToContacts()
+        }
 
-    fun navigateToContacts() {
-        navigator.navigateToContacts()
+        fun navigateToProfile() {
+            disposable +=
+                authenticationRepository.isUserLoggedIn()
+                    .subscribe {
+                        when (it) {
+                            true -> navigator.navigateToProfile()
+                            false -> navigator.navigateToLogin()
+                        }
+                    }
+        }
+
+        private val userLoggedInEvent = SingleLiveEvent<Boolean>()
+
+        val isUserLoggedIn: LiveData<Boolean>
+            get() =
+                authenticationRepository
+                    .isUserLoggedIn()
+                    .toLiveData()
+
+        init {
+            disposable +=
+                authenticationRepository
+                    .isUserLoggedIn()
+                    .filter { !it }
+                    .subscribe { loggedIn -> userLoggedInEvent.value = loggedIn }
+        }
     }
-
-    fun navigateToProfile() {
-        disposable += authenticationRepository.isUserLoggedIn()
-            .subscribe {
-                when (it) {
-                    true -> navigator.navigateToProfile()
-                    false -> navigator.navigateToLogin()
-                }
-            }
-    }
-
-    private val userLoggedInEvent = SingleLiveEvent<Boolean>()
-
-    val isUserLoggedIn: LiveData<Boolean>
-        get() = authenticationRepository
-            .isUserLoggedIn()
-            .toLiveData()
-
-    init {
-        disposable +=
-            authenticationRepository
-                .isUserLoggedIn()
-                .filter { !it }
-                .subscribe { loggedIn -> userLoggedInEvent.value = loggedIn }
-    }
-}

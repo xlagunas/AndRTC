@@ -3,13 +3,11 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'cat.xlagunas.test_utils'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 23
+        targetSdkVersion 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,7 +20,6 @@ android {
         }
 
         development {
-            versionNameSuffix '.local'
         }
     }
 

@@ -22,7 +22,6 @@ import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class LocalContactDataSourceTest {
-
     private lateinit var localContactDataSource: LocalContactDataSource
 
     private lateinit var userDao: UserDao
@@ -44,9 +43,10 @@ class LocalContactDataSourceTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        vivDatabase = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
+        vivDatabase =
+            Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
+                .allowMainThreadQueries()
+                .build()
         val fakeUserId = 1L
         userEntity = UserEntity(fakeUserId, "username", "firstname", "lastname", "email", "url")
         `when`(authDataStore.getCurrentUserId()).thenReturn(fakeUserId)
@@ -70,10 +70,11 @@ class LocalContactDataSourceTest {
             .requestFriendship(expectedFriend).test()
             .assertComplete()
 
-        val value = friendDao.getUserFriends(1)
-            .test()
-            .assertNotComplete()
-            .assertValueCount(1).values().first()
+        val value =
+            friendDao.getUserFriends(1)
+                .test()
+                .assertNotComplete()
+                .assertValueCount(1).values().first()
 
         assertThat(friendConverter.toFriend(value.first()))
             .isEqualToIgnoringGivenFields(expectedFriend, "relationshipStatus")
@@ -120,12 +121,13 @@ class LocalContactDataSourceTest {
         assertThat(contact.first().relationshipStatus).isEqualToIgnoringCase(Relationship.REQUESTED.name)
     }
 
-    private fun generateFriend() = Friend(
-        10,
-        "aContact",
-        "aName",
-        "anImage",
-        "anEmail",
-        "NONE"
-    )
+    private fun generateFriend() =
+        Friend(
+            10,
+            "aContact",
+            "aName",
+            "anImage",
+            "anEmail",
+            "NONE",
+        )
 }

@@ -7,7 +7,6 @@ import cat.xlagunas.contact.ui.ContactListener
 
 class PendingFriendViewHolder(view: View, contactListener: ContactListener) :
     FriendViewHolder(view, contactListener) {
-
     private var _bind: RowPendingContactBinding? = null
     private val bind get() = _bind!!
 

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.viv.dagger.VivApplication
 
 class TestApplication : VivApplication() {
-
     private lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreate() {

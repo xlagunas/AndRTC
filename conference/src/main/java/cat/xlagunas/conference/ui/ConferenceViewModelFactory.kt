@@ -4,18 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 
-internal class ConferenceViewModelFactory @Inject constructor(
-    private val conferenceViewModel: ConferenceViewModel
-) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return if (modelClass.isAssignableFrom(ConferenceViewModel::class.java)) {
-            conferenceViewModel as T
-        } else {
-            throw IllegalArgumentException(
-                "Class ${modelClass.name} is not supported in this factory."
-            )
+internal class ConferenceViewModelFactory
+    @Inject
+    constructor(
+        private val conferenceViewModel: ConferenceViewModel,
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return if (modelClass.isAssignableFrom(ConferenceViewModel::class.java)) {
+                conferenceViewModel as T
+            } else {
+                throw IllegalArgumentException(
+                    "Class ${modelClass.name} is not supported in this factory.",
+                )
+            }
         }
     }
-}

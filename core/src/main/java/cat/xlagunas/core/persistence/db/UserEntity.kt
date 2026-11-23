@@ -18,5 +18,5 @@ data class UserEntity(
     @ColumnInfo(name = "email")
     val email: String,
     @ColumnInfo(name = "profile_url")
-    val imageUrl: String?
+    val imageUrl: String?,
 )

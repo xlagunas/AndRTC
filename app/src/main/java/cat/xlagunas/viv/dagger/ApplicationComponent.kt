@@ -21,10 +21,10 @@ import cat.xlagunas.viv.push.PushMessageHandler
 import cat.xlagunas.viv.push.PushMessageProcessorsModule
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.jetbrains.annotations.NotNull
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Component(
     modules = [
@@ -36,31 +36,45 @@ import retrofit2.Retrofit
         UserModule::class,
         PushModule::class,
         ContactModule::class,
-        PushMessageProcessorsModule::class]
+        PushMessageProcessorsModule::class,
+    ],
 )
 @Singleton
 interface ApplicationComponent {
-
     fun friendDao(): FriendDao
+
     fun userConverter(): UserConverter
+
     fun rxSchedulers(): RxSchedulers
+
     fun authTokenDataStore(): AuthDataStore
+
     fun vivDabase(): VivDatabase
+
     fun sharedPreferences(): SharedPreferences
+
     fun retrofit(): Retrofit
+
     fun friendConverter(): FriendConverter
+
     fun okHttpClient(): OkHttpClient
+
     fun context(): Context
+
     fun application(): Application
+
     fun timeProvider(): TimeProvider
+
     fun notificationManager(): NotificationManagerCompat
+
     fun viewModelProvider(): ViewModelProvider.Factory
 
     @Component.Builder
     interface Builder {
-
         @BindsInstance
-        fun withApplication(@NotNull app: Application): Builder
+        fun withApplication(
+            @NotNull app: Application,
+        ): Builder
 
         fun build(): ApplicationComponent
     }

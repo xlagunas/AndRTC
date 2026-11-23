@@ -11,9 +11,9 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = ["id"],
-            childColumns = ["user_id"]
-        )
-    ]
+            childColumns = ["user_id"],
+        ),
+    ],
 )
 data class FriendEntity(
     @PrimaryKey
@@ -30,5 +30,5 @@ data class FriendEntity(
     @ColumnInfo(name = "profile_url")
     val imageUrl: String,
     @ColumnInfo(name = "relationship_status")
-    val relationShipStatus: String
+    val relationShipStatus: String,
 )

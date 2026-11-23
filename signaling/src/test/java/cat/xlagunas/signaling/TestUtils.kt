@@ -9,36 +9,42 @@ import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 
 object TestUtils {
-    fun fakeLocalSession(): Session =
-        UserSession("1234")
+    fun fakeLocalSession(): Session = UserSession("1234")
+
     fun fakeOfferSessionDescription() =
         SessionDescription(
             SessionDescription.Type.OFFER,
-            "fake offer description"
+            "fake offer description",
         )
+
     fun fakeAnswerSessionDescription() =
         SessionDescription(
             SessionDescription.Type.ANSWER,
-            "fake answer description"
+            "fake answer description",
         )
+
     fun fakeIceCandidate() =
         IceCandidate(
             "fakeSdpMid",
             1024,
-            "fakeSdp for ice candidate string"
+            "fakeSdp for ice candidate string",
         )
 
     fun fakeIceCandidateMessage() =
         IceCandidateMessage(
             fakeLocalSession(),
-            fakeIceCandidate()
+            fakeIceCandidate(),
         )
-    fun fakeAnswerSessionMessage() = AnswerMessage(
-        fakeLocalSession(),
-        fakeAnswerSessionDescription()
-    )
-    fun fakeOfferSessionMessage() = OfferMessage(
-        fakeLocalSession(),
-        fakeOfferSessionDescription()
-    )
+
+    fun fakeAnswerSessionMessage() =
+        AnswerMessage(
+            fakeLocalSession(),
+            fakeAnswerSessionDescription(),
+        )
+
+    fun fakeOfferSessionMessage() =
+        OfferMessage(
+            fakeLocalSession(),
+            fakeOfferSessionDescription(),
+        )
 }

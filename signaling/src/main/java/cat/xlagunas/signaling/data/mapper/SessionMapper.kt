@@ -5,13 +5,14 @@ import cat.xlagunas.signaling.domain.Session
 import com.google.gson.Gson
 import javax.inject.Inject
 
-class SessionMapper @Inject constructor(private val gson: Gson) {
+class SessionMapper
+    @Inject
+    constructor(private val gson: Gson) {
+        fun convertSession(jsonSession: String): Session {
+            return UserSession(jsonSession)
+        }
 
-    fun convertSession(jsonSession: String): Session {
-        return UserSession(jsonSession)
+        fun serializeSession(session: Session): String {
+            return gson.toJson(session)
+        }
     }
-
-    fun serializeSession(session: Session): String {
-        return gson.toJson(session)
-    }
-}

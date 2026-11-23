@@ -19,7 +19,6 @@ import timber.log.Timber
 
 @OpenForTesting
 class RegisterFragment : Fragment() {
-
     private lateinit var registerViewModel: RegisterViewModel
     private lateinit var actionButton: FloatingActionButton
     private var _binding: ActivityRegisterBinding? = null
@@ -30,24 +29,28 @@ class RegisterFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        registerViewModel = ViewModelProvider(this, viewModelProviderFactory())
-            .get(RegisterViewModel::class.java)
+        registerViewModel =
+            ViewModelProvider(this, viewModelProviderFactory())
+                .get(RegisterViewModel::class.java)
         registerViewModel.onRegistration.observe(
             viewLifecycleOwner,
-            Observer(this::handleRegistration)
+            Observer(this::handleRegistration),
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = ActivityRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         actionButton = binding.fab
 
@@ -72,14 +75,14 @@ class RegisterFragment : Fragment() {
 
     private fun handleRegistration(registrationState: RegistrationState) {
         when (registrationState) {
-
             is RegistrationError -> handleError(registrationState.message)
-            is Success -> displayMessage(
-                requireContext().getString(
-                    R.string.registration_successful,
-                    userBinder.username
+            is Success ->
+                displayMessage(
+                    requireContext().getString(
+                        R.string.registration_successful,
+                        userBinder.username,
+                    ),
                 )
-            )
         }
         actionButton.isEnabled = true
     }

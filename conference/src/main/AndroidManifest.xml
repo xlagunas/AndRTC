@@ -30,6 +30,7 @@
             android:usesCleartextTraffic="true">
         <activity
                 android:name="cat.xlagunas.conference.ui.ConferenceActivity"
+                android:exported="true"
                 android:label="@string/title_activity_main">
             <tools:validation testUrl="http://viv.cat/conference?roomId=123" />
             <tools:validation testUrl="https://viv.cat/conference?roomId=123" />

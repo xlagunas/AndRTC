@@ -6,7 +6,6 @@ import cat.xlagunas.core.persistence.db.UserEntity
 import java.util.function.BiFunction
 
 class FriendConverter {
-
     fun toFriend(friendDto: FriendDto): Friend {
         return Friend(
             friendId = friendDto.id,
@@ -14,7 +13,7 @@ class FriendConverter {
             email = friendDto.email,
             image = friendDto.profilePic,
             name = friendDto.name,
-            relationshipStatus = friendDto.relationship.name
+            relationshipStatus = friendDto.relationship.name,
         )
     }
 
@@ -29,11 +28,14 @@ class FriendConverter {
             email = friendEntity.email,
             image = friendEntity.imageUrl,
             name = friendEntity.name,
-            relationshipStatus = friendEntity.relationShipStatus
+            relationshipStatus = friendEntity.relationShipStatus,
         )
     }
 
-    fun toFriendEntity(friend: Friend, currentUserId: Long): FriendEntity =
+    fun toFriendEntity(
+        friend: Friend,
+        currentUserId: Long,
+    ): FriendEntity =
         FriendEntity(
             friendId = friend.friendId,
             username = friend.username,
@@ -41,13 +43,15 @@ class FriendConverter {
             imageUrl = friend.image ?: "",
             email = friend.email,
             relationShipStatus = friend.relationshipStatus,
-            userId = currentUserId
+            userId = currentUserId,
         )
 
-    fun toFriendEntity() =
-        BiFunction { user: UserEntity, friend: Friend -> this.toFriendEntity(friend, user.id!!) }
+    fun toFriendEntity() = BiFunction { user: UserEntity, friend: Friend -> this.toFriendEntity(friend, user.id!!) }
 
-    fun updateRelationship(friend: Friend, newRelationship: Relationship): Friend {
+    fun updateRelationship(
+        friend: Friend,
+        newRelationship: Relationship,
+    ): Friend {
         return friend.copy(relationshipStatus = newRelationship.name)
     }
 
@@ -62,7 +66,7 @@ class FriendConverter {
             name = friend.name,
             username = friend.username,
             profilePic = friend.image,
-            relationship = Relationship.valueOf(friend.relationshipStatus)
+            relationship = Relationship.valueOf(friend.relationshipStatus),
         )
     }
 }

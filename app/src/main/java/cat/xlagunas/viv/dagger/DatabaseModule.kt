@@ -12,7 +12,6 @@ import dagger.Provides
  */
 @Module
 class DatabaseModule {
-
     @Provides
     internal fun provideDatabase(applicationContext: Context): VivDatabase {
         return Room.databaseBuilder(applicationContext, VivDatabase::class.java, "database.db").build()

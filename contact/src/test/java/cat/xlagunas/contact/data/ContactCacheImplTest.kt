@@ -16,7 +16,6 @@ import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class ContactCacheImplTest {
-
     @Mock
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -36,7 +35,7 @@ class ContactCacheImplTest {
     @Test
     fun givenMoreThanExactValidCacheMillisEllapsed_whenIsCacheValid_thenFalse() {
         `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)
+            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
         ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.plus(1))
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
@@ -49,7 +48,7 @@ class ContactCacheImplTest {
     @Test
     fun givenExactValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
         `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)
+            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
         ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS)
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
@@ -62,7 +61,7 @@ class ContactCacheImplTest {
     @Test
     fun givenLessThanValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
         `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)
+            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
         ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.minus(1))
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 

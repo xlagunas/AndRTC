@@ -11,5 +11,5 @@ data class MessageDto(
     @SerializedName("type")
     val type: MessageType,
     @SerializedName("data")
-    val data: String
+    val data: String,
 )

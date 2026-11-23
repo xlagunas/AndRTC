@@ -14,32 +14,36 @@ class MediaSelectorFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val listView = ListView(requireContext())
-        listView.adapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            arrayOf("Camera and audio", "Camera only", "Audio only")
-        )
+        listView.adapter =
+            ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                arrayOf("Camera and audio", "Camera only", "Audio only"),
+            )
         val viewModel = ViewModelProvider(requireActivity()).get(ConferenceViewModel::class.java)
 
         listView.setOnItemClickListener { _, _, position, _ ->
-            val selection = when (position) {
-                0 -> generatePeerConnectionConstraints(video = true, audio = true)
-                1 -> generatePeerConnectionConstraints(video = true, audio = false)
-                2 -> generatePeerConnectionConstraints(video = false, audio = true)
-                else -> generatePeerConnectionConstraints(video = false, audio = false)
-            }
+            val selection =
+                when (position) {
+                    0 -> generatePeerConnectionConstraints(video = true, audio = true)
+                    1 -> generatePeerConnectionConstraints(video = true, audio = false)
+                    2 -> generatePeerConnectionConstraints(video = false, audio = true)
+                    else -> generatePeerConnectionConstraints(video = false, audio = false)
+                }
             viewModel.requestedMedia.postValue(selection)
             dismiss()
         }
         return listView
     }
 
-    private fun generatePeerConnectionConstraints(video: Boolean, audio: Boolean) =
-        MediaConstraints().apply {
-            mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveAudio", audio.toString()))
-            mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveVideo", video.toString()))
-        }
+    private fun generatePeerConnectionConstraints(
+        video: Boolean,
+        audio: Boolean,
+    ) = MediaConstraints().apply {
+        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveAudio", audio.toString()))
+        mandatory.add(MediaConstraints.KeyValuePair("offerToReceiveVideo", video.toString()))
+    }
 }
