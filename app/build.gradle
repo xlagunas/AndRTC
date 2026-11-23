@@ -149,6 +149,9 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.23.0'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
     androidTestImplementation project(':test-utils')
     androidTestImplementation 'androidx.test:runner:1.7.0'

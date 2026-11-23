@@ -70,8 +70,12 @@ class ContactViewModel
         }
 
         fun createCall(friends: List<Friend>) {
-            val (id, username) = friends.first()
-            navigator.requestCall(id, username)
+            val friend =
+                friends.firstOrNull() ?: run {
+                    Timber.w("Ignoring createCall without contacts")
+                    return
+                }
+            navigator.requestCall(friend.friendId, friend.username)
         }
 
         override fun onCleared() {

@@ -1,12 +1,12 @@
 package cat.xlagunas.viv.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SingleLiveEvent
 import cat.xlagunas.core.common.DisposableViewModel
 import cat.xlagunas.core.common.toLiveData
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.user.auth.AuthenticationRepository
 import io.reactivex.rxkotlin.plusAssign
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel
@@ -21,29 +21,28 @@ class MainViewModel
         }
 
         fun navigateToProfile() {
+            // isUserLoggedIn() never completes: take only the current value so later login
+            // status changes don't trigger stale navigations
             disposable +=
                 authenticationRepository.isUserLoggedIn()
-                    .subscribe {
-                        when (it) {
-                            true -> navigator.navigateToProfile()
-                            false -> navigator.navigateToLogin()
-                        }
-                    }
+                    .firstOrError()
+                    .subscribe(
+                        { loggedIn ->
+                            when (loggedIn) {
+                                true -> navigator.navigateToProfile()
+                                false -> navigator.navigateToLogin()
+                            }
+                        },
+                        { error ->
+                            Timber.e(error, "Error checking login status")
+                            navigator.navigateToLogin()
+                        },
+                    )
         }
-
-        private val userLoggedInEvent = SingleLiveEvent<Boolean>()
 
         val isUserLoggedIn: LiveData<Boolean>
             get() =
                 authenticationRepository
                     .isUserLoggedIn()
                     .toLiveData()
-
-        init {
-            disposable +=
-                authenticationRepository
-                    .isUserLoggedIn()
-                    .filter { !it }
-                    .subscribe { loggedIn -> userLoggedInEvent.value = loggedIn }
-        }
     }

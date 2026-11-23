@@ -8,6 +8,7 @@ import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.push.PushTokenRepository
 import cat.xlagunas.user.auth.AuthenticationCredentials
 import cat.xlagunas.user.auth.AuthenticationRepository
+import io.reactivex.Completable
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,7 +34,13 @@ class LoginViewModel
                         password,
                     ),
                 )
-                    .andThen(pushTokenRepository.registerPushToken())
+                    // The user is already logged in at this point: a push token registration
+                    // failure must not be reported as a login error
+                    .andThen(
+                        Completable.defer { pushTokenRepository.registerPushToken() }
+                            .doOnError { Timber.w(it, "Error registering push token") }
+                            .onErrorComplete(),
+                    )
                     .subscribe(this::onSuccessfullyLogged, this::handleErrorState),
             )
         }
