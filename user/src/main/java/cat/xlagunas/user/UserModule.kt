@@ -9,7 +9,6 @@ import retrofit2.Retrofit
 
 @Module
 class UserModule {
-
     @Provides
     fun provideRegisterApi(retrofit: Retrofit): AuthenticationApi {
         return retrofit.create(AuthenticationApi::class.java)

@@ -8,18 +8,25 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ContactsApi {
-
     @GET("/contact/search/{filter}")
-    fun searchContact(@Path("filter") query: String): Single<List<FriendDto>>
+    fun searchContact(
+        @Path("filter") query: String,
+    ): Single<List<FriendDto>>
 
     @PUT("/contact/{contactId}")
-    fun addContact(@Path("contactId") contactId: Long): Completable
+    fun addContact(
+        @Path("contactId") contactId: Long,
+    ): Completable
 
     @POST("/contact/{contactId}/accept")
-    fun acceptContact(@Path("contactId") contactId: Long): Completable
+    fun acceptContact(
+        @Path("contactId") contactId: Long,
+    ): Completable
 
     @POST("/contact/{contactId}/reject")
-    fun rejectContact(@Path("contactId") contactId: Long): Completable
+    fun rejectContact(
+        @Path("contactId") contactId: Long,
+    ): Completable
 
     @GET("/contact/list")
     fun listContacts(): Single<List<FriendDto>>

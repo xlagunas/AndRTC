@@ -30,14 +30,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class LoginFragmentTest {
-
     private val loginViewModel = mock(LoginViewModel::class.java)
     private val loginState = MutableLiveData<LoginState>()
 
@@ -58,16 +57,16 @@ class LoginFragmentTest {
 
         launchFragmentInContainer<LoginFragment>(
             Bundle(),
-            R.style.AppTheme_NoActionBar
+            R.style.AppTheme_NoActionBar,
         )
 
         onEditTextWithinTilWithId(R.id.username_input_layout).perform(
             typeText("aRandomInvalidUsername"),
-            closeSoftKeyboard()
+            closeSoftKeyboard(),
         )
         onEditTextWithinTilWithId(R.id.password_text_input).perform(
             typeText("aRandomInvalidPassword"),
-            closeSoftKeyboard()
+            closeSoftKeyboard(),
         )
         onView(withId(R.id.login_button)).perform(click())
 
@@ -76,24 +75,27 @@ class LoginFragmentTest {
 
     @Test
     fun whenUserClickRegister_thenNavigateToRegister() {
-        val scenario = launchFragmentInContainer<LoginFragment>(
-            Bundle(),
-            R.style.AppTheme_NoActionBar
-        )
+        val scenario =
+            launchFragmentInContainer<LoginFragment>(
+                Bundle(),
+                R.style.AppTheme_NoActionBar,
+            )
 
         onView(withId(R.id.register)).perform(click())
 
         scenario.onFragment { verify(loginViewModel).navigateToRegistration() }
     }
 
-    private fun onEditTextWithinTilWithId(@IdRes textInputLayoutId: Int): ViewInteraction {
+    private fun onEditTextWithinTilWithId(
+        @IdRes textInputLayoutId: Int,
+    ): ViewInteraction {
         // Note, if you have specified an ID for the EditText that you place inside
         // the TextInputLayout, use that instead - i.e, onView(withId(R.id.my_edit_text));
         return onView(
             allOf(
                 isDescendantOfA(withId(textInputLayoutId)),
-                isAssignableFrom(EditText::class.java)
-            )
+                isAssignableFrom(EditText::class.java),
+            ),
         )
     }
 }

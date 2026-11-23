@@ -14,14 +14,13 @@ import cat.xlagunas.conference.di.DaggerConferenceComponent
 import cat.xlagunas.viv.dagger.VivApplication
 import com.google.android.material.snackbar.Snackbar
 import com.tbruyelle.rxpermissions2.RxPermissions
-import javax.inject.Inject
 import org.webrtc.MediaConstraints
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
 import timber.log.Timber
+import javax.inject.Inject
 
 class ConferenceActivity : AppCompatActivity() {
-
     private lateinit var component: ConferenceComponent
     private lateinit var localSurfaceViewRenderer: SurfaceViewRenderer
     private lateinit var remoteSurfaceViewRenderer: SurfaceViewRenderer
@@ -39,28 +38,34 @@ class ConferenceActivity : AppCompatActivity() {
             ViewModelProvider(this, viewModelFactory).get(ConferenceViewModel::class.java)
         MediaSelectorFragment().show(supportFragmentManager, "MediaSelector")
 
-        conference.requestedMedia.observe(this, Observer { mediaConstraints ->
-            initVideoRenderers()
-            checkPermissions(mediaConstraints)
+        conference.requestedMedia.observe(
+            this,
+            Observer { mediaConstraints ->
+                initVideoRenderers()
+                checkPermissions(mediaConstraints)
 
-            conference.conferenceAttendees.observe(this, Observer(onConferencee()))
-            conference.localStream.observe(
-                this,
-                Observer { it.setTarget(localSurfaceViewRenderer) })
-            conference.remoteStream.observe(
-                this,
-                Observer { it.setTarget(remoteSurfaceViewRenderer) })
-        })
+                conference.conferenceAttendees.observe(this, Observer(onConferencee()))
+                conference.localStream.observe(
+                    this,
+                    Observer { it.setTarget(localSurfaceViewRenderer) },
+                )
+                conference.remoteStream.observe(
+                    this,
+                    Observer { it.setTarget(remoteSurfaceViewRenderer) },
+                )
+            },
+        )
     }
 
     private fun injectComponent(roomId: String) {
-        component = DaggerConferenceComponent.builder()
-            .parent(VivApplication.appComponent(this@ConferenceActivity))
-            .roomId(roomId)
-            .activity(this@ConferenceActivity)
-            .build().apply {
-                inject(this@ConferenceActivity)
-            }
+        component =
+            DaggerConferenceComponent.builder()
+                .parent(VivApplication.appComponent(this@ConferenceActivity))
+                .roomId(roomId)
+                .activity(this@ConferenceActivity)
+                .build().apply {
+                    inject(this@ConferenceActivity)
+                }
     }
 
     private fun initVideoRenderers() {
@@ -69,18 +74,21 @@ class ConferenceActivity : AppCompatActivity() {
                 init(conference.getEGLContext(), null)
                 setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
                 setZOrderMediaOverlay(true)
-                setEnableHardwareScaler(true /* enabled */)
+                setEnableHardwareScaler(true)
             }
 
         remoteSurfaceViewRenderer =
             findViewById<SurfaceViewRenderer>(R.id.remote_renderer).apply {
                 init(conference.getEGLContext(), null)
                 this.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
-                setEnableHardwareScaler(true /* enabled */)
+                setEnableHardwareScaler(true)
             }
     }
 
-    private fun parseRoomFromUriOrFinish(data: Uri?, block: (String) -> Unit) {
+    private fun parseRoomFromUriOrFinish(
+        data: Uri?,
+        block: (String) -> Unit,
+    ) {
         val roomId = data?.getQueryParameter("roomId")
 
         if (roomId != null) {
@@ -96,7 +104,7 @@ class ConferenceActivity : AppCompatActivity() {
             Snackbar.make(
                 findViewById<FrameLayout>(android.R.id.content),
                 "Joined room with other $it attendants",
-                Snackbar.LENGTH_INDEFINITE
+                Snackbar.LENGTH_INDEFINITE,
             ).show()
         }
     }
@@ -106,7 +114,7 @@ class ConferenceActivity : AppCompatActivity() {
         val rxPermissions = RxPermissions(this)
         rxPermissions.requestEachCombined(
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
         )
             .subscribe { permission ->
                 if (permission.granted) {

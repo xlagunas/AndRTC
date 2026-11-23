@@ -9,7 +9,6 @@ import io.reactivex.Maybe
 
 @Dao
 interface UserDao {
-
     @Query("SELECT COUNT(*) FROM user")
     fun getUserCount(): Flowable<Int>
 

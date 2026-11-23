@@ -17,8 +17,8 @@ package androidx.lifecycle
  */
 
 import androidx.annotation.MainThread
-import java.util.concurrent.atomic.AtomicBoolean
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
@@ -33,21 +33,26 @@ import timber.log.Timber
  * Note that only one observer is going to be notified of changes.
  */
 class SingleLiveEvent<T> : MutableLiveData<T>() {
-
     private val mPending = AtomicBoolean(false)
 
     @MainThread
-    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
+    override fun observe(
+        owner: LifecycleOwner,
+        observer: Observer<in T>,
+    ) {
         if (hasActiveObservers()) {
             Timber.w("Multiple observers registered but only one will be notified of changes.")
         }
 
         // Observe the internal MutableLiveData
-        super.observe(owner, Observer { t ->
-            if (mPending.compareAndSet(true, false)) {
-                observer.onChanged(t)
-            }
-        })
+        super.observe(
+            owner,
+            Observer { t ->
+                if (mPending.compareAndSet(true, false)) {
+                    observer.onChanged(t)
+                }
+            },
+        )
     }
 
     @MainThread

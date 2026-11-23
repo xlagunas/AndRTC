@@ -10,9 +10,8 @@ import timber.log.Timber
 
 class VivPeerConnectionObserver(
     private val user: Session,
-    private val onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit
+    private val onIceCandidate: (iceCandidate: Pair<Session, IceCandidate>) -> Unit,
 ) : PeerConnection.Observer {
-
     override fun onIceCandidate(p0: IceCandidate) {
         Timber.i("New ice candidate gathered for ${user.getId()}")
         onIceCandidate.invoke(Pair(user, p0))
@@ -51,7 +50,10 @@ class VivPeerConnectionObserver(
     override fun onRenegotiationNeeded() {
     }
 
-    override fun onAddTrack(p0: RtpReceiver, p1: Array<out MediaStream>) {
+    override fun onAddTrack(
+        p0: RtpReceiver,
+        p1: Array<out MediaStream>,
+    ) {
         Timber.i("received onAddTrack message")
     }
 }

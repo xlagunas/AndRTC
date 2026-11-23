@@ -10,23 +10,22 @@ import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.UserDto
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.io.IOException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import java.io.IOException
 
 @RunWith(RobolectricTestRunner::class)
 class AuthenticationRepositoryImplTest {
-
     private lateinit var authenticationRepository: AuthenticationRepository
 
     private lateinit var userDao: UserDao
@@ -45,10 +44,12 @@ class AuthenticationRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val database = Room.inMemoryDatabaseBuilder(
-            RuntimeEnvironment.application, cat.xlagunas.core.persistence.db.VivDatabase::class.java
-        )
-            .allowMainThreadQueries().build()
+        val database =
+            Room.inMemoryDatabaseBuilder(
+                RuntimeEnvironment.application,
+                cat.xlagunas.core.persistence.db.VivDatabase::class.java,
+            )
+                .allowMainThreadQueries().build()
         userDao = database.userDao()
         userConverter = UserConverter()
         authenticationRepository =
@@ -59,12 +60,11 @@ class AuthenticationRepositoryImplTest {
                 RxSchedulers(
                     Schedulers.trampoline(),
                     Schedulers.trampoline(),
-                    Schedulers.trampoline()
+                    Schedulers.trampoline(),
                 ),
                 authDataStore,
                 database,
-                RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-
+                RuntimeEnvironment.application.getSharedPreferences("prefs", Context.MODE_PRIVATE),
             )
     }
 
@@ -77,9 +77,9 @@ class AuthenticationRepositoryImplTest {
             authenticationApi.loginUser(
                 AuthDto(
                     authenticationCredentials.username,
-                    authenticationCredentials.password
-                )
-            )
+                    authenticationCredentials.password,
+                ),
+            ),
         ).thenReturn(Single.just(AuthTokenDto(authToken)))
         `when`(authenticationApi.getUser()).thenReturn(Single.just(mockedUserDto()))
 
@@ -98,9 +98,9 @@ class AuthenticationRepositoryImplTest {
             authenticationApi.loginUser(
                 AuthDto(
                     authenticationCredentials.username,
-                    authenticationCredentials.password
-                )
-            )
+                    authenticationCredentials.password,
+                ),
+            ),
         ).thenReturn(Single.error(IOException("Error!!")))
 
         authenticationRepository.login(authenticationCredentials).test().assertError(IOException::class.java)
@@ -116,7 +116,7 @@ class AuthenticationRepositoryImplTest {
             "Surname",
             "email@email.com",
             null,
-            null
+            null,
         )
 
     @Test

@@ -33,7 +33,6 @@ import org.webrtc.audio.JavaAudioDeviceModule
 
 @Module
 class ConferenceModule {
-
     @Provides
     @Feature
     fun provideRepository(repository: ConferenceRepositoryImp): ConferenceRepository {
@@ -44,7 +43,7 @@ class ConferenceModule {
     @Feature
     fun provideSignaling(websocketIOController: SocketIOController): Signaling {
         return SocketIOSignaling(
-            websocketIOController
+            websocketIOController,
         )
     }
 
@@ -53,12 +52,12 @@ class ConferenceModule {
     fun provideWebSocketController(
         messageMapper: MessageMapper,
         sessionMapper: SessionMapper,
-        socketIOEmitterProvider: SocketIOEmitterProvider
+        socketIOEmitterProvider: SocketIOEmitterProvider,
     ): SocketIOController {
         return SocketIOController(
             messageMapper,
             sessionMapper,
-            socketIOEmitterProvider
+            socketIOEmitterProvider,
         )
     }
 
@@ -67,12 +66,12 @@ class ConferenceModule {
     fun provideWebSocketEmitterProvider(
         activity: ConferenceActivity,
         okHttpClient: OkHttpClient,
-        webSocketUrl: HttpUrl
+        webSocketUrl: HttpUrl,
     ): SocketIOEmitterProvider {
         return LifecycleAwareSocketIOProvider(
             activity,
             okHttpClient,
-            webSocketUrl
+            webSocketUrl,
         )
     }
 
@@ -103,7 +102,7 @@ class ConferenceModule {
     fun providePeerConnectionFactory(
         context: EglBase.Context,
         initOptions: PeerConnectionFactory.InitializationOptions,
-        audioDeviceModule: AudioDeviceModule
+        audioDeviceModule: AudioDeviceModule,
     ): PeerConnectionFactory {
         PeerConnectionFactory.initialize(initOptions)
 
@@ -135,7 +134,6 @@ class ConferenceModule {
 
     @Provides
     fun provideRTCConfiguration(): PeerConnection.RTCConfiguration {
-
         return PeerConnection.RTCConfiguration(provideGoogleTurnServers())
             .also {
                 it.tcpCandidatePolicy = PeerConnection.TcpCandidatePolicy.DISABLED
@@ -176,17 +174,17 @@ class ConferenceModule {
                 .setUsername("CJ73qeMFEgYNfwosX/EYzc/s6OMTIICjBQ")
                 .setPassword("SBi08lceLMsFWYdAQsT0XDnW4i4==")
                 .setTlsCertPolicy(PeerConnection.TlsCertPolicy.TLS_CERT_POLICY_SECURE)
-                .createIceServer()
+                .createIceServer(),
         )
     }
 
+    // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     @Provides
     @Feature
-    // TODO PROBABLY THIS NEEDS TO GO UP IN THE APP GRAPH
     fun provideGson(): Gson {
         return GsonBuilder().registerTypeAdapter(
             Session::class.java,
-            SessionAdapter()
+            SessionAdapter(),
         ).create()
     }
 
@@ -194,7 +192,7 @@ class ConferenceModule {
     @Feature
     fun providePeerConnectionDataSource(
         peerConnectionFactory: PeerConnectionFactory,
-        rtcConfiguration: PeerConnection.RTCConfiguration
+        rtcConfiguration: PeerConnection.RTCConfiguration,
     ): PeerConnectionDataSource {
         return PeerConnectionDataSource(peerConnectionFactory, rtcConfiguration)
     }

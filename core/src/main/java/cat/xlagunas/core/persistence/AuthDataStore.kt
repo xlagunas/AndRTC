@@ -3,7 +3,6 @@ package cat.xlagunas.core.persistence
 import io.reactivex.subjects.BehaviorSubject
 
 interface AuthDataStore {
-
     fun authToken(): String?
 
     fun isAuthTokenAvailable(): Boolean

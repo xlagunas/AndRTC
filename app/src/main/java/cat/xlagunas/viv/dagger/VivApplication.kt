@@ -11,7 +11,6 @@ import cat.xlagunas.core.di.HasViewModelFactory
 import timber.log.Timber
 
 open class VivApplication : Application(), HasViewModelFactory, CallComponentProvider {
-
     override fun factory(): ViewModelProvider.Factory {
         return appComponent.viewModelProvider()
     }
@@ -37,7 +36,6 @@ open class VivApplication : Application(), HasViewModelFactory, CallComponentPro
 
     companion object {
         @JvmStatic
-        fun appComponent(context: Context) =
-            (context.applicationContext as VivApplication).appComponent
+        fun appComponent(context: Context) = (context.applicationContext as VivApplication).appComponent
     }
 }

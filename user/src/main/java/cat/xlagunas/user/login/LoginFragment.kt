@@ -14,7 +14,6 @@ import cat.xlagunas.user.databinding.FragmentLoginBinding
 
 @OpenForTesting
 class LoginFragment : Fragment() {
-
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
         get() = _binding!!
@@ -31,14 +30,14 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         binding.loginButton.setOnClickListener {
             loginViewModel.login(
                 binding.usernameInputLayout.text(),
-                binding.passwordTextInput.text()
+                binding.passwordTextInput.text(),
             )
         }
         binding.register.setOnClickListener { loginViewModel.navigateToRegistration() }
@@ -47,12 +46,13 @@ class LoginFragment : Fragment() {
 
     private fun handleLoginResult(loginState: LoginState?) {
         when (loginState) {
-            is SuccessLoginState -> displayMessage(
-                requireContext().getString(
-                    R.string.login_successful,
-                    binding.usernameInputLayout.text()
+            is SuccessLoginState ->
+                displayMessage(
+                    requireContext().getString(
+                        R.string.login_successful,
+                        binding.usernameInputLayout.text(),
+                    ),
                 )
-            )
             is InvalidLoginState -> displayMessage(loginState.errorMessage)
             is ValidationError -> {
                 binding.usernameInputLayout.error = "Username can't be empty"

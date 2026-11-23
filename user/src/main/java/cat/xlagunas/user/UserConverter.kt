@@ -10,9 +10,10 @@ class UserConverter {
             firstName = userEntity.firstName,
             lastName = userEntity.lastName,
             email = userEntity.email,
-            imageUrl = userEntity.imageUrl
-                ?: "STRING_REFERENCE_FOR_DEFAULT_IMAGE_IN_USER_CONVERTER",
-            password = null
+            imageUrl =
+                userEntity.imageUrl
+                    ?: "STRING_REFERENCE_FOR_DEFAULT_IMAGE_IN_USER_CONVERTER",
+            password = null,
         )
 
     fun toUserEntity(user: User): UserEntity =
@@ -22,7 +23,7 @@ class UserConverter {
             firstName = user.firstName,
             lastName = user.lastName,
             email = user.email,
-            imageUrl = user.imageUrl
+            imageUrl = user.imageUrl,
         )
 
     fun toUserEntity(userDto: UserDto): UserEntity =
@@ -32,7 +33,7 @@ class UserConverter {
             firstName = userDto.firstName,
             lastName = userDto.lastName,
             email = userDto.email,
-            imageUrl = userDto.profilePic
+            imageUrl = userDto.profilePic,
         )
 
     fun toUserDto(user: User): UserDto =
@@ -43,6 +44,6 @@ class UserConverter {
             lastName = user.lastName,
             email = user.email,
             profilePic = user.imageUrl,
-            password = user.password
+            password = user.password,
         )
 }

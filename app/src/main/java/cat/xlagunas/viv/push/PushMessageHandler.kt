@@ -7,12 +7,11 @@ import cat.xlagunas.push.PushTokenPresenter
 import cat.xlagunas.viv.dagger.VivApplication
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
-import timber.log.Timber
 
 class PushMessageHandler : FirebaseMessagingService() {
-
     @Inject
     lateinit var pushTokenPresenter: PushTokenPresenter
 

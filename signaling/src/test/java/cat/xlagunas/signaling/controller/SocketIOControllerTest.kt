@@ -21,7 +21,6 @@ import org.junit.Before
 import org.junit.Test
 
 class SocketIOControllerTest {
-
     private val emitter =
         FakeSocketIOEmitter()
     private val gson =
@@ -32,7 +31,7 @@ class SocketIOControllerTest {
         SocketIOController(
             messageMapper,
             SessionMapper(gson),
-            emitter
+            emitter,
         )
 
     @Before
@@ -40,42 +39,46 @@ class SocketIOControllerTest {
     }
 
     @Test
-    fun getReceivedMessageChannel() = runTest(UnconfinedTestDispatcher()) {
-        val expectedOfferMessage = fakeOfferSessionMessage()
-        val expectedAnswerMessage = fakeAnswerSessionMessage()
-        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+    fun getReceivedMessageChannel() =
+        runTest(UnconfinedTestDispatcher()) {
+            val expectedOfferMessage = fakeOfferSessionMessage()
+            val expectedAnswerMessage = fakeAnswerSessionMessage()
+            val expectedIceCandidateMessage = fakeIceCandidateMessage()
 
-        val values = mutableListOf<Message>()
+            val values = mutableListOf<Message>()
 
-        webSocketController.joinConference("1234")
-        val job = launch {
-            webSocketController.observeDirectMessages()
-                .collect { values.add(it) }
+            webSocketController.joinConference("1234")
+            val job =
+                launch {
+                    webSocketController.observeDirectMessages()
+                        .collect { values.add(it) }
+                }
+            webSocketController.sendMessage(expectedOfferMessage)
+            webSocketController.sendMessage(expectedAnswerMessage)
+            webSocketController.sendMessage(expectedIceCandidateMessage)
+
+            assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedOfferMessage)
+            assertThat(values[1]).usingRecursiveComparison().isEqualTo(expectedAnswerMessage)
+            assertThat(values[2]).usingRecursiveComparison().isEqualTo(expectedIceCandidateMessage)
+            job.cancel()
         }
-        webSocketController.sendMessage(expectedOfferMessage)
-        webSocketController.sendMessage(expectedAnswerMessage)
-        webSocketController.sendMessage(expectedIceCandidateMessage)
-
-        assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedOfferMessage)
-        assertThat(values[1]).usingRecursiveComparison().isEqualTo(expectedAnswerMessage)
-        assertThat(values[2]).usingRecursiveComparison().isEqualTo(expectedIceCandidateMessage)
-        job.cancel()
-    }
 
     @Test
-    fun getParticipantsChannel() = runTest(UnconfinedTestDispatcher()) {
-        webSocketController.joinConference("1234")
-        val values = mutableListOf<Session>()
+    fun getParticipantsChannel() =
+        runTest(UnconfinedTestDispatcher()) {
+            webSocketController.joinConference("1234")
+            val values = mutableListOf<Session>()
 
-        val job = launch {
-            webSocketController.observeParticipants()
-                .collect { values.add(it) }
+            val job =
+                launch {
+                    webSocketController.observeParticipants()
+                        .collect { values.add(it) }
+                }
+            emitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
+
+            assertThat(values[0]).usingRecursiveComparison().isEqualTo(fakeLocalSession())
+            job.cancel()
         }
-        emitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
-
-        assertThat(values[0]).usingRecursiveComparison().isEqualTo(fakeLocalSession())
-        job.cancel()
-    }
 
     class FakeSocketIOEmitter :
         SocketIOEmitterProvider {

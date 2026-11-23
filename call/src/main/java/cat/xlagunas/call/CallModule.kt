@@ -15,8 +15,7 @@ class CallModule {
     }
 
     @Provides
-    fun provideCallApi(retrofit: Retrofit): CallApi =
-        retrofit.create(CallApi::class.java)
+    fun provideCallApi(retrofit: Retrofit): CallApi = retrofit.create(CallApi::class.java)
 
     @Provides
     @IntoMap

@@ -5,5 +5,5 @@ data class RegisterUserBinder(
     var lastName: String = "",
     var email: String = "",
     var username: String = "",
-    var password: String = ""
+    var password: String = "",
 )

@@ -16,12 +16,10 @@ import cat.xlagunas.viv.R
 import cat.xlagunas.viv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,21 +47,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val callbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            val nextItem = when (f) {
-                is ContactFragment -> R.id.action_contact
-                is LoginFragment, is ProfileFragment -> R.id.action_profile
-                else -> -1
-            }
-            if (nextItem < 0) return
-            ifNotSelected(nextItem) {
-                binding.content.bottomBar.selectedItemId = nextItem
+    private val callbacks =
+        object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentResumed(
+                fm: FragmentManager,
+                f: Fragment,
+            ) {
+                val nextItem =
+                    when (f) {
+                        is ContactFragment -> R.id.action_contact
+                        is LoginFragment, is ProfileFragment -> R.id.action_profile
+                        else -> -1
+                    }
+                if (nextItem < 0) return
+                ifNotSelected(nextItem) {
+                    binding.content.bottomBar.selectedItemId = nextItem
+                }
             }
         }
-    }
 
-    private fun ifNotSelected(@LayoutRes menuId: Int, action: (Int) -> Unit) {
+    private fun ifNotSelected(
+        @LayoutRes menuId: Int,
+        action: (Int) -> Unit,
+    ) {
         if (binding.content.bottomBar.selectedItemId != menuId) {
             action.invoke(menuId)
         }

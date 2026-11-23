@@ -5,5 +5,7 @@ import retrofit2.http.PUT
 
 interface CallApi {
     @PUT("/call/")
-    suspend fun createCall(@Body callParticipants: CallParticipantsDto): CallDto
+    suspend fun createCall(
+        @Body callParticipants: CallParticipantsDto,
+    ): CallDto
 }

@@ -13,15 +13,13 @@ import retrofit2.Retrofit
 
 @Module
 class ContactModule {
-
     @Provides
     fun provideContactRepository(contactRepository: ContactRepositoryImpl): ContactRepository {
         return contactRepository
     }
 
     @Provides
-    fun provideContactsApi(retrofit: Retrofit): ContactsApi =
-        retrofit.create(ContactsApi::class.java)
+    fun provideContactsApi(retrofit: Retrofit): ContactsApi = retrofit.create(ContactsApi::class.java)
 
     @Provides
     fun provideContactCache(contactCache: ContactCacheImpl): ContactCache {

@@ -5,12 +5,14 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-fun Emitter.on(eventType: String): Flow<String> = callbackFlow<String> {
-    val listener = Emitter.Listener { message ->
-        val stringMessage = message.map { it as String }
-        trySend(stringMessage.first())
-    }
+fun Emitter.on(eventType: String): Flow<String> =
+    callbackFlow<String> {
+        val listener =
+            Emitter.Listener { message ->
+                val stringMessage = message.map { it as String }
+                trySend(stringMessage.first())
+            }
 
-    on(eventType, listener)
-    awaitClose { this@on.off(eventType, listener) }
-}
+        on(eventType, listener)
+        awaitClose { this@on.off(eventType, listener) }
+    }

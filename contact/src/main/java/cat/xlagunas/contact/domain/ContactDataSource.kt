@@ -5,7 +5,6 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 interface ContactDataSource {
-
     fun searchContacts(searchTerm: String): Single<List<Friend>>
 
     fun requestFriendship(friend: Friend): Completable

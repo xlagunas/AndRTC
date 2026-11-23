@@ -24,13 +24,12 @@ import cat.xlagunas.viv.commons.TestApplication
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 @RunWith(AndroidJUnit4::class)
 class RegisterFragmentTest {
-
     private val registerViewModel = mock(RegisterViewModel::class.java)
     private val registrationState = MutableLiveData<RegistrationState>()
 
@@ -44,12 +43,11 @@ class RegisterFragmentTest {
 
     @Test
     fun givenRegisteredUser_WhenRegistering_ThenError() {
-
         doAnswer {
             registrationState.postValue(
                 RegistrationError(
-                    "Invalid account data"
-                )
+                    "Invalid account data",
+                ),
             )
             Unit
         }.`when`(registerViewModel).register(getFakeUser())
@@ -73,6 +71,6 @@ class RegisterFragmentTest {
             "Calpe Valls",
             "anna.calpe@gmail.com",
             "",
-            "123456"
+            "123456",
         )
 }

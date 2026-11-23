@@ -9,15 +9,18 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface AuthenticationApi {
-
     @PUT("/user/")
-    fun registerUser(@Body userDto: UserDto): Completable
+    fun registerUser(
+        @Body userDto: UserDto,
+    ): Completable
 
     @GET("/user/")
     fun getUser(): Single<UserDto>
 
     @POST("/auth/")
-    fun loginUser(@Body authCredentials: AuthDto): Single<AuthTokenDto>
+    fun loginUser(
+        @Body authCredentials: AuthDto,
+    ): Single<AuthTokenDto>
 
     @GET("/refresh/")
     fun refreshUserToken(): Single<AuthTokenDto>

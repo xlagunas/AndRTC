@@ -9,15 +9,15 @@ sealed class Message {
 
 data class OfferMessage(
     override val receiver: Session,
-    val offer: SessionDescription
+    val offer: SessionDescription,
 ) : Message()
 
 data class AnswerMessage(
     override val receiver: Session,
-    val answer: SessionDescription
+    val answer: SessionDescription,
 ) : Message()
 
 data class IceCandidateMessage(
     override val receiver: Session,
-    val iceCandidate: IceCandidate
+    val iceCandidate: IceCandidate,
 ) : Message()

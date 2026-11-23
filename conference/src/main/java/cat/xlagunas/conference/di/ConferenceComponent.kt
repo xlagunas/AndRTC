@@ -12,6 +12,7 @@ interface ConferenceComponent {
     @Component.Builder
     interface Builder {
         fun parent(component: ApplicationComponent): Builder
+
         @BindsInstance
         fun roomId(roomId: String): Builder
 

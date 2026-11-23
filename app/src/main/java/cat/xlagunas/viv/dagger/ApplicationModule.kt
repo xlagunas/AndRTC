@@ -28,20 +28,18 @@ import javax.inject.Singleton
 
 @Module
 class ApplicationModule {
-
     @Provides
     fun provideAppContext(app: Application): Context = app
 
     @Provides
-    fun provideSharedPreference(context: Context): SharedPreferences =
-        context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+    fun provideSharedPreference(context: Context): SharedPreferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
     @Provides
     fun provideRxSchedulers() =
         RxSchedulers(
             Schedulers.io(),
             AndroidSchedulers.mainThread(),
-            Schedulers.computation()
+            Schedulers.computation(),
         )
 
     @Provides
@@ -51,17 +49,15 @@ class ApplicationModule {
     fun provideFriendMapping() = FriendConverter()
 
     @Provides
-    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore =
-        AuthPreferenceDataStore(sharedPreferences)
+    fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore = AuthPreferenceDataStore(sharedPreferences)
 
     @Provides
-    fun provideTimeProvider(): TimeProvider =
-        SystemTimeProvider()
+    fun provideTimeProvider(): TimeProvider = SystemTimeProvider()
 
     @Provides
     fun provideNotificationManager(
         context: Context,
-        @ChannelId channelId: String
+        @ChannelId channelId: String,
     ): NotificationManagerCompat {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context, channelId)
@@ -84,14 +80,18 @@ class ApplicationModule {
     }
 
     @TargetApi(26)
-    private fun createNotificationChannel(context: Context, channelId: String) {
+    private fun createNotificationChannel(
+        context: Context,
+        channelId: String,
+    ) {
         val notificationManager =
             context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-        val callNotificationChannel = NotificationChannel(
-            channelId,
-            "Call notifications",
-            NotificationManager.IMPORTANCE_HIGH
-        )
+        val callNotificationChannel =
+            NotificationChannel(
+                channelId,
+                "Call notifications",
+                NotificationManager.IMPORTANCE_HIGH,
+            )
         notificationManager.createNotificationChannel(callNotificationChannel)
     }
 }

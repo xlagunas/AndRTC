@@ -3,9 +3,9 @@ package cat.xlagunas.viv.dagger
 import android.app.Application
 import cat.xlagunas.core.BuildConfig
 import cat.xlagunas.user.auth.AuthHeaderInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -16,14 +16,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 class NetworkModule {
-
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder().create()
     }
 
     @Provides
-    fun provideRetrofit(gson: Gson, client: OkHttpClient): Retrofit {
+    fun provideRetrofit(
+        gson: Gson,
+        client: OkHttpClient,
+    ): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
@@ -35,7 +37,7 @@ class NetworkModule {
     @Provides
     fun provideOkiHttpClient(
         application: Application,
-        authInterceptor: AuthHeaderInterceptor
+        authInterceptor: AuthHeaderInterceptor,
     ): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BASIC

@@ -8,7 +8,7 @@ data class FriendDto(
     @SerializedName("name") val name: String,
     @SerializedName("email") val email: String,
     @SerializedName("profilePic") val profilePic: String?,
-    @SerializedName("status") val relationship: Relationship
+    @SerializedName("status") val relationship: Relationship,
 )
 
 enum class Relationship { NONE, REQUESTED, PENDING, ACCEPTED }

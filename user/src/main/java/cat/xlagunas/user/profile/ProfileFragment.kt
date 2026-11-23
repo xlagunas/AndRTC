@@ -31,7 +31,7 @@ ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = ContentProfileBinding.inflate(layoutInflater, container, false)
         binding.logoutButton.setOnClickListener { profileViewModel.logout() }

@@ -7,11 +7,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.core.di.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 class CallConfirmationDialog : DialogFragment() {
-
     @Inject
     lateinit var factory: ViewModelFactory
 
@@ -22,7 +21,6 @@ class CallConfirmationDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         val viewModel = ViewModelProvider(this, factory)[CallViewModel::class.java]
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle("Call confirmation")
@@ -38,7 +36,10 @@ class CallConfirmationDialog : DialogFragment() {
     }
 
     companion object {
-        fun newInstance(friendId: Long, fullname: String): CallConfirmationDialog {
+        fun newInstance(
+            friendId: Long,
+            fullname: String,
+        ): CallConfirmationDialog {
             val frag = CallConfirmationDialog()
             val args = Bundle()
             args.putLong("id", friendId)

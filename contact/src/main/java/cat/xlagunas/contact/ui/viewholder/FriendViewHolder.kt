@@ -10,8 +10,10 @@ import com.bumptech.glide.request.RequestOptions
 
 abstract class FriendViewHolder(view: View, internal val contactListener: ContactListener) :
     androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
-
-    internal fun setupView(binding: RowBaseBinding, friend: Friend) {
+    internal fun setupView(
+        binding: RowBaseBinding,
+        friend: Friend,
+    ) {
         binding.contactFullname.text = friend.name
         binding.contactUsername.text = friend.username
 

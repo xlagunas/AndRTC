@@ -10,7 +10,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 class CallRepositoryImplTest {
-
     @Mock
     lateinit var callApi: CallApi
     private lateinit var callRepository: CallRepository
@@ -22,14 +21,15 @@ class CallRepositoryImplTest {
     }
 
     @Test
-    fun whenCreateCall_thenCreateCallRequest() = runBlocking {
-        val fakeCallDto = CallDto("theRoomId")
-        val fakeCall = Call(fakeCallDto.roomId)
-        val callParticipants = CallParticipantsDto(listOf(CallParticipantDto(5)))
-        `when`(callApi.createCall(callParticipants)).thenReturn(fakeCallDto)
+    fun whenCreateCall_thenCreateCallRequest() =
+        runBlocking {
+            val fakeCallDto = CallDto("theRoomId")
+            val fakeCall = Call(fakeCallDto.roomId)
+            val callParticipants = CallParticipantsDto(listOf(CallParticipantDto(5)))
+            `when`(callApi.createCall(callParticipants)).thenReturn(fakeCallDto)
 
-        val call = callRepository.createCall(listOf(5))
-        assertThat(call).isEqualToComparingFieldByField(fakeCall)
-        return@runBlocking
-    }
+            val call = callRepository.createCall(listOf(5))
+            assertThat(call).isEqualToComparingFieldByField(fakeCall)
+            return@runBlocking
+        }
 }

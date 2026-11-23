@@ -17,7 +17,6 @@ import timber.log.Timber
 
 @OpenForTesting
 class ContactFragment : Fragment(), ContactListener {
-
     private var _binding: FragmentContactBinding? = null
     private val binding get() = _binding!!
 
@@ -33,13 +32,16 @@ class ContactFragment : Fragment(), ContactListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentContactBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
         setupSearchView()
@@ -62,35 +64,38 @@ class ContactFragment : Fragment(), ContactListener {
     }
 
     private fun setupSearchView() {
-        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                query.isNotEmpty().let {
-                    contactViewModel.findContact(query)
-                        .observe(
-                            this@ContactFragment,
-                            Observer { renderFriends(it) }
-                        )
-                    return true
+        binding.search.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    query.isNotEmpty().let {
+                        contactViewModel.findContact(query)
+                            .observe(
+                                this@ContactFragment,
+                                Observer { renderFriends(it) },
+                            )
+                        return true
+                    }
                 }
-            }
 
-            override fun onQueryTextChange(newText: String) = false
-        })
+                override fun onQueryTextChange(newText: String) = false
+            },
+        )
     }
 
     private fun setUpRecyclerView() {
         binding.recyclerView.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
-                activity,
-                RecyclerView.VERTICAL,
-                false
-            )
+            layoutManager =
+                androidx.recyclerview.widget.LinearLayoutManager(
+                    activity,
+                    RecyclerView.VERTICAL,
+                    false,
+                )
             adapter = contactAdapter
             addItemDecoration(
                 androidx.recyclerview.widget.DividerItemDecoration(
                     this@ContactFragment.activity,
-                    LinearLayout.VERTICAL
-                )
+                    LinearLayout.VERTICAL,
+                ),
             )
         }
     }

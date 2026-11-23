@@ -32,81 +32,89 @@ class SocketIOSignalingTest {
         SocketIOController(
             messageMapper,
             SessionMapper(gson),
-            fakeEmitter
+            fakeEmitter,
         )
     private val signalingProtocol =
         SocketIOSignaling(webSocketController)
 
     @Test
-    fun onNewSession() = runTest(UnconfinedTestDispatcher()) {
-        val values = mutableListOf<Session>()
+    fun onNewSession() =
+        runTest(UnconfinedTestDispatcher()) {
+            val values = mutableListOf<Session>()
 
-        val job = launch {
-            signalingProtocol.onNewSession()
-                .collect { values.add(it) }
+            val job =
+                launch {
+                    signalingProtocol.onNewSession()
+                        .collect { values.add(it) }
+                }
+            fakeEmitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
+
+            Assertions.assertThat(values[0])
+                .usingRecursiveComparison().isEqualTo(fakeLocalSession())
+            job.cancel()
         }
-        fakeEmitter.getEmitter().emit("NEW_USER", fakeLocalSession().getId())
-
-        Assertions.assertThat(values[0])
-            .usingRecursiveComparison().isEqualTo(fakeLocalSession())
-        job.cancel()
-    }
 
     @Test
-    fun onReceiveOffer() = runTest(UnconfinedTestDispatcher()) {
-        val values = mutableListOf<OfferMessage>()
-        val expectedOfferMessage = fakeOfferSessionMessage()
-        val expectedAnswerMessage = fakeAnswerSessionMessage()
-        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+    fun onReceiveOffer() =
+        runTest(UnconfinedTestDispatcher()) {
+            val values = mutableListOf<OfferMessage>()
+            val expectedOfferMessage = fakeOfferSessionMessage()
+            val expectedAnswerMessage = fakeAnswerSessionMessage()
+            val expectedIceCandidateMessage = fakeIceCandidateMessage()
 
-        val job = launch {
-            signalingProtocol.onReceiveOffer().collect { values.add(it) }
+            val job =
+                launch {
+                    signalingProtocol.onReceiveOffer().collect { values.add(it) }
+                }
+            webSocketController.sendMessage(expectedAnswerMessage)
+            webSocketController.sendMessage(expectedOfferMessage)
+            webSocketController.sendMessage(expectedIceCandidateMessage)
+
+            Assertions.assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedOfferMessage)
+            Assertions.assertThat(values).hasSize(1)
+            job.cancel()
         }
-        webSocketController.sendMessage(expectedAnswerMessage)
-        webSocketController.sendMessage(expectedOfferMessage)
-        webSocketController.sendMessage(expectedIceCandidateMessage)
-
-        Assertions.assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedOfferMessage)
-        Assertions.assertThat(values).hasSize(1)
-        job.cancel()
-    }
 
     @Test
-    fun onReceiveAnswer() = runTest(UnconfinedTestDispatcher()) {
-        val values = mutableListOf<AnswerMessage>()
-        val expectedOfferMessage = fakeOfferSessionMessage()
-        val expectedAnswerMessage = fakeAnswerSessionMessage()
-        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+    fun onReceiveAnswer() =
+        runTest(UnconfinedTestDispatcher()) {
+            val values = mutableListOf<AnswerMessage>()
+            val expectedOfferMessage = fakeOfferSessionMessage()
+            val expectedAnswerMessage = fakeAnswerSessionMessage()
+            val expectedIceCandidateMessage = fakeIceCandidateMessage()
 
-        val job = launch {
-            signalingProtocol.onReceiveAnswer().collect { values.add(it) }
+            val job =
+                launch {
+                    signalingProtocol.onReceiveAnswer().collect { values.add(it) }
+                }
+            webSocketController.sendMessage(expectedAnswerMessage)
+            webSocketController.sendMessage(expectedOfferMessage)
+            webSocketController.sendMessage(expectedIceCandidateMessage)
+
+            Assertions.assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedAnswerMessage)
+            Assertions.assertThat(values).hasSize(1)
+            job.cancel()
         }
-        webSocketController.sendMessage(expectedAnswerMessage)
-        webSocketController.sendMessage(expectedOfferMessage)
-        webSocketController.sendMessage(expectedIceCandidateMessage)
-
-        Assertions.assertThat(values[0]).usingRecursiveComparison().isEqualTo(expectedAnswerMessage)
-        Assertions.assertThat(values).hasSize(1)
-        job.cancel()
-    }
 
     @Test
-    fun onReceiveIceCandidate() = runTest(UnconfinedTestDispatcher()) {
-        val values = mutableListOf<IceCandidateMessage>()
-        val expectedOfferMessage = fakeOfferSessionMessage()
-        val expectedAnswerMessage = fakeAnswerSessionMessage()
-        val expectedIceCandidateMessage = fakeIceCandidateMessage()
+    fun onReceiveIceCandidate() =
+        runTest(UnconfinedTestDispatcher()) {
+            val values = mutableListOf<IceCandidateMessage>()
+            val expectedOfferMessage = fakeOfferSessionMessage()
+            val expectedAnswerMessage = fakeAnswerSessionMessage()
+            val expectedIceCandidateMessage = fakeIceCandidateMessage()
 
-        val job = launch {
-            signalingProtocol.onReceiveIceCandidate().collect { values.add(it) }
+            val job =
+                launch {
+                    signalingProtocol.onReceiveIceCandidate().collect { values.add(it) }
+                }
+            webSocketController.sendMessage(expectedAnswerMessage)
+            webSocketController.sendMessage(expectedOfferMessage)
+            webSocketController.sendMessage(expectedIceCandidateMessage)
+
+            Assertions.assertThat(values[0]).usingRecursiveComparison()
+                .isEqualTo(expectedIceCandidateMessage)
+            Assertions.assertThat(values).hasSize(1)
+            job.cancel()
         }
-        webSocketController.sendMessage(expectedAnswerMessage)
-        webSocketController.sendMessage(expectedOfferMessage)
-        webSocketController.sendMessage(expectedIceCandidateMessage)
-
-        Assertions.assertThat(values[0]).usingRecursiveComparison()
-            .isEqualTo(expectedIceCandidateMessage)
-        Assertions.assertThat(values).hasSize(1)
-        job.cancel()
-    }
 }
