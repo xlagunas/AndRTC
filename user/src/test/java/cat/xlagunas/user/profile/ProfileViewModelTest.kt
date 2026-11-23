@@ -7,12 +7,16 @@ import cat.xlagunas.user.User
 import cat.xlagunas.user.auth.AuthenticationRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.processors.PublishProcessor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import java.io.IOException
 
 class ProfileViewModelTest {
     @get:Rule
@@ -52,5 +56,44 @@ class ProfileViewModelTest {
         viewModel.logout()
 
         assertThat(executed).containsExactly("invalidatePushToken", "logoutUser", "navigateToLogin")
+    }
+
+    @Test
+    fun givenPushTokenInvalidationFails_whenLogout_thenStillLogoutAndNavigateToLogin() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        var loggedOut = false
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.error(IOException("Offline")))
+        `when`(authenticationRepository.logoutUser()).thenReturn(Completable.fromAction { loggedOut = true })
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+
+        val unhandledErrors = captureUnhandledRxErrors { viewModel.logout() }
+
+        assertThat(loggedOut).isTrue()
+        verify(navigator).navigateToLogin()
+        assertThat(unhandledErrors).isEmpty()
+    }
+
+    @Test
+    fun givenLogoutFails_whenLogout_thenNoNavigationAndNoCrash() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.complete())
+        `when`(authenticationRepository.logoutUser()).thenReturn(Completable.error(IOException("Disk error")))
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+
+        val unhandledErrors = captureUnhandledRxErrors { viewModel.logout() }
+
+        verify(navigator, never()).navigateToLogin()
+        assertThat(unhandledErrors).isEmpty()
+    }
+
+    private fun captureUnhandledRxErrors(block: () -> Unit): List<Throwable> {
+        val errors = mutableListOf<Throwable>()
+        RxJavaPlugins.setErrorHandler { errors.add(it) }
+        try {
+            block()
+        } finally {
+            RxJavaPlugins.reset()
+        }
+        return errors
     }
 }

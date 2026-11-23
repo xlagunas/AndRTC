@@ -16,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
 import java.io.IOException
 
@@ -152,6 +153,13 @@ class ContactViewModelTest {
         viewModel.createCall(listOf(friend, otherFriend))
 
         verify(navigator).requestCall(friend.friendId, friend.username)
+    }
+
+    @Test
+    fun givenNoFriends_whenCreateCall_thenNoCallRequested() {
+        viewModel.createCall(emptyList())
+
+        verifyNoInteractions(navigator)
     }
 
     private fun observeContacts(): List<Result<List<Friend>>> {

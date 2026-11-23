@@ -12,7 +12,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
@@ -117,15 +116,15 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun givenPushTokenRegistrationFails_whenLogin_thenErrorAndNoNavigation() {
+    fun givenPushTokenRegistrationFails_whenLogin_thenStillSuccessAndNavigateToProfile() {
         `when`(authenticationRepository.login(credentials)).thenReturn(Completable.complete())
         `when`(pushTokenRepository.registerPushToken())
             .thenReturn(Completable.error(IOException("Push registration failed")))
 
         viewModel.login(USERNAME, PASSWORD)
 
-        assertThat(states).containsExactly(InvalidLoginState("Push registration failed"))
-        verify(navigator, never()).navigateToProfile()
+        assertThat(states).containsExactly(SuccessLoginState)
+        verify(navigator).navigateToProfile()
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
@@ -47,6 +48,30 @@ class MainViewModelTest {
 
         verify(navigator).navigateToLogin()
         verify(navigator, never()).navigateToProfile()
+    }
+
+    @Test
+    fun givenLoginStatusChangesLater_whenNavigateToProfile_thenOnlyCurrentStatusUsed() {
+        val loggedIn = BehaviorProcessor.createDefault(false)
+        `when`(authenticationRepository.isUserLoggedIn()).thenReturn(loggedIn)
+        val viewModel = MainViewModel(authenticationRepository, navigator)
+
+        viewModel.navigateToProfile()
+        loggedIn.onNext(true)
+
+        verify(navigator, times(1)).navigateToLogin()
+        verify(navigator, never()).navigateToProfile()
+        assertThat(loggedIn.hasSubscribers()).isFalse()
+    }
+
+    @Test
+    fun givenLoginStatusError_whenNavigateToProfile_thenLoginShown() {
+        `when`(authenticationRepository.isUserLoggedIn()).thenReturn(Flowable.error(IllegalStateException()))
+        val viewModel = MainViewModel(authenticationRepository, navigator)
+
+        viewModel.navigateToProfile()
+
+        verify(navigator).navigateToLogin()
     }
 
     @Test
