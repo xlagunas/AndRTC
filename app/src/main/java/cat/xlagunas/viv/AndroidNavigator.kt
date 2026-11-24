@@ -23,7 +23,7 @@ class AndroidNavigator
             val intent =
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://viv.cat/conference?roomId=$roomId"),
+                    Uri.parse("https://viv.xlagunas.dev/conference?roomId=$roomId"),
                 ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             activityProvider.topActivity?.startActivity(intent)
         }

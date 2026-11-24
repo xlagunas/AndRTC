@@ -32,8 +32,8 @@
                 android:name="cat.xlagunas.conference.ui.ConferenceActivity"
                 android:exported="true"
                 android:label="@string/title_activity_main">
-            <tools:validation testUrl="http://viv.cat/conference?roomId=123" />
-            <tools:validation testUrl="https://viv.cat/conference?roomId=123" />
+            <tools:validation testUrl="http://viv.xlagunas.dev/conference?roomId=123" />
+            <tools:validation testUrl="https://viv.xlagunas.dev/conference?roomId=123" />
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -42,7 +42,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                        android:host="viv.cat"
+                        android:host="viv.xlagunas.dev"
                         android:path="/conference"
                         android:scheme="http" />
                 <data android:scheme="https" />
