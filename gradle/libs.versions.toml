@@ -5,7 +5,7 @@ ksp = "2.3.14"
 google-services = "4.6.0"
 firebase-perf-plugin = "2.0.2"
 firebase-crashlytics-plugin = "3.0.8"
-spotless = "6.25.0"
+spotless = "8.12.0"
 kover = "0.9.11"
 
 androidx-appcompat = "1.8.0"
