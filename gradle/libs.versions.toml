@@ -6,6 +6,7 @@ google-services = "4.6.0"
 firebase-perf-plugin = "2.0.2"
 firebase-crashlytics-plugin = "3.0.8"
 spotless = "6.25.0"
+kover = "0.9.11"
 
 androidx-appcompat = "1.8.0"
 androidx-arch-core = "2.2.0"
@@ -134,3 +135,4 @@ mockito-android = { module = "org.mockito:mockito-android", version.ref = "mocki
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

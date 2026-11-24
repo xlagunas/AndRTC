@@ -84,6 +84,42 @@ jobs:
       - name: Run unit tests
         run: ./gradlew testDevelopmentDebugUnitTest --continue
 
+      - name: Run coverage script tests
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+
+      - name: Generate coverage report
+        run: >-
+          ./gradlew :koverHtmlReportCoverage :koverXmlReportCoverage
+          :app:koverXmlReportCoverage :core:koverXmlReportCoverage :user:koverXmlReportCoverage :contact:koverXmlReportCoverage :call:koverXmlReportCoverage :conference:koverXmlReportCoverage :push:koverXmlReportCoverage :signaling:koverXmlReportCoverage
+
+      - name: Write coverage summary
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 .github/scripts/coverage_summary.py \
+            --total build/reports/kover/reportCoverage.xml \
+            --run-url "$RUN_URL" \
+            --module app=app/build/reports/kover/reportCoverage.xml \
+            --module core=core/build/reports/kover/reportCoverage.xml \
+            --module user=user/build/reports/kover/reportCoverage.xml \
+            --module contact=contact/build/reports/kover/reportCoverage.xml \
+            --module call=call/build/reports/kover/reportCoverage.xml \
+            --module conference=conference/build/reports/kover/reportCoverage.xml \
+            --module push=push/build/reports/kover/reportCoverage.xml \
+            --module signaling=signaling/build/reports/kover/reportCoverage.xml > coverage-summary.md
+          cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            build/reports/kover/htmlCoverage/
+            build/reports/kover/reportCoverage.xml
+            coverage-summary.md
+          retention-days: 14
+          if-no-files-found: error
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4
@@ -93,3 +129,33 @@ jobs:
             **/build/reports/tests/
             **/build/test-results/
           retention-days: 7
+
+  coverage-comment:
+    name: Coverage comment
+    needs: unit-tests
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Create or update the coverage comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          IDS=$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- kover-coverage -->"))) | .id')
+          ID=${IDS%%$'\n'*}
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$ID" -F body=@coverage/coverage-summary.md
+          else
+            gh api -X POST "repos/$REPO/issues/$PR_NUMBER/comments" -F body=@coverage/coverage-summary.md
+          fi
