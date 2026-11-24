@@ -13,7 +13,6 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 35
 
         testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
     }
@@ -36,7 +35,7 @@ android {
 
     buildTypes {
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -45,6 +44,7 @@ android {
         unitTests {
             includeAndroidResources = true
         }
+        targetSdk 35
     }
 
 
@@ -56,6 +56,9 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    lint {
+        targetSdk 35
+    }
 }
 
 ksp {
@@ -64,12 +67,12 @@ ksp {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    ksp 'com.google.dagger:dagger-compiler:2.51.1'
-    implementation 'com.google.dagger:dagger:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.60.1'
+    implementation 'com.google.dagger:dagger:2.60.1'
 
-    ksp 'androidx.room:room-compiler:2.6.1'
-    implementation 'androidx.room:room-runtime:2.6.1'
-    implementation 'androidx.room:room-rxjava2:2.6.1'
+    ksp 'androidx.room:room-compiler:2.8.4'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-rxjava2:2.8.4'
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.11.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'

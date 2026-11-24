@@ -51,9 +51,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':app')
     implementation project(':signaling')
-    ksp 'com.google.dagger:dagger-compiler:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.60.1'
 
-    implementation 'com.google.dagger:dagger:2.51.1'
+    implementation 'com.google.dagger:dagger:2.60.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.5'
 
