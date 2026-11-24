@@ -19,7 +19,7 @@
                 android:name="cat.xlagunas.viv.home.MainActivity"
                 android:exported="true"
                 android:theme="@style/AppTheme.SplashTheme">
-            <tools:validation testUrl="https://viv.cat/" />
+            <tools:validation testUrl="https://viv.xlagunas.dev/" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                        android:host="viv.cat"
+                        android:host="viv.xlagunas.dev"
                         android:scheme="http" />
                 <data android:scheme="https" />
             </intent-filter>
