@@ -3,6 +3,7 @@ package cat.xlagunas.call
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import cat.xlagunas.core.di.ViewModelFactory
@@ -22,17 +23,54 @@ class CallConfirmationDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val viewModel = ViewModelProvider(this, factory)[CallViewModel::class.java]
-        return MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Call confirmation")
-            .setMessage("Do you want to call ${arguments?.getString("name")}?")
-            .setPositiveButton("Yes") { _, _ ->
-                run {
-                    Timber.d("Proceed to call!")
-                    viewModel.createCall(listOf(arguments?.getLong("id")!!))
-                }
+        val dialog =
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.call_confirmation_title)
+                .setMessage(getString(R.string.call_confirmation_message, requireArguments().getString("name")))
+                .setPositiveButton(R.string.call_confirmation_yes, null)
+                .setNegativeButton(R.string.call_confirmation_no) { _, _ -> dismiss() }
+                .create()
+        dialog.setOnShowListener {
+            // Replace the default listener, which would dismiss the dialog on click.
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                Timber.d("Proceed to call!")
+                viewModel.createCall(listOf(requireArguments().getLong("id")))
             }
-            .setNegativeButton("No") { _, _ -> dismiss() }
-            .create()
+            // Runs once per dialog instance, so the observer is registered only once.
+            viewModel.state.observe(this) { state -> render(dialog, state) }
+        }
+        return dialog
+    }
+
+    private fun render(
+        dialog: AlertDialog,
+        state: CallState,
+    ) {
+        val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        when (state) {
+            CallState.Idle -> {
+                dialog.setMessage(
+                    getString(R.string.call_confirmation_message, requireArguments().getString("name")),
+                )
+                positive.setText(R.string.call_confirmation_yes)
+                positive.isEnabled = true
+                negative.isEnabled = true
+            }
+            CallState.Creating -> {
+                dialog.setMessage(getString(R.string.call_creating))
+                positive.isEnabled = false
+                negative.isEnabled = false
+            }
+            CallState.Error -> {
+                dialog.setMessage(getString(R.string.call_error))
+                positive.setText(R.string.call_retry)
+                positive.isEnabled = true
+                negative.isEnabled = true
+            }
+            // State may be delivered after onSaveInstanceState, so avoid the state-loss crash.
+            CallState.Started -> dismissAllowingStateLoss()
+        }
     }
 
     companion object {
