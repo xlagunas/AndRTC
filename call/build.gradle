@@ -1,16 +1,14 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 
 android {
-    namespace 'cat.xlagunas.call'
-    compileSdk 35
+    namespace = 'cat.xlagunas.call'
+    compileSdk = 35
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 35
+        minSdk = 23
 
-        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
+        testInstrumentationRunner = "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
     }
 
     buildTypes {
@@ -28,12 +26,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
+    lint {
+        targetSdk = 35
+    }
+    testOptions {
+        targetSdk = 35
     }
 }
 
@@ -44,8 +45,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
 
-    ksp 'com.google.dagger:dagger-compiler:2.51.1'
-    implementation 'com.google.dagger:dagger:2.51.1'
+    ksp 'com.google.dagger:dagger-compiler:2.60.1'
+    implementation 'com.google.dagger:dagger:2.60.1'
     implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'androidx.core:core-ktx:1.15.0'
 

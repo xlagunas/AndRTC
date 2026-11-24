@@ -98,3 +98,6 @@
 #Glide Http3 integration
 -keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
 
+
+# AGP 9 removed proguard-android.txt; keep previous behaviour (no R8 optimization) until verified.
+-dontoptimize

@@ -1,15 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
-    namespace 'cat.xlagunas.test_utils'
-    compileSdk 35
+    namespace = 'cat.xlagunas.test_utils'
+    compileSdk = 35
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 35
+        minSdk = 23
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -25,18 +23,21 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
+    lint {
+        targetSdk = 35
+    }
+    testOptions {
+        targetSdk = 35
     }
 }
 
