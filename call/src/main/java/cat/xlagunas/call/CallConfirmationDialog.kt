@@ -26,6 +26,7 @@ class CallConfirmationDialog : DialogFragment() {
         val dialog =
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.call_confirmation_title)
+                .setMessage(getString(R.string.call_confirmation_message, requireArguments().getString("name")))
                 .setPositiveButton(R.string.call_confirmation_yes, null)
                 .setNegativeButton(R.string.call_confirmation_no) { _, _ -> dismiss() }
                 .create()
