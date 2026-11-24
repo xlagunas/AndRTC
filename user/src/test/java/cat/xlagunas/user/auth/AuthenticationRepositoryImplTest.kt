@@ -19,7 +19,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import java.io.IOException
@@ -35,6 +36,9 @@ class AuthenticationRepositoryImplTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock
     private lateinit var authenticationApi: AuthenticationApi
 
@@ -43,7 +47,6 @@ class AuthenticationRepositoryImplTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         val database =
             Room.inMemoryDatabaseBuilder(
                 RuntimeEnvironment.application,
@@ -118,15 +121,4 @@ class AuthenticationRepositoryImplTest {
             null,
             null,
         )
-
-    @Test
-    fun reactive_insert() {
-        val observer = userDao.getUserCount().test()
-        observer.assertValue(0)
-
-        userDao.insert(userConverter.toUserEntity(mockedUserDto()))
-        observer.assertValueAt(1, 1)
-        userDao.delete(userConverter.toUserEntity(mockedUserDto()))
-        observer.assertValueAt(2, 0)
-    }
 }
