@@ -16,7 +16,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -38,11 +39,13 @@ class LocalContactDataSourceTest {
     private lateinit var authDataStore: AuthDataStore
 
     @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+    @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         vivDatabase =
             Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
                 .allowMainThreadQueries()
