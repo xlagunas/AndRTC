@@ -131,12 +131,12 @@ implements it. Feature modules never reference each other's screens directly.
 
 ## Git and CI workflow
 
-- The default branch is `kotlin`. Never commit directly to it: create a branch
-  (`feature/…`, `fix/…`, `chore/…`, `docs/…`) and open a PR against `kotlin`.
+- The default branch is `main`. Never commit directly to it: create a branch
+  (`feature/…`, `fix/…`, `chore/…`, `docs/…`) and open a PR against `main`.
 - Commit messages are short imperative sentences (`Add ViewModel unit tests and fix their
   error handling`). Reference the GitHub issue in the PR body (`Closes #82`).
 - CI (`.github/workflows/android.yml`) runs `spotlessCheck`, `assembleDevelopmentDebug` and
-  `testDevelopmentDebugUnitTest` on every PR to `kotlin`. GitHub Actions is the only CI.
+  `testDevelopmentDebugUnitTest` on every PR to `main`. GitHub Actions is the only CI.
 - Coverage in CI: the `unit-tests` job writes a coverage table (total and per module) to the
   job summary and uploads a `coverage-report` artifact (HTML, XML, summary) on successful
   runs. A separate `coverage-comment` job (only `pull-requests: write`, no checkout)
