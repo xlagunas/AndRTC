@@ -1,26 +1,24 @@
 package cat.xlagunas.contact.data
 
-import android.content.Context
-import android.content.SharedPreferences
 import cat.xlagunas.contact.domain.ContactCache
 import cat.xlagunas.contact.domain.TimeProvider
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
-@RunWith(RobolectricTestRunner::class)
 class ContactCacheImplTest {
-    @Mock
-    private lateinit var sharedPreferences: SharedPreferences
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
     private lateinit var timeProvider: TimeProvider
+
+    private val sharedPreferences = FakeSharedPreferences()
 
     private lateinit var contactCache: ContactCache
 
@@ -28,15 +26,16 @@ class ContactCacheImplTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         contactCache = ContactCacheImpl(sharedPreferences, timeProvider)
     }
 
     @Test
     fun givenMoreThanExactValidCacheMillisEllapsed_whenIsCacheValid_thenFalse() {
-        `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
-        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.plus(1))
+        sharedPreferences.edit()
+            .putLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.plus(1),
+            ).commit()
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
@@ -47,9 +46,11 @@ class ContactCacheImplTest {
 
     @Test
     fun givenExactValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
-        `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
-        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS)
+        sharedPreferences.edit()
+            .putLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS,
+            ).commit()
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
@@ -60,9 +61,11 @@ class ContactCacheImplTest {
 
     @Test
     fun givenLessThanValidCacheMillisEllapsed_whenIsCacheValid_thenTrue() {
-        `when`(
-            sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0),
-        ).thenReturn(fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.minus(1))
+        sharedPreferences.edit()
+            .putLong(
+                ContactCacheImpl.LAST_MODIFIED_DATE,
+                fakeCurrentTime - ContactCacheImpl.MAX_VALID_CACHE_MILLIS.minus(1),
+            ).commit()
         `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
 
         contactCache.isCacheValid()
@@ -72,28 +75,24 @@ class ContactCacheImplTest {
     }
 
     @Test
-    fun whenUpdateCache_thenSharedPreferenceUpdated() {
-        val sharedPreferences =
-            RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
-        val fakeCurrentTime = 50000L
-        contactCache = ContactCacheImpl(sharedPreferences, timeProvider)
-        `when`(timeProvider.getTimeMillis()).thenReturn(fakeCurrentTime)
+    fun givenCurrentTime_whenUpdateCache_thenLastModifiedDateStored() {
+        val currentTime = 50000L
+        `when`(timeProvider.getTimeMillis()).thenReturn(currentTime)
 
         contactCache.updateCache()
             .test().assertComplete()
 
         val lastModifiedDate = sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, 0)
-        assertThat(lastModifiedDate).isEqualTo(fakeCurrentTime)
+        assertThat(lastModifiedDate).isEqualTo(currentTime)
     }
 
     @Test
-    fun whenInvalidateCache_thenNoSharedPreferenceValue() {
-        val sharedPreferences =
-            RuntimeEnvironment.application.getSharedPreferences("sp", Context.MODE_PRIVATE)
-        contactCache = ContactCacheImpl(sharedPreferences, timeProvider)
+    fun givenStoredDate_whenInvalidateCache_thenNoStoredValue() {
+        sharedPreferences.edit().putLong(ContactCacheImpl.LAST_MODIFIED_DATE, 12345L).commit()
 
         contactCache.invalidateCache().test().assertComplete()
 
+        assertThat(sharedPreferences.contains(ContactCacheImpl.LAST_MODIFIED_DATE)).isFalse()
         val lastModifiedDate = sharedPreferences.getLong(ContactCacheImpl.LAST_MODIFIED_DATE, -1)
         assertThat(lastModifiedDate).isEqualTo(-1)
     }
