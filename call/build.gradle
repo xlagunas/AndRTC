@@ -1,15 +1,14 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 
 android {
-    namespace 'cat.xlagunas.call'
-    compileSdk 35
+    namespace = 'cat.xlagunas.call'
+    compileSdk = 35
 
     defaultConfig {
-        minSdkVersion 23
+        minSdk = 23
 
-        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
+        testInstrumentationRunner = "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
     }
 
     buildTypes {
@@ -27,18 +26,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
     lint {
-        targetSdk 35
+        targetSdk = 35
     }
     testOptions {
-        targetSdk 35
+        targetSdk = 35
     }
 }
 

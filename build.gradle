@@ -20,28 +20,12 @@ buildscript {
 plugins {
     id "com.diffplug.spotless" version "6.25.0"
 }
-apply plugin: 'kotlin'
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
+        maven { url = "https://jitpack.io" }
     }
 }
 

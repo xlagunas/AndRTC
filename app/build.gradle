@@ -5,7 +5,6 @@
 // }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -17,30 +16,30 @@ allOpen {
 }
 
 android {
-    namespace 'cat.xlagunas.viv'
-    compileSdk 35
+    namespace = 'cat.xlagunas.viv'
+    compileSdk = 35
     defaultConfig {
-        applicationId "cat.xlagunas.viv"
-        minSdkVersion 23
-        targetSdkVersion 35
-        versionCode rootProject.gitCommitCount
-        versionName rootProject.gitTag
-        testInstrumentationRunner "cat.xlagunas.viv.commons.MockTestRunner"
+        applicationId = "cat.xlagunas.viv"
+        minSdk = 23
+        targetSdk = 35
+        versionCode = rootProject.gitCommitCount
+        versionName = rootProject.gitTag
+        testInstrumentationRunner = "cat.xlagunas.viv.commons.MockTestRunner"
     }
 
     signingConfigs {
         debug {
-            storeFile file('../buildsystem/debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile = file('../buildsystem/debug.keystore')
+            storePassword = 'android'
+            keyAlias = 'androiddebugkey'
+            keyPassword = 'android'
         }
 
         release {
-            storeFile file('../buildsystem/production.keystore')
-            storePassword System.getenv("PROD_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("PROD_KEY_ALIAS")
-            keyPassword System.getenv("PROD_KEY_PASSWORD")
+            storeFile = file('../buildsystem/production.keystore')
+            storePassword = System.getenv("PROD_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("PROD_KEY_ALIAS")
+            keyPassword = System.getenv("PROD_KEY_PASSWORD")
         }
     }
 
@@ -51,7 +50,7 @@ android {
         }
 
         development {
-            versionNameSuffix '.local'
+            versionNameSuffix = '.local'
         }
     }
 
@@ -63,22 +62,22 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
             manifestPlaceholders = ["appName": '@string/app_name']
             // Mapping-file upload is a credentialed CI/release concern; disable so local/dev
             // configuration doesn't require the Crashlytics upload task to resolve.
             firebaseCrashlytics {
-                mappingFileUploadEnabled false
+                mappingFileUploadEnabled = false
             }
         }
 
         debug {
-            minifyEnabled isMinifyEnabledForBuild()
+            minifyEnabled = isMinifyEnabledForBuild()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            applicationIdSuffix '.dev'
-            versionNameSuffix '.dev'
+            applicationIdSuffix = '.dev'
+            versionNameSuffix = '.dev'
             manifestPlaceholders = ["appName": '@string/app_name_dev']
         }
     }
@@ -93,13 +92,10 @@ android {
     }
 
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
-    }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     dynamicFeatures = [":conference"]

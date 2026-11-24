@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'kotlin-allopen'
 
@@ -16,13 +15,13 @@ buildscript {
 }
 
 android {
-    namespace 'cat.xlagunas.contact'
-    compileSdk 35
+    namespace = 'cat.xlagunas.contact'
+    compileSdk = 35
 
     defaultConfig {
-        minSdkVersion 23
+        minSdk = 23
 
-        testInstrumentationRunner "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
+        testInstrumentationRunner = "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
     }
 
     buildFeatures {
@@ -43,18 +42,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
     lint {
-        targetSdk 35
+        targetSdk = 35
     }
     testOptions {
-        targetSdk 35
+        targetSdk = 35
     }
 
 }
