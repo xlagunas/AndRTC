@@ -35,16 +35,23 @@ class CallViewModel internal constructor(
             // The confirmation dialog is dismissed (and this ViewModel cleared) as soon as the
             // user confirms, so the call must outlive viewModelScope cancellation
             withContext(NonCancellable) {
+                val call =
+                    try {
+                        withContext(ioDispatcher) { callRepository.createCall(contacts) }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error creating call")
+                        _state.value = CallState.Error
+                        return@withContext
+                    }
                 try {
-                    val call = withContext(ioDispatcher) { callRepository.createCall(contacts) }
                     navigator.startCall(call.id)
-                    _state.value = CallState.Started
-                } catch (e: CancellationException) {
-                    throw e
                 } catch (e: Exception) {
-                    Timber.e(e, "Error creating call")
-                    _state.value = CallState.Error
+                    // The call already exists, so a Retry would create a second one: log and finish
+                    Timber.e(e, "Error starting call ${call.id}")
                 }
+                _state.value = CallState.Started
             }
         }
     }

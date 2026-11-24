@@ -16,6 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
@@ -62,6 +63,21 @@ class CallViewModelTest {
 
             verifyNoInteractions(navigator)
             assertThat(states).containsExactly(CallState.Idle, CallState.Creating, CallState.Error)
+        }
+
+    @Test
+    fun givenStartCallFails_whenCreateCall_thenStartedWithoutRetry() =
+        runTest(testDispatcher) {
+            val repository = FakeCallRepository { Call("theRoomId") }
+            doThrow(IllegalStateException("No activity")).`when`(navigator).startCall("theRoomId")
+            val viewModel = givenViewModel(repository)
+            val states = observeStates(viewModel)
+
+            viewModel.createCall(listOf(5L))
+
+            // The call already exists on the backend, so offering Retry would create a second one
+            assertThat(states).containsExactly(CallState.Idle, CallState.Creating, CallState.Started)
+            assertThat(repository.requestedContacts).containsExactly(listOf(5L))
         }
 
     @Test
