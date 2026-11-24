@@ -185,4 +185,27 @@ configurations.configureEach {
     exclude group: 'com.google.protobuf', module: 'protobuf-lite'
 }
 
+// google-services.json is not versioned (public repository). CI writes it from the
+// GOOGLE_SERVICES secret. Locally, set the `viv.googleServicesJson` Gradle property (normally
+// in ~/.gradle/gradle.properties) to a copy kept outside the repository: it is the source of
+// truth and is copied here whenever it differs, so every checkout and worktree builds.
+syncGoogleServicesJson(file('google-services.json'), providers.gradleProperty('viv.googleServicesJson').orNull)
+
+static void syncGoogleServicesJson(File target, String sourcePath) {
+    if (sourcePath == null) {
+        if (!target.exists()) {
+            println "WARNING: app/google-services.json is missing. Set the 'viv.googleServicesJson' " +
+                    "Gradle property (e.g. in ~/.gradle/gradle.properties) to the path of your copy. See CLAUDE.md."
+        }
+        return
+    }
+    File source = new File(sourcePath)
+    if (!source.isFile()) {
+        throw new GradleException("viv.googleServicesJson points to '${sourcePath}', which is not a file.")
+    }
+    if (!target.exists() || source.bytes != target.bytes) {
+        java.nio.file.Files.copy(source.toPath(), target.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
 apply plugin: 'com.google.gms.google-services'
