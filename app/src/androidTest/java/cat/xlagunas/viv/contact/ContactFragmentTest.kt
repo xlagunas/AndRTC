@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -25,10 +26,11 @@ import cat.xlagunas.contact.ui.ContactFragment
 import cat.xlagunas.contact.ui.ContactViewModel
 import cat.xlagunas.contact.ui.viewholder.ConfirmFriendViewHolder
 import cat.xlagunas.contact.ui.viewholder.CurrentFriendViewHolder
-import cat.xlagunas.contact.ui.viewholder.RequestFriendViewHolder
 import cat.xlagunas.test.utils.ViewModelUtil
 import cat.xlagunas.viv.commons.TestApplication
 import org.hamcrest.Matcher
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,13 +56,20 @@ class ContactFragmentTest {
 
     @Test
     fun givenWithContacts_whenContactInits_thenContacts() {
-        contactsLiveData.postValue(Result.success(populateContactsList()))
+        val contacts = populateContactsList()
+        contactsLiveData.postValue(Result.success(contacts))
 
         onView(withId(R.id.recycler_view))
             .check(ViewAssertions.matches(ViewMatchers.hasDescendant(withText("FirstFriend"))))
 
         onView(withId(R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RequestFriendViewHolder>(999))
+            .perform(RecyclerViewActions.scrollToPosition<ViewHolder>(contacts.lastIndex))
+            .check { view, noViewFoundException ->
+                if (noViewFoundException != null) throw noViewFoundException
+                val recyclerView = view as RecyclerView
+                assertEquals(contacts.size, recyclerView.adapter?.itemCount)
+                assertNotNull(recyclerView.findViewHolderForAdapterPosition(contacts.lastIndex))
+            }
     }
 
     @Test
