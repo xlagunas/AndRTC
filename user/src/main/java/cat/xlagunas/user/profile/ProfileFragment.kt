@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import cat.xlagunas.core.OpenForTesting
+import cat.xlagunas.core.common.displayMessage
 import cat.xlagunas.core.common.viewModel
 import cat.xlagunas.user.R
 import cat.xlagunas.user.User
@@ -26,6 +27,7 @@ ProfileFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         profileViewModel = viewModel(ProfileViewModel::class.java)
         profileViewModel.user.observe(viewLifecycleOwner, Observer(this::onUserEvent))
+        profileViewModel.logoutState.observe(viewLifecycleOwner, Observer(this::onLogoutState))
     }
 
     override fun onCreateView(
@@ -40,6 +42,20 @@ ProfileFragment : Fragment() {
 
     private fun onUserEvent(user: User?) {
         user?.let(this::renderUser)
+    }
+
+    private fun onLogoutState(state: LogoutState) {
+        when (state) {
+            LogoutState.Idle -> binding.logoutButton.isEnabled = true
+            LogoutState.InProgress -> binding.logoutButton.isEnabled = false
+            LogoutState.Error -> {
+                binding.logoutButton.isEnabled = true
+                displayMessage(getString(R.string.logout_error), getString(R.string.retry)) {
+                    profileViewModel.logout()
+                }
+                profileViewModel.onLogoutErrorShown()
+            }
+        }
     }
 
     private fun renderUser(user: User) {

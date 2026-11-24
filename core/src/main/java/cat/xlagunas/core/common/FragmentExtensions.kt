@@ -19,3 +19,14 @@ fun Fragment.displayMessage(message: String) {
     val layout = requireActivity().findViewById<View>(android.R.id.content)
     Snackbar.make(layout, message, BaseTransientBottomBar.LENGTH_LONG).show()
 }
+
+fun Fragment.displayMessage(
+    message: String,
+    actionLabel: String,
+    action: () -> Unit,
+) {
+    val layout = requireActivity().findViewById<View>(android.R.id.content)
+    Snackbar.make(layout, message, BaseTransientBottomBar.LENGTH_LONG)
+        .setAction(actionLabel) { action() }
+        .show()
+}
