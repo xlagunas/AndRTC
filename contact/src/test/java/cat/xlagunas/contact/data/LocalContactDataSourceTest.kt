@@ -16,12 +16,16 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class LocalContactDataSourceTest {
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     private lateinit var localContactDataSource: LocalContactDataSource
 
     private lateinit var userDao: UserDao
@@ -42,7 +46,6 @@ class LocalContactDataSourceTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         vivDatabase =
             Room.inMemoryDatabaseBuilder(RuntimeEnvironment.application, VivDatabase::class.java)
                 .allowMainThreadQueries()

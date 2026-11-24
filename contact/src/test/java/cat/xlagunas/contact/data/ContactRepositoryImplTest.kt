@@ -8,16 +8,25 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.CompletableSubject
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyList
 import org.mockito.Mock
+import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import java.io.IOException
 
 class ContactRepositoryImplTest {
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     lateinit var contactRepository: ContactRepository
 
     @Mock
@@ -31,7 +40,6 @@ class ContactRepositoryImplTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         val schedulers =
             RxSchedulers(
                 Schedulers.trampoline(),
@@ -48,22 +56,34 @@ class ContactRepositoryImplTest {
     }
 
     @Test
-    fun requestFriendship() {
-        val friend =
-            Friend(
-                10,
-                "aUsername",
-                "aName",
-                "aUserImage",
-                "anEmail",
-                "status",
-            )
+    fun givenFriend_whenRequestFriendship_thenRemoteAndLocalRequested() {
+        val friend = friend()
+        val localSubject = CompletableSubject.create()
         `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
-        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
-        contactRepository.requestFriendship(friend)
-            .test().assertComplete()
+        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(localSubject)
 
-        verify(localContactDataSource).requestFriendship(friend)
+        val observer = contactRepository.requestFriendship(friend).test()
+
+        assertThat(localSubject.hasObservers()).isTrue()
+        observer.assertNotComplete()
+        localSubject.onComplete()
+        observer.assertComplete()
+
+        val inOrder = inOrder(remoteContactDataSource, localContactDataSource)
+        inOrder.verify(remoteContactDataSource).requestFriendship(friend)
+        inOrder.verify(localContactDataSource).requestFriendship(friend)
+    }
+
+    @Test
+    fun givenRemoteRequestFails_whenRequestFriendship_thenLocalNotSubscribed() {
+        val friend = friend()
+        val localSubject = CompletableSubject.create()
+        `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.error(IOException()))
+        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(localSubject)
+
+        contactRepository.requestFriendship(friend).test().assertError(IOException::class.java)
+
+        assertThat(localSubject.hasObservers()).isFalse()
     }
 
     @Test
@@ -79,14 +99,20 @@ class ContactRepositoryImplTest {
 
     @Test
     fun givenCacheIsInvalid_whenGetContacts_thenUpdate() {
+        val remoteFriends = listOf(friend(1), friend(2))
+        val localFriends = listOf(friend(3))
         `when`(cache.isCacheValid()).thenReturn(Single.just(false))
-        `when`(localContactDataSource.getContacts()).thenReturn(Flowable.empty())
-        `when`(remoteContactDataSource.getContactsAsSingle()).thenReturn(Single.just(emptyList()))
-        `when`(localContactDataSource.updateContacts(emptyList())).thenReturn(Completable.complete())
+        `when`(remoteContactDataSource.getContactsAsSingle()).thenReturn(Single.just(remoteFriends))
+        `when`(localContactDataSource.updateContacts(remoteFriends)).thenReturn(Completable.complete())
+        `when`(cache.updateCache()).thenReturn(Completable.complete())
+        `when`(localContactDataSource.getContacts()).thenReturn(Flowable.just(localFriends))
 
         contactRepository.getContacts().test()
+            .assertValue(localFriends)
+            .assertComplete()
 
         verify(remoteContactDataSource).getContactsAsSingle()
+        verify(localContactDataSource).updateContacts(remoteFriends)
         verify(cache).updateCache()
     }
 
@@ -97,12 +123,32 @@ class ContactRepositoryImplTest {
         `when`(localContactDataSource.getContacts()).thenReturn(Flowable.empty())
 
         contactRepository.getContacts().test()
+            .assertError(IOException::class.java)
+            .assertNoValues()
 
         verify(remoteContactDataSource).getContactsAsSingle()
+        verify(localContactDataSource, never()).updateContacts(anyList())
         verify(cache, never()).updateCache()
     }
 
     @Test
-    fun findContacts() {
+    fun givenRemoteResults_whenSearchContact_thenEmitsResults() {
+        `when`(remoteContactDataSource.searchContacts("aQuery")).thenReturn(Single.just(listOf(friend())))
+
+        contactRepository.searchContact("aQuery").test()
+            .assertValue(listOf(friend()))
+            .assertComplete()
+
+        verify(remoteContactDataSource).searchContacts("aQuery")
     }
+
+    private fun friend(id: Long = 10) =
+        Friend(
+            id,
+            "aUsername",
+            "aName",
+            "aUserImage",
+            "anEmail",
+            "status",
+        )
 }
