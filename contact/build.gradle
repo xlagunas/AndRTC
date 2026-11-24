@@ -16,7 +16,7 @@ buildscript {
 
 android {
     namespace = 'cat.xlagunas.contact'
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 23

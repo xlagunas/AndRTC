@@ -17,7 +17,7 @@ allOpen {
 
 android {
     namespace = 'cat.xlagunas.viv'
-    compileSdk = 35
+    compileSdk = 37
     defaultConfig {
         applicationId = "cat.xlagunas.viv"
         minSdk = 23
