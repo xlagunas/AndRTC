@@ -55,8 +55,13 @@ class FakeSharedPreferences : SharedPreferences {
             key: String,
             value: Any?,
         ) = apply {
-            removed.remove(key)
-            staged[key] = value
+            if (value == null) {
+                staged.remove(key)
+                removed.add(key)
+            } else {
+                removed.remove(key)
+                staged[key] = value
+            }
         }
 
         override fun putString(

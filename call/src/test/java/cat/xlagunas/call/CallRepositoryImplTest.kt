@@ -25,7 +25,7 @@ class CallRepositoryImplTest {
     }
 
     @Test
-    fun whenCreateCall_thenCreateCallRequest() =
+    fun givenParticipants_whenCreateCall_thenReturnsCall() =
         runBlocking {
             val fakeCallDto = CallDto("theRoomId")
             val fakeCall = Call(fakeCallDto.roomId)

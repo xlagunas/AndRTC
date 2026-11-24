@@ -8,6 +8,8 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.CompletableSubject
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,14 +58,32 @@ class ContactRepositoryImplTest {
     @Test
     fun givenFriend_whenRequestFriendship_thenRemoteAndLocalRequested() {
         val friend = friend()
+        val localSubject = CompletableSubject.create()
         `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
-        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(Completable.complete())
+        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(localSubject)
 
-        contactRepository.requestFriendship(friend).test().assertComplete()
+        val observer = contactRepository.requestFriendship(friend).test()
+
+        assertThat(localSubject.hasObservers()).isTrue()
+        observer.assertNotComplete()
+        localSubject.onComplete()
+        observer.assertComplete()
 
         val inOrder = inOrder(remoteContactDataSource, localContactDataSource)
         inOrder.verify(remoteContactDataSource).requestFriendship(friend)
         inOrder.verify(localContactDataSource).requestFriendship(friend)
+    }
+
+    @Test
+    fun givenRemoteRequestFails_whenRequestFriendship_thenLocalNotSubscribed() {
+        val friend = friend()
+        val localSubject = CompletableSubject.create()
+        `when`(remoteContactDataSource.requestFriendship(friend)).thenReturn(Completable.error(IOException()))
+        `when`(localContactDataSource.requestFriendship(friend)).thenReturn(localSubject)
+
+        contactRepository.requestFriendship(friend).test().assertError(IOException::class.java)
+
+        assertThat(localSubject.hasObservers()).isFalse()
     }
 
     @Test

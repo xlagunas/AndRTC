@@ -23,6 +23,9 @@ import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class LocalContactDataSourceTest {
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     private lateinit var localContactDataSource: LocalContactDataSource
 
     private lateinit var userDao: UserDao
@@ -37,9 +40,6 @@ class LocalContactDataSourceTest {
 
     @Mock
     private lateinit var authDataStore: AuthDataStore
-
-    @get:Rule
-    val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
