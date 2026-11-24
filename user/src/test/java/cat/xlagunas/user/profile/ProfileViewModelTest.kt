@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import java.io.IOException
@@ -59,31 +60,95 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun givenPushTokenInvalidationFails_whenLogout_thenStillLogoutAndNavigateToLogin() {
+    fun givenLogoutSucceeds_whenLogout_thenInProgressThenNavigateToLogin() {
         `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
-        var loggedOut = false
-        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.error(IOException("Offline")))
-        `when`(authenticationRepository.logoutUser()).thenReturn(Completable.fromAction { loggedOut = true })
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.complete())
+        `when`(authenticationRepository.logoutUser()).thenReturn(Completable.complete())
         val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        val states = observeLogoutStates(viewModel)
+
+        viewModel.logout()
+
+        assertThat(states).containsExactly(LogoutState.Idle, LogoutState.InProgress)
+        verify(navigator).navigateToLogin()
+    }
+
+    @Test
+    fun givenPushTokenInvalidationFails_whenLogout_thenErrorAndNoLogout() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.error(IOException("Offline")))
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        val states = observeLogoutStates(viewModel)
 
         val unhandledErrors = captureUnhandledRxErrors { viewModel.logout() }
 
-        assertThat(loggedOut).isTrue()
-        verify(navigator).navigateToLogin()
+        verify(authenticationRepository, never()).logoutUser()
+        verify(navigator, never()).navigateToLogin()
+        assertThat(states).containsExactly(LogoutState.Idle, LogoutState.InProgress, LogoutState.Error)
         assertThat(unhandledErrors).isEmpty()
     }
 
     @Test
-    fun givenLogoutFails_whenLogout_thenNoNavigationAndNoCrash() {
+    fun givenLogoutFails_whenLogout_thenErrorAndNoNavigation() {
         `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
         `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.complete())
         `when`(authenticationRepository.logoutUser()).thenReturn(Completable.error(IOException("Disk error")))
         val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        val states = observeLogoutStates(viewModel)
 
         val unhandledErrors = captureUnhandledRxErrors { viewModel.logout() }
 
         verify(navigator, never()).navigateToLogin()
+        assertThat(states).containsExactly(LogoutState.Idle, LogoutState.InProgress, LogoutState.Error)
         assertThat(unhandledErrors).isEmpty()
+    }
+
+    @Test
+    fun givenLogoutFailed_whenRetrySucceeds_thenNavigateToLogin() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.complete())
+        `when`(authenticationRepository.logoutUser())
+            .thenReturn(Completable.error(IOException("Disk error")), Completable.complete())
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        observeLogoutStates(viewModel)
+
+        viewModel.logout()
+        viewModel.logout()
+
+        verify(navigator, times(1)).navigateToLogin()
+    }
+
+    @Test
+    fun givenLogoutError_whenErrorShown_thenIdle() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.complete())
+        `when`(authenticationRepository.logoutUser()).thenReturn(Completable.error(IOException("Disk error")))
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        val states = observeLogoutStates(viewModel)
+        viewModel.logout()
+
+        viewModel.onLogoutErrorShown()
+
+        assertThat(states.last()).isEqualTo(LogoutState.Idle)
+    }
+
+    @Test
+    fun givenLogoutInProgress_whenLogoutAgain_thenSingleRequest() {
+        `when`(authenticationRepository.getUser()).thenReturn(Flowable.never())
+        `when`(pushTokenRepository.invalidatePushToken()).thenReturn(Completable.never())
+        val viewModel = ProfileViewModel(authenticationRepository, pushTokenRepository, navigator)
+        observeLogoutStates(viewModel)
+
+        viewModel.logout()
+        viewModel.logout()
+
+        verify(pushTokenRepository, times(1)).invalidatePushToken()
+    }
+
+    private fun observeLogoutStates(viewModel: ProfileViewModel): List<LogoutState> {
+        val states = mutableListOf<LogoutState>()
+        viewModel.logoutState.observeForever { states.add(it) }
+        return states
     }
 
     private fun captureUnhandledRxErrors(block: () -> Unit): List<Throwable> {
