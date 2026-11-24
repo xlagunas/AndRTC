@@ -1,5 +1,6 @@
 package cat.xlagunas.call
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
 import cat.xlagunas.core.navigation.Navigator
 import kotlinx.coroutines.CompletableDeferred
@@ -13,6 +14,7 @@ import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -23,6 +25,9 @@ import java.io.IOException
 class CallViewModelTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val navigator = mock(Navigator::class.java)
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
@@ -39,19 +44,56 @@ class CallViewModelTest {
         runTest(testDispatcher) {
             val viewModel = givenViewModel(FakeCallRepository { Call("theRoomId") })
 
+            val states = observeStates(viewModel)
+
             viewModel.createCall(listOf(5L, 6L))
 
             verify(navigator).startCall("theRoomId")
+            assertThat(states).containsExactly(CallState.Idle, CallState.Creating, CallState.Started)
         }
 
     @Test
-    fun givenCreateCallFails_whenCreateCall_thenNoNavigationAndNoCrash() =
+    fun givenCreateCallFails_whenCreateCall_thenErrorAndNoNavigation() =
         runTest(testDispatcher) {
             val viewModel = givenViewModel(FakeCallRepository { throw IOException("No connection") })
+            val states = observeStates(viewModel)
 
             viewModel.createCall(listOf(5L))
 
             verifyNoInteractions(navigator)
+            assertThat(states).containsExactly(CallState.Idle, CallState.Creating, CallState.Error)
+        }
+
+    @Test
+    fun givenCreateCallFailed_whenRetrySucceeds_thenStartCall() =
+        runTest(testDispatcher) {
+            var calls = 0
+            val viewModel =
+                givenViewModel(
+                    FakeCallRepository {
+                        if (calls++ == 0) throw IOException("No connection") else Call("theRoomId")
+                    },
+                )
+            val states = observeStates(viewModel)
+
+            viewModel.createCall(listOf(5L))
+            viewModel.createCall(listOf(5L))
+
+            verify(navigator).startCall("theRoomId")
+            assertThat(states.last()).isEqualTo(CallState.Started)
+        }
+
+    @Test
+    fun givenCallBeingCreated_whenCreateCallAgain_thenSingleRequest() =
+        runTest(testDispatcher) {
+            val pendingCall = CompletableDeferred<Call>()
+            val repository = FakeCallRepository { pendingCall.await() }
+            val viewModel = givenViewModel(repository)
+
+            viewModel.createCall(listOf(5L))
+            viewModel.createCall(listOf(5L))
+
+            assertThat(repository.requestedContacts).hasSize(1)
         }
 
     @Test
@@ -78,6 +120,12 @@ class CallViewModelTest {
 
             assertThat(repository.requestedContacts).containsExactly(listOf(5L, 6L))
         }
+
+    private fun observeStates(viewModel: CallViewModel): List<CallState> {
+        val states = mutableListOf<CallState>()
+        viewModel.state.observeForever { states.add(it) }
+        return states
+    }
 
     private fun givenViewModel(repository: CallRepository) = CallViewModel(repository, navigator, testDispatcher)
 
