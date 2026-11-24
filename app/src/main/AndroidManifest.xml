@@ -34,6 +34,7 @@
 
                 <data
                         android:host="viv.xlagunas.dev"
+                        android:path="/"
                         android:scheme="http" />
                 <data android:scheme="https" />
             </intent-filter>
