@@ -136,8 +136,7 @@ implements it. Feature modules never reference each other's screens directly.
 - Commit messages are short imperative sentences (`Add ViewModel unit tests and fix their
   error handling`). Reference the GitHub issue in the PR body (`Closes #82`).
 - CI (`.github/workflows/android.yml`) runs `spotlessCheck`, `assembleDevelopmentDebug` and
-  `testDevelopmentDebugUnitTest` on every PR to `kotlin`. `.circleci/` is obsolete and
-  scheduled for removal (issue #87); ignore it.
+  `testDevelopmentDebugUnitTest` on every PR to `kotlin`. GitHub Actions is the only CI.
 - Coverage in CI: the `unit-tests` job writes a coverage table (total and per module) to the
   job summary and uploads a `coverage-report` artifact (HTML, XML, summary) on successful
   runs. A separate `coverage-comment` job (only `pull-requests: write`, no checkout)
