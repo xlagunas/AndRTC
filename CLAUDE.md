@@ -40,8 +40,16 @@ Before declaring work done, run `spotlessApply`, then `assembleDevelopmentDebug`
 `testDevelopmentDebugUnitTest`. All three must pass.
 
 Requirements and caveats:
-- `app/google-services.json` is gitignored but required to build. CI writes it from the
-  `GOOGLE_SERVICES` secret.
+- `app/google-services.json` is gitignored (public repository) but required to build:
+  - CI writes it from the `GOOGLE_SERVICES` secret.
+  - Locally, keep a copy outside the repository and point the `viv.googleServicesJson`
+    Gradle property to it in `~/.gradle/gradle.properties`:
+    `viv.googleServicesJson=/Users/<you>/.config/andrtc/google-services.json`.
+    `app/build.gradle` copies it into `app/` whenever it differs, so fresh clones and git
+    worktrees build without extra steps. Edit the external copy, not `app/google-services.json`.
+- The Android SDK is found through `ANDROID_HOME` (or `sdk.dir` in the gitignored
+  `local.properties`). Export `ANDROID_HOME` so worktrees, which have no `local.properties`,
+  find it too.
 - Versioning reads `git describe --tags` and the commit count, so the checkout needs tags
   and full history.
 - **Do not run `assembleRelease` / `bundleRelease` locally**: release signing needs the
