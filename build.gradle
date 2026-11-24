@@ -60,14 +60,16 @@ def coverageExcludes = {
             '*_Provide*Factory',
             '*_Impl',
             '*_Impl$*',
-            'hilt_aggregated_deps.*'
+            'hilt_aggregated_deps.*',
+            'com.bumptech.glide.*'
     )
 }
 
+// New modules that should be covered must be added to this list.
 def coverageModules = [':app', ':core', ':user', ':contact', ':call', ':conference', ':push', ':signaling']
 
 subprojects {
-    if (name != 'test-utils') {
+    if (coverageModules.contains(path)) {
         apply plugin: 'org.jetbrains.kotlinx.kover'
         kover {
             currentProject {
