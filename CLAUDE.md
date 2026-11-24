@@ -41,7 +41,9 @@ Before declaring work done, run `spotlessApply`, then `assembleDevelopmentDebug`
 
 Requirements and caveats:
 - `app/google-services.json` is gitignored (public repository) but required to build:
-  - CI writes it from the `GOOGLE_SERVICES` secret.
+  - CI writes it from the `GOOGLE_SERVICES` secret. PRs that don't get the secret (forks,
+    Dependabot) build with `.github/ci/google-services.placeholder.json`; pushes and manual
+    runs still fail without it.
   - Locally, keep a copy outside the repository and point the `viv.googleServicesJson`
     Gradle property to it in `~/.gradle/gradle.properties`:
     `viv.googleServicesJson=/Users/<you>/.config/andrtc/google-services.json`.

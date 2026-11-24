@@ -53,8 +53,17 @@ jobs:
       - name: Write google-services.json
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           if [ -z "$GOOGLE_SERVICES" ]; then
+            # GitHub does not pass secrets to PRs from forks, and Dependabot PRs only get
+            # Dependabot secrets. Debug builds and unit tests don't reach Firebase, so a
+            # placeholder with the app's package names is enough for those PRs.
+            if [ "$EVENT_NAME" = "pull_request" ]; then
+              echo "::warning::GOOGLE_SERVICES is not available to this PR; building with a placeholder google-services.json"
+              cp .github/ci/google-services.placeholder.json app/google-services.json
+              exit 0
+            fi
             echo "::error::Missing repository secret GOOGLE_SERVICES (app/google-services.json, raw JSON or base64)"
             exit 1
           fi
