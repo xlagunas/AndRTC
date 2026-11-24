@@ -139,8 +139,9 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          ID=$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" \
-            --jq '.[] | select(.body | contains("<!-- kover-coverage -->")) | .id' | head -n1 || true)
+          IDS=$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" \
+            --jq '.[] | select(.body | contains("<!-- kover-coverage -->")) | .id')
+          ID=${IDS%%$'\n'*}
           if [ -n "$ID" ]; then
             gh api -X PATCH "repos/$REPO/issues/comments/$ID" -F body=@coverage/coverage-summary.md
           else
