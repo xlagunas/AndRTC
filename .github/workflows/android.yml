@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ kotlin ]
+    branches: [ main ]
   pull_request:
-    branches: [ kotlin ]
+    branches: [ main ]
   workflow_dispatch:
 
 concurrency:

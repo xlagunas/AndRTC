@@ -3,7 +3,7 @@ updates:
   # Reads gradle/libs.versions.toml, where every dependency and plugin version lives.
   - package-ecosystem: "gradle"
     directory: "/"
-    target-branch: "kotlin"
+    target-branch: "main"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
@@ -16,6 +16,6 @@ updates:
         patterns: ["junit:*", "org.mockito:*", "org.assertj:*", "org.robolectric:*"]
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "kotlin"
+    target-branch: "main"
     schedule:
       interval: "monthly"
