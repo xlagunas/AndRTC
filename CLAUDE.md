@@ -33,11 +33,24 @@ Build types: `debug` and `release`. Use the `developmentDebug` variant for local
 ./gradlew :user:testDevelopmentDebugUnitTest     # one module
 ./gradlew :user:testDevelopmentDebugUnitTest --tests 'cat.xlagunas.user.login.LoginViewModelTest'
 ./gradlew spotlessApply                          # format (ktlint); CI runs spotlessCheck
+./gradlew :koverHtmlReportCoverage :koverXmlReportCoverage  # merged coverage report (Kover)
+python3 -m unittest discover -s .github/scripts -p 'test_*.py'  # tests of the CI coverage summary script
 ./gradlew connectedDevelopmentDebugAndroidTest   # Espresso, needs a device/emulator
 ```
 
 Before declaring work done, run `spotlessApply`, then `assembleDevelopmentDebug` and
 `testDevelopmentDebugUnitTest`. All three must pass.
+
+Coverage: Kover is applied from the root `build.gradle` to the modules in its
+`coverageModules` list (`test-utils` is not covered), using the `developmentDebug` variant.
+The merged report lands in `build/reports/kover/htmlCoverage/index.html` and
+`build/reports/kover/reportCoverage.xml`; each module also gets
+`<module>/build/reports/kover/reportCoverage.xml`. Generated code (Dagger, Room `_Impl`,
+`R`/`BuildConfig`, view binding, Glide) is excluded. Use the leading colon on the merged
+tasks: without it Gradle only runs the per-module ones. A new module must be added to
+`coverageModules` and, in `.github/workflows/android.yml`, to the `--module` list of the
+"Write coverage summary" step and to the per-module `koverXmlReportCoverage` tasks of the
+"Generate coverage report" step.
 
 Requirements and caveats:
 - `app/google-services.json` is gitignored (public repository) but required to build:
@@ -122,6 +135,14 @@ implements it. Feature modules never reference each other's screens directly.
 - CI (`.github/workflows/android.yml`) runs `spotlessCheck`, `assembleDevelopmentDebug` and
   `testDevelopmentDebugUnitTest` on every PR to `kotlin`. `.circleci/` is obsolete and
   scheduled for removal (issue #87); ignore it.
+- Coverage in CI: the `unit-tests` job writes a coverage table (total and per module) to the
+  job summary and uploads a `coverage-report` artifact (HTML, XML, summary) on successful
+  runs. A separate `coverage-comment` job (only `pull-requests: write`, no checkout)
+  creates or updates one PR comment marked `<!-- kover-coverage -->`, only for PRs from
+  branches of this repository (fork PRs get no comment). The table is built by
+  `.github/scripts/coverage_summary.py`.
+- No minimum coverage is enforced yet; a changed-code gate is a possible follow-up. Do not
+  add Kover `verify` rules without an issue.
 
 ## Gotchas
 
