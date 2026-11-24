@@ -131,5 +131,5 @@ implements it. Feature modules never reference each other's screens directly.
   Firebase Performance crash in instrumentation tests. Keep that exclusion.
 - The `development` flavor `ENDPOINT` is a LAN IP (`core/build.gradle`); it is not reachable
   from CI or emulators outside that network.
-- Dependency versions are hardcoded in each module's `build.gradle` (a version catalog is
-  planned in issue #90). When bumping a library, update it in every module that uses it.
+- Dependency and plugin versions live only in the version catalog `gradle/libs.versions.toml`.
+  Reference them as `libs.…` in `build.gradle` files; never hardcode a version in a module.
