@@ -75,6 +75,22 @@ class CoverageSummaryTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertTrue(out.getvalue().startswith("<!-- kover-coverage -->"))
 
+    def test_render_links_run_when_url_given(self):
+        out = coverage_summary.render((1, 1), [], run_url="https://example.test/run/1")
+        self.assertIn(
+            "Full HTML and XML reports are in the `coverage-report` artifact of "
+            "[this run](https://example.test/run/1).\n",
+            out,
+        )
+
+    def test_main_passes_run_url(self):
+        total = write_xml(self.dir, "t.xml", '<counter type="LINE" missed="1" covered="1"/>')
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = coverage_summary.main(["--total", total, "--run-url", "https://example.test/run/1"])
+        self.assertEqual(code, 0)
+        self.assertIn("[this run](https://example.test/run/1)", out.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -84,9 +84,12 @@ jobs:
           :app:koverXmlReportCoverage :core:koverXmlReportCoverage :user:koverXmlReportCoverage :contact:koverXmlReportCoverage :call:koverXmlReportCoverage :conference:koverXmlReportCoverage :push:koverXmlReportCoverage :signaling:koverXmlReportCoverage
 
       - name: Write coverage summary
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           python3 .github/scripts/coverage_summary.py \
             --total build/reports/kover/reportCoverage.xml \
+            --run-url "$RUN_URL" \
             --module app=app/build/reports/kover/reportCoverage.xml \
             --module core=core/build/reports/kover/reportCoverage.xml \
             --module user=user/build/reports/kover/reportCoverage.xml \

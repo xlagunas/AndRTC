@@ -24,7 +24,11 @@ def _percent(covered: int, missed: int) -> str:
     return f"{covered / total * 100:.1f}%"
 
 
-def render(total: tuple[int, int], modules: list[tuple[str, int, int]]) -> str:
+def render(
+    total: tuple[int, int],
+    modules: list[tuple[str, int, int]],
+    run_url: str | None = None,
+) -> str:
     lines = [
         MARKER,
         "### Unit test coverage",
@@ -38,9 +42,10 @@ def render(total: tuple[int, int], modules: list[tuple[str, int, int]]) -> str:
     lines.append(
         f"| **Total** | **{_percent(t_cov, t_miss)}** | **{t_cov} / {t_cov + t_miss}** |"
     )
+    run = f"[this run]({run_url})" if run_url else "this run"
     lines += [
         "",
-        "Full HTML and XML reports are in the `coverage-report` artifact of this run.",
+        f"Full HTML and XML reports are in the `coverage-report` artifact of {run}.",
     ]
     return "\n".join(lines) + "\n"
 
@@ -51,6 +56,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument(
         "--module", action="append", default=[], metavar="NAME=XML", help="per-module XML report"
     )
+    parser.add_argument("--run-url", default=None, help="URL of the CI run, linked in the note")
     args = parser.parse_args(argv)
 
     try:
@@ -66,7 +72,7 @@ def main(argv: list[str]) -> int:
         print(f"Coverage report not found: {e.filename}", file=sys.stderr)
         return 1
 
-    sys.stdout.write(render(total, modules))
+    sys.stdout.write(render(total, modules, args.run_url))
     return 0
 
 
