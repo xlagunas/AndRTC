@@ -46,8 +46,9 @@ Coverage: Kover is applied from the root `build.gradle` to the modules in its
 The merged report lands in `build/reports/kover/htmlCoverage/index.html` and
 `build/reports/kover/reportCoverage.xml`; each module also gets
 `<module>/build/reports/kover/reportCoverage.xml`. Generated code (Dagger, Room `_Impl`,
-`R`/`BuildConfig`, view binding, Glide) is excluded. Use the leading colon on the merged
-tasks: without it Gradle only runs the per-module ones. A new module must be added to
+`R`/`BuildConfig`, view binding, Glide) is excluded. Use the leading colon to run only the
+merged report (`:koverXmlReportCoverage`); without it Gradle also runs every module's own
+`koverXmlReportCoverage` task. A new module must be added to
 `coverageModules` and, in `.github/workflows/android.yml`, to the `--module` list of the
 "Write coverage summary" step and to the per-module `koverXmlReportCoverage` tasks of the
 "Generate coverage report" step.
