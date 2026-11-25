@@ -32,12 +32,16 @@ class ConferenceActivity : AppCompatActivity() {
 
     private var pendingConstraints: MediaConstraints? = null
     private var requestedPermissions: Array<String> = emptyArray()
+    private var permissionsRequestInFlight = false
+    private var permissionsSnackbar: Snackbar? = null
     private val permissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), ::onPermissionsResult)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         parseRoomFromUriOrFinish(intent.data, this::injectComponent)
         super.onCreate(savedInstanceState)
+        permissionsRequestInFlight =
+            savedInstanceState?.getBoolean(KEY_PERMISSIONS_REQUEST_IN_FLIGHT) ?: false
         setContentView(R.layout.activity_conference)
 
         conference =
@@ -61,6 +65,11 @@ class ConferenceActivity : AppCompatActivity() {
                 )
             },
         )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_PERMISSIONS_REQUEST_IN_FLIGHT, permissionsRequestInFlight)
     }
 
     private fun injectComponent(roomId: String) {
@@ -121,12 +130,28 @@ class ConferenceActivity : AppCompatActivity() {
 
         if (requestedPermissions.isEmpty()) {
             conference.onStart(mediaConstraints)
-        } else {
-            permissionsLauncher.launch(requestedPermissions)
+        } else if (!permissionsRequestInFlight) {
+            launchPermissionsRequest()
         }
     }
 
+    private fun launchPermissionsRequest() {
+        permissionsRequestInFlight = true
+        permissionsLauncher.launch(requestedPermissions)
+    }
+
     private fun onPermissionsResult(result: Map<String, Boolean>) {
+        if (result.isEmpty()) {
+            // The platform answers a duplicate request while one is pending with an empty result.
+            Timber.w("Empty conference permissions result ignored")
+            return
+        }
+        permissionsRequestInFlight = false
+        if (pendingConstraints == null) {
+            // Delivered before requestedMedia re-emitted; that re-emission requests again.
+            return
+        }
+
         val denied = requestedPermissions.filter { result[it] != true }
 
         if (denied.isEmpty()) {
@@ -139,7 +164,7 @@ class ConferenceActivity : AppCompatActivity() {
             showPermissionsSnackbar(
                 R.string.conference_permissions_rationale,
                 R.string.conference_permissions_retry,
-            ) { permissionsLauncher.launch(requestedPermissions) }
+            ) { launchPermissionsRequest() }
         } else {
             showPermissionsSnackbar(
                 R.string.conference_permissions_denied_permanently,
@@ -153,11 +178,13 @@ class ConferenceActivity : AppCompatActivity() {
         @StringRes action: Int,
         onAction: () -> Unit,
     ) {
-        Snackbar.make(
-            findViewById<FrameLayout>(android.R.id.content),
-            message,
-            Snackbar.LENGTH_INDEFINITE,
-        ).setAction(action) { onAction() }.show()
+        permissionsSnackbar?.dismiss()
+        permissionsSnackbar =
+            Snackbar.make(
+                findViewById<FrameLayout>(android.R.id.content),
+                message,
+                Snackbar.LENGTH_INDEFINITE,
+            ).setAction(action) { onAction() }.also { it.show() }
     }
 
     private fun openAppSettings() {
@@ -167,5 +194,9 @@ class ConferenceActivity : AppCompatActivity() {
                 Uri.fromParts("package", packageName, null),
             ),
         )
+    }
+
+    private companion object {
+        const val KEY_PERMISSIONS_REQUEST_IN_FLIGHT = "permissions_request_in_flight"
     }
 }
