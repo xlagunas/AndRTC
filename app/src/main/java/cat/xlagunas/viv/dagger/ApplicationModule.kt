@@ -15,6 +15,7 @@ import cat.xlagunas.contact.domain.TimeProvider
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.push.ChannelId
+import cat.xlagunas.core.scheduler.CoroutineDispatchers
 import cat.xlagunas.core.scheduler.RxSchedulers
 import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.auth.AuthPreferenceDataStore
@@ -24,6 +25,7 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -41,6 +43,9 @@ class ApplicationModule {
             AndroidSchedulers.mainThread(),
             Schedulers.computation(),
         )
+
+    @Provides
+    fun provideCoroutineDispatchers() = CoroutineDispatchers(Dispatchers.IO, Dispatchers.Main, Dispatchers.Default)
 
     @Provides
     fun provideUserMapping() = UserConverter()

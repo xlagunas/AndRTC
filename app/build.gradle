@@ -139,6 +139,7 @@ dependencies {
 
     implementation libs.rxandroid
     implementation libs.rxjava
+    implementation libs.coroutines.android
     implementation libs.rxkotlin
 
     implementation libs.okhttp
