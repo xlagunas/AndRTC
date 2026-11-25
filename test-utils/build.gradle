@@ -46,4 +46,9 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    api libs.junit
+    api libs.coroutines.test
+
+    testImplementation libs.assertj.core
+
 }
