@@ -150,41 +150,36 @@ class ConferenceActivity : AppCompatActivity() {
 
     private fun onPermissionsResult(result: Map<String, Boolean>) {
         permissionsRequestInFlight = false
-        if (result.isEmpty()) {
-            // An empty result means the request was interrupted or cancelled (or duplicated while pending).
-            // Release the in-flight flag and offer a retry; a real result that follows replaces the Snackbar.
-            Timber.w("Empty conference permissions result, offering retry")
-            if (pendingConstraints != null) {
+        val outcome =
+            permissionsOutcome(
+                requested = requestedPermissions,
+                result = result,
+                // Null when the result arrives before requestedMedia re-emits after a recreation;
+                // that re-emission requests again.
+                hasPendingRequest = pendingConstraints != null,
+                shouldShowRationale = ::shouldShowRequestPermissionRationale,
+            )
+        if (outcome != PermissionsOutcome.Start && outcome != PermissionsOutcome.Ignore) {
+            Timber.w("Conference permissions not granted (%s): %s", outcome, result)
+        }
+
+        when (outcome) {
+            PermissionsOutcome.Start -> {
+                permissionsSnackbar?.dismiss()
+                pendingConstraints?.let(conference::onStart)
+            }
+            // A real result that follows an empty (cancelled) one replaces this Snackbar.
+            PermissionsOutcome.ShowRetry ->
                 showPermissionsSnackbar(
                     R.string.conference_permissions_rationale,
                     R.string.conference_permissions_retry,
                 ) { launchPermissionsRequest() }
-            }
-            return
-        }
-        if (pendingConstraints == null) {
-            // Delivered before requestedMedia re-emitted; that re-emission requests again.
-            return
-        }
-
-        val denied = requestedPermissions.filter { result[it] != true }
-
-        if (denied.isEmpty()) {
-            pendingConstraints?.let(conference::onStart)
-            return
-        }
-
-        Timber.w("Conference permissions denied: %s", denied)
-        if (denied.any { shouldShowRequestPermissionRationale(it) }) {
-            showPermissionsSnackbar(
-                R.string.conference_permissions_rationale,
-                R.string.conference_permissions_retry,
-            ) { launchPermissionsRequest() }
-        } else {
-            showPermissionsSnackbar(
-                R.string.conference_permissions_denied_permanently,
-                R.string.conference_permissions_settings,
-            ) { openAppSettings() }
+            PermissionsOutcome.ShowSettings ->
+                showPermissionsSnackbar(
+                    R.string.conference_permissions_denied_permanently,
+                    R.string.conference_permissions_settings,
+                ) { openAppSettings() }
+            PermissionsOutcome.Ignore -> Unit
         }
     }
 
