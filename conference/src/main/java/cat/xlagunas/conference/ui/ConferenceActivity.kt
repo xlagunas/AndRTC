@@ -1,10 +1,12 @@
 package cat.xlagunas.conference.ui
 
-import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +15,6 @@ import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
 import cat.xlagunas.viv.dagger.VivApplication
 import com.google.android.material.snackbar.Snackbar
-import com.tbruyelle.rxpermissions2.RxPermissions
 import org.webrtc.MediaConstraints
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
@@ -28,6 +29,11 @@ class ConferenceActivity : AppCompatActivity() {
     @Inject
     internal lateinit var viewModelFactory: ConferenceViewModelFactory
     lateinit var conference: ConferenceViewModel
+
+    private var pendingConstraints: MediaConstraints? = null
+    private var requestedPermissions: Array<String> = emptyArray()
+    private val permissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), ::onPermissionsResult)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         parseRoomFromUriOrFinish(intent.data, this::injectComponent)
@@ -109,21 +115,57 @@ class ConferenceActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun checkPermissions(mediaConstraints: MediaConstraints) {
-        val rxPermissions = RxPermissions(this)
-        rxPermissions.requestEachCombined(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
+        pendingConstraints = mediaConstraints
+        requestedPermissions = requiredPermissions(mediaConstraints)
+
+        if (requestedPermissions.isEmpty()) {
+            conference.onStart(mediaConstraints)
+        } else {
+            permissionsLauncher.launch(requestedPermissions)
+        }
+    }
+
+    private fun onPermissionsResult(result: Map<String, Boolean>) {
+        val denied = requestedPermissions.filter { result[it] != true }
+
+        if (denied.isEmpty()) {
+            pendingConstraints?.let(conference::onStart)
+            return
+        }
+
+        Timber.w("Conference permissions denied: %s", denied)
+        if (denied.any { shouldShowRequestPermissionRationale(it) }) {
+            showPermissionsSnackbar(
+                R.string.conference_permissions_rationale,
+                R.string.conference_permissions_retry,
+            ) { permissionsLauncher.launch(requestedPermissions) }
+        } else {
+            showPermissionsSnackbar(
+                R.string.conference_permissions_denied_permanently,
+                R.string.conference_permissions_settings,
+            ) { openAppSettings() }
+        }
+    }
+
+    private fun showPermissionsSnackbar(
+        @StringRes message: Int,
+        @StringRes action: Int,
+        onAction: () -> Unit,
+    ) {
+        Snackbar.make(
+            findViewById<FrameLayout>(android.R.id.content),
+            message,
+            Snackbar.LENGTH_INDEFINITE,
+        ).setAction(action) { onAction() }.show()
+    }
+
+    private fun openAppSettings() {
+        startActivity(
+            Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null),
+            ),
         )
-            .subscribe { permission ->
-                if (permission.granted) {
-                    conference.onStart(mediaConstraints)
-                } else if (permission.shouldShowRequestPermissionRationale) {
-                    // TODO At least one denied permission without ask never again
-                } else {
-                    // TODO At least one denied permission with ask never again Need to go to the settings
-                }
-            }
     }
 }
