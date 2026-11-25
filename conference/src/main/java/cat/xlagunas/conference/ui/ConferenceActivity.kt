@@ -36,6 +36,14 @@ class ConferenceActivity : AppCompatActivity() {
     private var permissionsSnackbar: Snackbar? = null
     private val permissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), ::onPermissionsResult)
+    private val settingsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // Back from Settings: request again. Granted permissions return synchronously and start the call;
+            // otherwise the denied Snackbar comes back.
+            if (pendingConstraints != null && requestedPermissions.isNotEmpty()) {
+                launchPermissionsRequest()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         parseRoomFromUriOrFinish(intent.data, this::injectComponent)
@@ -141,12 +149,19 @@ class ConferenceActivity : AppCompatActivity() {
     }
 
     private fun onPermissionsResult(result: Map<String, Boolean>) {
+        permissionsRequestInFlight = false
         if (result.isEmpty()) {
-            // The platform answers a duplicate request while one is pending with an empty result.
-            Timber.w("Empty conference permissions result ignored")
+            // An empty result means the request was interrupted or cancelled (or duplicated while pending).
+            // Release the in-flight flag and offer a retry; a real result that follows replaces the Snackbar.
+            Timber.w("Empty conference permissions result, offering retry")
+            if (pendingConstraints != null) {
+                showPermissionsSnackbar(
+                    R.string.conference_permissions_rationale,
+                    R.string.conference_permissions_retry,
+                ) { launchPermissionsRequest() }
+            }
             return
         }
-        permissionsRequestInFlight = false
         if (pendingConstraints == null) {
             // Delivered before requestedMedia re-emitted; that re-emission requests again.
             return
@@ -188,7 +203,7 @@ class ConferenceActivity : AppCompatActivity() {
     }
 
     private fun openAppSettings() {
-        startActivity(
+        settingsLauncher.launch(
             Intent(
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", packageName, null),
