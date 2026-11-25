@@ -16,7 +16,7 @@ Retrofit and Firebase (Cloud Messaging, Crashlytics, Performance).
 | `conference` | **Dynamic feature module** with the WebRTC conference screen. Its `ConferenceComponent` depends on `ApplicationComponent`. Currently has no tests. |
 | `push` | Firebase push token registration. |
 | `signaling` | Socket.IO signaling client used by the conference. |
-| `test-utils` | Helpers for instrumentation tests (`androidTestImplementation` only). |
+| `test-utils` | Test helpers, e.g. `MainDispatcherRule` (`androidTestImplementation` and `testImplementation`). |
 
 Feature modules follow `ui/` → `domain/` → `data/` packages (`domain` holds interfaces and
 models, `data` holds DTOs, converters, APIs and repository implementations). Older modules
@@ -93,10 +93,11 @@ Fragments obtain them with the `Fragment.viewModel(Foo::class.java)` extension f
 Errors are logged with Timber and mapped to a user-facing state; never let a subscription
 error go unhandled. Show transient messages with `Fragment.displayMessage(...)` (Snackbar).
 
-**Async.** RxJava 2 throughout. Inject `RxSchedulers` (`io`, `mainThread`, `computation`)
-instead of using `Schedulers.*` directly, so tests can swap them. A migration to coroutines
-and Flow is planned (issue #95); until then, write new code with the existing RxJava
-patterns, not with coroutines.
+**Async.** Coroutines and Flow are the standard for new code. Inject `CoroutineDispatchers`
+(`io`, `main`, `default`) from `core` instead of using `Dispatchers.*` directly, so tests can
+swap them. Existing RxJava 2 code keeps using the injected `RxSchedulers` (`io`,
+`mainThread`, `computation`) instead of `Schedulers.*` until its module is migrated
+(issue #95).
 
 **Navigation.** Use the `Navigator` interface from `core`; `AndroidNavigator` in `app`
 implements it. Feature modules never reference each other's screens directly.
@@ -114,6 +115,8 @@ implements it. Feature modules never reference each other's screens directly.
   use Robolectric for tests needing Android classes.
 - Use `InstantTaskExecutorRule` for `LiveData`, and observe with `observeForever`,
   collecting emitted states into a list, then assert with `containsExactly(...)`.
+- Use `MainDispatcherRule` from `test-utils` (`testImplementation project(':test-utils')`) for
+  code that runs on `Dispatchers.Main`. Test Flows with Turbine (`testImplementation libs.turbine`).
 - Test names follow `givenX_whenY_thenZ`.
 - Kotlin classes are final. Annotate a class with `@OpenForTesting` (from `core`) to make
   it mockable in debug builds through the `kotlin-allopen` plugin, instead of adding `open`.
