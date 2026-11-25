@@ -20,7 +20,7 @@ android {
     compileSdk = 37
     defaultConfig {
         applicationId = "cat.xlagunas.viv"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 35
         versionCode = rootProject.gitCommitCount
         versionName = rootProject.gitTag

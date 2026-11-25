@@ -19,7 +19,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 
         testInstrumentationRunner = "cat.xlagunas.viv.commons.cat.xlagunas.core.di.MockTestRunner"
     }
