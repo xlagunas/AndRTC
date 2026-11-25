@@ -61,6 +61,7 @@ dependencies {
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.assertj.core
     testImplementation libs.mockito.core
+    testImplementation project(':test-utils')
     androidTestImplementation libs.androidx.test.runner
     androidTestImplementation libs.espresso.core
 }
