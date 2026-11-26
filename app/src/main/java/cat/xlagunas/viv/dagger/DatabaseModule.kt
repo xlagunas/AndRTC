@@ -6,6 +6,7 @@ import cat.xlagunas.core.persistence.db.FriendDao
 import cat.xlagunas.core.persistence.db.VivDatabase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 /**
  * Created by xavier.lagunas on 27/12/17.
@@ -13,6 +14,7 @@ import dagger.Provides
 @Module
 class DatabaseModule {
     @Provides
+    @Singleton
     internal fun provideDatabase(applicationContext: Context): VivDatabase {
         return Room.databaseBuilder(applicationContext, VivDatabase::class.java, "database.db").build()
     }

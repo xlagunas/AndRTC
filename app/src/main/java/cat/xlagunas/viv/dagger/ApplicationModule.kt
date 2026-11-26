@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import cat.xlagunas.contact.data.FriendConverter
 import cat.xlagunas.contact.data.SystemTimeProvider
 import cat.xlagunas.contact.domain.TimeProvider
+import cat.xlagunas.core.di.ApplicationScope
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.push.ChannelId
@@ -25,7 +26,9 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -48,12 +51,18 @@ class ApplicationModule {
     fun provideCoroutineDispatchers() = CoroutineDispatchers(Dispatchers.IO, Dispatchers.Main, Dispatchers.Default)
 
     @Provides
+    @Singleton
+    @ApplicationScope
+    fun provideApplicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    @Provides
     fun provideUserMapping() = UserConverter()
 
     @Provides
     fun provideFriendMapping() = FriendConverter()
 
     @Provides
+    @Singleton
     fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore = AuthPreferenceDataStore(sharedPreferences)
 
     @Provides

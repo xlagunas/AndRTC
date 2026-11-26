@@ -58,6 +58,7 @@ dependencies {
     implementation libs.androidx.core.ktx
 
 
+    testImplementation project(':test-utils')
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.runner
     androidTestImplementation libs.espresso.core

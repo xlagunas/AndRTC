@@ -7,13 +7,14 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import cat.xlagunas.core.di.ApplicationScope
 import cat.xlagunas.core.push.CallMessage
 import cat.xlagunas.core.push.ChannelId
 import cat.xlagunas.core.push.Message
 import cat.xlagunas.core.push.MessageProcessor
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import timber.log.Timber
@@ -26,11 +27,12 @@ class CallMessageProcessor
         private val notificationManager: NotificationManagerCompat,
         @ChannelId private val channelId: String,
         private val gson: Gson,
+        @ApplicationScope private val scope: CoroutineScope,
     ) :
     MessageProcessor {
         @SuppressLint("CheckResult")
         override fun processMessage(message: Message) {
-            GlobalScope.launch {
+            scope.launch {
                 val callId = extractRoomId((message as CallMessage).params)
                 Timber.d("Processing Call push message for room $callId")
                 startConference(callId)
