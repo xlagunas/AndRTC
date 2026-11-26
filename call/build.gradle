@@ -60,6 +60,7 @@ dependencies {
 
 
     testImplementation libs.coroutines.test
+    testImplementation project(':test-utils')
     testImplementation libs.junit
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.assertj.core

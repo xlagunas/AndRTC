@@ -82,6 +82,7 @@ dependencies {
 
     implementation libs.androidx.core.ktx
 
+    testImplementation project(':test-utils')
     testImplementation libs.junit
     testImplementation libs.mockito.core
     testImplementation libs.robolectric

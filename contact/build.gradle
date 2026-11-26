@@ -81,6 +81,7 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.room.runtime
 
+    testImplementation project(':test-utils')
     testImplementation libs.junit
     testImplementation libs.mockito.core
     testImplementation libs.robolectric
