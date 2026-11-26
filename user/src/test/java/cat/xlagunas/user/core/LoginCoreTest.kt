@@ -12,6 +12,7 @@ import assertk.assertions.single
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.NavigationCall
 import cat.xlagunas.test.utils.http.FakeBackend
+import cat.xlagunas.test.utils.http.FakeResponse
 import cat.xlagunas.test.utils.http.disconnect
 import cat.xlagunas.test.utils.http.httpError
 import cat.xlagunas.test.utils.http.malformedJson
@@ -148,6 +149,49 @@ class LoginCoreTest {
     }
 
     @Test
+    fun givenForbidden_whenLogin_thenErrorAndNoNavigation() {
+        backend.respondTo("POST", "/auth/", httpError(403))
+
+        assertThat(login().awaitCount(1)).single().isInstanceOf(InvalidLoginState::class)
+        assertNoNavigation()
+        assertThat(harness.dataStore.isAuthTokenAvailable()).isFalse()
+    }
+
+    @Test
+    fun givenUserFetchUnauthorized_whenLogin_thenAuthenticationErrorAndNoSession() {
+        givenUserFetchFailsWith(httpError(401))
+
+        assertThat(login().awaitCount(1)).containsExactly(InvalidLoginState("Authentication error"))
+        assertNoSession()
+    }
+
+    @Test
+    fun givenUserFetchDisconnects_whenLogin_thenErrorAndNoSession() {
+        givenUserFetchFailsWith(disconnect())
+
+        assertThat(login().awaitCount(1)).single().isInstanceOf(InvalidLoginState::class)
+        assertNoSession()
+    }
+
+    @Test
+    fun givenMalformedUserResponse_whenLogin_thenErrorAndNoSession() {
+        givenUserFetchFailsWith(malformedJson())
+
+        assertThat(login().awaitCount(1)).single().isInstanceOf(InvalidLoginState::class)
+        assertNoSession()
+    }
+
+    @Test
+    fun givenPushRegistrationDisconnects_whenLogin_thenStillLoggedIn() {
+        givenBackendAcceptsLogin()
+        backend.respondTo("PUT", "/token/", disconnect())
+
+        assertThat(login().awaitCount(1)).containsExactly(SuccessLoginState)
+        assertThat(harness.navigator.calls.awaitCount(1)).containsExactly(NavigationCall.ToProfile)
+        assertThat(harness.pushTokenProvider.isTokenRegistered()).isFalse()
+    }
+
+    @Test
     fun givenPushRegistrationFails_whenLogin_thenStillLoggedIn() {
         givenBackendAcceptsLogin()
         backend.respondTo("PUT", "/token/", httpError(500))
@@ -184,6 +228,18 @@ class LoginCoreTest {
         harness.loginViewModel().let { viewModel ->
             recordStates<LoginState>(viewModel.onLoginStateChange()).also { viewModel.login("anna", "secret") }
         }
+
+    private fun givenUserFetchFailsWith(response: FakeResponse) {
+        backend.respondTo("POST", "/auth/", ok("user/auth_token.json"))
+        backend.respondTo("GET", "/user/", response)
+    }
+
+    private fun assertNoSession() {
+        assertNoNavigation()
+        assertThat(harness.dataStore.isAuthTokenAvailable()).isFalse()
+        assertThat(harness.dataStore.getCurrentUserId()).isEqualTo(-1L)
+        assertThat(harness.database.userDao().loadAllByUserId(3)).isEmpty()
+    }
 
     private fun assertNoNavigation() {
         assertThat(harness.navigator.calls.values).hasSize(0)

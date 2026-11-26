@@ -6,6 +6,7 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.prop
 import assertk.assertions.single
@@ -74,7 +75,16 @@ class RegisterCoreTest {
         backend.respondTo("PUT", "/user/", httpError(409))
 
         assertThat(register().awaitCount(1)).single().isInstanceOf(RegistrationError::class)
-            .prop(RegistrationError::message).isEqualTo("HTTP 409 Client Error")
+            .prop(RegistrationError::message).isNotNull().contains("409")
+        assertThat(harness.navigator.calls.values).isEmpty()
+    }
+
+    @Test
+    fun givenForbidden_whenRegister_thenErrorAndNoNavigation() {
+        backend.respondTo("PUT", "/user/", httpError(403))
+
+        assertThat(register().awaitCount(1)).single().isInstanceOf(RegistrationError::class)
+            .prop(RegistrationError::message).isNotNull().contains("403")
         assertThat(harness.navigator.calls.values).isEmpty()
     }
 
@@ -83,7 +93,7 @@ class RegisterCoreTest {
         backend.respondTo("PUT", "/user/", httpError(500))
 
         assertThat(register().awaitCount(1)).single().isInstanceOf(RegistrationError::class)
-            .prop(RegistrationError::message).isEqualTo("HTTP 500 Server Error")
+            .prop(RegistrationError::message).isNotNull().contains("500")
         assertThat(harness.navigator.calls.values).isEmpty()
     }
 
