@@ -102,7 +102,14 @@ class FakeBackend : TestRule {
             val method = receivedRequest.method
             val path = receivedRequest.path
             val route = routes.firstOrNull { it.method == method && it.path.matches(path) }
-            if (route != null) return route.response.toMockResponse()
+            if (route != null) {
+                val gate = route.response.gate
+                if (gate != null && !gate.await(DEFAULT_TIMEOUT)) {
+                    unmatched.add("$method $path (gate never released)")
+                    return MockResponse().setResponseCode(500).setBody("Gate never released for $method $path")
+                }
+                return route.response.toMockResponse()
+            }
             unmatched.add("$method $path")
             return MockResponse().setResponseCode(404).setBody("No fake response for $method $path")
         }

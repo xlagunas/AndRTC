@@ -9,6 +9,7 @@ data class FakeResponse(
     val body: String = "",
     val json: Boolean = false,
     val disconnect: Boolean = false,
+    val gate: ResponseGate? = null,
 )
 
 /** A request the fake backend received, independent of the HTTP engine. */

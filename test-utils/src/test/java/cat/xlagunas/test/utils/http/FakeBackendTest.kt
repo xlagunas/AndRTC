@@ -11,6 +11,8 @@ import org.junit.Test
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import java.io.IOException
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
 
 class FakeBackendTest {
@@ -187,6 +189,23 @@ class FakeBackendTest {
         assertThatThrownBy { fixture("missing/file.json") }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Fixture not found: missing/file.json")
+    }
+
+    @Test
+    fun givenHeldResponse_whenRequestSent_thenRequestRecordedBeforeRelease() {
+        val gate = ResponseGate()
+        backend.respondTo("GET", "/selftest/", ok("selftest/hello.json").heldBy(gate))
+
+        val call =
+            CompletableFuture.supplyAsync {
+                get(backend, "/selftest/").use { it.code to it.body!!.string().trim() }
+            }
+        val recorded = backend.awaitRequest()
+
+        assertThat(recorded.path).isEqualTo("/selftest/")
+        assertThat(call.isDone).isFalse()
+        gate.release()
+        assertThat(call.get(5, TimeUnit.SECONDS)).isEqualTo(200 to """{"value":"hello"}""")
     }
 
     private fun get(
