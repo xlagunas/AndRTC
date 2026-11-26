@@ -46,6 +46,7 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':core')
+    implementation project(':push')
     implementation libs.androidx.lifecycle.livedata.ktx
     implementation libs.rxjava
 
