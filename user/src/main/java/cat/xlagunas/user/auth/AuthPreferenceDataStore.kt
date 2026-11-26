@@ -32,11 +32,11 @@ class AuthPreferenceDataStore
 
         override fun deleteAuthToken() = sharedPreferences.edit { remove(TOKEN) }
 
-        override fun updateCurrentUserId(userId: Long) =
-            sharedPreferences.edit {
-                putLong(USER_ID, userId)
-                userIdSubject.onNext(userId)
-            }
+        override fun updateCurrentUserId(userId: Long) {
+            // Persist before notifying: subscribers read getCurrentUserId() while handling the event.
+            sharedPreferences.edit { putLong(USER_ID, userId) }
+            userIdSubject.onNext(userId)
+        }
 
         override fun getCurrentUserId(): Long = sharedPreferences.getLong(USER_ID, -1)
 

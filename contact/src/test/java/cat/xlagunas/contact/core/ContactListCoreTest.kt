@@ -89,4 +89,20 @@ class ContactListCoreTest {
         assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi, marta)))
         assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
     }
+
+    @Test
+    fun givenTwoUsers_whenCurrentUserChanges_thenOtherUsersFriendsEmitted() {
+        harness.givenLoggedInUser()
+        harness.givenUser(4, "pau")
+        harness.givenStoredFriends(3, jordi.toEntity(3))
+        harness.givenStoredFriends(4, marta.toEntity(4))
+        harness.givenValidCache()
+
+        val states = recordStates(harness.contactViewModel().contacts)
+        states.awaitCount(1)
+        harness.dataStore.updateCurrentUserId(4)
+
+        assertThat(states.awaitCount(2))
+            .containsExactly(Result.success(listOf(jordi)), Result.success(listOf(marta)))
+    }
 }
