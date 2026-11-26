@@ -49,6 +49,7 @@ class ApplicationModule {
     fun provideFriendMapping() = FriendConverter()
 
     @Provides
+    @Singleton
     fun provideAuthDataStore(sharedPreferences: SharedPreferences): AuthDataStore = AuthPreferenceDataStore(sharedPreferences)
 
     @Provides

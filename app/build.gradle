@@ -149,6 +149,8 @@ dependencies {
     testImplementation libs.mockito.core
     testImplementation libs.assertj.core
     testImplementation libs.androidx.arch.core.testing
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.test.core
 
     androidTestImplementation project(':test-utils')
     androidTestImplementation libs.androidx.test.runner
