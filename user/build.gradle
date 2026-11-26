@@ -86,6 +86,7 @@ dependencies {
     testImplementation libs.junit
     testImplementation libs.mockito.core
     testImplementation libs.robolectric
+    testImplementation libs.androidx.test.core
     testImplementation libs.assertj.core
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.androidx.room.testing
