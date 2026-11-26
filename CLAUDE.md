@@ -124,16 +124,24 @@ Every PR that adds or changes behaviour follows these rules:
 - **Assert only observable behaviour:** the sequence of states (`recordStates(...)`), the
   recorded navigation, the HTTP requests the backend received, and persisted data when
   that is the behaviour. Cover success, 401/403, other 4xx, 5xx, disconnect and malformed
-  body for each action that hits the network.
-- **Never mock** repositories, data sources or converters in new tests. Mockito is only
-  acceptable at a platform edge with no reasonable fake; prefer fakes in `test-utils`.
+  body for each action that hits the network. Use only `FakeResponse` / `ReceivedRequest`
+  from `FakeBackend`; never import MockWebServer types in tests.
+- **Write tests that can move to `commonTest`:** AssertK for assertions in new tests (not
+  AssertJ), Turbine inside `runTest` for `Flow`/`StateFlow`, and `recordStates` only for
+  ViewModels that still expose `LiveData`.
+- **Never mock** repositories, data sources or converters in new tests. Prefer fakes in
+  `test-utils`. Mockito only for an Android platform edge that stays in `androidMain`; if a
+  mock is unavoidable in code that moves to the shared core, use Mokkery.
 - **No new test code tied to RxJava, LiveData, Retrofit or Dagger** beyond the adapters in
   `test-utils` (`CoreTestRule`, `recordStates`), so tests move to `commonTest` mechanically.
 - **Layer 2 — pure unit tests** only for logic with no collaborators (converters,
   mappers, decisions such as `PermissionsOutcome`).
-- **Layer 3 — E2E (Espresso, `app/src/androidTest`):** real app with `FakeBackend`, written
-  as scenarios over per-screen robots. Add or update a journey when a PR changes a
-  critical journey (register, login, contacts, friend requests, call, push).
+- **Layer 3 — E2E (Maestro flows in `e2e/`):** the real app in the `e2e` variant against
+  `e2e-backend`, so the same flows can later run on iOS. Add or update a flow when a PR
+  changes a critical journey (register, login, contacts, friend requests, call, push).
+- **Layer 3b — screenshots (Roborazzi, JVM):** a PR that changes a screen updates its
+  baselines on purpose and attaches the diff. Baselines must exist before a screen moves
+  to Compose.
 - **Bugs found by tests:** fix small, clear bugs in the same PR, in their own commit, with
   the test asserting the correct behaviour. For large problems or missing features, open
   an issue and pin today's behaviour with `// Pins current behaviour, see #NNN`.
@@ -143,18 +151,19 @@ Every PR that adds or changes behaviour follows these rules:
 
 ## Testing conventions
 
-- JUnit 4, AssertJ `assertThat`. Robolectric for tests needing Android classes or Room.
+- JUnit 4. AssertK `assertThat` in new tests (AssertJ remains in older ones). Robolectric for
+  tests needing Android classes or Room.
 - Use `CoreTestRule` from `test-utils` (`testImplementation project(':test-utils')`): it sets
   `Dispatchers.Main`, trampoline `RxSchedulers`, the `LiveData` executor and a `testScope`
-  for `@ApplicationScope`. `MainDispatcherRule` remains for existing tests. Collect states
-  with `recordStates(...)`; Turbine (`libs.turbine`) is fine for pure Flow tests.
+  for `@ApplicationScope`. `MainDispatcherRule` remains for existing tests. Use Turbine
+  (`libs.turbine`) for `Flow`/`StateFlow` and `recordStates(...)` for `LiveData`.
 - Test names follow `givenX_whenY_thenZ`.
 - Kotlin classes are final. Annotate a class with `@OpenForTesting` (from `core`) to make
   it mockable in debug builds through the `kotlin-allopen` plugin, instead of adding `open`.
 - Every test must assert something; no empty or assertion-less tests (issue #89).
 - Espresso tests live only in `app/src/androidTest`. The existing ones use `MockTestRunner` /
-  `ApplicationTestComponent` to inject mock ViewModels; they will be replaced by layer 3
-  journeys. They are not run in CI yet (issue #88).
+  `ApplicationTestComponent` to inject mock ViewModels; they will be replaced by the
+  Maestro journeys. They are not run in CI yet (issue #88).
 
 ## Code style
 

@@ -1,7 +1,7 @@
 # Testing strategy: a safety net for the Kotlin Multiplatform refactor
 
 Date: 2026-11-26
-Status: draft, pending approval
+Status: approved; revised 2026-11-26 to align the tooling with current KMP practice (see "Revision: KMP alignment")
 
 ## Intent
 
@@ -26,10 +26,15 @@ that will still exist after the refactor, and observe behaviour from the outside
   test subject.
 - **RxJava will disappear.** Nothing new may depend on Rx: no Rx-specific test
   helpers, fakes, or rules beyond a single replaceable adapter (see "Async control").
-- **Compose comes after the tests are in place.** E2E tests must be easy to port from
-  Espresso (Views) to Compose testing.
-- **Espresso tests are end-to-end with a fake backend** (MockWebServer), deterministic
-  and independent of the real backend.
+- **Compose comes after the tests are in place.** E2E flows must not depend on the UI
+  toolkit (Maestro targets accessibility text and ids), and screenshot baselines
+  (layer 3b) are recorded before the migration.
+- **E2E tests run the real app against a fake backend**, deterministic and independent
+  of the real backend. They are written with **Maestro** so the same journeys can run on
+  the future iOS app (revision 2026-11-26; it replaces the original Espresso + robots plan).
+- **Test code is written to be portable to `commonTest`** (revision 2026-11-26): AssertK
+  assertions, Turbine for `Flow`/`StateFlow`, and only engine-agnostic types from
+  `FakeBackend`.
 - **Approach B** (below) was chosen.
 - **Bugs found by the new tests** (see "Bug policy"): small, clear bugs are fixed in the
   same PR as the test that exposes them, in a separate commit; larger issues or missing
@@ -77,7 +82,7 @@ that will still exist after the refactor, and observe behaviour from the outside
 - Room schemas v1 and v2 exist in `core/schemas/`, but there is no migration in code
   (see "Findings").
 - Versions only in `gradle/libs.versions.toml`.
-- Follow existing conventions: JUnit 4, AssertJ, `givenX_whenY_thenZ`, Spotless.
+- Follow existing conventions: JUnit 4, `givenX_whenY_thenZ`, Spotless. New tests use AssertK.
 
 ## Approaches considered
 
@@ -89,7 +94,8 @@ rewritten for Compose.
 **B. Core integration tests on the JVM + a thin E2E layer. (Chosen)** The bulk of the
 tests drive a ViewModel with the *real* core underneath (repositories, cache,
 converters, auth interceptor, Room in memory) and fake only HTTP (MockWebServer) and
-platform edges. A handful of Espresso E2E journeys, written with robots, sit on top.
+platform edges. A handful of E2E journeys sit on top (originally Espresso + robots, now
+Maestro flows; see "Revision: KMP alignment").
 Fast, deterministic, cheap error coverage, runs in the existing CI job, and protects
 exactly the part that moves to KMP. Cost: two layers to maintain; Robolectric stays
 until Room goes KMP.
@@ -110,7 +116,7 @@ token flow, constructed with real collaborators all the way down to:
 
 | Edge | Test double |
 |---|---|
-| HTTP backend | `MockWebServer`, with real OkHttp + Retrofit + Gson built by the same factory as production |
+| HTTP backend | `FakeBackend` (MockWebServer inside, hidden), with real OkHttp + Retrofit + Gson built by `HttpClientFactory`. Tests only see `FakeResponse` and `ReceivedRequest` |
 | Room | real `VivDatabase`, in memory (Robolectric), **one instance per test** shared by every collaborator |
 | `SharedPreferences` / `AuthDataStore` | real implementation on Robolectric preferences, one instance per test |
 | `Navigator` | `RecordingNavigator` fake that records calls |
@@ -132,6 +138,13 @@ impossible for that endpoint.
 refactor; a hand-built graph survives it and keeps tests readable. Wiring of the real
 Dagger graph is covered by layer 3.
 
+Assertions use **AssertK** (multiplatform), not AssertJ, so tests move to `commonTest`
+without rewriting assertions. Existing AssertJ tests stay as they are.
+
+Mocks: new tests use fakes. Mockito is only acceptable for an Android platform edge that
+will stay in `androidMain`; if a mock is ever unavoidable in code that moves to the shared
+core, use Mokkery (supports Kotlin/Native), never Mockito or MockK.
+
 ### Layer 2 — Pure unit tests (JVM, where they make sense)
 
 Kept for logic with no collaborators: converters, mappers, permission decisions
@@ -144,67 +157,68 @@ behaviours and it starts getting in the way of the refactor.
 
 `signaling` keeps its current tests (already fake-based and Flow-based).
 
-### Layer 3 — End-to-end tests (Espresso, emulator)
+### Layer 3 — End-to-end tests (Maestro, emulator)
 
-Where: `app/src/androidTest`. Subject: the real app (real Dagger graph, real Activity,
-Fragments and ViewModels) with only these swaps:
-- backend base URL → MockWebServer running in the test process, over cleartext HTTP
-  to localhost (allowed by a debug-only network security config);
-- database → a single in-memory Room instance;
-- `PushTokenProvider` → fake;
-- push → injected by calling the extracted push router with a built `RemoteMessage`.
+Where: `e2e/` at the repository root (Maestro YAML flows) plus a small fake backend.
+Subject: the real app (real Dagger graph, Activities, Fragments, ViewModels), built in a
+dedicated variant whose endpoint points to the fake backend.
 
-MockWebServer uses a **path-based `Dispatcher`**, not queued responses, so request
-order cannot make a test flaky. Responses come from shared JSON fixtures (see
-"Shared test code").
+Why Maestro (revision 2026-11-26): the refactor exists to ship an iOS app on the same core.
+Maestro flows drive the app through the accessibility layer, so the same journeys can be
+run against the iOS app later (with a per-platform `appId`). Espresso robots would have to
+be rewritten for Compose anyway and never run on iOS.
 
-Tests are written as scenarios over **robots** (one per screen):
+Fake backend for E2E: Maestro runs outside the app process, so the backend cannot live in
+the test process. A small JVM program (`e2e-backend`, run by Gradle on the CI host)
+reuses the `test-utils` routing and JSON fixtures and listens on a fixed port; the emulator
+reaches it at `10.0.2.2`. Each flow selects its scenario first through a control endpoint
+(e.g. `POST /__scenario/login_ok`) using Maestro's HTTP scripting, so flows are
+independent and order does not matter.
 
-```kotlin
-@Test
-fun givenRegisteredUser_whenLogin_thenSeesProfile() {
-    backend.respondTo(LOGIN, ok("auth/login_ok.json"))
-    backend.respondTo(PUSH_TOKEN, ok())
-
-    login { enterUsername("anna"); enterPassword("secret"); submit() }
-    profile { assertShowsUsername("anna") }
-}
-```
-
-Only robots know about Espresso, view ids and `R`. When a screen moves to Compose, its
-robot is rewritten with Compose testing APIs and the scenarios stay unchanged.
+Build: an `e2e` build variant (or a Gradle property on `developmentDebug`) sets the endpoint
+to the fake backend, allows cleartext only to that host, uses the placeholder
+`google-services.json` and disables Crashlytics and Performance collection.
 
 Critical journeys (initial set), matching what the app does today:
 1. Register a new user → lands on the expected screen.
-2. Login success → profile shown and push token registered (`PUT /token/`); login
-   with wrong credentials → error shown.
+2. Login success → profile shown and push token registered (`PUT /token/`, checked through
+   the fake backend's request log); login with wrong credentials → error shown.
 3. Contact list (the start screen) loads from the backend, and is shown from the cache
    after a relaunch.
 4. Search a contact and send a friend request.
 5. Accept and reject a pending friend request.
-6. Tap the call action on a contact → confirmation dialog → confirm → `PUT /call/` is
-   sent and an `ACTION_VIEW` intent to the conference URL with the returned `roomId` is
-   fired, asserted with Espresso-Intents. The conference module itself is not launched.
-7. An incoming "friend request" push updates the visible contact list.
+6. Tap the call action on a contact → confirmation dialog → confirm → `PUT /call/` is sent
+   (checked in the fake backend's request log). The conference module itself is not
+   launched; the outgoing intent is not asserted at this layer.
+7. An incoming "friend request" push updates the visible contact list. Pushes cannot be
+   delivered through FCM in tests: the `e2e` variant exposes a debug-only entry point that
+   feeds the push router (left to the E2E plan); layer 1 remains the main coverage.
 
 The existing `LoginFragmentTest`, `RegisterFragmentTest` and `ContactFragmentTest` (mock
-ViewModel injected into a fragment) are replaced by these journeys and the mock-factory
-path in `TestApplication` is removed.
+ViewModel injected into a fragment) are deleted when these journeys land, together with
+the mock-factory path in `TestApplication`.
 
-No sleeps: waiting is handled by Espresso idling resources covering OkHttp and the
-app's background work.
+Flows wait with Maestro's built-in visibility waits; no fixed sleeps.
 
-Firebase: the E2E build always uses `.github/ci/google-services.placeholder.json` and
-disables Crashlytics and Performance collection, so test runs never report to the real
-Firebase project and fork/Dependabot PRs behave the same as internal ones. Startup with
-the placeholder must be verified as the first task of the E2E infrastructure step.
+### Layer 3b — Screenshot tests (Roborazzi, JVM)
+
+Added in the 2026-11-26 revision as the safety net for the Views → Compose migration.
+Each screen (login, register, profile, contact list, manage contacts, call confirmation) is
+captured in its main states (loading, content, empty, error) with Roborazzi on Robolectric,
+fed by the same fakes as layer 1. Baselines are committed. CI verifies them in the
+`unit-tests` job. When a screen moves to Compose, its new screenshots are compared against
+the View baselines and re-recorded only on purpose, in the same PR, with the diff images
+attached.
 
 ## Shared test code
 
 `test-utils` becomes the shared home for both JVM tests and instrumentation tests
 (`testImplementation` and `androidTestImplementation`). It holds:
-- `FakeBackend`: MockWebServer wrapper with a path-based dispatcher, `respondTo(...)`,
-  and helpers to read received requests.
+- `FakeBackend`: path-based routing with `respondTo(method, pathRegex, FakeResponse)`,
+  `awaitRequest()` / `requests` returning `ReceivedRequest`. MockWebServer is an
+  `implementation` detail: tests never import it, so the engine can become Ktor's
+  `MockEngine` in `commonTest` without touching tests.
+- AssertK, exposed as an `api` dependency.
 - JSON fixtures for every endpoint (`/auth/`, `/user/`, `/contact/...`, `/call/`,
   `/token/`), success and error variants, shared by layers 1 and 3.
 - `RecordingNavigator`, `FakePushTokenProvider` and other platform fakes.
@@ -230,10 +244,13 @@ When RxJava goes, the Rx line is deleted from the rule and no test changes.
 
 ### State collection
 
-`recordStates(source)` returns a live list of emitted states, with overloads for
-`LiveData` and `Flow`, plus the `await...` helpers. Tests never call `observeForever` or
-`collect` directly. When a ViewModel moves from `LiveData` to `StateFlow`, its tests keep
-using `recordStates`.
+- ViewModels that expose `Flow`/`StateFlow`: use **Turbine** inside `runTest`
+  (multiplatform, virtual time). This is the target for every ViewModel after the
+  coroutines migration (#95).
+- ViewModels that still expose `LiveData`: use `recordStates(liveData)` and its bounded
+  `await...` helpers. `StateRecorder` blocks a JVM thread, so it is a transitional bridge:
+  when a ViewModel moves to `StateFlow`, its tests move to Turbine.
+- Tests never call `observeForever` or `collect` directly.
 
 ## Production changes
 
@@ -248,15 +265,16 @@ own commit.
    and the layer 1 harness both use it, so tests run the production configuration
    (converters, call adapter, `AuthHeaderInterceptor`) without Chucker.
 2. Provide the base URL through Dagger instead of reading `BuildConfig.ENDPOINT` inside
-   `provideRetrofit`, so layer 3 can point the real graph to MockWebServer.
-3. Give `VivApplication` an override point for building its component, so the E2E
-   `TestApplication` can swap `DatabaseModule` (in-memory) and the `PushTokenProvider`.
+   `provideRetrofit`, so the `e2e` build can point the real graph to `e2e-backend`.
+3. Dropped in the KMP alignment revision: Maestro drives the real app process, so there is
+   no in-process test application to swap modules into. The `e2e` variant provides a fake
+   `PushTokenProvider` instead, and flows reset state with Maestro's `clearState`.
 4. Extract the routing in `PushMessageHandler.onMessageReceived` (convert the message,
    dispatch to the matching `MessageProcessor`) into a plain injectable class.
    `PushMessageHandler` delegates to it; tests call it directly.
 5. Inject a `CoroutineScope` into `CallMessageProcessor` instead of `GlobalScope`.
-6. Add a debug-only network security config that allows cleartext to `localhost` /
-   `127.0.0.1`.
+6. Add a network security config for the `e2e` variant only that allows cleartext to the
+   `e2e-backend` host (`10.0.2.2`).
 
 ### Bug policy
 
@@ -305,11 +323,15 @@ done.
 ## CI
 
 - Layers 1 and 2: unchanged, existing `unit-tests` job.
-- Layer 3: new `e2e` job in `.github/workflows/android.yml` on `ubuntu-latest` with KVM,
-  using an Android emulator runner action, AVD snapshot cached, animations disabled,
-  placeholder `google-services.json`, test reports uploaded as an artifact. Runs on
-  every PR in parallel with unit tests. **Not a required check at first**; becomes
-  required once it has been stable for a few weeks.
+- Layer 3b: Roborazzi verification runs in the existing `unit-tests` job; diff images are
+  uploaded as an artifact on failure.
+- Layer 3: new `e2e` job in `.github/workflows/android.yml` on `ubuntu-latest` with KVM:
+  starts `e2e-backend`, boots an emulator with an emulator runner action (AVD snapshot
+  cached, animations disabled), installs the `e2e` build and runs the Maestro CLI over
+  `e2e/`. Maestro reports and recordings are uploaded as an artifact. Runs on every PR in
+  parallel with unit tests. **Not a required check at first**; becomes required once it
+  has been stable for a few weeks. When the iOS app exists, the same flows run in a macOS
+  job against the simulator.
 - E2E code is not counted in Kover coverage (Kover stays JVM-only as today).
 
 ## Coverage tracking
@@ -337,25 +359,45 @@ keeps showing the trend.
 
 ## Rollout order
 
-1. Foundations: seams 1, 5 and the singleton fix; `test-utils` for JVM, `FakeBackend`,
-   fixtures, `CoreTestRule`, `recordStates`, `RecordingNavigator`. Open the issues for
-   the pinned problems.
+1. Foundations — done in #139 (`HttpClientFactory`, singleton fix, `ApplicationScope`,
+   `test-utils`), plus the KMP alignment of `FakeBackend` and AssertK.
 2. Layer 1 for `user` (register, login + push token registration, profile, logout).
 3. Layer 1 for `contact` (list, cache, search, request, accept, reject, create call).
 4. Layer 1 for `call` and push (seam 4; token rotation, routing, processors), with their
    bug fixes.
-5. Layer 3 infrastructure: seams 2, 3 and 6, E2E test component, robots, idling,
-   Firebase placeholder check, `e2e` CI job.
-6. Layer 3 journeys; remove the old fragment tests.
-7. Clean-up of findings and CLAUDE.md update.
+5. Layer 3b: Roborazzi screenshot baselines for every screen and state.
+6. Layer 3 infrastructure: seams 2 and 6, `e2e` variant, `e2e-backend`, Maestro setup,
+   `e2e` CI job (closes #88).
+7. Layer 3 journeys; remove the old Espresso fragment tests.
+8. Clean-up of findings.
 
-Each step is its own PR against `main`.
+Each step is its own PR against `main`. Steps 5–7 must land before the Compose migration
+starts.
+
+## Revision: KMP alignment (2026-11-26)
+
+Compared with current Android and KMP practice (Now in Android's testing strategy, Android
+test-doubles guidance, Room KMP testing guidance, KMP testing guides), the philosophy was
+already aligned: fakes over mocks, real core with only edges faked, in-memory database,
+most tests on the JVM. Four tooling choices would have forced rewrites during the refactor
+and were changed:
+
+| Before | After | Why |
+|---|---|---|
+| AssertJ | AssertK | AssertJ is JVM-only; AssertK runs in `commonTest`. |
+| `recordStates` for everything | Turbine for `Flow`/`StateFlow`; `recordStates` only for `LiveData` | `StateRecorder` blocks a JVM thread; Turbine uses virtual time and is multiplatform. |
+| `FakeBackend` exposing `MockResponse`/`RecordedRequest` | `FakeResponse`/`ReceivedRequest` | MockWebServer is JVM-only; KMP uses Ktor `MockEngine`. Tests stay unchanged when the engine changes. |
+| Espresso + robots | Maestro flows + `e2e-backend` | Same journeys can validate the iOS app; Espresso would be rewritten for Compose anyway. |
+
+Added: layer 3b screenshot tests with Roborazzi, as the safety net for the Compose
+migration. Robolectric stays until Room KMP with `BundledSQLiteDriver` and DataStore
+replace the Android-only storage.
 
 ## Left to the builder
 
-- Exact names and package layout of harnesses, robots and fixtures.
-- How idling resources and the `await...` helpers are implemented, provided there are
-  no sleeps and timeouts are bounded.
+- Exact names and package layout of harnesses, Maestro flows and fixtures.
+- How the `e2e-backend` program and its scenario control endpoint are structured, provided
+  it reuses the `test-utils` routes and fixtures.
 - Emulator API level and runner action, provided the job is reproducible and cached.
 - Whether a given legacy test is deleted once layer 1 covers it.
 - Further testability seams of the kind described above.
