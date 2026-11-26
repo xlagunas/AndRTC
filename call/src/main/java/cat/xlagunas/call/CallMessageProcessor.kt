@@ -65,7 +65,7 @@ class CallMessageProcessor
                 context,
                 1000,
                 generateRoomIntent(callId),
-                PendingIntent.FLAG_ONE_SHOT,
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
             )
 
         private fun generateRoomIntent(callId: String): Intent {
