@@ -75,6 +75,42 @@ class FakeBackendTest {
     }
 
     @Test
+    fun givenUrlReadBeforeRuleRuns_whenTestRuns_thenServerAnswers() {
+        val other = FakeBackend()
+        val urlBeforeStart = other.url
+        var code = 0
+        val statement =
+            object : Statement() {
+                override fun evaluate() {
+                    other.respondTo("GET", "/user/", ok())
+                    get(other, "/user/").use { code = it.code }
+                }
+            }
+
+        other.apply(statement, Description.EMPTY).evaluate()
+
+        assertThat(code).isEqualTo(200)
+        assertThat(urlBeforeStart).isEqualTo(other.url)
+    }
+
+    @Test
+    fun givenUnstubbedRequestAndFailingBody_whenRuleFinishes_thenUnmatchedReportedAsSuppressed() {
+        val other = FakeBackend()
+        val statement =
+            object : Statement() {
+                override fun evaluate() {
+                    get(other, "/nope/").close()
+                    throw IllegalStateException("body failed")
+                }
+            }
+
+        val thrown = runCatching { other.apply(statement, Description.EMPTY).evaluate() }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(IllegalStateException::class.java).hasMessage("body failed")
+        assertThat(thrown!!.suppressed.map { it.message }).anyMatch { it!!.contains("GET /nope/") }
+    }
+
+    @Test
     fun givenRequestMade_whenAwaitRequest_thenReturnsIt() {
         backend.respondTo("GET", "/user/", ok())
 

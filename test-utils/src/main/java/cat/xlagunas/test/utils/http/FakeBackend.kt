@@ -25,7 +25,14 @@ class FakeBackend : TestRule {
     private val received = CopyOnWriteArrayList<RecordedRequest>()
     private val unmatched = CopyOnWriteArrayList<String>()
 
-    /** Base URL of the running server, without a trailing slash. */
+    init {
+        server.dispatcher = RoutingDispatcher()
+    }
+
+    /**
+     * Base URL of the server, without a trailing slash. Safe to read before the rule runs
+     * (e.g. in a property initializer): reading it starts the server.
+     */
     val url: String
         get() = server.url("/").toString().removeSuffix("/")
 
@@ -35,7 +42,8 @@ class FakeBackend : TestRule {
 
     /**
      * Answers [method] requests whose path (without query) fully matches the [path] regex.
-     * The latest registration for the same method and path wins.
+     * [path] is a raw regex, so escape literal `.` or `+`. The latest registration for the
+     * same method and path wins.
      */
     fun respondTo(
         method: String,
@@ -56,15 +64,23 @@ class FakeBackend : TestRule {
     ): Statement =
         object : Statement() {
             override fun evaluate() {
-                server.dispatcher = RoutingDispatcher()
-                server.start()
-                try {
-                    base.evaluate()
-                } finally {
-                    server.shutdown()
-                }
-                if (unmatched.isNotEmpty()) {
-                    throw AssertionError("Requests with no fake response: ${unmatched.joinToString()}")
+                // MockWebServer starts itself on first use; url() forces it without double-starting.
+                server.url("/")
+                val failure =
+                    try {
+                        base.evaluate()
+                        null
+                    } catch (t: Throwable) {
+                        t
+                    } finally {
+                        server.shutdown()
+                    }
+                val unmatchedReport =
+                    unmatched.takeIf { it.isNotEmpty() }
+                        ?.let { AssertionError("Requests with no fake response: ${it.joinToString()}") }
+                when {
+                    failure != null -> throw failure.apply { unmatchedReport?.let(::addSuppressed) }
+                    unmatchedReport != null -> throw unmatchedReport
                 }
             }
         }
