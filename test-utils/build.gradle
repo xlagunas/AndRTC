@@ -53,5 +53,6 @@ dependencies {
     api libs.assertj.core
     api libs.coroutines.test
     api libs.androidx.arch.core.testing
-    api libs.okhttp.mockwebserver
+    api libs.assertk
+    implementation libs.okhttp.mockwebserver
 }
