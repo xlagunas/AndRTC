@@ -14,6 +14,9 @@ import java.io.IOException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
+import assertk.assertThat as assertKThat
+import assertk.assertions.isEqualTo as assertKIsEqualTo
+import assertk.assertions.isFalse as assertKIsFalse
 
 class FakeBackendTest {
     @get:Rule
@@ -202,10 +205,29 @@ class FakeBackendTest {
             }
         val recorded = backend.awaitRequest()
 
-        assertThat(recorded.path).isEqualTo("/selftest/")
-        assertThat(call.isDone).isFalse()
+        assertKThat(recorded.path).assertKIsEqualTo("/selftest/")
+        assertKThat(call.isDone).assertKIsFalse()
         gate.release()
-        assertThat(call.get(5, TimeUnit.SECONDS)).isEqualTo(200 to """{"value":"hello"}""")
+        assertKThat(call.get(5, TimeUnit.SECONDS)).assertKIsEqualTo(200 to """{"value":"hello"}""")
+    }
+
+    @Test
+    fun givenGateNeverReleased_whenRequestSent_thenServerErrorAndRuleFails() {
+        val other = FakeBackend(gateTimeout = 100.milliseconds)
+        var code = 0
+        val statement =
+            object : Statement() {
+                override fun evaluate() {
+                    other.respondTo("GET", "/selftest/", ok().heldBy(ResponseGate()))
+                    get(other, "/selftest/").use { code = it.code }
+                }
+            }
+
+        val thrown = runCatching { other.apply(statement, Description.EMPTY).evaluate() }.exceptionOrNull()
+
+        assertKThat(code).assertKIsEqualTo(500)
+        assertKThat(thrown is AssertionError).assertKIsEqualTo(true)
+        assertKThat(thrown!!.message!!.contains("GET /selftest/ (gate never released)")).assertKIsEqualTo(true)
     }
 
     private fun get(
