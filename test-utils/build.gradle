@@ -45,5 +45,14 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(':core')
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.rxjava
+
+    api libs.junit
+    api libs.assertj.core
+    api libs.coroutines.test
+    api libs.androidx.arch.core.testing
+    api libs.okhttp.mockwebserver
 
 }
