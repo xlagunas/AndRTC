@@ -2,6 +2,7 @@ package cat.xlagunas.viv.dagger
 
 import android.app.Application
 import cat.xlagunas.core.BuildConfig
+import cat.xlagunas.core.network.HttpClientFactory
 import cat.xlagunas.user.auth.AuthHeaderInterceptor
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
@@ -11,8 +12,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 class NetworkModule {
@@ -26,12 +25,7 @@ class NetworkModule {
         gson: Gson,
         client: OkHttpClient,
     ): Retrofit {
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
-            .client(client)
-            .baseUrl(BuildConfig.ENDPOINT)
-            .build()
+        return HttpClientFactory.retrofit(BuildConfig.ENDPOINT, client, gson)
     }
 
     @Provides
@@ -42,10 +36,12 @@ class NetworkModule {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BASIC
 
-        return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-            .addInterceptor(ChuckerInterceptor.Builder(application).build())
-            .addInterceptor(authInterceptor)
-            .build()
+        return HttpClientFactory.okHttpClient(
+            listOf(
+                interceptor,
+                ChuckerInterceptor.Builder(application).build(),
+                authInterceptor,
+            ),
+        )
     }
 }
