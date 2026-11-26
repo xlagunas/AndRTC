@@ -191,8 +191,11 @@ Critical journeys (initial set), matching what the app does today:
    (checked in the fake backend's request log). The conference module itself is not
    launched; the outgoing intent is not asserted at this layer.
 7. An incoming "friend request" push updates the visible contact list. Pushes cannot be
-   delivered through FCM in tests: the `e2e` variant exposes a debug-only entry point that
-   feeds the push router (left to the E2E plan); layer 1 remains the main coverage.
+   delivered through FCM in tests, so the `e2e` variant (only) registers a deep link,
+   `viv-e2e://push?type=<MessageType>&params=<json>`, handled by a small activity that
+   builds the push message and passes it to the push router, the same entry point
+   `PushMessageHandler` uses. The flow triggers it with Maestro's `openLink`. Only FCM
+   transport is left untested; the link never ships in `development` or `production`.
 
 The existing `LoginFragmentTest`, `RegisterFragmentTest` and `ContactFragmentTest` (mock
 ViewModel injected into a fragment) are deleted when these journeys land, together with
