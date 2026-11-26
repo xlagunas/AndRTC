@@ -139,9 +139,9 @@ Every PR that adds or changes behaviour follows these rules:
 - **Layer 3 — E2E (Maestro flows in `e2e/`):** the real app in the `e2e` variant against
   `e2e-backend`, so the same flows can later run on iOS. Add or update a flow when a PR
   changes a critical journey (register, login, contacts, friend requests, call, push).
-- **Layer 3b — screenshots (Roborazzi, JVM):** a PR that changes a screen updates its
-  baselines on purpose and attaches the diff. Baselines must exist before a screen moves
-  to Compose.
+- **Layer 3b — screenshots (Roborazzi, JVM), from the Compose migration on:** its first
+  PR (step 0) records baselines of the View screens; after that, a PR that changes a
+  screen updates its baselines on purpose and attaches the diff.
 - **Bugs found by tests:** fix small, clear bugs in the same PR, in their own commit, with
   the test asserting the correct behaviour. For large problems or missing features, open
   an issue and pin today's behaviour with `// Pins current behaviour, see #NNN`.

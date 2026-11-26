@@ -28,7 +28,7 @@ that will still exist after the refactor, and observe behaviour from the outside
   helpers, fakes, or rules beyond a single replaceable adapter (see "Async control").
 - **Compose comes after the tests are in place.** E2E flows must not depend on the UI
   toolkit (Maestro targets accessibility text and ids), and screenshot baselines
-  (layer 3b) are recorded before the migration.
+  (layer 3b) are recorded as step 0 of the migration, before any screen moves.
 - **E2E tests run the real app against a fake backend**, deterministic and independent
   of the real backend. They are written with **Maestro** so the same journeys can run on
   the future iOS app (revision 2026-11-26; it replaces the original Espresso + robots plan).
@@ -206,6 +206,8 @@ Flows wait with Maestro's built-in visibility waits; no fixed sleeps.
 ### Layer 3b — Screenshot tests (Roborazzi, JVM)
 
 Added in the 2026-11-26 revision as the safety net for the Views → Compose migration.
+**Not part of this rollout:** it is step 0 of the Compose migration. The first PR of that
+migration records the baselines from the current View screens, before any screen moves.
 Each screen (login, register, profile, contact list, manage contacts, call confirmation) is
 captured in its main states (loading, content, empty, error) with Roborazzi on Robolectric,
 fed by the same fakes as layer 1. Baselines are committed. CI verifies them in the
@@ -326,8 +328,8 @@ done.
 ## CI
 
 - Layers 1 and 2: unchanged, existing `unit-tests` job.
-- Layer 3b: Roborazzi verification runs in the existing `unit-tests` job; diff images are
-  uploaded as an artifact on failure.
+- Layer 3b (from the Compose migration on): Roborazzi verification runs in the existing
+  `unit-tests` job; diff images are uploaded as an artifact on failure.
 - Layer 3: new `e2e` job in `.github/workflows/android.yml` on `ubuntu-latest` with KVM:
   starts `e2e-backend`, boots an emulator with an emulator runner action (AVD snapshot
   cached, animations disabled), installs the `e2e` build and runs the Maestro CLI over
@@ -368,14 +370,13 @@ keeps showing the trend.
 3. Layer 1 for `contact` (list, cache, search, request, accept, reject, create call).
 4. Layer 1 for `call` and push (seam 4; token rotation, routing, processors), with their
    bug fixes.
-5. Layer 3b: Roborazzi screenshot baselines for every screen and state.
-6. Layer 3 infrastructure: seams 2 and 6, `e2e` variant, `e2e-backend`, Maestro setup,
-   `e2e` CI job (closes #88).
-7. Layer 3 journeys; remove the old Espresso fragment tests.
-8. Clean-up of findings.
+5. Layer 3 infrastructure: seams 2 and 6, `e2e` variant, `e2e-backend`, Maestro setup,
+   the push deep link, `e2e` CI job (closes #88).
+6. Layer 3 journeys; remove the old Espresso fragment tests.
+7. Clean-up of findings.
 
-Each step is its own PR against `main`. Steps 5–7 must land before the Compose migration
-starts.
+Each step is its own PR against `main`. Layer 3b (Roborazzi baselines) is step 0 of the
+Compose migration, not of this rollout.
 
 ## Revision: KMP alignment (2026-11-26)
 
@@ -393,7 +394,7 @@ and were changed:
 | Espresso + robots | Maestro flows + `e2e-backend` | Same journeys can validate the iOS app; Espresso would be rewritten for Compose anyway. |
 
 Added: layer 3b screenshot tests with Roborazzi, as the safety net for the Compose
-migration. Robolectric stays until Room KMP with `BundledSQLiteDriver` and DataStore
+migration; scheduled as step 0 of that migration to keep this rollout small. Robolectric stays until Room KMP with `BundledSQLiteDriver` and DataStore
 replace the Android-only storage.
 
 ## Left to the builder
