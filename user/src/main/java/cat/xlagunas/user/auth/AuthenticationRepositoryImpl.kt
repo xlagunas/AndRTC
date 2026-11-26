@@ -64,6 +64,9 @@ class AuthenticationRepositoryImpl
                 .map { userConverter.toUserEntity(it) }
                 .doOnSuccess(userDao::insert)
                 .doOnSuccess { dataStore.updateCurrentUserId(it.id!!) }
+                // A failure after /auth/ must not leave a half-logged-in token behind: the
+                // interceptor would attach it to every later request.
+                .doOnError { dataStore.deleteAuthToken() }
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
                 .doOnSuccess { Timber.i("Successfully logged in user") }

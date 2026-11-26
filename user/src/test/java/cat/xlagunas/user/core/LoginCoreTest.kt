@@ -144,6 +144,7 @@ class LoginCoreTest {
         assertNoNavigation()
         assertThat(harness.dataStore.getCurrentUserId()).isEqualTo(-1L)
         assertThat(harness.database.userDao().loadAllByUserId(3)).isEmpty()
+        assertThat(harness.dataStore.isAuthTokenAvailable()).isFalse()
     }
 
     @Test
