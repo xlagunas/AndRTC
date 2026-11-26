@@ -55,14 +55,11 @@ dependencies {
 
     implementation libs.androidx.appcompat
     implementation libs.androidx.lifecycle.runtime.ktx
-    implementation libs.androidx.lifecycle.reactivestreams
     implementation libs.androidx.lifecycle.viewmodel.ktx
     implementation libs.androidx.lifecycle.livedata.ktx
 
     implementation libs.coroutines.android
     implementation libs.coroutines.core
-    implementation libs.coroutines.reactive
-    implementation libs.coroutines.rx2
 
     //Need the dependency to compile the bundle in prod with proguard
     compileOnly libs.retrofit.converter.gson
@@ -73,8 +70,6 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
     implementation libs.webrtc
-    implementation libs.rxandroid
-    implementation libs.rxjava
     implementation libs.okhttp
     implementation libs.timber
     implementation libs.material
@@ -86,7 +81,6 @@ dependencies {
 
     implementation project(':core')
     implementation libs.androidx.constraintlayout
-    implementation libs.rxpermissions
 
     // Core library
     androidTestImplementation libs.androidx.test.core

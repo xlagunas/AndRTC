@@ -1,1 +1,6 @@
-<resources></resources>
+<resources>
+    <string name="conference_permissions_rationale">Access to the camera or microphone you selected is needed to join the call</string>
+    <string name="conference_permissions_denied_permanently">Allow the camera or microphone you selected in Settings to join the call</string>
+    <string name="conference_permissions_retry">Retry</string>
+    <string name="conference_permissions_settings">Settings</string>
+</resources>
