@@ -35,6 +35,9 @@ android {
     }
     testOptions {
         targetSdk = 35
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -61,6 +64,8 @@ dependencies {
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.assertj.core
     testImplementation libs.mockito.core
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.test.core
     androidTestImplementation libs.androidx.test.runner
     androidTestImplementation libs.espresso.core
 }
