@@ -13,6 +13,7 @@ import cat.xlagunas.contact.domain.TimeProvider
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.persistence.db.FriendDao
 import cat.xlagunas.core.persistence.db.VivDatabase
+import cat.xlagunas.core.scheduler.CoroutineDispatchers
 import cat.xlagunas.core.scheduler.RxSchedulers
 import cat.xlagunas.push.PushModule
 import cat.xlagunas.user.UserConverter
@@ -46,6 +47,8 @@ interface ApplicationComponent {
     fun userConverter(): UserConverter
 
     fun rxSchedulers(): RxSchedulers
+
+    fun coroutineDispatchers(): CoroutineDispatchers
 
     fun authTokenDataStore(): AuthDataStore
 

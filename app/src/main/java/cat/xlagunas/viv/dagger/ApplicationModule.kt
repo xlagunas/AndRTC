@@ -16,6 +16,7 @@ import cat.xlagunas.core.di.ApplicationScope
 import cat.xlagunas.core.navigation.Navigator
 import cat.xlagunas.core.persistence.AuthDataStore
 import cat.xlagunas.core.push.ChannelId
+import cat.xlagunas.core.scheduler.CoroutineDispatchers
 import cat.xlagunas.core.scheduler.RxSchedulers
 import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.auth.AuthPreferenceDataStore
@@ -45,6 +46,9 @@ class ApplicationModule {
             AndroidSchedulers.mainThread(),
             Schedulers.computation(),
         )
+
+    @Provides
+    fun provideCoroutineDispatchers() = CoroutineDispatchers(Dispatchers.IO, Dispatchers.Main, Dispatchers.Default)
 
     @Provides
     @Singleton

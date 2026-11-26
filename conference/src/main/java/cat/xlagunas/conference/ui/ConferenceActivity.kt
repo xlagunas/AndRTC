@@ -1,10 +1,12 @@
 package cat.xlagunas.conference.ui
 
-import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +15,6 @@ import cat.xlagunas.conference.di.ConferenceComponent
 import cat.xlagunas.conference.di.DaggerConferenceComponent
 import cat.xlagunas.viv.dagger.VivApplication
 import com.google.android.material.snackbar.Snackbar
-import com.tbruyelle.rxpermissions2.RxPermissions
 import org.webrtc.MediaConstraints
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
@@ -29,9 +30,26 @@ class ConferenceActivity : AppCompatActivity() {
     internal lateinit var viewModelFactory: ConferenceViewModelFactory
     lateinit var conference: ConferenceViewModel
 
+    private var pendingConstraints: MediaConstraints? = null
+    private var requestedPermissions: Array<String> = emptyArray()
+    private var permissionsRequestInFlight = false
+    private var permissionsSnackbar: Snackbar? = null
+    private val permissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), ::onPermissionsResult)
+    private val settingsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // Back from Settings: request again. Granted permissions return synchronously and start the call;
+            // otherwise the denied Snackbar comes back.
+            if (pendingConstraints != null && requestedPermissions.isNotEmpty()) {
+                launchPermissionsRequest()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         parseRoomFromUriOrFinish(intent.data, this::injectComponent)
         super.onCreate(savedInstanceState)
+        permissionsRequestInFlight =
+            savedInstanceState?.getBoolean(KEY_PERMISSIONS_REQUEST_IN_FLIGHT) ?: false
         setContentView(R.layout.activity_conference)
 
         conference =
@@ -55,6 +73,11 @@ class ConferenceActivity : AppCompatActivity() {
                 )
             },
         )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_PERMISSIONS_REQUEST_IN_FLIGHT, permissionsRequestInFlight)
     }
 
     private fun injectComponent(roomId: String) {
@@ -109,21 +132,81 @@ class ConferenceActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun checkPermissions(mediaConstraints: MediaConstraints) {
-        val rxPermissions = RxPermissions(this)
-        rxPermissions.requestEachCombined(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-        )
-            .subscribe { permission ->
-                if (permission.granted) {
-                    conference.onStart(mediaConstraints)
-                } else if (permission.shouldShowRequestPermissionRationale) {
-                    // TODO At least one denied permission without ask never again
-                } else {
-                    // TODO At least one denied permission with ask never again Need to go to the settings
-                }
+        pendingConstraints = mediaConstraints
+        requestedPermissions = requiredPermissions(mediaConstraints)
+
+        if (requestedPermissions.isEmpty()) {
+            conference.onStart(mediaConstraints)
+        } else if (!permissionsRequestInFlight) {
+            launchPermissionsRequest()
+        }
+    }
+
+    private fun launchPermissionsRequest() {
+        permissionsRequestInFlight = true
+        permissionsLauncher.launch(requestedPermissions)
+    }
+
+    private fun onPermissionsResult(result: Map<String, Boolean>) {
+        permissionsRequestInFlight = false
+        val outcome =
+            permissionsOutcome(
+                requested = requestedPermissions,
+                result = result,
+                // Null when the result arrives before requestedMedia re-emits after a recreation;
+                // that re-emission requests again.
+                hasPendingRequest = pendingConstraints != null,
+                shouldShowRationale = ::shouldShowRequestPermissionRationale,
+            )
+        if (outcome != PermissionsOutcome.Start && outcome != PermissionsOutcome.Ignore) {
+            Timber.w("Conference permissions not granted (%s): %s", outcome, result)
+        }
+
+        when (outcome) {
+            PermissionsOutcome.Start -> {
+                permissionsSnackbar?.dismiss()
+                pendingConstraints?.let(conference::onStart)
             }
+            // A real result that follows an empty (cancelled) one replaces this Snackbar.
+            PermissionsOutcome.ShowRetry ->
+                showPermissionsSnackbar(
+                    R.string.conference_permissions_rationale,
+                    R.string.conference_permissions_retry,
+                ) { launchPermissionsRequest() }
+            PermissionsOutcome.ShowSettings ->
+                showPermissionsSnackbar(
+                    R.string.conference_permissions_denied_permanently,
+                    R.string.conference_permissions_settings,
+                ) { openAppSettings() }
+            PermissionsOutcome.Ignore -> Unit
+        }
+    }
+
+    private fun showPermissionsSnackbar(
+        @StringRes message: Int,
+        @StringRes action: Int,
+        onAction: () -> Unit,
+    ) {
+        permissionsSnackbar?.dismiss()
+        permissionsSnackbar =
+            Snackbar.make(
+                findViewById<FrameLayout>(android.R.id.content),
+                message,
+                Snackbar.LENGTH_INDEFINITE,
+            ).setAction(action) { onAction() }.also { it.show() }
+    }
+
+    private fun openAppSettings() {
+        settingsLauncher.launch(
+            Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null),
+            ),
+        )
+    }
+
+    private companion object {
+        const val KEY_PERMISSIONS_REQUEST_IN_FLIGHT = "permissions_request_in_flight"
     }
 }

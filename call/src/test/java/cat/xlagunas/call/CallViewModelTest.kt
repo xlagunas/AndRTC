@@ -3,17 +3,12 @@ package cat.xlagunas.call
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
 import cat.xlagunas.core.navigation.Navigator
+import cat.xlagunas.test.utils.MainDispatcherRule
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.doThrow
@@ -24,25 +19,17 @@ import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CallViewModelTest {
-    private val testDispatcher = UnconfinedTestDispatcher()
     private val navigator = mock(Navigator::class.java)
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
     fun whenCreateCall_thenStartCallWithCreatedRoom() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val viewModel = givenViewModel(FakeCallRepository { Call("theRoomId") })
 
             val states = observeStates(viewModel)
@@ -55,7 +42,7 @@ class CallViewModelTest {
 
     @Test
     fun givenCreateCallFails_whenCreateCall_thenErrorAndNoNavigation() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val viewModel = givenViewModel(FakeCallRepository { throw IOException("No connection") })
             val states = observeStates(viewModel)
 
@@ -67,7 +54,7 @@ class CallViewModelTest {
 
     @Test
     fun givenStartCallFails_whenCreateCall_thenStartedWithoutRetry() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val repository = FakeCallRepository { Call("theRoomId") }
             doThrow(IllegalStateException("No activity")).`when`(navigator).startCall("theRoomId")
             val viewModel = givenViewModel(repository)
@@ -82,7 +69,7 @@ class CallViewModelTest {
 
     @Test
     fun givenCreateCallFailed_whenRetrySucceeds_thenStartCall() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             var calls = 0
             val viewModel =
                 givenViewModel(
@@ -101,7 +88,7 @@ class CallViewModelTest {
 
     @Test
     fun givenCallBeingCreated_whenCreateCallAgain_thenSingleRequest() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val pendingCall = CompletableDeferred<Call>()
             val repository = FakeCallRepository { pendingCall.await() }
             val viewModel = givenViewModel(repository)
@@ -114,7 +101,7 @@ class CallViewModelTest {
 
     @Test
     fun givenViewModelClearedWhileCreatingCall_whenCallCreated_thenStillStartCall() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val pendingCall = CompletableDeferred<Call>()
             val viewModel = givenViewModel(FakeCallRepository { pendingCall.await() })
 
@@ -128,7 +115,7 @@ class CallViewModelTest {
 
     @Test
     fun whenCreateCall_thenRequestedContactsPassedToRepository() =
-        runTest(testDispatcher) {
+        runTest(mainDispatcherRule.testDispatcher) {
             val repository = FakeCallRepository { Call("theRoomId") }
             val viewModel = givenViewModel(repository)
 
@@ -143,7 +130,7 @@ class CallViewModelTest {
         return states
     }
 
-    private fun givenViewModel(repository: CallRepository) = CallViewModel(repository, navigator, testDispatcher)
+    private fun givenViewModel(repository: CallRepository) = CallViewModel(repository, navigator, mainDispatcherRule.testDispatcher)
 
     private class FakeCallRepository(private val onCreateCall: suspend () -> Call) : CallRepository {
         val requestedContacts = mutableListOf<List<Long>>()

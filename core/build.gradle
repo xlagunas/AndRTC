@@ -80,6 +80,7 @@ dependencies {
     implementation libs.gson
     implementation libs.rxandroid
     implementation libs.rxjava
+    api libs.coroutines.core
 
     implementation libs.androidx.appcompat
     implementation libs.timber
