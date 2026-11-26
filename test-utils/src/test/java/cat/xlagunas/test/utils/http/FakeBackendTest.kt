@@ -116,10 +116,50 @@ class FakeBackendTest {
 
         get(backend, "/user/").close()
 
-        val recorded = backend.awaitRequest()
+        val recorded: ReceivedRequest = backend.awaitRequest()
         assertThat(recorded.method).isEqualTo("GET")
         assertThat(recorded.path).isEqualTo("/user/")
-        assertThat(backend.requests).hasSize(1)
+        assertThat(backend.requests).containsExactly(recorded)
+    }
+
+    @Test
+    fun givenPostWithHeadersAndQuery_whenReceived_thenExposedWithoutOkHttpTypes() {
+        backend.respondTo("POST", "/auth/", ok())
+
+        val request =
+            Request.Builder()
+                .url(backend.url + "/auth/?source=test")
+                .header("Authorization", "token-1")
+                .post("""{"user":"anna"}""".toRequestBody())
+                .build()
+        client.newCall(request).execute().close()
+
+        val recorded = backend.awaitRequest()
+        assertThat(recorded.path).isEqualTo("/auth/")
+        assertThat(recorded.query).isEqualTo("source=test")
+        assertThat(recorded.header("authorization")).isEqualTo("token-1")
+        assertThat(recorded.body).isEqualTo("""{"user":"anna"}""")
+    }
+
+    @Test
+    fun givenTwoRequests_whenAwaitingTwice_thenReturnedInOrderAndRequestsKeepsBoth() {
+        backend.respondTo("GET", "/user/", ok())
+        backend.respondTo("GET", "/contact/list", ok())
+
+        get(backend, "/user/").close()
+        get(backend, "/contact/list").close()
+
+        assertThat(backend.awaitRequest().path).isEqualTo("/user/")
+        assertThat(backend.awaitRequest().path).isEqualTo("/contact/list")
+        assertThat(backend.requests.map { it.path }).containsExactly("/user/", "/contact/list")
+    }
+
+    @Test
+    fun givenCannedResponses_thenDescribeThemselves() {
+        assertThat(ok()).isEqualTo(FakeResponse(code = 200, body = "", json = true))
+        assertThat(httpError(401)).isEqualTo(FakeResponse(code = 401))
+        assertThat(disconnect().disconnect).isTrue()
+        assertThat(malformedJson().body).isEqualTo("{\"broken\"")
     }
 
     @Test

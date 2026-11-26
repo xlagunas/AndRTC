@@ -1,28 +1,34 @@
 package cat.xlagunas.test.utils.http
 
+import cat.xlagunas.test.utils.StateRecorder
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import okhttp3.mockwebserver.SocketPolicy
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Fake HTTP backend for tests: a MockWebServer whose responses are chosen by method and
- * path, never by request order. A request with no matching route gets a 404 and fails the
- * test once its body has run.
+ * Fake HTTP backend for tests, whose responses are chosen by method and path, never by
+ * request order. A request with no matching route gets a 404 and fails the test once its
+ * body has run.
+ *
+ * Tests only see [FakeResponse] and [ReceivedRequest]; MockWebServer is an implementation
+ * detail that can be swapped for Ktor's MockEngine after the KMP move.
  */
 class FakeBackend : TestRule {
-    private class Route(val method: String, val path: Regex, val response: MockResponse)
+    private class Route(val method: String, val path: Regex, val response: FakeResponse)
 
     private val server = MockWebServer()
     private val routes = CopyOnWriteArrayList<Route>()
-    private val received = CopyOnWriteArrayList<RecordedRequest>()
+    private val received = StateRecorder<ReceivedRequest>()
+    private val awaited = AtomicInteger(0)
     private val unmatched = CopyOnWriteArrayList<String>()
 
     init {
@@ -36,9 +42,9 @@ class FakeBackend : TestRule {
     val url: String
         get() = server.url("/").toString().removeSuffix("/")
 
-    /** Requests received so far, in arrival order. */
-    val requests: List<RecordedRequest>
-        get() = received.toList()
+    /** Every request received so far, in arrival order. Not affected by [awaitRequest]. */
+    val requests: List<ReceivedRequest>
+        get() = received.values
 
     /**
      * Answers [method] requests whose path (without query) fully matches the [path] regex.
@@ -48,15 +54,19 @@ class FakeBackend : TestRule {
     fun respondTo(
         method: String,
         path: String,
-        response: MockResponse,
+        response: FakeResponse,
     ) {
         routes.add(0, Route(method.uppercase(), Regex(path), response))
     }
 
-    /** Takes the next request in arrival order, failing if none arrives within [timeout]. */
-    fun awaitRequest(timeout: Duration = DEFAULT_TIMEOUT): RecordedRequest =
-        server.takeRequest(timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
-            ?: throw AssertionError("No request received within $timeout")
+    /**
+     * Returns the next request not yet returned by this method, in arrival order, failing if
+     * none arrives within [timeout].
+     */
+    fun awaitRequest(timeout: Duration = DEFAULT_TIMEOUT): ReceivedRequest {
+        val index = awaited.getAndIncrement()
+        return received.awaitCount(index + 1, timeout)[index]
+    }
 
     override fun apply(
         base: Statement,
@@ -87,11 +97,12 @@ class FakeBackend : TestRule {
 
     private inner class RoutingDispatcher : Dispatcher() {
         override fun dispatch(request: RecordedRequest): MockResponse {
-            received.add(request)
-            val method = request.method.orEmpty()
-            val path = request.requestUrl?.encodedPath.orEmpty()
+            val receivedRequest = request.toReceivedRequest()
+            received.record(receivedRequest)
+            val method = receivedRequest.method
+            val path = receivedRequest.path
             val route = routes.firstOrNull { it.method == method && it.path.matches(path) }
-            if (route != null) return route.response
+            if (route != null) return route.response.toMockResponse()
             unmatched.add("$method $path")
             return MockResponse().setResponseCode(404).setBody("No fake response for $method $path")
         }
@@ -101,3 +112,23 @@ class FakeBackend : TestRule {
         val DEFAULT_TIMEOUT = 5.seconds
     }
 }
+
+private fun RecordedRequest.toReceivedRequest() =
+    ReceivedRequest(
+        method = method.orEmpty(),
+        path = requestUrl?.encodedPath.orEmpty(),
+        query = requestUrl?.encodedQuery,
+        headers = headers.toMultimap(),
+        body = body.readUtf8(),
+    )
+
+// DISCONNECT_AFTER_REQUEST: MockWebServer ignores DISCONNECT_AT_START when it comes from a dispatcher.
+private fun FakeResponse.toMockResponse(): MockResponse =
+    if (disconnect) {
+        MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
+    } else {
+        MockResponse()
+            .setResponseCode(code)
+            .setBody(body)
+            .apply { if (json) setHeader("Content-Type", "application/json") }
+    }
