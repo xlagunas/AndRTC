@@ -34,6 +34,9 @@ class ContactRelationshipCoreTest {
     // The friend found by the search fixture, not stored yet.
     private val jordina = Friend(12, "jordina", "Jordina", null, "jordina@example.com", "NONE")
 
+    private val requestedJordina = FriendEntity(12, 3, "jordina", "Jordina", "jordina@example.com", "", "REQUESTED")
+    private val acceptedMarta = marta.toEntity(3).copy(relationShipStatus = "ACCEPTED")
+
     @Before
     fun setUp() {
         harness = ContactCoreHarness(backend, rule)
@@ -48,26 +51,21 @@ class ContactRelationshipCoreTest {
     fun givenBackendAccepts_whenAddContact_thenRequestSentAndStoredAsRequested() {
         requestSeeded(ok())
 
-        assertRequestSent("PUT", "/contact/12")
-        assertThat(harness.storedFriends(3)).single().isEqualTo(
-            FriendEntity(12, 3, "jordina", "Jordina", "jordina@example.com", "", "REQUESTED"),
-        )
+        requestOutcome()
     }
 
     @Test
     fun givenBackendAccepts_whenAcceptContactRequest_thenRequestSentAndStoredAsAccepted() {
         acceptSeeded(ok())
 
-        assertRequestSent("POST", "/contact/11/accept")
-        assertThat(harness.storedFriends(3)).containsExactly(marta.toEntity(3).copy(relationShipStatus = "ACCEPTED"))
+        acceptOutcome()
     }
 
     @Test
     fun givenBackendAccepts_whenRejectContactRequest_thenRequestSentAndContactRemoved() {
         rejectSeeded(ok())
 
-        assertRequestSent("POST", "/contact/11/reject")
-        assertThat(harness.storedFriends(3)).isEmpty()
+        rejectOutcome()
     }
 
     @Test
@@ -194,14 +192,12 @@ class ContactRelationshipCoreTest {
 
     private fun requestOutcome() {
         assertRequestSent("PUT", "/contact/12")
-        assertThat(harness.storedFriends(3)).single().isEqualTo(
-            FriendEntity(12, 3, "jordina", "Jordina", "jordina@example.com", "", "REQUESTED"),
-        )
+        assertThat(harness.storedFriends(3)).single().isEqualTo(requestedJordina)
     }
 
     private fun acceptOutcome() {
         assertRequestSent("POST", "/contact/11/accept")
-        assertThat(harness.storedFriends(3)).containsExactly(marta.toEntity(3).copy(relationShipStatus = "ACCEPTED"))
+        assertThat(harness.storedFriends(3)).containsExactly(acceptedMarta)
     }
 
     private fun rejectOutcome() {

@@ -114,6 +114,8 @@ class ContactCoreHarness(
     }
 
     fun close() {
+        client.dispatcher.executorService.shutdown()
+        client.connectionPool.evictAll()
         database.close()
     }
 }

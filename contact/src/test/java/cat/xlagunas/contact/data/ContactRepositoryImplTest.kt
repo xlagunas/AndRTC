@@ -120,11 +120,11 @@ class ContactRepositoryImplTest {
     fun givenCacheIsInvalid_whenGetContactsError_thenNoCacheUpdate() {
         `when`(cache.isCacheValid()).thenReturn(Single.just(false))
         `when`(remoteContactDataSource.getContactsAsSingle()).thenReturn(Single.error(IOException()))
-        `when`(localContactDataSource.getContacts()).thenReturn(Flowable.empty())
+        `when`(localContactDataSource.getContacts()).thenReturn(Flowable.just(listOf(friend())))
 
         contactRepository.getContacts().test()
+            .assertValue(listOf(friend()))
             .assertComplete()
-            .assertNoValues()
 
         verify(remoteContactDataSource).getContactsAsSingle()
         verify(localContactDataSource, never()).updateContacts(anyList())
