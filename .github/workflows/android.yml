@@ -194,7 +194,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-api34-x86_64
+          key: avd-api34-x86_64-v2
 
       - name: Generate the AVD snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -216,7 +216,7 @@ jobs:
           target: google_apis
           force-avd-creation: false
           disable-animations: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r app/build/outputs/apk/e2e/debug/app-e2e-debug.apk
             maestro test e2e/ --format junit --output build/maestro/report.xml --test-output-dir build/maestro; status=$?; adb logcat -d > build/maestro/logcat.txt || true; exit $status
