@@ -2,6 +2,7 @@ package cat.xlagunas.test.utils
 
 import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
@@ -32,5 +33,17 @@ class FakePushTokenProviderTest {
 
         assertThat(provider.isTokenRegistered()).isFalse()
         assertThat(provider.invalidations).isEqualTo(1)
+    }
+
+    @Test
+    fun givenMarkedThenCleared_whenRegistrationChangesRead_thenBothRecordedInOrder() {
+        val provider = FakePushTokenProvider()
+
+        provider.markTokenAsRegistered()
+        provider.clearTokenRegistration()
+
+        assertThat(provider.isTokenRegistered()).isFalse()
+        assertThat(provider.registrationChanges.values).containsExactly(true, false)
+        assertThat(provider.invalidations).isEqualTo(0)
     }
 }

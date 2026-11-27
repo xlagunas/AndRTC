@@ -25,6 +25,9 @@ import cat.xlagunas.core.push.MessageProcessor
 import cat.xlagunas.core.push.MessageType
 import cat.xlagunas.push.MessageConverter
 import cat.xlagunas.push.PushMessageRouter
+import cat.xlagunas.push.PushTokenApi
+import cat.xlagunas.push.PushTokenPresenter
+import cat.xlagunas.push.PushTokenRepositoryImpl
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.FakePushTokenProvider
 import cat.xlagunas.test.utils.awaitFirst
@@ -36,7 +39,7 @@ import org.robolectric.Shadows.shadowOf
 import javax.inject.Provider
 
 /**
- * Push routing wired by hand with its production classes and the real processors. Only
+ * Push routing and token rotation wired by hand with its production classes and the real processors. Only
  * HTTP ([FakeBackend]) and Firebase are fakes; notifications go to Robolectric's shadow.
  */
 class PushCoreHarness(
@@ -101,6 +104,12 @@ class PushCoreHarness(
         )
 
     val router = PushMessageRouter(MessageConverter(), messageProcessors)
+
+    val pushTokenPresenter =
+        PushTokenPresenter(
+            PushTokenRepositoryImpl(pushTokenProvider, retrofit.create(PushTokenApi::class.java), rule.rxSchedulers),
+            dataStore,
+        )
 
     fun notifications(): List<Notification> = shadowOf(notificationManager).allNotifications
 

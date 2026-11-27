@@ -23,9 +23,5 @@ class PushMessageHandler : FirebaseMessagingService() {
         pushMessageRouter.route(remoteMessage)
     }
 
-    override fun onNewToken(p0: String) {
-        if (pushTokenPresenter.isPushTokenRegistered()) {
-            pushTokenPresenter.clearPushToken()
-        }
-    }
+    override fun onNewToken(token: String) = pushTokenPresenter.onNewToken(token)
 }

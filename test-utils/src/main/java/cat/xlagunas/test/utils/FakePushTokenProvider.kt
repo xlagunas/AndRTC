@@ -17,6 +17,9 @@ class FakePushTokenProvider(var token: String = "push-token-1") : PushTokenProvi
     var invalidations = 0
         private set
 
+    /** Every change of the registered flag: `true` when marked, `false` when cleared. */
+    val registrationChanges = StateRecorder<Boolean>()
+
     override fun getPushToken(): String {
         failure?.let { throw it }
         return token
@@ -26,6 +29,12 @@ class FakePushTokenProvider(var token: String = "push-token-1") : PushTokenProvi
 
     override fun markTokenAsRegistered() {
         registered = true
+        registrationChanges.record(true)
+    }
+
+    override fun clearTokenRegistration() {
+        registered = false
+        registrationChanges.record(false)
     }
 
     override fun invalidatePushToken() {

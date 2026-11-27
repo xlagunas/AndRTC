@@ -1,6 +1,7 @@
 package cat.xlagunas.push.core
 
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -79,6 +80,34 @@ class PushTokenRepositoryCoreTest {
         assertThat(result.isFailure).isTrue()
         assertThat(backend.requests).isEmpty()
         assertThat(provider.isTokenRegistered()).isFalse()
+    }
+
+    @Test
+    fun givenNewToken_whenRegisterPushTokenWithToken_thenSendsIt() {
+        backend.respondTo("PUT", "/token/", ok())
+
+        val result = repository.registerPushToken("push-token-2").awaitResult()
+
+        assertThat(result.isSuccess).isTrue()
+        val request = backend.awaitRequest()
+        assertThat(request.method).isEqualTo("PUT")
+        assertThat(request.path).isEqualTo("/token/")
+        assertThat(request.body).isEqualTo("""{"value":"push-token-2","platform":"ANDROID"}""")
+        assertThat(provider.registrationChanges.values).containsExactly(true)
+        assertThat(provider.invalidations).isEqualTo(0)
+    }
+
+    @Test
+    fun givenServerError_whenRegisterPushTokenWithToken_thenRegistrationCleared() {
+        provider.markTokenAsRegistered()
+        backend.respondTo("PUT", "/token/", httpError(500))
+
+        val result = repository.registerPushToken("push-token-2").awaitResult()
+
+        assertThat(result.isFailure).isTrue()
+        assertThat(provider.registrationChanges.values).containsExactly(true, false)
+        assertThat(provider.isTokenRegistered()).isFalse()
+        assertThat(provider.invalidations).isEqualTo(0)
     }
 
     @Test
