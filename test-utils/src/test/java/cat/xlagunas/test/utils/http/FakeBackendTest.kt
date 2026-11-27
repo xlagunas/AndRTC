@@ -13,10 +13,11 @@ import org.junit.runners.model.Statement
 import java.io.IOException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.time.Duration.Companion.milliseconds
+import assertk.assertFailure as assertKFailure
 import assertk.assertThat as assertKThat
 import assertk.assertions.isEqualTo as assertKIsEqualTo
-import assertk.assertions.isFalse as assertKIsFalse
 import assertk.assertions.isInstanceOf as assertKIsInstanceOf
 import assertk.assertions.isNotNull as assertKIsNotNull
 import assertk.assertions.messageContains as assertKMessageContains
@@ -209,7 +210,8 @@ class FakeBackendTest {
         val recorded = backend.awaitRequest()
 
         assertKThat(recorded.path).assertKIsEqualTo("/selftest/")
-        assertKThat(call.isDone).assertKIsFalse()
+        // Bounded wait: a held response must not reach the client before release.
+        assertKFailure { call.get(300, TimeUnit.MILLISECONDS) }.assertKIsInstanceOf<TimeoutException>()
         gate.release()
         assertKThat(call.get(5, TimeUnit.SECONDS)).assertKIsEqualTo(200 to """{"value":"hello"}""")
     }
