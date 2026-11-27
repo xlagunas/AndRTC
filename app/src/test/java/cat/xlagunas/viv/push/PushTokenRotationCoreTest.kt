@@ -87,6 +87,8 @@ class PushTokenRotationCoreTest {
     fun givenLoggedOut_whenNewToken_thenNothingSent() {
         harness.pushTokenPresenter.onNewToken(NEW_TOKEN)
 
+        // Requests go out on an OkHttp thread: wait for the guard to run before asserting absence.
+        logs.awaitMessage(LOGGED_OUT_LOG)
         assertThat(backend.requests).isEmpty()
         assertThat(provider.invalidations).isEqualTo(0)
         assertThat(provider.registrationChanges.values).isEmpty()
@@ -112,6 +114,7 @@ class PushTokenRotationCoreTest {
 
     private companion object {
         const val NEW_TOKEN = "push-token-2"
+        const val LOGGED_OUT_LOG = "New push token received while logged out"
         const val ROTATION_ERROR = "Error registering rotated push token"
     }
 }
