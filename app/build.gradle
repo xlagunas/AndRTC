@@ -54,6 +54,11 @@ android {
         }
     }
 
+    sourceSets {
+        development.kotlin.srcDir('src/standard/java')
+        production.kotlin.srcDir('src/standard/java')
+    }
+
     buildFeatures {
         dataBinding = false
         viewBinding = true
