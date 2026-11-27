@@ -24,6 +24,8 @@ maestro test e2e/
 ```
 
 Each flow selects its own scenario (`scripts/select_scenario.js`) and runs `clearState`.
+Template for new flows, in this order: `clearState` (kills the previous app process), then the
+`runScript` scenario selection (scenario hardcoded in the flow's `env`), then `launchApp`.
 No fixed sleeps: use `assertVisible` / `extendedWaitUntil`.
 
 ## Backend control endpoints
@@ -39,5 +41,6 @@ Scenarios: `logged_in_contacts`, `empty`.
 ## Add a scenario
 
 Add it to `e2e-backend/src/main/java/cat/xlagunas/e2e/backend/Scenarios.kt` (routes and
-JSON fixtures), then run a flow against it with `maestro test -e SCENARIO=<name> e2e/` (flows default to `logged_in_contacts`;
-`BACKEND_URL` can be overridden the same way). Note `smoke` expects `logged_in_contacts`, so other scenarios make it fail.
+JSON fixtures), then set it in the `SCENARIO` env of your flow's `runScript`. Each flow owns its scenario. To try a
+scenario, select it with `curl -X POST localhost:8484/__scenario/<name>` or run a single flow file
+(`maestro test e2e/flows/<flow>.yaml`). `BACKEND_URL` can be overridden with `maestro test -e BACKEND_URL=...`.

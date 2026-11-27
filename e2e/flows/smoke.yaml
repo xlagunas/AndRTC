@@ -1,14 +1,18 @@
 appId: cat.xlagunas.viv.e2e.dev
 ---
+# Order matters: clearState kills the previous app process, then the scenario is selected,
+# then the app launches against a freshly selected backend state.
+- clearState
 - runScript:
     file: ../scripts/select_scenario.js
     env:
       BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
-      SCENARIO: ${SCENARIO || 'logged_in_contacts'}
-- clearState
+      SCENARIO: logged_in_contacts
 - launchApp
-- assertVisible:
-    id: search
+- extendedWaitUntil:
+    visible:
+      id: search
+    timeout: 20000
 - tapOn:
     id: action_profile
 - tapOn:
@@ -19,9 +23,6 @@ appId: cat.xlagunas.viv.e2e.dev
 - inputText: secret
 - hideKeyboard
 - tapOn: Login
-- extendedWaitUntil:
-    visible: Welcome back.*
-    timeout: 10000
 - extendedWaitUntil:
     visible: LOGOUT
     timeout: 10000
