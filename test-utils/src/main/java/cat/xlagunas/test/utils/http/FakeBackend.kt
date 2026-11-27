@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.seconds
  * Tests only see [FakeResponse] and [ReceivedRequest]; MockWebServer is an implementation
  * detail that can be swapped for Ktor's MockEngine after the KMP move.
  */
-class FakeBackend : TestRule {
+class FakeBackend(private val gateTimeout: Duration = DEFAULT_TIMEOUT) : TestRule {
     private class Route(val method: String, val path: Regex, val response: FakeResponse)
 
     private val server = MockWebServer()
@@ -102,7 +102,14 @@ class FakeBackend : TestRule {
             val method = receivedRequest.method
             val path = receivedRequest.path
             val route = routes.firstOrNull { it.method == method && it.path.matches(path) }
-            if (route != null) return route.response.toMockResponse()
+            if (route != null) {
+                val gate = route.response.gate
+                if (gate != null && !gate.await(gateTimeout)) {
+                    unmatched.add("$method $path (gate never released)")
+                    return MockResponse().setResponseCode(500).setBody("Gate never released for $method $path")
+                }
+                return route.response.toMockResponse()
+            }
             unmatched.add("$method $path")
             return MockResponse().setResponseCode(404).setBody("No fake response for $method $path")
         }

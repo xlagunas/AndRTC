@@ -11,7 +11,16 @@ import org.junit.Test
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import java.io.IOException
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.time.Duration.Companion.milliseconds
+import assertk.assertFailure as assertKFailure
+import assertk.assertThat as assertKThat
+import assertk.assertions.isEqualTo as assertKIsEqualTo
+import assertk.assertions.isInstanceOf as assertKIsInstanceOf
+import assertk.assertions.isNotNull as assertKIsNotNull
+import assertk.assertions.messageContains as assertKMessageContains
 
 class FakeBackendTest {
     @get:Rule
@@ -187,6 +196,43 @@ class FakeBackendTest {
         assertThatThrownBy { fixture("missing/file.json") }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Fixture not found: missing/file.json")
+    }
+
+    @Test
+    fun givenHeldResponse_whenRequestSent_thenRequestRecordedBeforeRelease() {
+        val gate = ResponseGate()
+        backend.respondTo("GET", "/selftest/", ok("selftest/hello.json").heldBy(gate))
+
+        val call =
+            CompletableFuture.supplyAsync {
+                get(backend, "/selftest/").use { it.code to it.body!!.string().trim() }
+            }
+        val recorded = backend.awaitRequest()
+
+        assertKThat(recorded.path).assertKIsEqualTo("/selftest/")
+        // Bounded wait: a held response must not reach the client before release.
+        assertKFailure { call.get(300, TimeUnit.MILLISECONDS) }.assertKIsInstanceOf<TimeoutException>()
+        gate.release()
+        assertKThat(call.get(5, TimeUnit.SECONDS)).assertKIsEqualTo(200 to """{"value":"hello"}""")
+    }
+
+    @Test
+    fun givenGateNeverReleased_whenRequestSent_thenServerErrorAndRuleFails() {
+        val other = FakeBackend(gateTimeout = 100.milliseconds)
+        var code = 0
+        val statement =
+            object : Statement() {
+                override fun evaluate() {
+                    other.respondTo("GET", "/selftest/", ok().heldBy(ResponseGate()))
+                    get(other, "/selftest/").use { code = it.code }
+                }
+            }
+
+        val thrown = runCatching { other.apply(statement, Description.EMPTY).evaluate() }.exceptionOrNull()
+
+        assertKThat(code).assertKIsEqualTo(500)
+        assertKThat(thrown).assertKIsNotNull().assertKIsInstanceOf<AssertionError>()
+        assertKThat(thrown!!).assertKMessageContains("GET /selftest/ (gate never released)")
     }
 
     private fun get(

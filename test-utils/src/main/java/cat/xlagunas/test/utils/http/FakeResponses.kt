@@ -16,3 +16,6 @@ fun disconnect(): FakeResponse = FakeResponse(disconnect = true)
 
 /** 200 whose body is not valid JSON. */
 fun malformedJson(): FakeResponse = FakeResponse(code = 200, body = "{\"broken\"", json = true)
+
+/** Keeps this response pending until [gate] is released. */
+fun FakeResponse.heldBy(gate: ResponseGate): FakeResponse = copy(gate = gate)
