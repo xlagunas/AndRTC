@@ -77,6 +77,8 @@ class CallMessageProcessorTest {
         val pendingIntent = shadowOf(notificationManager).allNotifications.single().actions.single().actionIntent
         assertThat(shadowOf(pendingIntent).flags and PendingIntent.FLAG_IMMUTABLE)
             .isEqualTo(PendingIntent.FLAG_IMMUTABLE)
+        assertThat(shadowOf(pendingIntent).flags and PendingIntent.FLAG_ONE_SHOT)
+            .isEqualTo(PendingIntent.FLAG_ONE_SHOT)
     }
 
     @Test

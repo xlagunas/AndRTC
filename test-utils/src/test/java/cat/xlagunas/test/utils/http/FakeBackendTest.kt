@@ -17,6 +17,9 @@ import kotlin.time.Duration.Companion.milliseconds
 import assertk.assertThat as assertKThat
 import assertk.assertions.isEqualTo as assertKIsEqualTo
 import assertk.assertions.isFalse as assertKIsFalse
+import assertk.assertions.isInstanceOf as assertKIsInstanceOf
+import assertk.assertions.isNotNull as assertKIsNotNull
+import assertk.assertions.messageContains as assertKMessageContains
 
 class FakeBackendTest {
     @get:Rule
@@ -226,8 +229,8 @@ class FakeBackendTest {
         val thrown = runCatching { other.apply(statement, Description.EMPTY).evaluate() }.exceptionOrNull()
 
         assertKThat(code).assertKIsEqualTo(500)
-        assertKThat(thrown is AssertionError).assertKIsEqualTo(true)
-        assertKThat(thrown!!.message!!.contains("GET /selftest/ (gate never released)")).assertKIsEqualTo(true)
+        assertKThat(thrown).assertKIsNotNull().assertKIsInstanceOf<AssertionError>()
+        assertKThat(thrown!!).assertKMessageContains("GET /selftest/ (gate never released)")
     }
 
     private fun get(
