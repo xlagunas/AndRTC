@@ -5,7 +5,6 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
-import okhttp3.mockwebserver.SocketPolicy
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -23,10 +22,8 @@ import kotlin.time.Duration.Companion.seconds
  * detail that can be swapped for Ktor's MockEngine after the KMP move.
  */
 class FakeBackend(private val gateTimeout: Duration = DEFAULT_TIMEOUT) : TestRule {
-    private class Route(val method: String, val path: Regex, val response: FakeResponse)
-
     private val server = MockWebServer()
-    private val routes = CopyOnWriteArrayList<Route>()
+    private val routes = RouteTable()
     private val received = StateRecorder<ReceivedRequest>()
     private val awaited = AtomicInteger(0)
     private val unmatched = CopyOnWriteArrayList<String>()
@@ -55,9 +52,7 @@ class FakeBackend(private val gateTimeout: Duration = DEFAULT_TIMEOUT) : TestRul
         method: String,
         path: String,
         response: FakeResponse,
-    ) {
-        routes.add(0, Route(method.uppercase(), Regex(path), response))
-    }
+    ) = routes.respondTo(method, path, response)
 
     /**
      * Returns the next request not yet returned by this method, in arrival order, failing if
@@ -101,14 +96,14 @@ class FakeBackend(private val gateTimeout: Duration = DEFAULT_TIMEOUT) : TestRul
             received.record(receivedRequest)
             val method = receivedRequest.method
             val path = receivedRequest.path
-            val route = routes.firstOrNull { it.method == method && it.path.matches(path) }
-            if (route != null) {
-                val gate = route.response.gate
+            val response = routes.match(method, path)
+            if (response != null) {
+                val gate = response.gate
                 if (gate != null && !gate.await(gateTimeout)) {
                     unmatched.add("$method $path (gate never released)")
                     return MockResponse().setResponseCode(500).setBody("Gate never released for $method $path")
                 }
-                return route.response.toMockResponse()
+                return response.toMockResponse()
             }
             unmatched.add("$method $path")
             return MockResponse().setResponseCode(404).setBody("No fake response for $method $path")
@@ -119,23 +114,3 @@ class FakeBackend(private val gateTimeout: Duration = DEFAULT_TIMEOUT) : TestRul
         val DEFAULT_TIMEOUT = 5.seconds
     }
 }
-
-private fun RecordedRequest.toReceivedRequest() =
-    ReceivedRequest(
-        method = method.orEmpty(),
-        path = requestUrl?.encodedPath.orEmpty(),
-        query = requestUrl?.encodedQuery,
-        headers = headers.toMultimap(),
-        body = body.readUtf8(),
-    )
-
-// DISCONNECT_AFTER_REQUEST: MockWebServer ignores DISCONNECT_AT_START when it comes from a dispatcher.
-private fun FakeResponse.toMockResponse(): MockResponse =
-    if (disconnect) {
-        MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST)
-    } else {
-        MockResponse()
-            .setResponseCode(code)
-            .setBody(body)
-            .apply { if (json) setHeader("Content-Type", "application/json") }
-    }

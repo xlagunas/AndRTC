@@ -1,0 +1,24 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'java-library'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    api libs.junit
+    api libs.assertk
+    implementation libs.okhttp.mockwebserver
+
+    testImplementation libs.assertj.core
+}
+
+// CI runs testDevelopmentDebugUnitTest; this JVM module has no variants, so alias it.
+tasks.register('testDevelopmentDebugUnitTest') {
+    dependsOn 'test'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+}
