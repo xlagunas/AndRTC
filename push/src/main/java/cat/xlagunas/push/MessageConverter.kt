@@ -21,13 +21,19 @@ class MessageConverter
 
             return try {
                 when (valueOf(messageKey)) {
-                    CREATE_CALL ->
-                        CallMessage(
-                            CREATE_CALL,
-                            remoteMessage.data["params"]!!,
-                        )
-                    ACCEPT_CALL -> TODO("Accept call flow still not implemented")
-                    REJECT_CALL -> TODO("Reject call flow still not implemented")
+                    CREATE_CALL -> {
+                        val params = remoteMessage.data["params"]
+                        if (params == null) {
+                            Timber.w("Missing params on push eventType $messageKey")
+                            null
+                        } else {
+                            CallMessage(CREATE_CALL, params)
+                        }
+                    }
+                    ACCEPT_CALL, REJECT_CALL -> {
+                        Timber.w("Unsupported push eventType $messageKey")
+                        null
+                    }
                     REQUEST_FRIENDSHIP ->
                         ContactMessage(
                             REQUEST_FRIENDSHIP,

@@ -35,16 +35,19 @@ class PushTokenRepositoryImpl
 
         override fun registerPushToken(): Completable {
             return getTokenFromTokenProvider()
-                .flatMapCompletable(this::requestTokenRegistration)
-                .observeOn(schedulers.mainThread)
-                .subscribeOn(schedulers.io)
+                .flatMapCompletable(::registerPushToken)
         }
 
-        private fun requestTokenRegistration(token: String): Completable {
+        override fun registerPushToken(token: String): Completable {
             return addPushToken(PushTokenDto(token))
-                .doOnComplete { pushTokenProvider.markTokenAsRegistered() }
-                .doOnComplete { Timber.d("Push token successfully registered") }
                 .doOnSubscribe { Timber.d("Starting token registration") }
+                .doOnComplete {
+                    pushTokenProvider.markTokenAsRegistered()
+                    Timber.d("Push token successfully registered")
+                }
+                .doOnError { pushTokenProvider.clearTokenRegistration() }
+                .observeOn(schedulers.mainThread)
+                .subscribeOn(schedulers.io)
         }
 
         private fun getTokenFromTokenProvider(): Maybe<String> {

@@ -49,6 +49,7 @@ dependencies {
     implementation project(':push')
     implementation libs.androidx.lifecycle.livedata.ktx
     implementation libs.rxjava
+    implementation libs.timber
 
     api libs.junit
     api libs.assertj.core

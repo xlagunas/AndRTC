@@ -19,6 +19,8 @@ class PushTokenProviderImpl
 
         override fun markTokenAsRegistered() = sharedPreferences.edit { putBoolean(PUSH_TOKEN_REGISTERED, true) }
 
+        override fun clearTokenRegistration() = sharedPreferences.edit { remove(PUSH_TOKEN_REGISTERED) }
+
         override fun invalidatePushToken() {
             Tasks.await(FirebaseMessaging.getInstance().deleteToken())
         }

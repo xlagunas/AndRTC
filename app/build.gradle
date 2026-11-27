@@ -84,6 +84,11 @@ android {
 
     testOptions {
         animationsDisabled = true
+        // Robolectric needs the merged resources (e.g. the call notification strings). This also
+        // makes it run at targetSdk 35 instead of minSdk 24, which notification channels need.
+        unitTests {
+            includeAndroidResources = true
+        }
     }
     packagingOptions {
         resources {

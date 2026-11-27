@@ -7,5 +7,7 @@ interface PushTokenProvider {
 
     fun markTokenAsRegistered()
 
+    fun clearTokenRegistration()
+
     fun invalidatePushToken()
 }
