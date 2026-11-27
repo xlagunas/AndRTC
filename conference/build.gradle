@@ -16,6 +16,10 @@ android {
         production {}
 
         development {}
+
+        e2e {
+            matchingFallbacks = ['development']
+        }
     }
 
     buildTypes {
@@ -35,6 +39,12 @@ android {
 
 
 
+}
+
+androidComponents {
+    beforeVariants(selector().withFlavor('version', 'e2e').withBuildType('release')) { variantBuilder ->
+        variantBuilder.enable = false
+    }
 }
 
 tasks.withType(Test) {

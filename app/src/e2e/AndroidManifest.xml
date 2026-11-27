@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+            android:networkSecurityConfig="@xml/e2e_network_security_config"
+            tools:targetApi="24">
+
+        <!-- E2E runs must not report to Firebase nor depend on a real FCM token. -->
+        <meta-data
+                android:name="firebase_crashlytics_collection_enabled"
+                android:value="false" />
+        <meta-data
+                android:name="firebase_performance_collection_deactivated"
+                android:value="true" />
+        <meta-data
+                android:name="firebase_messaging_auto_init_enabled"
+                android:value="false" />
+
+        <!-- Lets Maestro inject a push message: viv-e2e://push?type=...&params=... -->
+        <activity
+                android:name="cat.xlagunas.viv.e2e.E2ePushLinkActivity"
+                android:exported="true"
+                android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                        android:host="push"
+                        android:scheme="viv-e2e" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

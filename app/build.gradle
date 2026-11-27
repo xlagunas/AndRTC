@@ -52,6 +52,15 @@ android {
         development {
             versionNameSuffix = '.local'
         }
+
+        // Variant used by the Maestro E2E flows: talks to :e2e-backend on the host machine
+        // (10.0.2.2 from the emulator). Only the debug build type exists. Libraries have no e2e
+        // flavor, so they fall back to development.
+        e2e {
+            applicationIdSuffix = '.e2e'
+            matchingFallbacks = ['development']
+            buildConfigField "String", "E2E_BACKEND_URL", "\"http://10.0.2.2:8484\""
+        }
     }
 
     sourceSets {
@@ -111,6 +120,12 @@ android {
     dynamicFeatures = [":conference"]
 }
 
+androidComponents {
+    beforeVariants(selector().withFlavor('version', 'e2e').withBuildType('release')) { variantBuilder ->
+        variantBuilder.enable = false
+    }
+}
+
 
 // TODO(probe): Play publishing config disabled with the triplet-play plugin (see top of file).
 // play{
@@ -160,6 +175,7 @@ dependencies {
     testImplementation libs.junit
     testImplementation libs.mockito.core
     testImplementation libs.assertj.core
+    testImplementation libs.assertk
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.robolectric
     testImplementation libs.androidx.test.core
@@ -222,3 +238,43 @@ static void syncGoogleServicesJson(File target, String sourcePath) {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+// Placeholder Firebase config for the e2e package (cat.xlagunas.viv.e2e.dev). It is not
+// a secret and is copied whenever it differs, like the main google-services.json above.
+copyE2eGoogleServicesJson(
+        rootProject.file('.github/ci/google-services.placeholder.json'),
+        file('src/e2e/google-services.json'))
+
+static void copyE2eGoogleServicesJson(File source, File target) {
+    if (!target.exists() || source.bytes != target.bytes) {
+        target.parentFile.mkdirs()
+        java.nio.file.Files.copy(source.toPath(), target.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
+// Nothing from src/e2e may leak into the variants that ship or are used for local work.
+tasks.register('checkE2eIsolation') {
+    group = 'verification'
+    description = 'Fails if e2e-only manifest entries appear in the development or production manifests.'
+    def manifestTasks = ['processDevelopmentDebugMainManifest', 'processProductionReleaseMainManifest']
+    dependsOn manifestTasks
+    doLast {
+        def forbidden = ['viv-e2e', 'networkSecurityConfig', 'E2ePushLinkActivity', 'firebase_crashlytics_collection_enabled']
+        def violations = []
+        manifestTasks.each { name ->
+            def manifests = tasks.getByName(name).outputs.files.files
+                    .collectMany { it.directory ? it.listFiles().toList() : [it] }
+                    .findAll { it.name == 'AndroidManifest.xml' }
+            if (manifests.isEmpty()) {
+                throw new GradleException("No merged AndroidManifest.xml found for ${name}")
+            }
+            manifests.each { manifest ->
+                def text = manifest.text
+                forbidden.findAll { text.contains(it) }.each { violations << "${name}: ${it} (${manifest})" }
+            }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException("e2e-only content leaked into non-e2e manifests:\n" + violations.join('\n'))
+        }
+    }
+}
