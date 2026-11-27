@@ -1,0 +1,43 @@
+appId: cat.xlagunas.viv.e2e.dev
+env:
+  BACKEND_URL: http://localhost:8484
+  SCENARIO: logged_in_contacts
+---
+- runScript:
+    file: ../scripts/select_scenario.js
+    env:
+      BACKEND_URL: ${BACKEND_URL}
+      SCENARIO: ${SCENARIO}
+- clearState
+- launchApp
+- assertVisible:
+    id: search
+- tapOn:
+    id: action_profile
+- tapOn:
+    id: username_input_layout
+- inputText: anna
+- tapOn:
+    id: password_text_input
+- inputText: secret
+- hideKeyboard
+- tapOn: Login
+- extendedWaitUntil:
+    visible: Welcome back.*
+    timeout: 10000
+- extendedWaitUntil:
+    visible: LOGOUT
+    timeout: 10000
+- tapOn:
+    id: action_contact
+# The first tap on the bottom bar right after login is sometimes swallowed
+# (observed on API 37); tap again only if the contact list is not showing yet.
+- runFlow:
+    when:
+      notVisible: Jordi
+    commands:
+      - tapOn:
+          id: action_contact
+- extendedWaitUntil:
+    visible: Jordi
+    timeout: 10000
