@@ -1,13 +1,10 @@
 appId: cat.xlagunas.viv.e2e.dev
-env:
-  BACKEND_URL: http://localhost:8484
-  SCENARIO: logged_in_contacts
 ---
 - runScript:
     file: ../scripts/select_scenario.js
     env:
-      BACKEND_URL: ${BACKEND_URL}
-      SCENARIO: ${SCENARIO}
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      SCENARIO: ${SCENARIO || 'logged_in_contacts'}
 - clearState
 - launchApp
 - assertVisible:
@@ -28,16 +25,12 @@ env:
 - extendedWaitUntil:
     visible: LOGOUT
     timeout: 10000
+# The "Welcome back" Snackbar covers the bottom bar: wait for it to go away before tapping.
+- extendedWaitUntil:
+    notVisible: Welcome back.*
+    timeout: 10000
 - tapOn:
     id: action_contact
-# The first tap on the bottom bar right after login is sometimes swallowed
-# (observed on API 37); tap again only if the contact list is not showing yet.
-- runFlow:
-    when:
-      notVisible: Jordi
-    commands:
-      - tapOn:
-          id: action_contact
 - extendedWaitUntil:
     visible: Jordi
     timeout: 10000

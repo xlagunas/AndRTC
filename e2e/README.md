@@ -39,4 +39,5 @@ Scenarios: `logged_in_contacts`, `empty`.
 ## Add a scenario
 
 Add it to `e2e-backend/src/main/java/cat/xlagunas/e2e/backend/Scenarios.kt` (routes and
-JSON fixtures), then select it from a flow with `SCENARIO: <name>` in the flow `env`.
+JSON fixtures), then run a flow against it with `maestro test -e SCENARIO=<name> e2e/` (flows default to `logged_in_contacts`;
+`BACKEND_URL` can be overridden the same way). Note `smoke` expects `logged_in_contacts`, so other scenarios make it fail.
