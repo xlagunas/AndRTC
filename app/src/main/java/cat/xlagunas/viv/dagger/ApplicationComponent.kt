@@ -15,6 +15,7 @@ import cat.xlagunas.core.persistence.db.FriendDao
 import cat.xlagunas.core.persistence.db.VivDatabase
 import cat.xlagunas.core.scheduler.CoroutineDispatchers
 import cat.xlagunas.core.scheduler.RxSchedulers
+import cat.xlagunas.push.PushMessageRouter
 import cat.xlagunas.push.PushModule
 import cat.xlagunas.user.UserConverter
 import cat.xlagunas.user.UserModule
@@ -36,6 +37,7 @@ import javax.inject.Singleton
         ContactModule::class,
         UserModule::class,
         PushModule::class,
+        VariantModule::class,
         ContactModule::class,
         PushMessageProcessorsModule::class,
     ],
@@ -71,6 +73,8 @@ interface ApplicationComponent {
     fun notificationManager(): NotificationManagerCompat
 
     fun viewModelProvider(): ViewModelProvider.Factory
+
+    fun pushMessageRouter(): PushMessageRouter
 
     @Component.Builder
     interface Builder {

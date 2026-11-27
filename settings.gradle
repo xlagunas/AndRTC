@@ -2,5 +2,5 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.10.0'
 }
 include ':signaling'
-include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user',':test-utils'
+include ':app', ':conference', ':core', ':push', ':call', ':contact', ':user',':test-utils', ':test-utils-jvm', ':e2e-backend'
 

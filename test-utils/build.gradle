@@ -51,10 +51,8 @@ dependencies {
     implementation libs.rxjava
     implementation libs.timber
 
-    api libs.junit
     api libs.assertj.core
     api libs.coroutines.test
     api libs.androidx.arch.core.testing
-    api libs.assertk
-    implementation libs.okhttp.mockwebserver
+    api project(':test-utils-jvm')
 }

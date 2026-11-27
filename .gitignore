@@ -58,3 +58,6 @@ app/fabric.properties
 freeline.py
 freeline/
 freeline_project_description.json
+
+# Copied from .github/ci/google-services.placeholder.json at configuration time
+app/src/e2e/google-services.json

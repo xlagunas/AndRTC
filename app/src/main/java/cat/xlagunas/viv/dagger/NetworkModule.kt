@@ -1,7 +1,7 @@
 package cat.xlagunas.viv.dagger
 
 import android.app.Application
-import cat.xlagunas.core.BuildConfig
+import cat.xlagunas.core.network.BaseUrl
 import cat.xlagunas.core.network.HttpClientFactory
 import cat.xlagunas.user.auth.AuthHeaderInterceptor
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -24,8 +24,9 @@ class NetworkModule {
     fun provideRetrofit(
         gson: Gson,
         client: OkHttpClient,
+        @BaseUrl baseUrl: String,
     ): Retrofit {
-        return HttpClientFactory.retrofit(BuildConfig.ENDPOINT, client, gson)
+        return HttpClientFactory.retrofit(baseUrl, client, gson)
     }
 
     @Provides

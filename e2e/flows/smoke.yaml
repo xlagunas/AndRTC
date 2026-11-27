@@ -1,0 +1,37 @@
+appId: cat.xlagunas.viv.e2e.dev
+---
+# Order matters: clearState kills the previous app process, then the scenario is selected,
+# then the app launches against a freshly selected backend state.
+- clearState
+- runScript:
+    file: ../scripts/select_scenario.js
+    env:
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      SCENARIO: logged_in_contacts
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: search
+    timeout: 20000
+- tapOn:
+    id: action_profile
+- tapOn:
+    id: username_input_layout
+- inputText: anna
+- tapOn:
+    id: password_text_input
+- inputText: secret
+- hideKeyboard
+- tapOn: Login
+- extendedWaitUntil:
+    visible: LOGOUT
+    timeout: 10000
+# The "Welcome back" Snackbar covers the bottom bar: wait for it to go away before tapping.
+- extendedWaitUntil:
+    notVisible: Welcome back.*
+    timeout: 10000
+- tapOn:
+    id: action_contact
+- extendedWaitUntil:
+    visible: Jordi
+    timeout: 10000

@@ -81,6 +81,9 @@ jobs:
       - name: Assemble debug
         run: ./gradlew assembleDevelopmentDebug
 
+      - name: Check E2E isolation and run E2E unit tests
+        run: ./gradlew :app:checkE2eIsolation :app:testE2eDebugUnitTest
+
       - name: Run unit tests
         run: ./gradlew testDevelopmentDebugUnitTest --continue
 
@@ -129,6 +132,105 @@ jobs:
             **/build/reports/tests/
             **/build/test-results/
           retention-days: 7
+
+  e2e:
+    name: E2E (Maestro)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      MAESTRO_VERSION: 2.12.1
+      MAESTRO_CLI_NO_ANALYTICS: 1
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # build.gradle reads git tags and commit count for versioning
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Use the placeholder google-services.json
+        # The e2e variant never reaches Firebase and needs no secret; this keeps the
+        # google-services plugin happy for any variant it configures.
+        run: cp .github/ci/google-services.placeholder.json app/google-services.json
+
+      - name: Build the e2e APK and the fake backend
+        run: ./gradlew :app:assembleE2eDebug :e2e-backend:installDist
+
+      - name: Start the fake backend
+        run: |
+          mkdir -p build/maestro
+          nohup e2e-backend/build/install/e2e-backend/bin/e2e-backend > build/e2e-backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 http://127.0.0.1:8484/__health > /dev/null; then
+              echo "Backend is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::The fake backend did not become healthy within 60s"
+          cat build/e2e-backend.log
+          exit 1
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
+
+      - name: Cache the AVD
+        id: avd-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-api34-x86_64-v2
+
+      - name: Generate the AVD snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run the Maestro flows
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r app/build/outputs/apk/e2e/debug/app-e2e-debug.apk
+            maestro test e2e/ --format junit --output build/maestro/report.xml --test-output-dir build/maestro; status=$?; adb logcat -d > build/maestro/logcat.txt || true; exit $status
+
+      - name: Upload the Maestro report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: maestro-report
+          path: |
+            build/maestro/
+            build/e2e-backend.log
+          retention-days: 14
+          if-no-files-found: warn
 
   coverage-comment:
     name: Coverage comment

@@ -1,0 +1,28 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'application'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'cat.xlagunas.e2e.backend.MainKt'
+}
+
+dependencies {
+    implementation project(':test-utils-jvm')
+    implementation libs.okhttp.mockwebserver
+    implementation libs.gson
+
+    testImplementation libs.okhttp
+}
+
+// CI runs testDevelopmentDebugUnitTest; this JVM module has no variants, so alias it.
+tasks.register('testDevelopmentDebugUnitTest') {
+    dependsOn 'test'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+}

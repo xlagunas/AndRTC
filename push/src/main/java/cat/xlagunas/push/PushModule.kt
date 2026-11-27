@@ -13,11 +13,6 @@ class PushModule {
     }
 
     @Provides
-    fun providePushTokenProvider(pushTokenProvider: PushTokenProviderImpl): PushTokenProvider {
-        return pushTokenProvider
-    }
-
-    @Provides
     fun providePushTokenApi(retrofit: Retrofit): PushTokenApi {
         return retrofit.create(PushTokenApi::class.java)
     }
