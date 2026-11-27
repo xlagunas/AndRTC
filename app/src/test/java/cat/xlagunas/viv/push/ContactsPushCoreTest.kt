@@ -1,10 +1,14 @@
 package cat.xlagunas.viv.push
 
 import android.app.Application
+import android.database.sqlite.SQLiteConstraintException
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.containsExactly
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import cat.xlagunas.core.persistence.db.FriendEntity
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.LogRecorder
@@ -96,8 +100,12 @@ class ContactsPushCoreTest {
 
         routeFriendshipPush()
 
-        logs.awaitError()
-        assertThat(harness.friendsOf()).isEmpty()
+        // No logged-in user: the contact rows are written for user -1, which violates the foreign key.
+        val error = logs.awaitError()
+        assertThat(error.message).contains(REFRESH_ERROR)
+        assertThat(error.throwable).isNotNull().isInstanceOf(SQLiteConstraintException::class)
+        assertThat(error.throwable!!.message.orEmpty()).contains("FOREIGN KEY")
+        assertThat(harness.friendsOf(-1)).isEmpty()
     }
 
     private fun assertRefreshFailureKeepsContacts(response: FakeResponse) {
@@ -107,7 +115,7 @@ class ContactsPushCoreTest {
 
         routeFriendshipPush()
 
-        logs.awaitError()
+        assertThat(logs.awaitError().message).contains(REFRESH_ERROR)
         assertThat(harness.friendsOf()).containsExactly(PRE_EXISTING_FRIEND)
     }
 
@@ -122,6 +130,7 @@ class ContactsPushCoreTest {
     }
 
     private companion object {
+        const val REFRESH_ERROR = "Error updating roster after push"
         const val PRE_EXISTING_FRIEND = "friend99"
     }
 }
