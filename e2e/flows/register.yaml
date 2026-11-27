@@ -49,3 +49,4 @@ appId: cat.xlagunas.viv.e2e.dev
       BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
       METHOD: PUT
       PATH: /user/
+      BODY_CONTAINS: acme
