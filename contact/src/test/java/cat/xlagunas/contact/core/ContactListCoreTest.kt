@@ -6,6 +6,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import cat.xlagunas.contact.data.ContactCacheImpl.Companion.MAX_VALID_CACHE_MILLIS
+import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.http.FakeBackend
 import cat.xlagunas.test.utils.http.disconnect
@@ -137,5 +138,18 @@ class ContactListCoreTest {
 
         assertThat(states.awaitCount(2))
             .containsExactly(Result.success(listOf(jordi)), Result.success(listOf(marta)))
+    }
+
+    @Test
+    fun givenStoredContactsAndBackendReturnsEmptyList_whenCacheExpired_thenEmptyListEmitted() {
+        harness.givenLoggedInUser()
+        harness.givenStoredFriends(3, jordi.toEntity(3))
+        harness.givenExpiredCache()
+        backend.respondTo("GET", "/contact/list", ok("contact/contact_list_empty.json"))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(emptyList<Friend>()))
+        assertThat(harness.storedFriends(3)).isEmpty()
     }
 }
