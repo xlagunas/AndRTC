@@ -90,6 +90,21 @@ class PushRoutingCoreTest {
         assertIgnored(remoteMessage(mapOf("eventType" to "create_call", "params" to """{"content":{"callId":"room-1"}}""")))
     }
 
+    @Test
+    fun givenAcceptCallPush_whenRouted_thenLoggedAndIgnored() {
+        assertIgnored(remoteMessage(mapOf("eventType" to "ACCEPT_CALL")), "ACCEPT_CALL")
+    }
+
+    @Test
+    fun givenRejectCallPush_whenRouted_thenLoggedAndIgnored() {
+        assertIgnored(remoteMessage(mapOf("eventType" to "REJECT_CALL")), "REJECT_CALL")
+    }
+
+    @Test
+    fun givenCreateCallWithoutParams_whenRouted_thenIgnored() {
+        assertIgnored(remoteMessage(mapOf("eventType" to "CREATE_CALL")), "params")
+    }
+
     private fun assertFriendshipPushRefreshesContacts(type: MessageType) {
         harness.givenLoggedInUser()
         backend.respondTo("GET", "/contact/list", ok("push/contact_list.json"))
@@ -104,8 +119,13 @@ class PushRoutingCoreTest {
         assertThat(harness.friendsOf()).containsExactlyInAnyOrder("jordi", "marta")
     }
 
-    private fun assertIgnored(message: RemoteMessage) {
+    private fun assertIgnored(
+        message: RemoteMessage,
+        converterWarning: String? = null,
+    ) {
         harness.router.route(message)
+
+        converterWarning?.let { logs.awaitMessage(it) }
 
         // Logged only when the router returns without dispatching. It is logged synchronously,
         // which makes the empty-requests check below meaningful despite async Retrofit calls.
