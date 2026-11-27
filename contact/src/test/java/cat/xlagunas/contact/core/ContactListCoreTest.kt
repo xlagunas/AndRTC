@@ -9,8 +9,10 @@ import cat.xlagunas.contact.data.ContactCacheImpl.Companion.MAX_VALID_CACHE_MILL
 import cat.xlagunas.contact.domain.Friend
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.http.FakeBackend
+import cat.xlagunas.test.utils.http.FakeResponse
 import cat.xlagunas.test.utils.http.disconnect
 import cat.xlagunas.test.utils.http.httpError
+import cat.xlagunas.test.utils.http.malformedJson
 import cat.xlagunas.test.utils.http.ok
 import cat.xlagunas.test.utils.recordStates
 import org.junit.After
@@ -141,6 +143,73 @@ class ContactListCoreTest {
     }
 
     @Test
+    fun givenUnauthorized_whenRefreshingContacts_thenStoredContactsEmitted() {
+        givenStoredJordiAndFailingRefresh(httpError(401))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+        assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
+    }
+
+    @Test
+    fun givenForbidden_whenRefreshingContacts_thenStoredContactsEmitted() {
+        givenStoredJordiAndFailingRefresh(httpError(403))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+        assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
+    }
+
+    @Test
+    fun givenNotFound_whenRefreshingContacts_thenStoredContactsEmitted() {
+        givenStoredJordiAndFailingRefresh(httpError(404))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+        assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
+    }
+
+    @Test
+    fun givenServerError_whenRefreshingContacts_thenStoredContactsEmitted() {
+        givenStoredJordiAndFailingRefresh(httpError(500))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+        assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
+    }
+
+    @Test
+    fun givenMalformedJson_whenRefreshingContacts_thenStoredContactsEmitted() {
+        givenStoredJordiAndFailingRefresh(malformedJson())
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+        assertThat(backend.requests.map { it.path }).containsExactly("/contact/list")
+    }
+
+    @Test
+    fun givenNoStoredContacts_whenRefreshFails_thenEmptyListEmitted() {
+        harness.givenLoggedInUser()
+        harness.givenExpiredCache()
+        backend.respondTo("GET", "/contact/list", httpError(500))
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(emptyList<Friend>()))
+        assertThat(harness.cacheTimestamp()).isNull()
+    }
+
+    @Test
     fun givenStoredContactsAndBackendReturnsEmptyList_whenCacheExpired_thenEmptyListEmitted() {
         harness.givenLoggedInUser()
         harness.givenStoredFriends(3, jordi.toEntity(3))
@@ -151,5 +220,12 @@ class ContactListCoreTest {
 
         assertThat(states.awaitCount(1)).containsExactly(Result.success(emptyList<Friend>()))
         assertThat(harness.storedFriends(3)).isEmpty()
+    }
+
+    private fun givenStoredJordiAndFailingRefresh(response: FakeResponse) {
+        harness.givenLoggedInUser()
+        harness.givenStoredFriends(3, jordi.toEntity(3))
+        harness.givenExpiredCache()
+        backend.respondTo("GET", "/contact/list", response)
     }
 }
