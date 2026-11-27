@@ -171,7 +171,7 @@ jobs:
           mkdir -p build/maestro
           nohup e2e-backend/build/install/e2e-backend/bin/e2e-backend > build/e2e-backend.log 2>&1 &
           for i in $(seq 1 60); do
-            if curl -fsS http://127.0.0.1:8484/__health > /dev/null; then
+            if curl -fsS --max-time 2 http://127.0.0.1:8484/__health > /dev/null; then
               echo "Backend is up"
               exit 0
             fi
@@ -185,6 +185,7 @@ jobs:
         run: |
           curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
 
       - name: Cache the AVD
         id: avd-cache
@@ -218,7 +219,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           script: |
             adb install -r app/build/outputs/apk/e2e/debug/app-e2e-debug.apk
-            maestro test e2e/ --format junit --output build/maestro/report.xml --test-output-dir build/maestro
+            maestro test e2e/ --format junit --output build/maestro/report.xml --test-output-dir build/maestro; status=$?; adb logcat -d > build/maestro/logcat.txt || true; exit $status
 
       - name: Upload the Maestro report
         if: always()
