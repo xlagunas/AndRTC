@@ -16,7 +16,7 @@ Retrofit and Firebase (Cloud Messaging, Crashlytics, Performance).
 | `conference` | **Dynamic feature module** with the WebRTC conference screen. Its `ConferenceComponent` depends on `ApplicationComponent`. Only its permission logic has unit tests. |
 | `push` | Firebase push token registration. |
 | `signaling` | Socket.IO signaling client used by the conference. |
-| `test-utils` | Shared test code for JVM and instrumentation tests: `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. Re-exports `test-utils-jvm`. |
+| `test-utils` | Shared test code for JVM and Robolectric tests (no instrumentation tests remain): `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. Re-exports `test-utils-jvm`. |
 | `test-utils-jvm` | Pure-JVM shared test code (`StateRecorder`, `FakeBackend`, `RouteTable`, fixtures), re-exported by `test-utils`. |
 | `e2e-backend` | JVM fake backend (built on `test-utils-jvm` routing (`RouteTable`) and fixtures) that the Maestro E2E flows talk to. |
 
