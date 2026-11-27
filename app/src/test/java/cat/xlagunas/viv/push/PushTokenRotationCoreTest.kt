@@ -88,6 +88,7 @@ class PushTokenRotationCoreTest {
         harness.pushTokenPresenter.onNewToken(NEW_TOKEN)
 
         // Requests go out on an OkHttp thread: wait for the guard to run before asserting absence.
+        // The log wait proves the logged-out branch was taken; a guard that logs but does not return would still race the async request.
         logs.awaitMessage(LOGGED_OUT_LOG)
         assertThat(backend.requests).isEmpty()
         assertThat(provider.invalidations).isEqualTo(0)

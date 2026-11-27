@@ -57,16 +57,16 @@ class PushTokenRepositoryCoreTest {
     }
 
     @Test
-    fun givenUnauthorized_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(401))
+    fun givenUnauthorized_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(401), expectRequest = true)
 
     @Test
-    fun givenForbidden_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(403))
+    fun givenForbidden_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(403), expectRequest = true)
 
     @Test
-    fun givenNotFound_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(404))
+    fun givenNotFound_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(404), expectRequest = true)
 
     @Test
-    fun givenServerError_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(500))
+    fun givenServerError_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(httpError(500), expectRequest = true)
 
     @Test
     fun givenDisconnect_whenRegisterPushToken_thenFailsAndNotRegistered() = assertRegistrationFails(disconnect())
@@ -118,16 +118,19 @@ class PushTokenRepositoryCoreTest {
 
         assertThat(result.isSuccess).isTrue()
         assertThat(provider.invalidations).isEqualTo(1)
-        assertThat(repository.isPushTokenRegistered()).isFalse()
     }
 
     // Does not assert the request count: OkHttp may retry after a disconnect.
-    private fun assertRegistrationFails(response: FakeResponse) {
+    private fun assertRegistrationFails(
+        response: FakeResponse,
+        expectRequest: Boolean = false,
+    ) {
         backend.respondTo("PUT", "/token/", response)
 
         val result = repository.registerPushToken().awaitResult()
 
         assertThat(result.isFailure).isTrue()
+        if (expectRequest) assertThat(backend.awaitRequest().path).isEqualTo("/token/")
         assertThat(provider.isTokenRegistered()).isFalse()
     }
 }

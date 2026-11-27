@@ -21,7 +21,7 @@ class RxAdaptersTest {
     fun givenCompletingCompletable_whenAwaitResult_thenSuccess() {
         val result = Completable.complete().awaitResult()
 
-        assertThat(result.isSuccess).isEqualTo(true)
+        assertThat(result).isSuccess()
     }
 
     @Test

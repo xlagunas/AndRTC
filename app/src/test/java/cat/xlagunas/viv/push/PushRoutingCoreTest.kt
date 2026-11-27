@@ -102,7 +102,7 @@ class PushRoutingCoreTest {
 
     @Test
     fun givenCreateCallWithoutParams_whenRouted_thenIgnored() {
-        assertIgnored(remoteMessage(mapOf("eventType" to "CREATE_CALL")), "params")
+        assertIgnored(remoteMessage(mapOf("eventType" to "CREATE_CALL")), "Missing params on push eventType")
     }
 
     private fun assertFriendshipPushRefreshesContacts(type: MessageType) {
