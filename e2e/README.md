@@ -12,7 +12,7 @@ App id: `cat.xlagunas.viv.e2e.dev`.
 ## Run locally
 
 ```bash
-# 1. Start the fake backend on 127.0.0.1:8484 (the app reaches it at http://10.0.2.2:8484)
+# 1. Start the fake backend on 127.0.0.1:8484 (the app reaches it at ${BACKEND_URL || 'http://localhost:8484'})
 ./gradlew :e2e-backend:run                 # keep it running in its own terminal
 
 # 2. Build and install the app (needs a booted emulator)
@@ -36,7 +36,24 @@ curl localhost:8484/__requests                              # requests received 
 curl localhost:8484/__health
 ```
 
-Scenarios: `logged_in_contacts`, `empty`.
+Scenarios: `logged_in_contacts` (auth, contact list, search, accept/reject/request, call creation),
+`contacts_empty` (logged in, no contacts), `register` (`PUT /user/` succeeds), `login_rejected`
+(`POST /auth/` returns 401), `empty` (no routes).
+
+## Assert a request reached the backend
+
+`scripts/assert_request.js` fails the flow unless `GET /__requests` has an entry with the given
+method and path (and, optionally, a body containing a substring):
+
+```yaml
+- runScript:
+    file: ../scripts/assert_request.js
+    env:
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      METHOD: POST
+      PATH: /auth/
+      BODY_CONTAINS: anna
+```
 
 ## Add a scenario
 
