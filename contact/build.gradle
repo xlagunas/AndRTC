@@ -82,9 +82,11 @@ dependencies {
     implementation libs.androidx.room.runtime
 
     testImplementation project(':test-utils')
+    testImplementation project(':user')
     testImplementation libs.junit
     testImplementation libs.mockito.core
     testImplementation libs.robolectric
+    testImplementation libs.androidx.test.core
     testImplementation libs.assertj.core
     testImplementation libs.androidx.arch.core.testing
     testImplementation libs.androidx.room.testing

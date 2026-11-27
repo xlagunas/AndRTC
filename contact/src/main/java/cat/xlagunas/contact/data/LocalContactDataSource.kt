@@ -36,10 +36,10 @@ class LocalContactDataSource
         }
 
         fun updateContacts(contactList: List<Friend>): Completable {
-            return Flowable.fromIterable(contactList)
-                .map { friendConverter.toFriendEntity(it, dataStore.getCurrentUserId()) }
-                .toList()
-                .flatMapCompletable { Completable.fromAction { friendDao.overrideContacts(it) } }
+            return Completable.fromAction {
+                val userId = dataStore.getCurrentUserId()
+                friendDao.overrideContacts(userId, contactList.map { friendConverter.toFriendEntity(it, userId) })
+            }
         }
 
         override fun acceptContact(friend: Friend): Completable {

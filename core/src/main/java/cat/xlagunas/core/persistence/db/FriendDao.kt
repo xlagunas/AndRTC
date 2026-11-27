@@ -51,10 +51,11 @@ abstract class FriendDao {
     abstract fun deleteData(userId: Long)
 
     @Transaction
-    open fun overrideContacts(friendDbEntityList: List<FriendEntity>) {
-        if (!friendDbEntityList.isEmpty()) {
-            deleteData(friendDbEntityList[0].userId)
-        }
+    open fun overrideContacts(
+        userId: Long,
+        friendDbEntityList: List<FriendEntity>,
+    ) {
+        deleteData(userId)
         insert(friendDbEntityList)
     }
 }
