@@ -95,6 +95,7 @@ class PushTokenRotationCoreTest {
         assertThat(provider.registrationChanges.values).isEmpty()
     }
 
+    // Pins current behaviour, see #152: a failed rotation is not retried until the next login.
     private fun assertRotationFailureKeepsToken(response: FakeResponse) {
         givenLoggedInWithRegisteredToken()
         backend.respondTo("PUT", "/token/", response)

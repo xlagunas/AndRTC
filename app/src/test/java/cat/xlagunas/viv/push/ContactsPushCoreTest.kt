@@ -94,6 +94,7 @@ class ContactsPushCoreTest {
         assertRefreshFailureKeepsContacts(malformedJson())
     }
 
+    // Pins current behaviour, see #153: a push after logout should send no request at all.
     @Test
     fun givenLoggedOut_whenFriendshipPush_thenErrorLoggedAndNoCrash() {
         backend.respondTo("GET", "/contact/list", ok("push/contact_list.json"))
