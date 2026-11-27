@@ -123,7 +123,7 @@ class ContactRepositoryImplTest {
         `when`(localContactDataSource.getContacts()).thenReturn(Flowable.empty())
 
         contactRepository.getContacts().test()
-            .assertError(IOException::class.java)
+            .assertComplete()
             .assertNoValues()
 
         verify(remoteContactDataSource).getContactsAsSingle()

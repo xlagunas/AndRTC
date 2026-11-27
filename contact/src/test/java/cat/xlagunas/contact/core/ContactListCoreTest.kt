@@ -4,9 +4,12 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import cat.xlagunas.contact.data.ContactCacheImpl.Companion.MAX_VALID_CACHE_MILLIS
 import cat.xlagunas.test.utils.CoreTestRule
 import cat.xlagunas.test.utils.http.FakeBackend
+import cat.xlagunas.test.utils.http.disconnect
+import cat.xlagunas.test.utils.http.httpError
 import cat.xlagunas.test.utils.http.ok
 import cat.xlagunas.test.utils.recordStates
 import org.junit.After
@@ -97,6 +100,36 @@ class ContactListCoreTest {
         harness.givenStoredFriends(3, jordi.toEntity(3))
         harness.givenStoredFriends(4, marta.toEntity(4))
         harness.givenValidCache()
+
+        val states = recordStates(harness.contactViewModel().contacts)
+        states.awaitCount(1)
+        harness.dataStore.updateCurrentUserId(4)
+
+        assertThat(states.awaitCount(2))
+            .containsExactly(Result.success(listOf(jordi)), Result.success(listOf(marta)))
+    }
+
+    @Test
+    fun givenStoredContactsAndExpiredCache_whenRefreshDisconnects_thenStoredContactsEmitted() {
+        harness.givenLoggedInUser()
+        harness.givenStoredFriends(3, jordi.toEntity(3))
+        harness.givenExpiredCache()
+        backend.respondTo("GET", "/contact/list", disconnect())
+
+        val states = recordStates(harness.contactViewModel().contacts)
+
+        assertThat(states.awaitCount(1)).containsExactly(Result.success(listOf(jordi)))
+        assertThat(harness.cacheTimestamp()).isNull()
+    }
+
+    @Test
+    fun givenRefreshFailed_whenUserSwitches_thenNewUsersContactsEmitted() {
+        harness.givenLoggedInUser()
+        harness.givenUser(4, "pau")
+        harness.givenStoredFriends(3, jordi.toEntity(3))
+        harness.givenStoredFriends(4, marta.toEntity(4))
+        harness.givenExpiredCache()
+        backend.respondTo("GET", "/contact/list", httpError(500))
 
         val states = recordStates(harness.contactViewModel().contacts)
         states.awaitCount(1)

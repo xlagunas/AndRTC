@@ -8,6 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import timber.log.Timber
 import javax.inject.Inject
 
 class ContactRepositoryImpl
@@ -35,6 +36,8 @@ class ContactRepositoryImpl
                     remoteContactDataSource.getContactsAsSingle()
                         .flatMapCompletable(this::updateContacts)
                 }
+                .doOnError { Timber.w(it, "Contact refresh failed, showing stored contacts") }
+                .onErrorComplete()
                 .andThen(localContactDataSource.getContacts())
                 .observeOn(schedulers.mainThread)
                 .subscribeOn(schedulers.io)
