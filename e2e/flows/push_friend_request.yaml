@@ -38,6 +38,13 @@ appId: cat.xlagunas.viv.e2e.dev
 - assertVisible:
     id: recycler_view
 - assertNotVisible: Marta
+# The initial fetch must have reached the backend before the scenario changes.
+- runScript:
+    file: ../scripts/assert_request.js
+    env:
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      METHOD: GET
+      PATH: /contact/list
 # The backend now has a pending request; the push tells the app to refetch the list.
 - runScript:
     file: ../scripts/select_scenario.js

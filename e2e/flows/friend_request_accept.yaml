@@ -40,12 +40,17 @@ appId: cat.xlagunas.viv.e2e.dev
     timeout: 10000
 - tapOn:
     id: accept_friendship_button
-# Marta's row switches to the accepted layout: the pending buttons go away.
+# Marta's row switches to the accepted layout: she gets a call button (Jordi's is index 0, hers index 1)
+# and the pending buttons go away.
 - extendedWaitUntil:
-    notVisible:
-      id: accept_friendship_button
+    visible:
+      id: call_friend_button
+      index: 1
     timeout: 10000
-- assertVisible: Marta
+- assertNotVisible:
+    id: accept_friendship_button
+- assertNotVisible:
+    id: reject_friendship_button
 - runScript:
     file: ../scripts/assert_request.js
     env:

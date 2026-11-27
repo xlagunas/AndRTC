@@ -50,3 +50,4 @@ appId: cat.xlagunas.viv.e2e.dev
 - extendedWaitUntil:
     visible: Jordi
     timeout: 20000
+- assertVisible: Marta
