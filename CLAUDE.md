@@ -16,7 +16,9 @@ Retrofit and Firebase (Cloud Messaging, Crashlytics, Performance).
 | `conference` | **Dynamic feature module** with the WebRTC conference screen. Its `ConferenceComponent` depends on `ApplicationComponent`. Only its permission logic has unit tests. |
 | `push` | Firebase push token registration. |
 | `signaling` | Socket.IO signaling client used by the conference. |
-| `test-utils` | Shared test code for JVM and instrumentation tests: `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. |
+| `test-utils` | Shared test code for JVM and instrumentation tests: `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. Re-exports `test-utils-jvm`. |
+| `test-utils-jvm` | Pure-JVM shared test code (`StateRecorder`, `FakeBackend`, `RouteTable`, fixtures), re-exported by `test-utils`. |
+| `e2e-backend` | JVM fake backend (built on `FakeBackend`) that the Maestro E2E flows talk to. |
 
 Feature modules follow `ui/` → `domain/` → `data/` packages (`domain` holds interfaces and
 models, `data` holds DTOs, converters, APIs and repository implementations). Older modules
@@ -26,6 +28,13 @@ models, `data` holds DTOs, converters, APIs and repository implementations). Old
 
 Product flavors: `development` (points to a LAN backend) and `production`.
 Build types: `debug` and `release`. Use the `developmentDebug` variant for local work.
+The `test` tasks of pure-JVM modules are aliased as `testDevelopmentDebugUnitTest`, so the
+commands below also cover them.
+
+The `e2e` flavor is debug-only, lives in `app/src/e2e/` and never ships. A per-flavor
+`VariantModule` (`app/src/standard/java` vs `app/src/e2e/java`) provides `@BaseUrl` and
+`PushTokenProvider`, so the e2e build talks to `e2e-backend` without Firebase. Details in
+`e2e/README.md`.
 
 ```bash
 ./gradlew assembleDevelopmentDebug               # build the app
@@ -36,6 +45,10 @@ Build types: `debug` and `release`. Use the `developmentDebug` variant for local
 ./gradlew :koverHtmlReportCoverage :koverXmlReportCoverage  # merged coverage report (Kover)
 python3 -m unittest discover -s .github/scripts -p 'test_*.py'  # tests of the CI coverage summary script
 ./gradlew connectedDevelopmentDebugAndroidTest   # Espresso, needs a device/emulator
+./gradlew :app:assembleE2eDebug                  # build the E2E APK
+./gradlew :e2e-backend:run                       # start the fake backend (127.0.0.1:8484)
+maestro test e2e/                                # run the Maestro flows (emulator + backend up)
+./gradlew :app:checkE2eIsolation :app:testE2eDebugUnitTest  # E2E code stays out of shipping variants
 ```
 
 Before declaring work done, run `spotlessApply`, then `assembleDevelopmentDebug` and
@@ -181,6 +194,9 @@ Every PR that adds or changes behaviour follows these rules:
   error handling`). Reference the GitHub issue in the PR body (`Closes #82`).
 - CI (`.github/workflows/android.yml`) runs `spotlessCheck`, `assembleDevelopmentDebug` and
   `testDevelopmentDebugUnitTest` on every PR to `main`. GitHub Actions is the only CI.
+- The `e2e` job (`E2E (Maestro)`) builds the e2e APK and `e2e-backend`, boots an emulator and
+  runs the Maestro flows in `e2e/`; it uploads the `maestro-report` artifact. It is not a
+  required check.
 - Coverage in CI: the `unit-tests` job writes a coverage table (total and per module) to the
   job summary and uploads a `coverage-report` artifact (HTML, XML, summary) on successful
   runs. A separate `coverage-comment` job (only `pull-requests: write`, no checkout)
