@@ -13,6 +13,9 @@ class ContactsMessageProcessor
         @SuppressLint("CheckResult")
         override fun processMessage(message: cat.xlagunas.core.push.Message) {
             contactRepository.forceUpdate()
-                .subscribe { Timber.d("Push notification received, updating roster") }
+                .subscribe(
+                    { Timber.d("Push notification received, updating roster") },
+                    { Timber.e(it, "Error updating roster after push") },
+                )
         }
     }
