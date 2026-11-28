@@ -24,7 +24,6 @@ android {
         targetSdk = 35
         versionCode = rootProject.gitCommitCount
         versionName = rootProject.gitTag
-        testInstrumentationRunner = "cat.xlagunas.viv.commons.MockTestRunner"
     }
 
     signingConfigs {
@@ -180,16 +179,6 @@ dependencies {
     testImplementation libs.robolectric
     testImplementation libs.androidx.test.core
 
-    androidTestImplementation project(':test-utils')
-    androidTestImplementation libs.androidx.test.runner
-    androidTestImplementation libs.androidx.test.rules
-    androidTestImplementation libs.httpclient.android
-    androidTestImplementation libs.espresso.core
-    androidTestImplementation libs.espresso.contrib
-    androidTestImplementation libs.androidx.arch.core.testing
-    androidTestImplementation libs.mockito.android
-    androidTestImplementation libs.androidx.test.ext.junit
-
     debugImplementation libs.androidx.fragment.testing
     debugImplementation libs.androidx.fragment.testing.manifest
     debugImplementation libs.androidx.test.core
@@ -210,7 +199,7 @@ project.tasks.whenTaskAdded {
 }
 
 configurations.configureEach {
-    //androidTestDevelopmentDebugRuntimeClasspath still pulls com.google.protobuf:protobuf-lite:3.0.1 transitively through the (now-bumped) espresso-idling-resource:3.7.0, while the main app runtime carries protobuf-javalite:3.21.11 (from firebase-perf). Both land in the merged test APK → the old GeneratedMessageLite shadows the new one → NoSuchMethodError at Firebase-Perf init, same failure mode as before, just via a different transitive path now.
+    // Historical: instrumentation test classpaths pulled com.google.protobuf:protobuf-lite:3.0.1 (via espresso-idling-resource) next to protobuf-javalite:3.21.11 (from firebase-perf), shadowing GeneratedMessageLite and crashing Firebase-Perf init with NoSuchMethodError. The app has no androidTest source set any more; the exclusion is kept as a guard against that transitive dependency coming back.
     exclude group: 'com.google.protobuf', module: 'protobuf-lite'
 }
 

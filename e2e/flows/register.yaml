@@ -1,0 +1,52 @@
+appId: cat.xlagunas.viv.e2e.dev
+---
+# Order matters: clearState kills the previous app process, then the scenario is selected,
+# then the app launches against a freshly selected backend state.
+- clearState
+- runScript:
+    file: ../scripts/select_scenario.js
+    env:
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      SCENARIO: register
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: search
+    timeout: 20000
+- tapOn:
+    id: action_profile
+- tapOn:
+    id: register
+- tapOn:
+    id: first_name_et
+- inputText: Acme
+- hideKeyboard
+- tapOn:
+    id: last_name
+- inputText: Tester
+- hideKeyboard
+- tapOn:
+    id: email
+- inputText: acme@example.com
+- hideKeyboard
+- tapOn:
+    id: username
+- inputText: acme
+- hideKeyboard
+- tapOn:
+    id: password
+- inputText: secret
+- hideKeyboard
+- tapOn:
+    id: fab
+- extendedWaitUntil:
+    visible: acme successfully registered, please log in
+    timeout: 10000
+- assertVisible: Login
+- runScript:
+    file: ../scripts/assert_request.js
+    env:
+      BACKEND_URL: ${BACKEND_URL || 'http://localhost:8484'}
+      METHOD: PUT
+      PATH: /user/
+      BODY_CONTAINS: acme

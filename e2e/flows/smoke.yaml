@@ -18,6 +18,8 @@ appId: cat.xlagunas.viv.e2e.dev
 - tapOn:
     id: username_input_layout
 - inputText: anna
+# The keyboard can cover the password field on tall screens: close it before moving on.
+- hideKeyboard
 - tapOn:
     id: password_text_input
 - inputText: secret

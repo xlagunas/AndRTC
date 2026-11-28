@@ -29,7 +29,6 @@ firebase-messaging = "26.0.2"
 firebase-perf = "21.0.5"
 glide = "5.0.10"
 gson = "2.15.0"
-httpclient-android = "4.3.5.1"
 jsr305 = "3.0.2"
 junit = "4.13.2"
 leakcanary = "2.14"
@@ -133,8 +132,6 @@ androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test" }
 espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espresso" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
-httpclient-android = { module = "org.apache.httpcomponents:httpclient-android", version.ref = "httpclient-android" }
-mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -8,7 +8,7 @@ Retrofit and Firebase (Cloud Messaging, Crashlytics, Performance).
 
 | Module | Purpose |
 |---|---|
-| `app` | Application module. Owns the single Dagger `ApplicationComponent`, `VivApplication`, `MainActivity`, `AndroidNavigator`, push handling and all Espresso tests. |
+| `app` | Application module. Owns the single Dagger `ApplicationComponent`, `VivApplication`, `MainActivity`, `AndroidNavigator`, push handling. |
 | `core` | Shared foundations: `DisposableViewModel`, `Result`, `RxSchedulers`, `Navigator` interface, ViewModel factory/keys, Room database (`VivDatabase`, DAOs, entities), `AuthDataStore`, `MessageProcessor`. Defines the `ENDPOINT` build config per flavor. |
 | `user` | Login, registration, profile and authentication (token storage, auth header interceptor). |
 | `contact` | Contact list and friend requests (remote + local data sources, cache). |
@@ -16,7 +16,7 @@ Retrofit and Firebase (Cloud Messaging, Crashlytics, Performance).
 | `conference` | **Dynamic feature module** with the WebRTC conference screen. Its `ConferenceComponent` depends on `ApplicationComponent`. Only its permission logic has unit tests. |
 | `push` | Firebase push token registration. |
 | `signaling` | Socket.IO signaling client used by the conference. |
-| `test-utils` | Shared test code for JVM and instrumentation tests: `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. Re-exports `test-utils-jvm`. |
+| `test-utils` | Shared test code for JVM and Robolectric tests (no instrumentation tests remain): `CoreTestRule`, `recordStates`, `RecordingNavigator`, `FakeBackend` and JSON fixtures, `MainDispatcherRule`. Re-exports `test-utils-jvm`. |
 | `test-utils-jvm` | Pure-JVM shared test code (`StateRecorder`, `FakeBackend`, `RouteTable`, fixtures), re-exported by `test-utils`. |
 | `e2e-backend` | JVM fake backend (built on `test-utils-jvm` routing (`RouteTable`) and fixtures) that the Maestro E2E flows talk to. |
 
@@ -45,7 +45,6 @@ The `e2e` flavor is debug-only, lives in `app/src/e2e/` and never ships. A per-f
 ./gradlew spotlessApply                          # format (ktlint); CI runs spotlessCheck
 ./gradlew :koverHtmlReportCoverage :koverXmlReportCoverage  # merged coverage report (Kover)
 python3 -m unittest discover -s .github/scripts -p 'test_*.py'  # tests of the CI coverage summary script
-./gradlew connectedDevelopmentDebugAndroidTest   # Espresso, needs a device/emulator
 ./gradlew :app:assembleE2eDebug                  # build the E2E APK
 ./gradlew :e2e-backend:run                       # start the fake backend (127.0.0.1:8484)
 maestro test e2e/                                # run the Maestro flows (emulator + backend up)
@@ -176,9 +175,8 @@ Every PR that adds or changes behaviour follows these rules:
 - Kotlin classes are final. Annotate a class with `@OpenForTesting` (from `core`) to make
   it mockable in debug builds through the `kotlin-allopen` plugin, instead of adding `open`.
 - Every test must assert something; no empty or assertion-less tests (issue #89).
-- Espresso tests live only in `app/src/androidTest`. The existing ones use `MockTestRunner` /
-  `ApplicationTestComponent` to inject mock ViewModels; they will be replaced by the
-  Maestro journeys. They are not run in CI yet (issue #88).
+- UI journeys are covered by the Maestro flows in `e2e/`. No Espresso tests remain (no
+  mock-ViewModel UI tests); new UI coverage goes in Maestro flows.
 
 ## Code style
 

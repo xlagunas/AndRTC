@@ -96,4 +96,59 @@ class E2eBackendTest {
         assertThat(code).isEqualTo(200)
         assertThat(body).isEqualTo("ok")
     }
+
+    @Test
+    fun givenLoggedInContacts_whenAcceptRoutePut_then200() {
+        call("POST", "/__scenario/logged_in_contacts")
+
+        assertThat(call("PUT", "/contact/7").first).isEqualTo(200)
+        assertThat(call("POST", "/contact/7/accept").first).isEqualTo(200)
+        assertThat(call("POST", "/contact/7/reject").first).isEqualTo(200)
+    }
+
+    @Test
+    fun givenLoggedInContacts_whenCallCreated_thenCallFixture() {
+        call("POST", "/__scenario/logged_in_contacts")
+
+        val (code, body) = call("PUT", "/call/", "{}")
+
+        assertThat(code).isEqualTo(200)
+        assertThat(body).isEqualTo(fixture("call/call_created.json"))
+    }
+
+    @Test
+    fun givenLoggedInContacts_whenSearching_thenSearchFixture() {
+        call("POST", "/__scenario/logged_in_contacts")
+
+        val (code, body) = call("GET", "/contact/search/jordi")
+
+        assertThat(code).isEqualTo(200)
+        assertThat(body).isEqualTo(fixture("contact/search_jordi.json"))
+    }
+
+    @Test
+    fun givenRegisterScenario_whenUserPut_then200() {
+        call("POST", "/__scenario/register")
+
+        assertThat(call("PUT", "/user/", "{}").first).isEqualTo(200)
+        assertThat(call("GET", "/contact/list").second).isEqualTo(fixture("contact/contact_list_empty.json"))
+    }
+
+    @Test
+    fun givenLoginRejected_whenAuth_then401() {
+        call("POST", "/__scenario/login_rejected")
+
+        assertThat(call("POST", "/auth/", "{}").first).isEqualTo(401)
+    }
+
+    @Test
+    fun givenContactsEmpty_whenListRequested_thenEmptyArray() {
+        call("POST", "/__scenario/contacts_empty")
+
+        val (code, body) = call("GET", "/contact/list")
+
+        assertThat(code).isEqualTo(200)
+        assertThat(body).isEqualTo(fixture("contact/contact_list_empty.json"))
+        assertThat(call("POST", "/auth/", "{}").first).isEqualTo(200)
+    }
 }
